@@ -1,33 +1,29 @@
 package com.cornellappdev.android.score.data.models
 
-data class Team(
-    val sport: Sport,
-    val genderDivision: GenderDivision
-)
 enum class Sport {
     BASEBALL,
     BASKETBALL,
-    CROSSCOUNTRY,
+    CROSS_COUNTRY,
     EQUESTRIAN,
     FENCING,
-    FIELDHOCKEY,
+    FIELD_HOCKEY,
     GYMNASTICS,
     FOOTBALL,
     GOLF,
-    ICEHOCKEY,
+    ICE_HOCKEY,
     LACROSSE,
     POLO,
     ROWING,
-    ROWINGHEAVYWEIGHT,
-    ROWINGLIGHTWEIGHT,
+    ROWING_HEAVYWEIGHT,
+    ROWING_LIGHTWEIGHT,
     SAILING,
     SOCCER,
     SOFTBALL,
-    SPRINTFOOTBALL,
+    SPRINT_FOOTBALL,
     SQUASH,
-    SWIMDIVE,
+    SWIM_DIVE,
     TENNIS,
-    TRACKFIELD,
+    TRACK_FIELD,
     VOLLEYBALL,
     WRESTLING
 }
