@@ -25,6 +25,7 @@ import com.cornellappdev.score.theme.Style.universityText
 
 @Composable
 fun SportCard(
+    modifier: Modifier = Modifier,  // Add modifier argument
     teamLogo: Painter,
     team: String,
     date: String,
@@ -33,23 +34,19 @@ fun SportCard(
     sportIcon: Painter
 ) {
     Card(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth() // Ensure the column fills the width
+                .fillMaxWidth()
         ) {
-            // First Row: Team Logo, Team Name, Date
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Team Logo and Team Name
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -58,18 +55,16 @@ fun SportCard(
                         contentDescription = "Team Logo",
                         modifier = Modifier
                             .height(20.dp)
-                            .padding(start = 4.dp, end = 4.dp)
+                            .padding(start= 4.dp, end = 4.dp)
                     )
                     Text(
                         text = team,
                         style = teamName
                     )
                 }
-
-                // Date Text
                 Text(
                     text = date,
-                    style = dateText
+                    style = dateText,
                 )
             }
 
@@ -79,7 +74,7 @@ fun SportCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 12.dp) // Add top padding to create space
+                    .padding(top = 12.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -120,12 +115,12 @@ fun SportCard(
     }
 }
 
-
 @Preview
 @Composable
 fun SportCardPreview() {
     Column {
         SportCard(
+            modifier = Modifier.padding(16.dp),
             teamLogo = painterResource(id = R.drawable.penn_logo),
             team = "Penn",
             date = "5/20/2024",
