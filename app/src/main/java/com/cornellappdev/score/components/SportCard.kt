@@ -25,13 +25,13 @@ import com.cornellappdev.score.theme.Style.universityText
 
 @Composable
 fun SportCard(
-    modifier: Modifier = Modifier,  // Add modifier argument
     teamLogo: Painter,
     team: String,
     date: String,
     location: String,
     sportName: String,
-    sportIcon: Painter
+    sportIcon: Painter,
+    modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -120,13 +120,13 @@ fun SportCard(
 fun SportCardPreview() {
     Column {
         SportCard(
-            modifier = Modifier.padding(16.dp),
             teamLogo = painterResource(id = R.drawable.penn_logo),
             team = "Penn",
             date = "5/20/2024",
             location = "U. Pennsylvania",
             sportName = "Baseball",
-            sportIcon = painterResource(id = R.drawable.ic_baseball)
-        )
+            sportIcon = painterResource(id = R.drawable.ic_baseball),
+            modifier = Modifier.padding(16.dp)
+            )
     }
 }
