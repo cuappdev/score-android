@@ -13,7 +13,7 @@ object Style {
     val universityText = TextStyle(
         fontSize = 12.sp,
         fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight(400),
         color = Color(0xFF333333)
     )
 
@@ -29,7 +29,7 @@ object Style {
     val sportName = TextStyle(
         fontSize = 12.sp,
         fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight(400),
         color = Color(0xFF333333)
     )
 
