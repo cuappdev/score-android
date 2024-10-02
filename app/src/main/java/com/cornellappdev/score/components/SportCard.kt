@@ -29,7 +29,7 @@ fun SportCard(
     team: String,
     date: String,
     location: String,
-    sportName: String,
+    genderIcon: Painter,
     sportIcon: Painter,
     modifier: Modifier = Modifier
 ) {
@@ -57,18 +57,35 @@ fun SportCard(
                             .height(20.dp)
                             .padding(start= 4.dp, end = 4.dp)
                     )
+
                     Text(
                         text = team,
                         style = teamName
                     )
                 }
-                Text(
-                    text = date,
-                    style = dateText,
-                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.Start),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = sportIcon,
+                        contentDescription = "Sport Icon",
+                        modifier = Modifier
+                            .width(24.dp)
+                            .height(24.dp)
+                    )
+                    Image(
+                        painter = genderIcon,
+                        contentDescription = "Gender Icon",
+                        modifier = Modifier
+                            .padding(2.5.dp)
+                            .width(19.dp)
+                            .height(19.dp)
+                    )
+                }
             }
 
-            // Second Row: Location, Sport Name, Sport Icon
+            // Second Row: Location, date
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -77,39 +94,26 @@ fun SportCard(
                     .padding(top = 12.dp)
             ) {
                 Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.Start),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_location), // Location icon
                         contentDescription = "Location Icon",
                         modifier = Modifier
-                            .padding(1.dp)
                             .width(24.dp)
                             .height(24.dp)
                     )
+
                     Text(
                         text = location,
-                        style = universityText,
-                        modifier = Modifier.padding(start = 4.dp)
+                        style = universityText
                     )
                 }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = sportName,
-                        style = Style.sportName,
-                        modifier= Modifier.padding(end = 4.dp)
-                    )
-                    Image(
-                        painter = sportIcon,
-                        contentDescription = "Sport Icon",
-                        modifier = Modifier
-                            .padding(1.dp)
-                            .width(24.dp)
-                            .height(24.dp)
-                    )
-                }
+                Text(
+                    text = date,
+                    style = dateText,
+                )
             }
         }
     }
@@ -124,7 +128,7 @@ fun SportCardPreview() {
             team = "Penn",
             date = "5/20/2024",
             location = "U. Pennsylvania",
-            sportName = "Baseball",
+            genderIcon = painterResource(id = R.drawable.ic_gender_men),
             sportIcon = painterResource(id = R.drawable.ic_baseball),
             modifier = Modifier.padding(16.dp)
             )

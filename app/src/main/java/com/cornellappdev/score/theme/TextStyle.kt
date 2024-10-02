@@ -14,14 +14,14 @@ object Style {
         fontSize = 12.sp,
         fontFamily = poppinsFamily,
         fontWeight = FontWeight(400),
-        color = Color(0xFF333333)
+        color = Color(0xFF777777)
     )
 
     // Team name text style
     val teamName = TextStyle(
-        fontSize = 20.sp,
+        fontSize = 18.sp,
         fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight(500),
         color = Color(0xFF333333)
     )
 
@@ -59,9 +59,9 @@ object Style {
 
     // Date text style
     val dateText = TextStyle(
-        fontSize = 14.sp,
+        fontSize = 12.sp,
         fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Bold,
-        color = Color(0xFF333333)
+        fontWeight = FontWeight(400),
+        color = Color(0xFF777777)
     )
 }
