@@ -1,16 +1,20 @@
 package com.cornellappdev.score.components
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.Alignment
 import com.example.score.R
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.TextStyle
@@ -22,6 +26,7 @@ import com.cornellappdev.score.theme.Style
 import com.cornellappdev.score.theme.Style.dateText
 import com.cornellappdev.score.theme.Style.teamName
 import com.cornellappdev.score.theme.Style.universityText
+import com.cornellappdev.score.theme.White
 
 @Composable
 fun SportCard(
@@ -31,16 +36,39 @@ fun SportCard(
     location: String,
     genderIcon: Painter,
     sportIcon: Painter,
+    topCornerRound: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val cardShape = if (topCornerRound) {
+        RoundedCornerShape(16.dp) // Rounded all
+    } else {
+        RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp) // square top corners
+    }
     Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        modifier = modifier
+               .clip(cardShape)
+               .then(
+                if (topCornerRound) {
+                    Modifier.border(.4.dp, Color.Gray, cardShape) // Apply border only if topRoundCorner is true
+                } else {
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface) // Default card background
+                        .then(
+                            Modifier.border(
+                                border = BorderStroke(
+                                    .4.dp, Color.Gray
+                                ), shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp) // Left, right, and bottom border
+                            )
+                        )
+                }
+               )
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
+
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -55,7 +83,7 @@ fun SportCard(
                         contentDescription = "Team Logo",
                         modifier = Modifier
                             .height(20.dp)
-                            .padding(start= 4.dp, end = 4.dp)
+                            .padding(start = 4.dp, end = 4.dp)
                     )
 
                     Text(
@@ -119,7 +147,7 @@ fun SportCard(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun SportCardPreview() {
     Column {
@@ -130,6 +158,7 @@ fun SportCardPreview() {
             location = "U. Pennsylvania",
             genderIcon = painterResource(id = R.drawable.ic_gender_men),
             sportIcon = painterResource(id = R.drawable.ic_baseball),
+            topCornerRound = false,
             modifier = Modifier.padding(16.dp)
             )
     }

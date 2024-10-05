@@ -1,0 +1,22 @@
+package com.cornellappdev.score.util
+
+import com.cornellappdev.android.score.data.models.GameCardData
+import com.example.score.R
+    val PENN_GAME = GameCardData(
+        teamLogo =R.drawable.penn_logo,
+        team = "Penn",
+        date = "5/20/2024",
+        location = "Philadelphia, PA",
+        genderIcon = R.drawable.ic_gender_men,
+        sportIcon = R.drawable.ic_baseball
+    )
+
+    val PRINCETON_GAME = GameCardData(
+        teamLogo = R.drawable.princeton_logo,
+        team = "Princeton",
+        date = "5/21/2024",
+        location = "Princeton, NY",
+        genderIcon = R.drawable.ic_gender_men,
+        sportIcon = R.drawable.ic_baseball
+    )
+    val gameList = listOf(PENN_GAME, PRINCETON_GAME)

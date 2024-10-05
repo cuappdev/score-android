@@ -59,6 +59,8 @@ dependencies {
     implementation("androidx.activity:activity-compose")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
     implementation("androidx.compose.material3:material3:1.0.0")
+    implementation("com.google.accompanist:accompanist-pager:0.24.0-alpha")
+
     // Other dependencies
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
