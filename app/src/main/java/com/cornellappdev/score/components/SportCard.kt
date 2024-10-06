@@ -1,4 +1,5 @@
 package com.cornellappdev.score.components
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,23 +11,18 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.Alignment
-import com.example.score.R
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.cornellappdev.score.theme.Style
 import com.cornellappdev.score.theme.Style.dateText
 import com.cornellappdev.score.theme.Style.teamName
 import com.cornellappdev.score.theme.Style.universityText
-import com.cornellappdev.score.theme.White
+import com.example.score.R
 
 @Composable
 fun SportCard(
@@ -47,28 +43,29 @@ fun SportCard(
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.White),
         modifier = modifier
-               .clip(cardShape)
-               .then(
+            .clip(cardShape)
+            .then(
                 if (topCornerRound) {
-                    Modifier.border(.4.dp, Color.Gray, cardShape) // Apply border only if topRoundCorner is true
+                    Modifier.border(.4.dp, Color.Gray, cardShape)
                 } else {
                     Modifier
-                        .background(MaterialTheme.colorScheme.surface) // Default card background
+                        .background(MaterialTheme.colorScheme.surface)
                         .then(
                             Modifier.border(
-                                border = BorderStroke(
-                                    .4.dp, Color.Gray
-                                ), shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp) // Left, right, and bottom border
+                                border = BorderStroke(.4.dp, Color.Gray),
+                                shape = RoundedCornerShape(
+                                    bottomStart = 16.dp,
+                                    bottomEnd = 16.dp
+                                )
                             )
                         )
                 }
-               )
+            )
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
-
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -126,7 +123,7 @@ fun SportCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_location), // Location icon
+                        painter = painterResource(id = R.drawable.ic_location),
                         contentDescription = "Location Icon",
                         modifier = Modifier
                             .width(24.dp)
@@ -160,6 +157,6 @@ fun SportCardPreview() {
             sportIcon = painterResource(id = R.drawable.ic_baseball),
             topCornerRound = false,
             modifier = Modifier.padding(16.dp)
-            )
+        )
     }
 }

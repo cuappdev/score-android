@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
@@ -20,13 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.cornellappdev.android.score.data.models.GameCardData
-import com.cornellappdev.score.theme.poppinsFamily
+import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.util.gameList
 import com.example.score.R
 
@@ -66,15 +62,11 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
             .fillMaxWidth()
             .padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-        ) {
+    ) {
         Text(
             text = "Upcoming",
-            fontFamily = poppinsFamily,
-            fontSize = 24.sp,
-            color = Color(0xFF333333),
-            fontWeight = FontWeight(600),
-            modifier = Modifier
-                .fillMaxWidth()
+            style = title,
+            modifier = Modifier.fillMaxWidth()
         )
 
         HorizontalPager(
@@ -98,14 +90,17 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
         }
 
         Box(modifier = Modifier.fillMaxWidth()) {
-        DotIndicator(
-            pagerState = pagerState,
-            totalPages = games.size,
-            modifier =  Modifier.align(Alignment.Center)
-        )}
+            DotIndicator(
+                pagerState = pagerState,
+                totalPages = games.size,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
     }
 }
+
 @Preview(showBackground = true, widthDp = 360)
 @Composable
-fun UpcomingGamesCarouselPreview() {UpcomingGamesCarousel(gameList)
+fun UpcomingGamesCarouselPreview() {
+    UpcomingGamesCarousel(gameList)
 }

@@ -10,11 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,16 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.cornellappdev.score.theme.poppinsFamily
+import com.cornellappdev.score.theme.Style.vsText
 import com.example.score.R
 
 @Composable
@@ -42,8 +31,8 @@ fun UpcomingGameHeader(
     leftTeamLogo: Painter,
     rightTeamLogo: Painter,
     gradientColor1: Color,
-    gradientColor2: Color ,
-    modifier: Modifier
+    gradientColor2: Color,
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
@@ -71,13 +60,7 @@ fun UpcomingGameHeader(
 
             Text(
                 text = "VS",
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    fontFamily = poppinsFamily,
-                    fontWeight = FontWeight(700),
-                    fontStyle = FontStyle.Italic,
-                    color = Color(0xFFFFFFFF),
-                )
+                style = vsText
             )
 
             Image(
@@ -96,7 +79,7 @@ fun UpcomingGameHeaderPreview() {
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = painterResource(R.drawable.penn_logo),
         gradientColor1 = Color(0xE1A69F),
-        gradientColor2 = Color(0x011F5B) ,
+        gradientColor2 = Color(0x011F5B),
         modifier = Modifier
     )
 }
@@ -110,10 +93,10 @@ fun UpcomingGameCard(
     genderIcon: Painter,
     sportIcon: Painter,
     date: String,
-    modifier: Modifier,
-    headerModifier:Modifier,
-    gradientColor1:Color,
-    gradientColor2:Color
+    modifier: Modifier = Modifier,
+    headerModifier: Modifier,
+    gradientColor1: Color,
+    gradientColor2: Color
 ) {
     Column(
         modifier = modifier
@@ -137,7 +120,14 @@ fun UpcomingGameCard(
             sportIcon = sportIcon,
             topCornerRound = false,
             modifier = modifier
-                .clip(RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomStart = 16.dp, bottomEnd = 16.dp))
+                .clip(
+                    RoundedCornerShape(
+                        topStart = 0.dp,
+                        topEnd = 0.dp,
+                        bottomStart = 16.dp,
+                        bottomEnd = 16.dp
+                    )
+                )
         )
     }
 }
@@ -146,8 +136,8 @@ fun UpcomingGameCard(
 @Composable
 fun GameScheduleScreen() {
     UpcomingGameCard(
-        leftTeamLogo = painterResource(R.drawable.cornell_logo),  // Cornell logo
-        rightTeamLogo = painterResource(R.drawable.penn_logo),    // Penn logo
+        leftTeamLogo = painterResource(R.drawable.cornell_logo),
+        rightTeamLogo = painterResource(R.drawable.penn_logo),
         team = "Penn",
         location = "Philadelphia, NJ",
         date = "5/20/2024",
