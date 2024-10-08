@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RootNavigationViewModel @Inject constructor(
-    rootNavigationRepository: RootNavigationRepository
+    rootNavigationRepository: RootNavigationRepository,
 ) : BaseViewModel<RootNavigationViewModel.RootNavigationUiState>(
     initialUiState = RootNavigationUiState()
 ) {

@@ -1,6 +1,6 @@
 package com.cornellappdev.score.util
 
-import com.cornellappdev.android.score.data.models.GameCardData
+import com.cornellappdev.score.model.GameCardData
 import com.example.score.R
 
 val PENN_GAME = GameCardData(

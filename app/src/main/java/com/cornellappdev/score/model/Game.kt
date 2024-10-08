@@ -1,4 +1,4 @@
-package com.cornellappdev.android.score.data.models
+package com.cornellappdev.score.model
 
 data class GameCardData(
     val teamLogo: Int,
