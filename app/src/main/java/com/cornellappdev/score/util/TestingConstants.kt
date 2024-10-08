@@ -1,7 +1,7 @@
 package com.cornellappdev.score.util
 
 import com.cornellappdev.score.model.GameCardData
-import com.example.score.R
+import com.cornellappdev.score.R
 
 val PENN_GAME = GameCardData(
     teamLogo = R.drawable.penn_logo,

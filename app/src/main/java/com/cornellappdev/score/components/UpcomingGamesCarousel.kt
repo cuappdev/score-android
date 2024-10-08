@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.util.gameList
-import com.example.score.R
+import com.cornellappdev.score.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
