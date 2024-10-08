@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.cornellappdev.score.nav.root.RootNavigation
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.appcompat.app.AppCompatActivity
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

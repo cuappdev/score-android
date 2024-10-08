@@ -1,15 +1,28 @@
 package com.cornellappdev.score.theme
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontWeight
+
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 
 object Style {
+    val title = TextStyle(
+        fontFamily = poppinsFamily,
+        fontSize = 24.sp,
+        fontWeight = FontWeight(600),
+        color = Color(0xFF333333)
+    )
+    
+    val vsText = TextStyle(
+        fontSize = 24.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(700),
+        fontStyle = FontStyle.Italic,
+        color = Color.White
+    )
 
-    /**
-     * The style for Location text.
-     */
     val universityText = TextStyle(
         fontSize = 12.sp,
         fontFamily = poppinsFamily,
@@ -48,6 +61,7 @@ object Style {
         fontWeight = FontWeight.Normal,
         color = Color(0xFF333333)
     )
+
     // Sport filter text style
     val sportFilterText = TextStyle(
         fontSize = 12.sp,
