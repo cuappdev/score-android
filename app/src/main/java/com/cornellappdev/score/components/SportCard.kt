@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.theme.Style
 import com.cornellappdev.score.theme.Style.dateText
 import com.cornellappdev.score.theme.Style.teamName
@@ -31,7 +32,7 @@ fun SportCard(
     location: String,
     genderIcon: Painter,
     sportIcon: Painter,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
