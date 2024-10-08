@@ -119,7 +119,7 @@ fun UpcomingGameCard(
             genderIcon = genderIcon,
             sportIcon = sportIcon,
             topCornerRound = false,
-            modifier = modifier
+            modifier = Modifier
                 .clip(
                     RoundedCornerShape(
                         topStart = 0.dp,
