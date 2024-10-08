@@ -4,16 +4,17 @@ plugins {
 
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // this version matches your Kotlin version
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 
 android {
-    namespace = "com.example.score"
+    namespace = "com.cornellappdev.score"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.score"
+        applicationId = "com.cornellappdev.score"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

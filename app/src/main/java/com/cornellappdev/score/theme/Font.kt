@@ -3,7 +3,7 @@
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import com.example.score.R
+import com.cornellappdev.score.R
 
 val poppinsFamily = FontFamily(
     Font(R.font.poppins_light, weight = FontWeight.Normal),
