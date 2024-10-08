@@ -21,10 +21,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.cornellappdev.android.score.data.models.GameCardData
+import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.util.gameList
-import com.example.score.R
+import com.cornellappdev.score.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
