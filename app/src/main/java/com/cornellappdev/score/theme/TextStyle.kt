@@ -64,4 +64,16 @@ object Style {
         fontWeight = FontWeight.Bold,
         color = Color(0xFF333333)
     )
+
+    val heading2 = TextStyle(
+        fontFamily = poppinsFamily,
+        fontSize = 18.sp,
+        fontWeight = FontWeight(500)
+    )
+
+    val body = TextStyle(
+        fontSize = 14.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(400)
+    )
 }

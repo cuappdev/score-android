@@ -26,10 +26,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.score.R
-import com.cornellappdev.android.score.data.models.Sport
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
-import com.cornellappdev.score.theme.GrayMid
+import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.Style.genderFilterText
 import com.cornellappdev.score.theme.Style.genderText
 import com.cornellappdev.score.theme.Style.sportFilterText
@@ -156,7 +155,7 @@ fun SportSelector(
         Text(
             text = option,
             style = sportFilterText,
-            color = if (selectedOption == option) CrimsonPrimary else GrayMid
+            color = if (selectedOption == option) CrimsonPrimary else GrayMedium
         )
     }
 }

@@ -2,8 +2,8 @@ package com.cornellappdev.score.theme
 
 import androidx.compose.ui.graphics.Color
 
-val GrayDark = Color(0xFF333333)
-val GrayMid = Color(0xFF777777)
+val GrayPrimary = Color(0xFF333333)
+val GrayMedium = Color(0xFF777777)
 val GrayLight = Color(0xFFC2C2C2)
 val White = Color(0xFFFFFFFF)
 val Orange = Color(0xFFB44914)
