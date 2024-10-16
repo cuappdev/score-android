@@ -20,21 +20,13 @@ import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.GrayPrimary
-import com.cornellappdev.score.theme.Style.body
+import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading2
 import com.example.score.R
 
-@Preview
 @Composable
-fun PreviewEmptyStateMessage() {
-    Box(modifier = Modifier.background(Color.White)) {
-        EmptyStateMessage()
-    }
-}
-
-@Composable
-fun EmptyStateMessage() {
-    Column(modifier = Modifier.width(158.dp),
+fun EmptyStateMessage(modifier: Modifier = Modifier) {
+    Column(modifier = modifier.width(158.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
             painter = painterResource(id = R.drawable.ic_speaker),
@@ -53,7 +45,15 @@ fun EmptyStateMessage() {
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Check back here later!",
-            style = body.copy(color = GrayMedium)
+            style = bodyNormal.copy(color = GrayMedium)
         )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewEmptyStateMessage() {
+    Box(modifier = Modifier.background(Color.White)) {
+        EmptyStateMessage()
     }
 }
