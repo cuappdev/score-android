@@ -1,4 +1,4 @@
-package com.example.score
+package com.cornellappdev.score
 
 import org.junit.Test
 
