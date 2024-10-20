@@ -1,4 +1,4 @@
-package com.cornellappdev.android.score.data.models
+package com.cornellappdev.score.model
 
 enum class Sport {
     BASEBALL,
@@ -33,5 +33,3 @@ enum class GenderDivision {
     MALE,
     MIXED
 }
-
-
