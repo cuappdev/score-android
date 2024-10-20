@@ -78,4 +78,76 @@ object Style {
         fontWeight = FontWeight(400),
         color = Color(0xFF777777)
     )
+
+    val heading1 = TextStyle(
+        fontFamily = poppinsFamily,
+        fontSize = 24.sp,
+        fontWeight = FontWeight(600)
+    )
+
+    val heading2 = TextStyle(
+        fontFamily = poppinsFamily,
+        fontSize = 18.sp,
+        fontWeight = FontWeight(500)
+    )
+
+    val heading3 = TextStyle(
+        fontFamily = poppinsFamily,
+        fontSize = 14.sp,
+        fontWeight = FontWeight(500)
+    )
+
+    val heading4 = TextStyle(
+        fontFamily = poppinsFamily,
+        fontSize = 12.sp,
+        fontWeight = FontWeight(500)
+    )
+
+    val bodyLight = TextStyle(
+        fontFamily = poppinsFamily,
+        fontSize = 14.sp,
+        fontWeight = FontWeight(300)
+    )
+
+    val bodyNormal = TextStyle(
+        fontSize = 14.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(400)
+    )
+
+    val bodyMedium = TextStyle(
+        fontSize = 14.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(500)
+    )
+
+    val bodySemibold = TextStyle(
+        fontSize = 14.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(600)
+    )
+
+    val bodyBold = TextStyle(
+        fontSize = 14.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(700)
+    )
+
+    val labelLight = TextStyle(
+        fontSize = 12.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(300)
+    )
+
+    val labelNormal = TextStyle(
+        fontSize = 12.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(400)
+    )
+
+    val labelMedium = TextStyle(
+        fontSize = 12.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(500)
+    )
 }
