@@ -77,6 +77,7 @@ dependencies {
 
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.runtime.android)
     testImplementation(libs.junit)
     debugImplementation("androidx.compose.ui:ui-tooling")
     androidTestImplementation(libs.androidx.junit)
