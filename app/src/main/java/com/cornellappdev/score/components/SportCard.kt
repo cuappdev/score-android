@@ -1,10 +1,12 @@
 package com.cornellappdev.score.components
 
+import android.icu.text.SimpleDateFormat
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -13,16 +15,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Modifier.Companion.then
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.cornellappdev.score.theme.AmbientColor
+import com.cornellappdev.score.theme.SpotColor
+import com.cornellappdev.score.theme.Style
+import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.dateText
 import com.cornellappdev.score.theme.Style.teamName
 import com.cornellappdev.score.theme.Style.universityText
-import com.example.score.R
+import com.cornellappdev.score.theme.saturatedGreen
 
 @Composable
 fun SportCard(
@@ -44,16 +54,17 @@ fun SportCard(
         colors = CardDefaults.cardColors(containerColor = Color.White),
         modifier = modifier
             .clip(cardShape)
+            .shadow(elevation = 6.dp, spotColor = SpotColor, ambientColor = AmbientColor)
             .then(
                 if (topCornerRound) {
-                    Modifier.border(.4.dp, Color.Gray, cardShape)
+                    Modifier
+                        .border(width = 1.dp, color = Color(0xFFEAEAEA),cardShape)
                 } else {
                     Modifier
                         .background(MaterialTheme.colorScheme.surface)
                         .then(
-                            Modifier.border(
-                                border = BorderStroke(.4.dp, Color.Gray),
-                                shape = RoundedCornerShape(
+                            Modifier
+                                .border(width = 1.dp, color = Color(0xFFEAEAEA),shape = RoundedCornerShape(
                                     bottomStart = 16.dp,
                                     bottomEnd = 16.dp
                                 )
@@ -135,10 +146,26 @@ fun SportCard(
                         style = universityText
                     )
                 }
-                Text(
-                    text = date,
-                    style = dateText,
-                )
+                val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
+                if (currentDate != date) {
+                    Text(
+                        text = date,
+                        style = dateText
+                    )
+                } else {
+                    Row( horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically,) {
+                        Box(
+                            modifier = Modifier
+                                .padding(1.dp)
+                                .width(8.dp)
+                                .height(8.dp)
+                                .background(saturatedGreen, shape = CircleShape)
+                        )
+                        Text(text = "Live Now", style = bodyNormal)
+                    }
+                }
             }
         }
     }

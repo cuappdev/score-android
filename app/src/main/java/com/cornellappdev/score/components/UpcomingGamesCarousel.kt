@@ -24,7 +24,9 @@ import androidx.compose.ui.unit.dp
 import com.cornellappdev.android.score.data.models.GameCardData
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.util.gameList
-import com.example.score.R
+import com.cornellappdev.score.R
+import com.cornellappdev.score.theme.CrimsonPrimary
+import com.cornellappdev.score.theme.GrayLight
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -32,13 +34,13 @@ fun DotIndicator(
     pagerState: androidx.compose.foundation.pager.PagerState,
     totalPages: Int,
     modifier: Modifier = Modifier,
-    dotSize: Dp = 10.dp,
-    selectedColor: Color = MaterialTheme.colorScheme.primary,
-    unselectedColor: Color = Color.Gray
+    dotSize: Dp = 14.dp,
+    selectedColor: Color = CrimsonPrimary,
+    unselectedColor: Color = GrayLight
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(32.dp)
     ) {
         for (i in 0 until totalPages) {
             val color = if (i == pagerState.currentPage) selectedColor else unselectedColor
