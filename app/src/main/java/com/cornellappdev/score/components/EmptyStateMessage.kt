@@ -22,7 +22,7 @@ import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading2
-import com.example.score.R
+import com.cornellappdev.score.R
 
 @Composable
 fun EmptyStateMessage(modifier: Modifier = Modifier) {
