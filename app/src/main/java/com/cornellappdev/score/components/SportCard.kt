@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import com.cornellappdev.score.R
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Modifier.Companion.then
 import androidx.compose.ui.draw.clip
@@ -33,6 +34,8 @@ import com.cornellappdev.score.theme.Style.dateText
 import com.cornellappdev.score.theme.Style.teamName
 import com.cornellappdev.score.theme.Style.universityText
 import com.cornellappdev.score.theme.saturatedGreen
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun SportCard(
