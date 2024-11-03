@@ -2,31 +2,80 @@ package com.cornellappdev.score.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cornellappdev.score.R
 import com.cornellappdev.score.components.SportCard
+import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.components.UpcomingGamesCarousel
+import com.cornellappdev.score.model.SportOption
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.util.gameList
 
 @Composable
 fun HomeScreen() {
+
+    val sports = listOf(
+        SportOption(
+            "All",
+            painterResource(id = R.drawable.ic_all),
+            painterResource(id = R.drawable.ic_all_filled)
+        ),
+        SportOption(
+            "Baseball",
+            painterResource(id = R.drawable.ic_baseball),
+            painterResource(id = R.drawable.ic_baseball_filled)
+        ),
+        SportOption(
+            "Basketball",
+            painterResource(id = R.drawable.ic_basketball),
+            painterResource(id = R.drawable.ic_basketball_filled)
+        ),
+        SportOption(
+            "Cross Country",
+            painterResource(id = R.drawable.ic_cross_country),
+            painterResource(id = R.drawable.ic_cross_country_filled)
+        ),
+        SportOption(
+            "Football",
+            painterResource(id = R.drawable.ic_football),
+            painterResource(id = R.drawable.ic_football_filled)
+        )
+    )
+
+    var selectedOption by remember { mutableStateOf("All") }
+    var selectedSport by remember { mutableStateOf(sports.first().name) }
+
     Column(verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top))
     {
         UpcomingGamesCarousel(gameList)
-        Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+        Column {
             Text(
-                text = "Game Schedule", style = title, modifier = Modifier.fillMaxWidth()
+                text = "Game Schedule", style = title, modifier = Modifier.fillMaxWidth().padding(horizontal=24.dp, vertical = 8.dp)
             )
-            LazyColumn {
+            Spacer(modifier = Modifier.height(8.dp))
+            SportSelectorHeader(
+                sports = sports,
+                selectedGender = selectedOption,
+                selectedSport = selectedSport,
+                onGenderSelected = { selectedOption = it },
+                onSportSelected = { selectedSport = it }
+            )
+            LazyColumn(modifier = Modifier.padding(horizontal = 24.dp)) {
                 items(gameList.size) { page ->
                     val game = gameList[page]
                     SportCard(
