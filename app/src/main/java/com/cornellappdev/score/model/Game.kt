@@ -9,11 +9,6 @@ data class GameCardData(
     val sportIcon: Int
 )
 
-data class Team(
-    val name: String,
-    val logoUrl: String
-)
-
 // Scoring information for a specific team, used in the box score
 data class TeamScore(
     val team: Team,
@@ -28,11 +23,17 @@ data class GameData(
 
 // Individual scoring event details for the scoring summary
 data class ScoreEvent(
-    val time: String,
-    val quarter: String,
-    val team: Team,
-    val score: String,
-    val description: String
+    val id: Int,             // Unique identifier for each event
+    val time: String,        // Event time (e.g., "6:21")
+    val quarter: String,     // Quarter (e.g., "1st Quarter")
+    val team: Team,          // Team object that includes name and logo URL
+    val eventType: String,   // Event type (e.g., "Field Goal", "Touchdown")
+    val score: String        // Current score after the event (e.g., "10 - 7")
+)
+
+data class Team(
+    val name: String,
+    val logoUrl: String       // URL or local resource for the team logo
 )
 
 // Complete game summary with game data and scoring events

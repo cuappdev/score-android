@@ -30,12 +30,6 @@ fun BoxScore(gameData: GameData) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Box Score",
-            color = Color.LightGray,
-            fontSize = 14.sp,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
 
         Column(
             modifier = Modifier
