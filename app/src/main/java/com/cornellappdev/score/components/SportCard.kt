@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.theme.AmbientColor
+import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.SpotColor
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.dateText
@@ -61,7 +62,7 @@ fun SportCard(
             .then(
                 if (topCornerRound) {
                     Modifier
-                        .border(width = 1.dp, color = Color(0xFFEAEAEA), cardShape)
+                        .border(width = 1.dp, color = GrayStroke, cardShape)
                 } else {
                     Modifier
                         .background(MaterialTheme.colorScheme.surface)
@@ -69,7 +70,7 @@ fun SportCard(
                             Modifier
                                 .border(
                                     width = 1.dp,
-                                    color = Color(0xFFEAEAEA),
+                                    color = GrayStroke,
                                     shape = RoundedCornerShape(
                                         bottomStart = 16.dp,
                                         bottomEnd = 16.dp
@@ -179,7 +180,8 @@ fun SportCard(
                         )
                         Text(text = "Live Now", style = bodyNormal)
                     }
-                } else {
+                }
+                else {
                     Text(
                         text = date,
                         style = dateText
