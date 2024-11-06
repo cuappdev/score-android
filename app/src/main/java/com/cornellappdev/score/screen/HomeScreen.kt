@@ -20,8 +20,9 @@ import com.cornellappdev.score.util.gameList
 
 @Composable
 fun HomeScreen() {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top))
-    {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
+    ){
         UpcomingGamesCarousel(gameList)
 
         Column(verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),

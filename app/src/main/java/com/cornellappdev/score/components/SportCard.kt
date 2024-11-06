@@ -1,7 +1,11 @@
 package com.cornellappdev.score.components
 
 import android.icu.text.SimpleDateFormat
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,9 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import com.cornellappdev.score.R
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.Modifier.Companion.then
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -24,11 +26,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.cornellappdev.score.R
 import com.cornellappdev.score.theme.AmbientColor
 import com.cornellappdev.score.theme.SpotColor
-import com.cornellappdev.score.theme.Style
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.dateText
 import com.cornellappdev.score.theme.Style.teamName
@@ -61,17 +61,20 @@ fun SportCard(
             .then(
                 if (topCornerRound) {
                     Modifier
-                        .border(width = 1.dp, color = Color(0xFFEAEAEA),cardShape)
+                        .border(width = 1.dp, color = Color(0xFFEAEAEA), cardShape)
                 } else {
                     Modifier
                         .background(MaterialTheme.colorScheme.surface)
                         .then(
                             Modifier
-                                .border(width = 1.dp, color = Color(0xFFEAEAEA),shape = RoundedCornerShape(
-                                    bottomStart = 16.dp,
-                                    bottomEnd = 16.dp
+                                .border(
+                                    width = 1.dp,
+                                    color = Color(0xFFEAEAEA),
+                                    shape = RoundedCornerShape(
+                                        bottomStart = 16.dp,
+                                        bottomEnd = 16.dp
+                                    )
                                 )
-                            )
                         )
                 }
             )
@@ -150,24 +153,37 @@ fun SportCard(
                     )
                 }
                 val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-
-                if (currentDate != date) {
-                    Text(
-                        text = date,
-                        style = dateText
-                    )
-                } else {
-                    Row( horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        verticalAlignment = Alignment.CenterVertically,) {
+                val infiniteTransition = rememberInfiniteTransition(label = "rememberTransition")
+                val alpha = infiniteTransition.animateFloat(
+                    initialValue = 0.5f,
+                    targetValue = 1f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(
+                            durationMillis = 1000,
+                            easing = { kotlin.math.sin(it * Math.PI).toFloat() }),
+                        repeatMode = RepeatMode.Reverse
+                    ),
+                    label = "Pulsing Live Indicator Alpha"
+                ).value
+                if (currentDate == date) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Box(
                             modifier = Modifier
                                 .padding(1.dp)
                                 .width(8.dp)
                                 .height(8.dp)
-                                .background(saturatedGreen, shape = CircleShape)
+                                .background(saturatedGreen.copy(alpha = alpha), shape = CircleShape)
                         )
                         Text(text = "Live Now", style = bodyNormal)
                     }
+                } else {
+                    Text(
+                        text = date,
+                        style = dateText
+                    )
                 }
             }
         }
