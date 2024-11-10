@@ -27,9 +27,10 @@ import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.util.gameList
 import com.cornellappdev.score.util.sportList
 
+
 @Composable
 fun HomeScreen() {
-    // TODO: replace with viewmodel logic (uistate and onClick functions)
+// TODO: replace with viewmodel logic (uistate and onClick functions)
     var selectedOption by remember { mutableStateOf("All") }
     var selectedSport by remember { mutableStateOf(sportList.first().name) }
 
@@ -58,7 +59,6 @@ fun HomeScreen() {
                         genderIcon = painterResource(game.genderIcon),
                         sportIcon = painterResource(game.sportIcon),
                         location = game.location,
-                        modifier = Modifier.padding(vertical = 8.dp),
                         topCornerRound = true
                     )
                 }
