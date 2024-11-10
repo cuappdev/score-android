@@ -25,40 +25,13 @@ import com.cornellappdev.score.components.UpcomingGamesCarousel
 import com.cornellappdev.score.model.SportOption
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.util.gameList
+import com.cornellappdev.score.util.sportList
 
 @Composable
 fun HomeScreen() {
-
-    val sports = listOf(
-        SportOption(
-            "All",
-            painterResource(id = R.drawable.ic_all),
-            painterResource(id = R.drawable.ic_all_filled)
-        ),
-        SportOption(
-            "Baseball",
-            painterResource(id = R.drawable.ic_baseball),
-            painterResource(id = R.drawable.ic_baseball_filled)
-        ),
-        SportOption(
-            "Basketball",
-            painterResource(id = R.drawable.ic_basketball),
-            painterResource(id = R.drawable.ic_basketball_filled)
-        ),
-        SportOption(
-            "Cross Country",
-            painterResource(id = R.drawable.ic_cross_country),
-            painterResource(id = R.drawable.ic_cross_country_filled)
-        ),
-        SportOption(
-            "Football",
-            painterResource(id = R.drawable.ic_football),
-            painterResource(id = R.drawable.ic_football_filled)
-        )
-    )
-
+    // TODO: replace with viewmodel logic (uistate and onClick functions)
     var selectedOption by remember { mutableStateOf("All") }
-    var selectedSport by remember { mutableStateOf(sports.first().name) }
+    var selectedSport by remember { mutableStateOf(sportList.first().name) }
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top))
     {
@@ -69,7 +42,7 @@ fun HomeScreen() {
             )
             Spacer(modifier = Modifier.height(8.dp))
             SportSelectorHeader(
-                sports = sports,
+                sports = sportList,
                 selectedGender = selectedOption,
                 selectedSport = selectedSport,
                 onGenderSelected = { selectedOption = it },
