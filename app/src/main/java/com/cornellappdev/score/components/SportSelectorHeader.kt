@@ -5,7 +5,16 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,8 +31,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.cornellappdev.score.R
-import com.cornellappdev.score.model.SportOption
+import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayMedium
@@ -31,10 +39,11 @@ import com.cornellappdev.score.theme.Style.genderFilterText
 import com.cornellappdev.score.theme.Style.genderText
 import com.cornellappdev.score.theme.Style.sportFilterText
 import com.cornellappdev.score.theme.White
+import com.cornellappdev.score.util.sportList
 
 @Composable
 fun SportSelectorHeader(
-    sports: List<SportOption>,
+    sports: List<Sport>,
     selectedGender: String,
     selectedSport: String,
     onGenderSelected: (String) -> Unit,
@@ -68,14 +77,14 @@ fun SportSelectorHeader(
         }
         Spacer(Modifier.height(24.dp))
         LazyRow(Modifier.fillMaxWidth()) {
-            items(sports) { (sport, emptyIcon, filledIcon) ->
+            items(sports) { sport ->
                 SportSelector(
-                    empty = emptyIcon,
-                    filled = filledIcon,
-                    option = sport,
+                    empty = painterResource(sport.emptyIcon),
+                    filled = painterResource(sport.filledIcon),
+                    option = sport.displayName,
                     selectedOption = selectedSport
                 ) {
-                    onSportSelected(sport)
+                    onSportSelected(sport.displayName)
                 }
 
                 Spacer(modifier = Modifier.width(20.dp))
@@ -143,39 +152,11 @@ fun SportSelector(
 @Preview
 @Composable
 fun PreviewSportSelectorHeader() {
-    val sports = listOf(
-        SportOption(
-            "All",
-            painterResource(id = R.drawable.ic_all),
-            painterResource(id = R.drawable.ic_all_filled)
-        ),
-        SportOption(
-            "Baseball",
-            painterResource(id = R.drawable.ic_baseball),
-            painterResource(id = R.drawable.ic_baseball_filled)
-        ),
-        SportOption(
-            "Basketball",
-            painterResource(id = R.drawable.ic_basketball),
-            painterResource(id = R.drawable.ic_basketball_filled)
-        ),
-        SportOption(
-            "Cross Country",
-            painterResource(id = R.drawable.ic_cross_country),
-            painterResource(id = R.drawable.ic_cross_country_filled)
-        ),
-        SportOption(
-            "Football",
-            painterResource(id = R.drawable.ic_football),
-            painterResource(id = R.drawable.ic_football_filled)
-        )
-    )
-
     var selectedOption by remember { mutableStateOf("All") }
-    var selectedSport by remember { mutableStateOf(sports.first().name) }
+    var selectedSport by remember { mutableStateOf(sportList.first().name) }
 
     SportSelectorHeader(
-        sports = sports,
+        sports = sportList,
         selectedGender = selectedOption,
         selectedSport = selectedSport,
         onGenderSelected = { selectedOption = it },
