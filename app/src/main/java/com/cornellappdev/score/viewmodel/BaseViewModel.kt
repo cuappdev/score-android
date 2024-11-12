@@ -1,4 +1,4 @@
-package com.cornellappdev.score.util
+package com.cornellappdev.score.viewmodel
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

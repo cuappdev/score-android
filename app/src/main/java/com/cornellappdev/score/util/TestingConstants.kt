@@ -1,9 +1,9 @@
 package com.cornellappdev.score.util
 
-import androidx.compose.ui.res.painterResource
-import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.R
-import com.cornellappdev.score.model.SportOption
+import com.cornellappdev.score.model.GameCardData
+import com.cornellappdev.score.model.Sport
+import com.cornellappdev.score.model.SportSelection
 
 val PENN_GAME = GameCardData(
     teamLogo = R.drawable.penn_logo,
@@ -25,29 +25,14 @@ val PRINCETON_GAME = GameCardData(
 val gameList = listOf(PENN_GAME, PRINCETON_GAME)
 
 val sportList = listOf(
-    SportOption(
-        "All",
-        painterResource(id = R.drawable.ic_all),
-        painterResource(id = R.drawable.ic_all_filled)
-    ),
-    SportOption(
-        "Baseball",
-        painterResource(id = R.drawable.ic_baseball),
-        painterResource(id = R.drawable.ic_baseball_filled)
-    ),
-    SportOption(
-        "Basketball",
-        painterResource(id = R.drawable.ic_basketball),
-        painterResource(id = R.drawable.ic_basketball_filled)
-    ),
-    SportOption(
-        "Cross Country",
-        painterResource(id = R.drawable.ic_cross_country),
-        painterResource(id = R.drawable.ic_cross_country_filled)
-    ),
-    SportOption(
-        "Football",
-        painterResource(id = R.drawable.ic_football),
-        painterResource(id = R.drawable.ic_football_filled)
-    )
+    Sport.BASEBALL,
+    Sport.BASKETBALL,
+    Sport.CROSS_COUNTRY,
+)
+
+val sportSelectionList = listOf(
+    SportSelection.All,
+    SportSelection.SportSelect(Sport.BASEBALL),
+    SportSelection.SportSelect(Sport.BASKETBALL),
+    SportSelection.SportSelect(Sport.CROSS_COUNTRY),
 )
