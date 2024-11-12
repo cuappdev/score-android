@@ -34,7 +34,7 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
         modifier = Modifier.statusBarsPadding())
     {
-        UpcomingGamesCarousel(gameList)
+        UpcomingGamesCarousel(uiState.upcomingGameList)
         Column {
             Text(
                 text = "Game Schedule",
