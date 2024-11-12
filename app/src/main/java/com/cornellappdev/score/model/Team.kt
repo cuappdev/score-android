@@ -53,8 +53,16 @@ sealed class SportSelection {
     data class SportSelect(val sport: Sport): SportSelection()
 }
 
-enum class GenderDivision {
-    FEMALE,
-    MALE,
-    ALL
+enum class GenderDivision(
+    val displayName: String
+) {
+    FEMALE(
+        "Women's"
+    ),
+    MALE(
+        "Men's"
+    ),
+    ALL(
+        "All"
+    )
 }

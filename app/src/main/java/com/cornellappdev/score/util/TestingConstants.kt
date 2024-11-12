@@ -3,6 +3,7 @@ package com.cornellappdev.score.util
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.model.Sport
+import com.cornellappdev.score.model.SportSelection
 
 val PENN_GAME = GameCardData(
     teamLogo = R.drawable.penn_logo,
@@ -27,4 +28,11 @@ val sportList = listOf(
     Sport.BASEBALL,
     Sport.BASKETBALL,
     Sport.CROSS_COUNTRY,
+)
+
+val sportSelectionList = listOf(
+    SportSelection.All,
+    SportSelection.SportSelect(Sport.BASEBALL),
+    SportSelection.SportSelect(Sport.BASKETBALL),
+    SportSelection.SportSelect(Sport.CROSS_COUNTRY),
 )
