@@ -12,80 +12,77 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.cornellappdev.score.model.GameData
-import com.cornellappdev.score.model.Team
 import com.cornellappdev.score.model.TeamScore
-
+import com.cornellappdev.score.theme.CrimsonPrimary
+import com.cornellappdev.score.theme.Style.bodyNormal
+import com.cornellappdev.score.theme.Style.heading6
+import com.cornellappdev.score.theme.Style.scoreText
+import com.cornellappdev.score.theme.saturatedGreen
+import com.cornellappdev.score.util.emptyGameData
+import com.cornellappdev.score.util.gameData
 @Composable
 fun BoxScore(gameData: GameData) {
-    val redColor = Color(0xFFB71C1C)
-    val grayBackground = Color(0xFF333333)
-    val greenTextColor = Color(0xFF4CAF50)
-
+    val maxPeriods = maxOf(
+        gameData.teamScores.first.scoresByPeriod.size,
+        gameData.teamScores.second.scoresByPeriod.size,
+        4
+    )
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(grayBackground)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(Color.White, shape = RoundedCornerShape(8.dp))
     ) {
-
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White, shape = RoundedCornerShape(8.dp))
+                .background(CrimsonPrimary)
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Header Row
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(redColor)
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Text(
+                text = "",
+                modifier = Modifier.weight(1f),
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+            repeat(maxPeriods) { period ->
                 Text(
-                    text = "",
-                    modifier = Modifier.weight(1f),
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
-                gameData.teamScores.first.scoresByPeriod.indices.forEach { period ->
-                    Text(
-                        text = "${period + 1}",
-                        modifier = Modifier.weight(1f),
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Text(
-                    text = "Total",
+                    text = "${period + 1}",
                     modifier = Modifier.weight(1f),
                     color = Color.White,
                     textAlign = TextAlign.Center
                 )
             }
-
-            // Data Row for Team 1
-            TeamScoreRow(
-                teamScore = gameData.teamScores.first,
-                totalTextColor = greenTextColor
-            )
-
-            Divider(color = redColor, thickness = 1.dp)
-
-            // Data Row for Team 2
-            TeamScoreRow(
-                teamScore = gameData.teamScores.second,
-                totalTextColor = Color.Black
+            Text(
+                text = "Total",
+                modifier = Modifier.weight(1f),
+                color = Color.White,
+                textAlign = TextAlign.Center
             )
         }
+
+        TeamScoreRow(
+            teamScore = gameData.teamScores.first,
+            totalTextColor = saturatedGreen,
+            showEmpty = gameData.teamScores.first.scoresByPeriod.isEmpty()
+        )
+
+        Divider(color = CrimsonPrimary, thickness = 1.dp)
+
+        TeamScoreRow(
+            teamScore = gameData.teamScores.second,
+            totalTextColor = Color.Black,
+            showEmpty = gameData.teamScores.second.scoresByPeriod.isEmpty()
+        )
     }
 }
-
 @Composable
-fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
+fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color, showEmpty: Boolean) {
+    val maxPeriods = maxOf(
+        gameData.teamScores.first.scoresByPeriod.size,
+        gameData.teamScores.second.scoresByPeriod.size,
+        4)
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -95,22 +92,34 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
     ) {
         Text(
             text = teamScore.team.name,
+            style = bodyNormal,
             modifier = Modifier.weight(1f),
-            fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
+
         teamScore.scoresByPeriod.forEach { score ->
             Text(
-                text = score.toString(),
+                text = if (showEmpty) "-" else score.toString(),
+                modifier = Modifier.weight(1f),
+                style = scoreText,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        repeat(maxPeriods - teamScore.scoresByPeriod.size) {
+            Text(
+                text = "-",
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center
             )
         }
+
         Text(
-            text = teamScore.totalScore.toString(),
+            text = if (showEmpty) "-" else teamScore.totalScore.toString(),
             modifier = Modifier.weight(1f),
-            color = totalTextColor,
-            fontWeight = FontWeight.Bold,
+            style = heading6,
+            color = if (showEmpty) Color.Gray else totalTextColor,
+            fontWeight = if (showEmpty) FontWeight.Normal else FontWeight.Bold,
             textAlign = TextAlign.Center
         )
     }
@@ -119,24 +128,11 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewBoxScore() {
-    // Sample Data
-    val team1 = Team(name = "Cornell", logoUrl = "url_to_cornell_logo")
-    val team2 = Team(name = "Yale", logoUrl = "url_to_yale_logo")
-
-    val teamScore1 = TeamScore(
-        team = team1,
-        scoresByPeriod = listOf(13, 14, 6, 14),
-        totalScore = 47
-    )
-    val teamScore2 = TeamScore(
-        team = team2,
-        scoresByPeriod = listOf(7, 7, 9, 0),
-        totalScore = 23
-    )
-
-    val gameData = GameData(teamScores = Pair(teamScore1, teamScore2))
-
-    // Call BoxScore with the sample data
     BoxScore(gameData = gameData)
 }
 
+@Preview(showBackground = true)
+@Composable
+fun PreviewBoxScoreEmpty() {
+    BoxScore(gameData = emptyGameData())
+}

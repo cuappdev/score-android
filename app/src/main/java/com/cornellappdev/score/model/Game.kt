@@ -28,21 +28,19 @@ data class ScoreEvent(
     val quarter: String,     // Quarter (e.g., "1st Quarter")
     val team: Team,          // Team object that includes name and logo URL
     val eventType: String,   // Event type (e.g., "Field Goal", "Touchdown")
-    val score: String        // Current score after the event (e.g., "10 - 7")
-)
+    val score: String,        // Current score after the event (e.g., "10 - 7")
+    val description: String? = null )
 
 data class Team(
     val name: String,
-    val logoUrl: String       // URL or local resource for the team logo
+    val logo: Int
 )
 
-// Complete game summary with game data and scoring events
 data class GameSummary(
     val gameData: GameData,
     val scoreEvents: List<ScoreEvent>
 )
 
-// Detailed game data structure containing additional information
 data class GameDetail(
     val gameId: String,
     val teamScores: Pair<TeamScore, TeamScore>,

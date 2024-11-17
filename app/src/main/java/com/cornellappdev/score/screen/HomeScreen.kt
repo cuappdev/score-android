@@ -17,16 +17,20 @@ import com.cornellappdev.score.components.UpcomingGamesCarousel
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.util.gameList
 
+
 @Composable
 fun HomeScreen() {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top))
-    {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
+    ){
         UpcomingGamesCarousel(gameList)
-        Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
+            modifier = Modifier.padding(horizontal = 24.dp)) {
             Text(
                 text = "Game Schedule", style = title, modifier = Modifier.fillMaxWidth()
             )
-            LazyColumn {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 items(gameList.size) { page ->
                     val game = gameList[page]
                     SportCard(
@@ -36,7 +40,6 @@ fun HomeScreen() {
                         genderIcon = painterResource(game.genderIcon),
                         sportIcon = painterResource(game.sportIcon),
                         location = game.location,
-                        modifier = Modifier.padding(vertical = 8.dp),
                         topCornerRound = true
                     )
                 }
