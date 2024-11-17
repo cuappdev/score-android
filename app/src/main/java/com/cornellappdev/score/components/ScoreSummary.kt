@@ -1,4 +1,3 @@
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
@@ -93,8 +92,6 @@ fun ScoreEventItem(event: ScoreEvent) {
         }
     }
 }
-
-
 
 @Preview(showBackground = true)
 @Composable
