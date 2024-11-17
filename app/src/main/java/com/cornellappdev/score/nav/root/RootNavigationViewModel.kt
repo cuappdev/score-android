@@ -1,6 +1,6 @@
 package com.cornellappdev.score.nav.root
 
-import com.cornellappdev.score.util.BaseViewModel
+import com.cornellappdev.score.viewmodel.BaseViewModel
 import com.cornellappdev.score.util.UIEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
