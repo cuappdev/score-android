@@ -6,6 +6,8 @@ import com.cornellappdev.score.model.GameData
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.model.Team
 import com.cornellappdev.score.model.TeamScore
+import com.cornellappdev.score.model.Sport
+import com.cornellappdev.score.model.SportSelection
 
 val PENN_GAME = GameCardData(
     teamLogo = R.drawable.penn_logo,
@@ -112,3 +114,15 @@ fun emptyGameData(): GameData {
         )
     )
 }
+val sportList = listOf(
+    Sport.BASEBALL,
+    Sport.BASKETBALL,
+    Sport.CROSS_COUNTRY,
+)
+
+val sportSelectionList = listOf(
+    SportSelection.All,
+    SportSelection.SportSelect(Sport.BASEBALL),
+    SportSelection.SportSelect(Sport.BASKETBALL),
+    SportSelection.SportSelect(Sport.CROSS_COUNTRY),
+)

@@ -6,6 +6,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.cornellappdev.score.screen.HomeScreen
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -26,7 +27,7 @@ fun RootNavigation(
         startDestination = ScoreRootScreens.Home
     ) {
         composable<ScoreRootScreens.Home> {
-
+            HomeScreen()
         }
 
         composable<ScoreRootScreens.GameDetailPage> {
