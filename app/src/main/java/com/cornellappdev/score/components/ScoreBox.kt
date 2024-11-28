@@ -21,6 +21,7 @@ import com.cornellappdev.score.theme.Style.scoreText
 import com.cornellappdev.score.theme.saturatedGreen
 import com.cornellappdev.score.util.emptyGameData
 import com.cornellappdev.score.util.gameData
+
 @Composable
 fun BoxScore(gameData: GameData) {
     val maxPeriods = maxOf(
@@ -28,6 +29,7 @@ fun BoxScore(gameData: GameData) {
         gameData.teamScores.second.scoresByPeriod.size,
         4
     )
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -65,7 +67,6 @@ fun BoxScore(gameData: GameData) {
         TeamScoreRow(
             teamScore = gameData.teamScores.first,
             totalTextColor = saturatedGreen,
-            showEmpty = gameData.teamScores.first.scoresByPeriod.isEmpty()
         )
 
         Divider(color = CrimsonPrimary, thickness = 1.dp)
@@ -73,16 +74,14 @@ fun BoxScore(gameData: GameData) {
         TeamScoreRow(
             teamScore = gameData.teamScores.second,
             totalTextColor = Color.Black,
-            showEmpty = gameData.teamScores.second.scoresByPeriod.isEmpty()
         )
     }
 }
 @Composable
-fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color, showEmpty: Boolean) {
-    val maxPeriods = maxOf(
-        gameData.teamScores.first.scoresByPeriod.size,
-        gameData.teamScores.second.scoresByPeriod.size,
-        4)
+fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
+    // Compute showEmpty within the function
+    val showEmpty = teamScore.scoresByPeriod.isEmpty()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -106,7 +105,7 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color, showEmpty: Boolean
             )
         }
 
-        repeat(maxPeriods - teamScore.scoresByPeriod.size) {
+        repeat(4 - teamScore.scoresByPeriod.size) {
             Text(
                 text = "-",
                 modifier = Modifier.weight(1f),

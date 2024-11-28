@@ -14,15 +14,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.model.ScoreEvent
+import com.cornellappdev.score.theme.Style.bodyMedium
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading5
 import com.cornellappdev.score.util.scoreEvents1
 
 
 @Composable
-fun ScoringSummary(scoreEvents: List<ScoreEvent>) {
+fun ScoringSummary(scoreEvents: List<ScoreEvent>, modifier: Modifier = Modifier) {
     LazyColumn(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         items(scoreEvents) { event ->
             ScoreEventItem(event)
@@ -67,25 +68,31 @@ fun ScoreEventItem(event: ScoreEvent) {
 
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Text(
+                text = event.eventType,
+                style = bodyMedium,
+                textAlign = TextAlign.Center
+            )
             val (homeScore, awayScore) = event.score.split(" - ").map { it.toInt() }
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = homeScore.toString(),
-                    style = if (homeScore > awayScore) heading5.copy(fontWeight = FontWeight.Bold) else heading5,
+                    style = if (event.team.name == "Cornell") heading5.copy(fontWeight = FontWeight.Bold) else heading5,
                     textAlign = TextAlign.Center
                 )
                 Text(
                     text = " - ",
+
                     style = heading5,
                     textAlign = TextAlign.Center
                 )
                 Text(
                     text = awayScore.toString(),
-                    style = if (awayScore >= homeScore) heading5.copy(fontWeight = FontWeight.Bold) else heading5,
+                    style = if (event.team.name != "Cornell") heading5.copy(fontWeight = FontWeight.Bold) else heading5,
                     textAlign = TextAlign.Center
                 )
             }

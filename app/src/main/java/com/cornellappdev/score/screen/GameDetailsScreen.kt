@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.model.Team
-
+//TODO: Game Header, meta info
 @Composable
 fun GameDetailsScreen(scoreEvents: List<ScoreEvent>, onArrowClick: () -> Unit) {
     Column(

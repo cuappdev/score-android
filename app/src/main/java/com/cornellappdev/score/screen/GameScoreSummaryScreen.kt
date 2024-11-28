@@ -1,4 +1,3 @@
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +14,18 @@ import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.util.scoreEvents2
+
+@Composable
+fun GameScoreSummaryScreenDetail(scoreEvents: List<ScoreEvent>) {
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        items(scoreEvents.size) { event ->
+            ScoreEventItemDetailed(event = scoreEvents[event])
+            Divider(color = Color.LightGray, thickness = 0.5.dp)
+        }
+    }
+}
 
 @Composable
 fun ScoreEventItemDetailed(event: ScoreEvent) {
@@ -72,19 +83,6 @@ fun ScoreEventItemDetailed(event: ScoreEvent) {
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Start,
         )
-    }
-}
-
-
-@Composable
-fun GameScoreSummaryScreenDetail(scoreEvents: List<ScoreEvent>) {
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        items(scoreEvents.size) { event ->
-            ScoreEventItemDetailed(event = scoreEvents[event])
-            Divider(color = Color.LightGray, thickness = 0.5.dp)
-        }
     }
 }
 

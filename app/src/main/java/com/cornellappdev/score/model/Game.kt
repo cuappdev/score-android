@@ -22,15 +22,26 @@ data class GameData(
     val teamScores: Pair<TeamScore, TeamScore>
 )
 
-// Individual scoring event details for the scoring summary
+/**
+ * Represents a scoring event in a game.
+ *
+ * @property id Unique identifier for each event.
+ * @property time Event time (e.g., "6:21").
+ * @property quarter Quarter of the game (e.g., "1st Quarter").
+ * @property team Team object that includes name and logo URL.
+ * @property eventType Type of scoring event (e.g., "Field Goal", "Touchdown").
+ * @property score Current score after the event (e.g., "10 - 7").
+ * @property description Optional detailed description of the event.
+ */
 data class ScoreEvent(
-    val id: Int,             // Unique identifier for each event
-    val time: String,        // Event time (e.g., "6:21")
-    val quarter: String,     // Quarter (e.g., "1st Quarter")
-    val team: Team,          // Team object that includes name and logo URL
-    val eventType: String,   // Event type (e.g., "Field Goal", "Touchdown")
-    val score: String,        // Current score after the event (e.g., "10 - 7")
-    val description: String? = null )
+    val id: Int,
+    val time: String,
+    val quarter: String,
+    val team: Team,
+    val eventType: String,
+    val score: String,
+    val description: String? = null
+)
 
 data class Team(
     val name: String,
