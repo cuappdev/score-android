@@ -79,7 +79,6 @@ fun BoxScore(gameData: GameData) {
 }
 @Composable
 fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
-    // Compute showEmpty within the function
     val showEmpty = teamScore.scoresByPeriod.isEmpty()
 
     Row(
