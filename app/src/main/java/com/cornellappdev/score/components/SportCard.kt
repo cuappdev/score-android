@@ -47,7 +47,7 @@ fun SportCard(
     genderIcon: Painter,
     sportIcon: Painter,
     topCornerRound: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val cardShape = if (topCornerRound) {
         RoundedCornerShape(16.dp) // Rounded all
@@ -58,6 +58,7 @@ fun SportCard(
         colors = CardDefaults.cardColors(containerColor = Color.White),
         modifier = modifier
             .clip(cardShape)
+            .padding(8.dp)
             .shadow(elevation = 6.dp, spotColor = SpotColor, ambientColor = AmbientColor)
             .then(
                 if (topCornerRound) {
@@ -180,8 +181,7 @@ fun SportCard(
                         )
                         Text(text = "Live Now", style = bodyNormal)
                     }
-                }
-                else {
+                } else {
                     Text(
                         text = date,
                         style = dateText
@@ -204,7 +204,7 @@ fun SportCardPreview() {
             genderIcon = painterResource(id = R.drawable.ic_gender_men),
             sportIcon = painterResource(id = R.drawable.ic_baseball),
             topCornerRound = false,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         )
     }
 }
