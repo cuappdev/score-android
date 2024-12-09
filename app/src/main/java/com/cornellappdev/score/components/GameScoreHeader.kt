@@ -38,7 +38,7 @@ fun GameScoreHeader(
     rightTeamLogo: Painter,
     gradientColor1: Color,
     gradientColor2: Color,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier

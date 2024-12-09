@@ -17,9 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
-import com.cornellappdev.score.screen.GameDetailsScreen
 import com.cornellappdev.score.theme.GrayLight
-import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.countdownNumberText
@@ -27,7 +25,7 @@ import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.White
 
 @Composable
-fun TimeUntilStartCard() {
+fun TimeUntilStartCard(days: Int, hours: Int) {
     Column(modifier = Modifier.background(White).fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
@@ -46,7 +44,7 @@ fun TimeUntilStartCard() {
         Spacer(modifier = Modifier.height(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "2",
+                text = days.toString(),
                 style = countdownNumberText
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -56,7 +54,7 @@ fun TimeUntilStartCard() {
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = "0",
+                text = hours.toString(),
                 style = countdownNumberText
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -71,5 +69,5 @@ fun TimeUntilStartCard() {
 @Preview
 @Composable
 fun TimeUntilStartCardPreview() {
-    TimeUntilStartCard()
+    TimeUntilStartCard(2, 0)
 }
