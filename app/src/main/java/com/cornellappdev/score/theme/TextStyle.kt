@@ -17,7 +17,7 @@ object Style {
         fontWeight = FontWeight(600),
         color = Color(0xFF333333)
     )
-    
+
     val vsText = TextStyle(
         fontSize = 24.sp,
         fontFamily = poppinsFamily,
@@ -33,7 +33,6 @@ object Style {
         color = Color(0xFF777777)
     )
 
-    // Team name text style
     val teamName = TextStyle(
         fontSize = 18.sp,
         fontFamily = poppinsFamily,
@@ -41,15 +40,13 @@ object Style {
         color = Color(0xFF333333)
     )
 
-    // Sport name text style
-    val sportName = TextStyle(
-        fontSize = 12.sp,
+    val scoreText = TextStyle(
+        fontSize = 18.sp,
         fontFamily = poppinsFamily,
         fontWeight = FontWeight(400),
         color = Color(0xFF333333)
     )
 
-    // Gender filter (Chosen) text style
     val genderFilterText = TextStyle(
         fontSize = 16.sp,
         fontFamily = poppinsFamily,
@@ -124,6 +121,19 @@ object Style {
         fontFamily = poppinsFamily,
         fontSize = 12.sp,
         fontWeight = FontWeight(500)
+    )
+
+    val heading5 = TextStyle(
+        fontFamily = poppinsFamily,
+        fontSize = 18.sp,
+        fontWeight = FontWeight(400)
+    )
+
+    val heading6 = TextStyle(
+        fontSize = 18.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(600),
+        color = Color(0xFF333333)
     )
 
     val bodyLight = TextStyle(
