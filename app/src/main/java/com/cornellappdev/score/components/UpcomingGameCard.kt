@@ -24,9 +24,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
-import com.cornellappdev.score.cornell_red
-import com.cornellappdev.score.penn_blue
 import com.cornellappdev.score.theme.Style.vsText
+import com.cornellappdev.score.theme.cornell_red
+import com.cornellappdev.score.theme.penn_blue
 
 @Composable
 fun UpcomingGameHeader(

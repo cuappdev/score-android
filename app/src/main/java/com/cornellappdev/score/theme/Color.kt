@@ -18,3 +18,8 @@ val DarkBlue = Color(0x011f5b)
 val saturatedGreen = Color(0xFF55B63C)
 val SpotColor = Color(0x12000000)
 val AmbientColor = Color(0x12000000)
+
+//0x66 is 40% transparency
+val cornell_red = Color(0x66B31B1B)
+val penn_blue = Color(0x66021E59)
+val princeton_orange = Color(0x66FF6000)
