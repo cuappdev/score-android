@@ -24,9 +24,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
+import com.cornellappdev.score.theme.CornellRed
+import com.cornellappdev.score.theme.PennBlue
 import com.cornellappdev.score.theme.Style.vsText
-import com.cornellappdev.score.theme.cornell_red
-import com.cornellappdev.score.theme.penn_blue
 
 @Composable
 fun UpcomingGameHeader(
@@ -80,8 +80,8 @@ fun UpcomingGameHeaderPreview() {
     UpcomingGameHeader(
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = painterResource(R.drawable.penn_logo),
-        gradientColor1 = cornell_red,
-        gradientColor2 = penn_blue,
+        gradientColor1 = CornellRed,
+        gradientColor2 = PennBlue,
         modifier = Modifier
     )
 }
@@ -147,7 +147,7 @@ fun GameScheduleScreen() {
         sportIcon = painterResource(id = R.drawable.ic_baseball),
         modifier = Modifier,
         headerModifier = Modifier,
-        gradientColor1 = cornell_red,
-        gradientColor2 = penn_blue
+        gradientColor1 = CornellRed,
+        gradientColor2 = PennBlue
     )
 }

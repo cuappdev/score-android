@@ -22,11 +22,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.GameCardData
+import com.cornellappdev.score.theme.CornellRed
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
+import com.cornellappdev.score.theme.PennBlue
 import com.cornellappdev.score.theme.Style.title
-import com.cornellappdev.score.theme.cornell_red
-import com.cornellappdev.score.theme.penn_blue
 import com.cornellappdev.score.util.gameList
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -87,8 +87,8 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
                 location = game.location,
                 modifier = Modifier,
                 headerModifier = Modifier,
-                gradientColor1 = cornell_red,//E1A69F),
-                gradientColor2 = penn_blue//FF011F5B)
+                gradientColor1 = CornellRed,
+                gradientColor2 = PennBlue
             )
         }
 
