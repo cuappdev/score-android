@@ -6,6 +6,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // this version matches your Kotlin version
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("com.apollographql.apollo") version "4.1.1"
 }
 
 
@@ -22,7 +23,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
-        compose =true
+        compose = true
     }
     buildTypes {
         release {
@@ -82,6 +83,13 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+
+    implementation("com.apollographql.apollo:apollo-runtime:4.1.1")
+}
+
+apollo {
+    service("service") {
+        packageName.set("com.example.score")
+    }
 }

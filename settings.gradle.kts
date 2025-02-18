@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Score"
 include(":app")
+include(":app:graphql")
