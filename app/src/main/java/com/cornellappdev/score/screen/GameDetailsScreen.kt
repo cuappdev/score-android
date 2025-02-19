@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.ButtonPrimary
 import com.cornellappdev.score.components.GameScoreHeader
+import com.cornellappdev.score.components.NavigationHeader
 import com.cornellappdev.score.components.TimeUntilStartCard
 import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.GrayPrimary
@@ -42,7 +43,7 @@ import com.cornellappdev.score.theme.White
 @Composable
 fun GameDetailsScreen() {
     Column(modifier = Modifier.background(White).fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(modifier = Modifier.height(95.dp))
+        NavigationHeader(title = "Game Details")
         GameScoreHeader(
             leftTeamLogo = painterResource(R.drawable.cornell_logo),
             rightTeamLogo = painterResource(R.drawable.penn_logo),
