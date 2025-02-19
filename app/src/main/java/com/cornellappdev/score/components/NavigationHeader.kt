@@ -1,0 +1,64 @@
+package com.cornellappdev.score.components
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.cornellappdev.score.R
+import com.cornellappdev.score.theme.AmbientColor
+import com.cornellappdev.score.theme.CrimsonPrimary
+import com.cornellappdev.score.theme.GrayLight
+import com.cornellappdev.score.theme.SpotColor
+import com.cornellappdev.score.theme.Style.bodyMedium
+import com.cornellappdev.score.theme.Style.heading2
+import com.cornellappdev.score.theme.White
+
+@Composable
+fun NavigationHeader(title: String) {
+     Box(modifier = Modifier
+           .shadow(elevation=8.dp, clip = false, spotColor = Color.Black.copy(0.05f))
+          .background(Color.White)) {
+          Box(modifier = Modifier
+               .padding(start=24.dp, top=56.dp, bottom=12.dp, end=24.dp)
+               .background(Color.White)
+               .fillMaxWidth()
+               .height(27.dp)) {
+               Image(
+                    painter = painterResource(id = R.drawable.ic_left_arrowhead),
+                    contentDescription = "Left Arrowhead",
+                    modifier = Modifier
+                         .width(24.dp)
+                         .height(24.dp),
+               )
+               Text(text = title, modifier = Modifier.align(Alignment.Center), style = heading2)
+          }
+     }
+}
+
+@Preview
+@Composable
+fun NavigationHeaderPreview() {
+     NavigationHeader("Game Details")
+}
