@@ -15,18 +15,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.spanBodyNormal
-import com.cornellappdev.score.theme.poppinsFamily
 import com.cornellappdev.score.util.scoreEvents2
 
 @Composable
@@ -62,11 +59,12 @@ fun ScoreEventItemDetailed(event: ScoreEvent) {
                 .weight(0.3f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            //style?
-            val (homeScore, awayScore) = event.score.split(" - ").map { it.toInt() }
+            val (homeScoreStyle, awayScoreStyle) = if (event.homeScore.toInt() >= event.awayScore.toInt()) {
+                spanBodyNormal.copy(fontWeight = FontWeight.Bold) to spanBodyNormal
+            } else {
+                spanBodyNormal to spanBodyNormal.copy(fontWeight = FontWeight.Bold)
+            }
 
-            val gameScoreStyle =
-                if (homeScore > awayScore) spanBodyNormal.copy(fontWeight = FontWeight.Bold) else spanBodyNormal
             Text(
                 textAlign = TextAlign.Center,
                 text =
@@ -77,15 +75,15 @@ fun ScoreEventItemDetailed(event: ScoreEvent) {
                         append("${event.time} - ${event.quarter.replace(" Quarter", "")}\n")
                     }
                     withStyle(
-                        style = gameScoreStyle
+                        style = homeScoreStyle
                     ) {
-                        append(homeScore.toString())
+                        append(event.homeScore)
                     }
                     withStyle(style = spanBodyNormal) {
                         append(" - ")
                     }
-                    withStyle(style = gameScoreStyle) {
-                        append(awayScore.toString())
+                    withStyle(style = awayScoreStyle) {
+                        append(event.awayScore)
                     }
                 }
             )

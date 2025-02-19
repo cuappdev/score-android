@@ -41,7 +41,11 @@ data class ScoreEvent(
     val eventType: String,
     val score: String,
     val description: String? = null
-)
+) {
+    private val scoreTuple get() = score.split(" - ")
+    val homeScore get() = scoreTuple[0]
+    val awayScore get() = scoreTuple[1]
+}
 
 data class Team(
     val name: String,
