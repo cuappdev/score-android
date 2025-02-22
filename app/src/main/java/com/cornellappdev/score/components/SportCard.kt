@@ -58,7 +58,6 @@ fun SportCard(
         colors = CardDefaults.cardColors(containerColor = Color.White),
         modifier = modifier
             .clip(cardShape)
-            .padding(8.dp)
             .shadow(elevation = 6.dp, spotColor = SpotColor, ambientColor = AmbientColor)
             .then(
                 if (topCornerRound) {

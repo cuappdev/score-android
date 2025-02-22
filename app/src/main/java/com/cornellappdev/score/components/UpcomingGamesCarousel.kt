@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,12 +20,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.cornellappdev.score.theme.Style.title
-import com.cornellappdev.score.util.gameList
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.GameCardData
+import com.cornellappdev.score.theme.CornellRed
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
+import com.cornellappdev.score.theme.PennBlue
+import com.cornellappdev.score.theme.Style.title
+import com.cornellappdev.score.util.gameList
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -86,8 +87,8 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
                 location = game.location,
                 modifier = Modifier,
                 headerModifier = Modifier,
-                gradientColor1 = Color(0xFFE1A69F),
-                gradientColor2 = Color(0xFF011F5B)
+                gradientColor1 = CornellRed,
+                gradientColor2 = PennBlue
             )
         }
 
