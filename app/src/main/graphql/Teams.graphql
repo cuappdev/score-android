@@ -1,8 +1,6 @@
 query Teams {
   teams {
     name
-    color
     image
-    id
   }
 }

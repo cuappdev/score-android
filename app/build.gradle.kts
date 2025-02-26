@@ -67,6 +67,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.2")
     implementation("androidx.compose.material3:material3:1.0.0")
     implementation("com.google.dagger:hilt-android:2.51.1")
+    implementation(libs.androidx.datastore.core.android)
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("com.google.accompanist:accompanist-pager:0.24.0-alpha")
@@ -91,5 +92,9 @@ dependencies {
 apollo {
     service("service") {
         packageName.set("com.example.score")
+        introspection {
+            endpointUrl.set("https://score-dev.cornellappdev.com/graphql")
+            schemaFile.set(file("src/main/graphql/schema.graphqls"))
+        }
     }
 }

@@ -34,6 +34,7 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
         modifier = Modifier.statusBarsPadding())
     {
+        Spacer(modifier = Modifier.height(24.dp))
         UpcomingGamesCarousel(uiState.upcomingGameList)
         Column {
             Text(

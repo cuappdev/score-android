@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             RootNavigation()
+            //TeamsScreen(TeamsViewModel())
         }
     }
 }
