@@ -56,7 +56,7 @@ fun NavigationHeader(title: String, onBackPressed: () -> Unit) {
                               .height(24.dp),
                     )
                }
-               Text(text = title, modifier = Modifier.align(Alignment.Center), style = heading2)
+               Text(text = title, modifier = Modifier.align(Alignment.Center), style = heading2, color = Color.Black)
           }
      }
 }

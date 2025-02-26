@@ -28,10 +28,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.theme.AmbientColor
+import com.cornellappdev.score.theme.GrayMedium
+import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.SpotColor
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.dateText
+import com.cornellappdev.score.theme.Style.heading2
+import com.cornellappdev.score.theme.Style.labelsNormal
 import com.cornellappdev.score.theme.Style.teamName
 import com.cornellappdev.score.theme.Style.universityText
 import com.cornellappdev.score.theme.saturatedGreen
@@ -104,7 +108,8 @@ fun SportCard(
 
                     Text(
                         text = team,
-                        style = teamName
+                        style = heading2,
+                        color = GrayPrimary
                     )
                 }
                 Row(
@@ -151,7 +156,8 @@ fun SportCard(
 
                     Text(
                         text = location,
-                        style = universityText
+                        style = bodyNormal,
+                        color = GrayMedium
                     )
                 }
                 val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
@@ -179,12 +185,13 @@ fun SportCard(
                                 .height(8.dp)
                                 .background(saturatedGreen.copy(alpha = alpha), shape = CircleShape)
                         )
-                        Text(text = "Live Now", style = bodyNormal)
+                        Text(text = "Live Now", style = bodyNormal, color = GrayPrimary)
                     }
                 } else {
                     Text(
                         text = date,
-                        style = dateText
+                        style = labelsNormal,
+                        color = GrayMedium
                     )
                 }
             }

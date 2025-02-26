@@ -21,12 +21,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.util.gameList
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
+import com.cornellappdev.score.theme.GrayPrimary
+import com.cornellappdev.score.theme.Style.heading1
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -67,7 +68,8 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
     ) {
         Text(
             text = "Upcoming",
-            style = title,
+            style = heading1,
+            color = GrayPrimary,
             modifier = Modifier.fillMaxWidth()
         )
 
