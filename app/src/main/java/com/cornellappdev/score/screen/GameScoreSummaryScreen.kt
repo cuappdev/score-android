@@ -19,7 +19,8 @@ import com.cornellappdev.score.util.scoreEvents2
 @Composable
 fun GameScoreSummaryScreenDetail(scoreEvents: List<ScoreEvent>) {
     Column(modifier = Modifier.fillMaxSize()){
-        NavigationHeader(title = "Scoring Summary")
+        // TODO: add navigation
+        NavigationHeader(title = "Scoring Summary", {})
         LazyColumn(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 8.dp)
         ) {

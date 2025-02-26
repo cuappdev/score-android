@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,7 +38,7 @@ import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.White
 
 @Composable
-fun NavigationHeader(title: String) {
+fun NavigationHeader(title: String, onBackPressed: () -> Unit) {
      Box(modifier = Modifier
            .shadow(elevation=8.dp, clip = false, spotColor = Color.Black.copy(0.05f))
           .background(Color.White)) {
@@ -45,13 +47,15 @@ fun NavigationHeader(title: String) {
                .background(Color.White)
                .fillMaxWidth()
                .height(27.dp)) {
-               Image(
-                    painter = painterResource(id = R.drawable.ic_left_arrowhead),
-                    contentDescription = "Left Arrowhead",
-                    modifier = Modifier
-                         .width(24.dp)
-                         .height(24.dp),
-               )
+               IconButton(onClick = onBackPressed) {
+                    Icon(
+                         painter = painterResource(id = R.drawable.ic_left_arrowhead),
+                         contentDescription = "Back button",
+                         modifier = Modifier
+                              .width(24.dp)
+                              .height(24.dp),
+                    )
+               }
                Text(text = title, modifier = Modifier.align(Alignment.Center), style = heading2)
           }
      }
@@ -59,6 +63,6 @@ fun NavigationHeader(title: String) {
 
 @Preview
 @Composable
-fun NavigationHeaderPreview() {
-     NavigationHeader("Game Details")
+private fun NavigationHeaderPreview() {
+     NavigationHeader("Game Details", {})
 }

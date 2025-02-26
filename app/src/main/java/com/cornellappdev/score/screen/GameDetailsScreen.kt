@@ -43,7 +43,8 @@ import com.cornellappdev.score.theme.White
 @Composable
 fun GameDetailsScreen() {
     Column(modifier = Modifier.background(White).fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        NavigationHeader(title = "Game Details")
+        // TODO: add navigation
+        NavigationHeader(title = "Game Details", {})
         GameScoreHeader(
             leftTeamLogo = painterResource(R.drawable.cornell_logo),
             rightTeamLogo = painterResource(R.drawable.penn_logo),
