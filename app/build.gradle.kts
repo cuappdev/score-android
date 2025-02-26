@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid) version "1.9.10"
-
+    alias(libs.plugins.apollo)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // this version matches your Kotlin version
@@ -82,6 +82,16 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
+    implementation(libs.apollo.runtime)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+}
+
+apollo {
+    service("service") {
+        packageName.set("com.example.rocketreserver")
+        introspection {
+            endpointUrl.set("https://score-dev.cornellappdev.com/graphql")
+            schemaFile.set(file("src/main/graphql/schema.graphqls"))
+        }
+    }
 }
