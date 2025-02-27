@@ -20,8 +20,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
-
-
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -44,13 +43,6 @@ class HomeViewModel @Inject constructor(
         // TODO Add remaining dynamic data for UI
     )
 
-    //private val upcomingGamesFlow = MutableStateFlow<List<GameCardData>>(emptyList())
-
-//    val viewState: StateFlow<HomeUiState> = combine(upcomingGamesFlow){
-//        games -> HomeUiState(GenderDivision.ALL, SportSelection.All, sportSelectionList, games)
-//    }.stateIn(viewModelScope, SharingStarted.Eagerly, HomeUiState())
-
-
     fun onGenderSelected(gender: GenderDivision) {
         applyMutation {
             copy(
@@ -71,18 +63,14 @@ class HomeViewModel @Inject constructor(
 //        gameApiRepository.fetchUpcomingGames()
 //    }
     fun onRefresh() {
-        scoreRepository.fetchGames()
+        viewModelScope.launch{
+            scoreRepository.fetchGames()
+        }
     }
-    init {
-//        asyncCollect(gameApiRepository.upcomingGames) { response ->
-//            applyMutation {
-//                copy(
-//                    upcomingGameList = response
-//                )
-//            }
-//        }
 
+    init {
         asyncCollect(scoreRepository.upcomingGamesFlow){ response ->
+            Log.d("HomeViewModel", "Response: $response")
             val games: List<Game> = when(response){
                 is ApiResponse.Success -> {
                     response.data
