@@ -1,6 +1,15 @@
 package com.cornellappdev.score.model
 
 // TODO Refactor to make easier to filter... actual gender, etc.
+
+data class Game(
+    val teamName: String,
+    val teamLogo: String,
+    val gender: String,
+    val sport: String,
+    val date: String,
+    val city: String
+)
 data class GameCardData(
     val teamLogo: Int,
     val team: String,
@@ -8,7 +17,18 @@ data class GameCardData(
     val location: String,
     val genderIcon: Int,
     val sportIcon: Int
-)
+){
+    fun toGameCard() : GameCardData{
+        return GameCardData(
+            teamLogo,
+            team,
+            date,
+            location,
+            genderIcon,
+            sportIcon
+        )
+    }
+}
 
 // Scoring information for a specific team, used in the box score
 data class TeamScore(

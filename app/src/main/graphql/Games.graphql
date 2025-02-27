@@ -1,0 +1,13 @@
+query Games{
+    games{
+        id
+        date
+        city
+        sport
+        team{
+            name
+            image
+        }
+        gender
+    }
+}

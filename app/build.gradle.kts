@@ -1,17 +1,19 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid) version "1.9.10"
+    alias(libs.plugins.apollo)
 
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // this version matches your Kotlin version
     id("org.jetbrains.kotlin.plugin.serialization")
+
 }
 
 
 android {
     namespace = "com.cornellappdev.score"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.cornellappdev.score"
@@ -84,4 +86,17 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+    implementation(libs.apollo.runtime)
+    implementation("io.coil-kt.coil3:coil-compose:3.1.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
+}
+
+apollo {
+    service("service") {
+        packageName.set("com.example.score")
+        introspection {
+            endpointUrl.set("https://score-dev.cornellappdev.com/graphql")
+            schemaFile.set(file("src/main/graphql/schema.graphqls"))
+        }
+    }
 }

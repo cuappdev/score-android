@@ -1,5 +1,6 @@
 package com.cornellappdev.score.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,7 +36,7 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
         modifier = Modifier.statusBarsPadding())
     {
-        UpcomingGamesCarousel(uiState.upcomingGameList)
+        UpcomingGamesCarousel(gameList)//TODO: currently leaving this as dummy data
         Column {
             Text(
                 text = "Game Schedule",
@@ -55,9 +57,11 @@ fun HomeScreen(
                     homeViewModel.onSportSelected(it)
                 }
             )
+            Log.d("tag", "reached")
             LazyColumn(modifier = Modifier.padding(horizontal = 24.dp)) {
-                items(gameList.size) { page ->
-                    val game = gameList[page]
+                Log.d("tag", "reached 2")
+                items(uiState.upcomingGameList.size) { page ->
+                    val game = uiState.upcomingGameList[page]
                     SportCard(
                         teamLogo = painterResource(game.teamLogo),
                         team = game.team,
@@ -67,6 +71,7 @@ fun HomeScreen(
                         location = game.location,
                         topCornerRound = true
                     )
+                    Log.d("tag", "count $page")
                 }
             }
         }
