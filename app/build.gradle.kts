@@ -23,9 +23,14 @@ android {
     }
     buildFeatures {
         compose =true
+        buildConfig = true
     }
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://score-dev.cornellappdev.com/graphql\"")
+        }
         release {
+            buildConfigField("String", "BASE_URL", "\"https://score-dev.cornellappdev.com/graphql\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -37,15 +42,6 @@ android {
         kotlinCompilerExtensionVersion = "1.5.3"
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8

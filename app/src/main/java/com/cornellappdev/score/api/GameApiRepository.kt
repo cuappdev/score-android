@@ -28,8 +28,4 @@ class GameApiRepository @Inject constructor() {
             _upcomingGamesFlow.value = gameList
         }
     }
-
-    fun fetchTeams(){
-
-    }
 }
