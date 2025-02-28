@@ -1,6 +1,8 @@
 package com.cornellappdev.score.screen
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +28,7 @@ import com.cornellappdev.score.util.gameList
 import com.cornellappdev.score.viewmodel.HomeViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
@@ -71,13 +74,13 @@ fun HomeScreen(
                         location = game.location,
                         topCornerRound = true
                     )
-                    Log.d("tag", "count $page")
                 }
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable

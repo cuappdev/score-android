@@ -22,7 +22,7 @@ enum class Sport(
         displayName = "Cross Country",
         emptyIcon = R.drawable.ic_cross_country,
         filledIcon = R.drawable.ic_cross_country_filled
-    ),
+    );
     // TODO: Fill in rest
 //    EQUESTRIAN,
 //    FENCING,
@@ -46,6 +46,12 @@ enum class Sport(
 //    TRACK_FIELD,
 //    VOLLEYBALL,
 //    WRESTLING
+
+    companion object {
+        fun fromDisplayName(name: String): Sport? {
+            return entries.find { it.displayName.equals(name, ignoreCase = true) }
+        }
+    }
 }
 
 sealed class SportSelection {

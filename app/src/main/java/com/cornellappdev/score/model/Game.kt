@@ -10,6 +10,14 @@ data class Game(
     val date: String,
     val city: String
 )
+data class HomeUiState(
+    val teamLogo: Int,
+    val team: String,
+    val date: String,
+    val location: String,
+    val genderIcon: Int,
+    val sportIcon: Int
+)
 data class GameCardData(
     val teamLogo: Int,
     val team: String,
