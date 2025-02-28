@@ -101,7 +101,7 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
                 headerModifier = Modifier,
                 //TODO update these from backend
                 gradientColor1 = CornellRed,
-                gradientColor2 = PennBlue
+                gradientColor2 = Color(game.teamColor)
             )
         }
 

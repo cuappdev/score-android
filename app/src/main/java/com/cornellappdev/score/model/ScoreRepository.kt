@@ -19,7 +19,7 @@ class ScoreRepository @Inject constructor(
     private val apolloClient: ApolloClient
 ) {
     private val _upcomingGamesFlow =
-            MutableStateFlow<ApiResponse<List<Game>>>(ApiResponse.Loading)
+        MutableStateFlow<ApiResponse<List<Game>>>(ApiResponse.Loading)
     val upcomingGamesFlow = _upcomingGamesFlow.asStateFlow()
 
 
@@ -27,14 +27,14 @@ class ScoreRepository @Inject constructor(
      * Asynchronously fetches the list of games from the API. Once finished, will send down
      * `upcomingGamesFlow` to be observed.
      */
-    suspend fun fetchGames() : ApiResponse<List<Game>>{
+    suspend fun fetchGames(): ApiResponse<List<Game>> {
         _upcomingGamesFlow.value = ApiResponse.Loading
         return try {
             val response = (apolloClient.query(GamesQuery()).execute())
             val games = response.data?.games ?: emptyList()
             Log.d("ScoreRepository", "response fetched successfully")
 
-            val list: List<Game> = games.mapNotNull{ game ->
+            val list: List<Game> = games.mapNotNull { game ->
                 game?.team?.image?.let {
                     Game(
                         teamLogo = it,//game.team.image,
@@ -58,25 +58,4 @@ class ScoreRepository @Inject constructor(
             ApiResponse.Error
         }
     }
-
-//    suspend fun getGames(): List<Game> {
-//        val response = apolloClient.query(GamesQuery()).execute()
-//        val games = response.data?.games ?: emptyList()
-//
-//        val list: List<Game> = games.mapNotNull{ game ->
-//            //if (game?.team?.image != null){
-//            game?.team?.image?.let {
-//                Game(
-//                    teamLogo = it,//game.team.image,
-//                    teamName = game.team.name,
-//                    gender = game.gender,
-//                    sport = game.sport,
-//                    date = game.date,
-//                    city = game.city
-//                )
-//            }
-//            //}
-//        }
-//        return list
-//    }
 }

@@ -18,7 +18,7 @@ data class GameCardData(
     //val teamLogo: Int,
     val teamLogo: String,
     val team: String,
-    val teamColor: String,
+    val teamColor: Int,
     val date: String,
     val location: String,
     val genderIcon: Int,

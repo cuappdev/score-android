@@ -100,6 +100,12 @@ class HomeViewModel @Inject constructor(
         return LocalDate.of(currentYear, month, day)
     }
 
+    private fun formatColor(color: String) : Int{
+            val alpha = (40 * 255 / 100)// Convert percent to hex (0-255)
+            val colorInt = Integer.parseInt(color.removePrefix("#"), 16)
+            return (alpha shl 24) or colorInt
+    }
+
 
     
     init {
@@ -118,12 +124,12 @@ class HomeViewModel @Inject constructor(
                 val currentDate = LocalDate.now()
                 val tomorrowDate = LocalDate.now().plusDays(1)
                 val formattedDate = formatDate(game.date)
-                formattedDate == currentDate || formattedDate == tomorrowDate
+                formattedDate == currentDate || formattedDate == tomorrowDate //i'm understanding upcoming as today and tomorrow's games
             }.map { game ->
                 GameCardData(
-                    teamLogo = game.teamLogo,//R.drawable.cornell_logo,// todo: load images from url,
+                    teamLogo = game.teamLogo,
                     team = game.teamName,
-                    teamColor = game.teamColor,
+                    teamColor = formatColor(game.teamColor),
                     date = formatDate(game.date).toString(),
                     location = game.city,
                     genderIcon = if (game.gender == "Mens") {
