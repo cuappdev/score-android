@@ -99,6 +99,8 @@ class HomeViewModel @Inject constructor(
         val currentYear = LocalDate.now().year // Use current year to construct a valid date
         return LocalDate.of(currentYear, month, day)
     }
+
+
     
     init {
         asyncCollect(scoreRepository.upcomingGamesFlow) { response ->
@@ -119,8 +121,9 @@ class HomeViewModel @Inject constructor(
                 formattedDate == currentDate || formattedDate == tomorrowDate
             }.map { game ->
                 GameCardData(
-                    teamLogo = R.drawable.cornell_logo,// todo: load images from url,
+                    teamLogo = game.teamLogo,//R.drawable.cornell_logo,// todo: load images from url,
                     team = game.teamName,
+                    teamColor = game.teamColor,
                     date = formatDate(game.date).toString(),
                     location = game.city,
                     genderIcon = if (game.gender == "Mens") {

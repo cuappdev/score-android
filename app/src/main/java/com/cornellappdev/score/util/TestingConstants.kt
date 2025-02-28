@@ -9,24 +9,24 @@ import com.cornellappdev.score.model.TeamScore
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 
-val PENN_GAME = GameCardData(
-    teamLogo = R.drawable.penn_logo,
-    team = "Penn",
-    date = "5/20/2024",
-    location = "Philadelphia, PA",
-    genderIcon = R.drawable.ic_gender_men,
-    sportIcon = R.drawable.ic_baseball
-)
-
-val PRINCETON_GAME = GameCardData(
-    teamLogo = R.drawable.princeton_logo,
-    team = "Princeton",
-    date = "5/21/2024",
-    location = "Princeton, NY",
-    genderIcon = R.drawable.ic_gender_men,
-    sportIcon = R.drawable.ic_baseball
-)
-val gameList = listOf(PENN_GAME, PRINCETON_GAME)
+//val PENN_GAME = GameCardData(
+//    teamLogo = R.drawable.penn_logo,
+//    team = "Penn",
+//    date = "5/20/2024",
+//    location = "Philadelphia, PA",
+//    genderIcon = R.drawable.ic_gender_men,
+//    sportIcon = R.drawable.ic_baseball
+//)
+//
+//val PRINCETON_GAME = GameCardData(
+//    teamLogo = R.drawable.princeton_logo,
+//    team = "Princeton",
+//    date = "5/21/2024",
+//    location = "Princeton, NY",
+//    genderIcon = R.drawable.ic_gender_men,
+//    sportIcon = R.drawable.ic_baseball
+//)
+//val gameList = listOf(PENN_GAME, PRINCETON_GAME)
 
 val team1 = Team(name = "Cornell", R.drawable.cornell_logo)
 val team2 = Team(name = "Yale", R.drawable.yale_logo)

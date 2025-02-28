@@ -39,6 +39,7 @@ class ScoreRepository @Inject constructor(
                     Game(
                         teamLogo = it,//game.team.image,
                         teamName = game.team.name,
+                        teamColor = game.team.color,
                         gender = game.gender,
                         sport = game.sport,
                         date = game.date,

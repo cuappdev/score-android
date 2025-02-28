@@ -27,7 +27,6 @@ import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.PennBlue
 import com.cornellappdev.score.theme.Style.title
-import com.cornellappdev.score.util.gameList
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -77,9 +76,22 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
             modifier = Modifier.fillMaxWidth()
         ) { page ->
             val game = games[page]
+//            UpcomingGameCard(
+//                leftTeamLogo = painterResource(R.drawable.cornell_logo),
+//                rightTeamLogo = painterResource(game.teamLogo),
+//                team = game.team,
+//                date = game.date,
+//                genderIcon = painterResource(game.genderIcon),
+//                sportIcon = painterResource(game.sportIcon),
+//                location = game.location,
+//                modifier = Modifier,
+//                headerModifier = Modifier,
+//                gradientColor1 = CornellRed,
+//                gradientColor2 = PennBlue
+//            )
             UpcomingGameCard(
                 leftTeamLogo = painterResource(R.drawable.cornell_logo),
-                rightTeamLogo = painterResource(game.teamLogo),
+                rightTeamLogo = game.teamLogo,
                 team = game.team,
                 date = game.date,
                 genderIcon = painterResource(game.genderIcon),
@@ -87,6 +99,7 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
                 location = game.location,
                 modifier = Modifier,
                 headerModifier = Modifier,
+                //TODO update these from backend
                 gradientColor1 = CornellRed,
                 gradientColor2 = PennBlue
             )
@@ -102,8 +115,8 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
     }
 }
 
-@Preview(showBackground = true, widthDp = 360)
-@Composable
-fun UpcomingGamesCarouselPreview() {
-    UpcomingGamesCarousel(gameList)
-}
+//@Preview(showBackground = true, widthDp = 360)
+//@Composable
+//fun UpcomingGamesCarouselPreview() {
+//    UpcomingGamesCarousel(gameList)
+//}

@@ -24,7 +24,6 @@ import com.cornellappdev.score.components.SportCard
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.components.UpcomingGamesCarousel
 import com.cornellappdev.score.theme.Style.title
-import com.cornellappdev.score.util.gameList
 import com.cornellappdev.score.viewmodel.HomeViewModel
 
 
@@ -66,7 +65,7 @@ fun HomeScreen(
                 items(uiState.upcomingGameList.size) { page ->
                     val game = uiState.upcomingGameList[page]
                     SportCard(
-                        teamLogo = painterResource(game.teamLogo),
+                        teamLogo = game.teamLogo,//painterResource(game.teamLogo),
                         team = game.team,
                         date = game.date,
                         genderIcon = painterResource(game.genderIcon),

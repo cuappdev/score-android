@@ -1,7 +1,6 @@
 package com.cornellappdev.score.api
 
 import com.cornellappdev.score.model.GameCardData
-import com.cornellappdev.score.util.gameList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -22,10 +21,10 @@ class GameApiRepository @Inject constructor() {
     /**
      * Asynchronously start to load upcoming games, once loaded will be sent down [upcomingGames]
      */
-    fun fetchUpcomingGames() {
-        CoroutineScope(Dispatchers.IO).launch {
-            delay(2000)
-            _upcomingGamesFlow.value = gameList
-        }
-    }
+//    fun fetchUpcomingGames() {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            delay(2000)
+//            _upcomingGamesFlow.value = gameList
+//        }
+//    }
 }

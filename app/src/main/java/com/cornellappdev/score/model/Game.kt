@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.painter.Painter
 data class Game(
     val teamName: String,
     val teamLogo: String,
+    val teamColor: String,
     val gender: String,
     val sport: String,
     val date: String,
@@ -14,23 +15,25 @@ data class Game(
 )
 
 data class GameCardData(
-    val teamLogo: Int,
+    //val teamLogo: Int,
+    val teamLogo: String,
     val team: String,
+    val teamColor: String,
     val date: String,
     val location: String,
     val genderIcon: Int,
     val sportIcon: Int
 ){
-    fun toGameCard() : GameCardData{
-        return GameCardData(
-            teamLogo,
-            team,
-            date,
-            location,
-            genderIcon,
-            sportIcon
-        )
-    }
+//    fun toGameCard() : GameCardData{
+//        return GameCardData(
+//            teamLogo,
+//            team,
+//            date,
+//            location,
+//            genderIcon,
+//            sportIcon
+//        )
+//    }
 }
 
 // Scoring information for a specific team, used in the box score
