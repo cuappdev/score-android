@@ -32,7 +32,6 @@ import com.cornellappdev.score.theme.Style.vsText
 @Composable
 fun UpcomingGameHeader(
     leftTeamLogo: Painter,
-    //rightTeamLogo: Painter,
     rightTeamLogo: String,
     gradientColor1: Color,
     gradientColor2: Color,
@@ -66,12 +65,6 @@ fun UpcomingGameHeader(
                 text = "VS",
                 style = vsText
             )
-
-//            Image(
-//                painter = rightTeamLogo,
-//                contentDescription = "Right Team Logo",
-//                modifier = Modifier.height(62.dp)
-//            )
             AsyncImage(
                 model = rightTeamLogo,
                 contentDescription = "Right Team Logo",
@@ -86,7 +79,6 @@ fun UpcomingGameHeader(
 fun UpcomingGameHeaderPreview() {
     UpcomingGameHeader(
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
-        //rightTeamLogo = painterResource(R.drawable.penn_logo),
         rightTeamLogo = "https://cornellbigred.com/images/logos/YALE_LOGO_2020.png?width=80&height=80&mode=max",
         gradientColor1 = CornellRed,
         gradientColor2 = PennBlue,
@@ -97,10 +89,10 @@ fun UpcomingGameHeaderPreview() {
 @Composable
 fun UpcomingGameCard(
     leftTeamLogo: Painter,
-    //rightTeamLogo: Painter,
     rightTeamLogo: String,
     team: String,
     location: String,
+    isLive: Boolean,
     genderIcon: Painter,
     sportIcon: Painter,
     date: String,
@@ -126,6 +118,7 @@ fun UpcomingGameCard(
             teamLogo = rightTeamLogo,
             team = team,
             date = date,
+            isLive = isLive,
             location = location,
             genderIcon = genderIcon,
             sportIcon = sportIcon,
@@ -152,6 +145,7 @@ fun GameScheduleScreen() {
         team = "Penn",
         location = "Philadelphia, NJ",
         date = "5/20/2024",
+        isLive = true,
         genderIcon = painterResource(id = R.drawable.ic_gender_men),
         sportIcon = painterResource(id = R.drawable.ic_baseball),
         modifier = Modifier,

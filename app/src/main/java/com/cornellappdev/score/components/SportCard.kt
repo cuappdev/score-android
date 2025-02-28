@@ -41,10 +41,10 @@ import java.util.Locale
 
 @Composable
 fun SportCard(
-    //teamLogo: Painter,
     teamLogo: String,
     team: String,
     date: String,
+    isLive: Boolean,
     location: String,
     genderIcon: Painter,
     sportIcon: Painter,
@@ -95,13 +95,6 @@ fun SportCard(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-//                    Image(
-//                        painter = teamLogo,
-//                        contentDescription = "Team Logo",
-//                        modifier = Modifier
-//                            .height(20.dp)
-//                            .padding(start = 4.dp, end = 4.dp)
-//                    )
                     AsyncImage(
                         model = teamLogo,
                         modifier = Modifier.height(20.dp).padding(start = 4.dp, end = 4.dp),
@@ -160,7 +153,6 @@ fun SportCard(
                         style = universityText
                     )
                 }
-                val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
                 val infiniteTransition = rememberInfiniteTransition(label = "rememberTransition")
                 val alpha = infiniteTransition.animateFloat(
                     initialValue = 0.5f,
@@ -173,7 +165,7 @@ fun SportCard(
                     ),
                     label = "Pulsing Live Indicator Alpha"
                 ).value
-                if (currentDate == date) {
+                if (isLive) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -207,6 +199,7 @@ fun SportCardPreview() {
             team = "Penn",
             date = "5/20/2024",
             location = "U. Pennsylvania",
+            isLive = true,
             genderIcon = painterResource(id = R.drawable.ic_gender_men),
             sportIcon = painterResource(id = R.drawable.ic_baseball),
             topCornerRound = false,

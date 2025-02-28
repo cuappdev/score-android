@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
 import com.cornellappdev.score.R
-import com.cornellappdev.score.api.GameApiRepository
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.Game
 import com.cornellappdev.score.model.GameCardData
@@ -15,23 +14,15 @@ import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.nav.root.RootNavigationRepository
 import com.cornellappdev.score.util.sportSelectionList
-import com.example.score.GamesQuery
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.Month
+import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val rootNavigationRepository: RootNavigationRepository,
-    private val gameApiRepository: GameApiRepository,
     private val scoreRepository: ScoreRepository
 ) : BaseViewModel<HomeViewModel.HomeUiState>(
     initialUiState = HomeUiState(
@@ -65,49 +56,58 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    //    fun onRefresh() {
-//        gameApiRepository.fetchUpcomingGames()
-//    }
     fun onRefresh() {
         viewModelScope.launch {
             scoreRepository.fetchGames()
         }
     }
 
+    //Converts date from String "month day" to a LocalDate object
     private fun formatDate(strDate: String): LocalDate? {
         val monthMap = mapOf(
-            "Jan" to Month.JANUARY,
-            "Feb" to Month.FEBRUARY,
-            "Mar" to Month.MARCH,
-            "Apr" to Month.APRIL,
-            "May" to Month.MAY,
-            "Jun" to Month.JUNE,
-            "Jul" to Month.JULY,
-            "Aug" to Month.AUGUST,
-            "Sep" to Month.SEPTEMBER,
-            "Oct" to Month.OCTOBER,
-            "Nov" to Month.NOVEMBER,
-            "Dec" to Month.DECEMBER
+            "Jan" to 1,
+            "Feb" to 2,
+            "Mar" to 3,
+            "Apr" to 4,
+            "May" to 5,
+            "Jun" to 6,
+            "Jul" to 7,
+            "Aug" to 8,
+            "Sep" to 9,
+            "Oct" to 10,
+            "Nov" to 11,
+            "Dec" to 12
         )
 
         val parts = strDate.split(" ")
-        if (parts.size < 2) return null // Ensure there's at least a month and day
+        if (parts.size < 2) return null
 
         val month = monthMap[parts[0]]
-        val day = parts[1].toIntOrNull() ?: return null // Convert day to Int safely
+        if (month == null){
+            return null
+        }
+        val day = parts[1].toIntOrNull() ?: return null
 
-        val currentYear = LocalDate.now().year // Use current year to construct a valid date
+        val currentYear = LocalDate.now().year
+        //Log.d("HomeViewModel", "formatDate: ${LocalDate.of(currentYear, month, day)}")
         return LocalDate.of(currentYear, month, day)
     }
 
-    private fun formatColor(color: String) : Int{
-            val alpha = (40 * 255 / 100)// Convert percent to hex (0-255)
-            val colorInt = Integer.parseInt(color.removePrefix("#"), 16)
-            return (alpha shl 24) or colorInt
+    //Converts from format "#xxxxxx" to a valid hex, with alpha = 40. Ready to be passed into Color()
+    private fun formatColor(color: String): Int {
+        val alpha = (40 * 255 / 100)// Convert percent to hex (0-255)
+        val colorInt = Integer.parseInt(color.removePrefix("#"), 16)
+        return (alpha shl 24) or colorInt
     }
 
+    private fun dateToString(date: LocalDate?): String{
+        if(date == null){
+            return "--"
+        }
+        //Log.d("HomeViewModel", "formatedDate: ${date.month.value}/${date.dayOfMonth}/${date.year}")
+        return "${date.month.value}/${date.dayOfMonth}/${date.year}"
+    }
 
-    
     init {
         asyncCollect(scoreRepository.upcomingGamesFlow) { response ->
             Log.d("HomeViewModel", "Response: $response")
@@ -119,7 +119,7 @@ class HomeViewModel @Inject constructor(
                 ApiResponse.Error -> emptyList()
                 ApiResponse.Loading -> emptyList()
             }
-            Log.d("viewModel", "size: ${games.size}")
+            //Log.d("viewModel", "size: ${games.size}")
             val gameCards = games.filter { game ->
                 val currentDate = LocalDate.now()
                 val tomorrowDate = LocalDate.now().plusDays(1)
@@ -130,14 +130,17 @@ class HomeViewModel @Inject constructor(
                     teamLogo = game.teamLogo,
                     team = game.teamName,
                     teamColor = formatColor(game.teamColor),
-                    date = formatDate(game.date).toString(),
+                    date = formatDate(game.date),
+                    dateString = dateToString(formatDate(game.date)),
+                    isLive = (LocalDate.now() == formatDate(game.date)),
                     location = game.city,
                     genderIcon = if (game.gender == "Mens") {
                         R.drawable.ic_gender_men
                     } else R.drawable.ic_gender_women,
-                    sportIcon = Sport.fromDisplayName(game.sport)?.emptyIcon ?: R.drawable.ic_empty_placeholder//R.drawable.ic_baseball //TODO: icon logic
+                    sportIcon = Sport.fromDisplayName(game.sport)?.emptyIcon
+                        ?: R.drawable.ic_empty_placeholder
                 )
-            }.sortedBy { LocalDate.parse(it.date) }
+            }.sortedBy { it.date }
             applyMutation {
                 copy(
                     upcomingGameList = gameCards

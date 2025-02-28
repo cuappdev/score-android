@@ -1,7 +1,6 @@
 package com.cornellappdev.score.components
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +27,6 @@ import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.PennBlue
 import com.cornellappdev.score.theme.Style.title
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DotIndicator(
     pagerState: androidx.compose.foundation.pager.PagerState,
@@ -55,7 +53,6 @@ fun DotIndicator(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UpcomingGamesCarousel(games: List<GameCardData>) {
     val pagerState = rememberPagerState(pageCount = { games.size })
@@ -76,31 +73,18 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
             modifier = Modifier.fillMaxWidth()
         ) { page ->
             val game = games[page]
-//            UpcomingGameCard(
-//                leftTeamLogo = painterResource(R.drawable.cornell_logo),
-//                rightTeamLogo = painterResource(game.teamLogo),
-//                team = game.team,
-//                date = game.date,
-//                genderIcon = painterResource(game.genderIcon),
-//                sportIcon = painterResource(game.sportIcon),
-//                location = game.location,
-//                modifier = Modifier,
-//                headerModifier = Modifier,
-//                gradientColor1 = CornellRed,
-//                gradientColor2 = PennBlue
-//            )
             UpcomingGameCard(
                 leftTeamLogo = painterResource(R.drawable.cornell_logo),
                 rightTeamLogo = game.teamLogo,
                 team = game.team,
-                date = game.date,
+                date = game.dateString,
+                isLive = game.isLive,
                 genderIcon = painterResource(game.genderIcon),
                 sportIcon = painterResource(game.sportIcon),
                 location = game.location,
                 modifier = Modifier,
                 headerModifier = Modifier,
-                //TODO update these from backend
-                gradientColor1 = CornellRed,
+                gradientColor1 = CornellRed, //TODO: is it okay if this is hardcoded
                 gradientColor2 = Color(game.teamColor)
             )
         }
