@@ -149,6 +149,7 @@ class HomeViewModel @Inject constructor(
     }
 
     init {
+
         asyncCollect(scoreRepository.upcomingGamesFlow) { response ->
             Log.d("HomeViewModel", "Response: $response")
             updateGameList(response)
