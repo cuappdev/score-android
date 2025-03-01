@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -29,7 +31,7 @@ import com.cornellappdev.score.viewmodel.HomeViewModel
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val uiState = homeViewModel.collectUiStateValue()
+    val uiState by homeViewModel.uiStateFlow.collectAsState()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
@@ -64,8 +66,8 @@ fun HomeScreen(
                 }
             )
             LazyColumn(modifier = Modifier.padding(horizontal = 24.dp)) {
-                items(uiState.upcomingGameList.size) { page ->
-                    val game = uiState.upcomingGameList[page]
+                items(uiState.filteredGames.size) { page ->
+                    val game = uiState.filteredGames[page]
                     SportCard(
                         teamLogo = game.teamLogo,//painterResource(game.teamLogo),
                         team = game.team,

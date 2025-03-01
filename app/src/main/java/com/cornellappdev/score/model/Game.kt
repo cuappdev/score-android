@@ -24,7 +24,9 @@ data class GameCardData(
     val dateString: String,
     val isLive: Boolean,
     val location: String,
+    val gender: String,
     val genderIcon: Int,
+    val sport: String,
     val sportIcon: Int
 )
 

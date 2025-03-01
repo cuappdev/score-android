@@ -63,10 +63,10 @@ enum class GenderDivision(
     val displayName: String
 ) {
     FEMALE(
-        "Women's"
+        "Womens"
     ),
     MALE(
-        "Men's"
+        "Mens"
     ),
     ALL(
         "All"
