@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.GenderDivision
-import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
@@ -43,7 +41,6 @@ import com.cornellappdev.score.theme.Style.genderFilterText
 import com.cornellappdev.score.theme.Style.genderText
 import com.cornellappdev.score.theme.Style.sportFilterText
 import com.cornellappdev.score.theme.White
-import com.cornellappdev.score.util.sportList
 import com.cornellappdev.score.util.sportSelectionList
 
 @Composable

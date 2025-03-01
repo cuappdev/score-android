@@ -22,41 +22,136 @@ enum class Sport(
         displayName = "Cross Country",
         emptyIcon = R.drawable.ic_cross_country,
         filledIcon = R.drawable.ic_cross_country_filled
-    );
+    ),
+
     // TODO: Fill in rest
-//    EQUESTRIAN,
-//    FENCING,
-//    FIELD_HOCKEY,
-//    GYMNASTICS,
-//    FOOTBALL,
-//    GOLF,
-//    ICE_HOCKEY,
-//    LACROSSE,
-//    POLO,
-//    ROWING,
-//    ROWING_HEAVYWEIGHT,
-//    ROWING_LIGHTWEIGHT,
-//    SAILING,
-//    SOCCER,
-//    SOFTBALL,
-//    SPRINT_FOOTBALL,
-//    SQUASH,
-//    SWIM_DIVE,
-//    TENNIS,
-//    TRACK_FIELD,
-//    VOLLEYBALL,
-//    WRESTLING
+    EQUESTRIAN(
+        displayName = "Equestrian",
+        emptyIcon = R.drawable.ic_equestrian,
+        filledIcon = R.drawable.ic_equestrian_filled
+    ),
+    FENCING(
+        displayName = "Fencing",
+        emptyIcon = R.drawable.ic_fencing,
+        filledIcon = R.drawable.ic_fencing_filled
+    ),
+    FIELD_HOCKEY(
+        displayName = "Field Hockey",
+        emptyIcon = R.drawable.ic_field_hockey,
+        filledIcon = R.drawable.ic_field_hockey_filled
+    ),
+    GYMNASTICS(
+        displayName = "Gymnastics",
+        emptyIcon = R.drawable.ic_gymnastics,
+        filledIcon = R.drawable.ic_gymnastics_filled
+    ),
+    FOOTBALL(
+        displayName = "Football",
+        emptyIcon = R.drawable.ic_football,
+        filledIcon = R.drawable.ic_football_filled
+    ),
+    GOLF(
+        displayName = "Golf",
+        emptyIcon = R.drawable.ic_golf,
+        filledIcon = R.drawable.ic_golf_filled
+    ),
+    ICE_HOCKEY(
+        displayName = "Ice Hockey",
+        emptyIcon = R.drawable.ic_ice_hockey,
+        filledIcon = R.drawable.ic_ice_hockey_filled
+    ),
+    LACROSSE(
+        displayName = "Lacrosse",
+        emptyIcon = R.drawable.ic_squash,
+        filledIcon = R.drawable.ic_squash_filled
+    ),
+
+    //TODO: awaiting polo icon from design
+//    POLO(
+//        displayName = "Polo",
+//        emptyIcon = R.drawable.ic_polo,
+//        filledIcon = R.drawable.ic_polo_filled
+//    ),
+//    ROWING( //Probably not a thing
+//        displayName = "Rowing",
+//        emptyIcon = R.drawable.ic_rowing,
+//        filledIcon = R.drawable.ic_rowing_filled
+//    ),
+    ROWING_HEAVYWEIGHT(
+        displayName = "Heavyweight Rowing",
+        emptyIcon = R.drawable.ic_rowing_heavyweight,
+        filledIcon = R.drawable.ic_rowing_heavyweight_filled
+    ),
+    ROWING_LIGHTWEIGHT(
+        displayName = "Lightweight Rowing",
+        emptyIcon = R.drawable.ic_rowing_lightweight,
+        filledIcon = R.drawable.ic_rowing_lightweight_filled
+    ),
+    SAILING(
+        displayName = "Sailing",
+        emptyIcon = R.drawable.ic_sailing,
+        filledIcon = R.drawable.ic_sailing_filled
+    ),
+    SOCCER(
+        displayName = "Soccer",
+        emptyIcon = R.drawable.ic_soccer,
+        filledIcon = R.drawable.ic_soccer_filled
+    ),
+    SOFTBALL(
+        displayName = "Softball",
+        emptyIcon = R.drawable.ic_softball,
+        filledIcon = R.drawable.ic_softball_filled
+    ),
+    SPRINT_FOOTBALL(
+        displayName = "Sprint Football",
+        emptyIcon = R.drawable.ic_sprint_football,
+        filledIcon = R.drawable.ic_sprint_football_filled
+    ),
+    SQUASH(
+        displayName = "Squash",
+        emptyIcon = R.drawable.ic_squash,
+        filledIcon = R.drawable.ic_squash_filled
+    ),
+    SWIM_DIVE(
+        displayName = "Swim Dive",
+        emptyIcon = R.drawable.ic_swim_dive,
+        filledIcon = R.drawable.ic_swim_dive_filled
+    ),
+    TENNIS(
+        displayName = "Tennis",
+        emptyIcon = R.drawable.ic_tennis,
+        filledIcon = R.drawable.ic_tennis_filled
+    ),
+    TRACK_FIELD(
+        displayName = "Track and Field",
+        emptyIcon = R.drawable.ic_track_field,
+        filledIcon = R.drawable.ic_track_field_filled
+    ),
+    VOLLEYBALL(
+        displayName = "Volleyball",
+        emptyIcon = R.drawable.ic_volleyball,
+        filledIcon = R.drawable.ic_volleyball_filled
+    ),
+    WRESTLING(
+        displayName = "Wrestling",
+        emptyIcon = R.drawable.ic_wrestling,
+        filledIcon = R.drawable.ic_wrestling_filled
+    );
 
     companion object {
         fun fromDisplayName(name: String): Sport? {
             return entries.find { it.displayName.equals(name, ignoreCase = true) }
         }
+
+        fun getSportSelectionList(): List<SportSelection> {
+            return listOf(SportSelection.All) + Sport.entries.map { SportSelection.SportSelect(it) }
+        }
     }
 }
 
 sealed class SportSelection {
-    data object All: SportSelection()
-    data class SportSelect(val sport: Sport): SportSelection()
+    data object All : SportSelection()
+    data class SportSelect(val sport: Sport) : SportSelection()
 }
 
 enum class GenderDivision(

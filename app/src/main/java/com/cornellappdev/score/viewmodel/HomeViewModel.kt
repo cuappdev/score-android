@@ -13,7 +13,6 @@ import com.cornellappdev.score.model.ScoreRepository
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.nav.root.RootNavigationRepository
-import com.cornellappdev.score.util.sportSelectionList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -28,7 +27,7 @@ class HomeViewModel @Inject constructor(
     initialUiState = HomeUiState(
         selectedGender = GenderDivision.ALL,
         sportSelect = SportSelection.All,
-        selectionList = sportSelectionList,
+        selectionList = Sport.getSportSelectionList(),//sportSelectionList,
         upcomingGameList = emptyList()
     )
 ) {
@@ -38,21 +37,18 @@ class HomeViewModel @Inject constructor(
         val selectionList: List<SportSelection>,
         val upcomingGameList: List<GameCardData>,
         // TODO Add remaining dynamic data for UI
-    ){
+    ) {
         val filteredGames: List<GameCardData>
             get() = upcomingGameList.filter { game ->
-                selectedGender == GenderDivision.ALL || game.gender == selectedGender.displayName
+                (selectedGender == GenderDivision.ALL || game.gender == selectedGender.displayName)
+                        && (sportSelect is SportSelection.All || (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName))
             }
     }
 
     fun onGenderSelected(gender: GenderDivision) {
         applyMutation {
             copy(
-                selectedGender = gender,
-//                filteredGames = upcomingGameList.filter { game ->
-//                    Log.d("HomeViewModel", "gender: ${game.gender}, filter: ${gender.displayName}")
-//                    game.gender == gender.displayName
-//                }
+                selectedGender = gender
             )
         }
     }
@@ -89,7 +85,8 @@ class HomeViewModel @Inject constructor(
                 gender = game.gender,
                 genderIcon = if (game.gender == "Mens") R.drawable.ic_gender_men else R.drawable.ic_gender_women,
                 sport = game.sport,
-                sportIcon = Sport.fromDisplayName(game.sport)?.emptyIcon ?: R.drawable.ic_empty_placeholder
+                sportIcon = Sport.fromDisplayName(game.sport)?.emptyIcon
+                    ?: R.drawable.ic_empty_placeholder
             )
         }.sortedBy { it.date }
 
@@ -126,7 +123,7 @@ class HomeViewModel @Inject constructor(
         if (parts.size < 2) return null
 
         val month = monthMap[parts[0]]
-        if (month == null){
+        if (month == null) {
             return null
         }
         val day = parts[1].toIntOrNull() ?: return null
@@ -143,8 +140,8 @@ class HomeViewModel @Inject constructor(
         return (alpha shl 24) or colorInt
     }
 
-    private fun dateToString(date: LocalDate?): String{
-        if(date == null){
+    private fun dateToString(date: LocalDate?): String {
+        if (date == null) {
             return "--"
         }
         //Log.d("HomeViewModel", "formatedDate: ${date.month.value}/${date.dayOfMonth}/${date.year}")
@@ -158,43 +155,4 @@ class HomeViewModel @Inject constructor(
         }
         onRefresh()
     }
-//            val games: List<Game> = when (response) {
-//                is ApiResponse.Success -> {
-//                    response.data
-//                }
-//
-//                ApiResponse.Error -> emptyList()
-//                ApiResponse.Loading -> emptyList()
-//            }
-//            //Log.d("viewModel", "size: ${games.size}")
-//            val gameCards = games.filter { game ->
-//                val currentDate = LocalDate.now()
-//                val tomorrowDate = LocalDate.now().plusDays(1)
-//                val formattedDate = formatDate(game.date)
-//                formattedDate == currentDate || formattedDate == tomorrowDate; //i'm understanding upcoming as today and tomorrow's games
-//            }.map { game ->
-//                GameCardData(
-//                    teamLogo = game.teamLogo,
-//                    team = game.teamName,
-//                    teamColor = formatColor(game.teamColor),
-//                    date = formatDate(game.date),
-//                    dateString = dateToString(formatDate(game.date)),
-//                    isLive = (LocalDate.now() == formatDate(game.date)),
-//                    location = game.city,
-//                    gender = game.gender,
-//                    genderIcon = if (game.gender == "Mens") {
-//                        R.drawable.ic_gender_men
-//                    } else R.drawable.ic_gender_women,
-//                    sport = game.sport,
-//                    sportIcon = Sport.fromDisplayName(game.sport)?.emptyIcon
-//                        ?: R.drawable.ic_empty_placeholder
-//                )
-//            }.sortedBy { it.date }
-//            applyMutation {
-//                copy(
-//                    upcomingGameList = gameCards
-//                )
-//            }
-//        }
-//        onRefresh()
 }
