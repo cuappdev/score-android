@@ -3,15 +3,23 @@ package com.cornellappdev.score.model
 import android.util.Log
 import com.apollographql.apollo.ApolloClient
 import com.example.score.GamesQuery
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
+/**
+ * This is a singleton responsible for fetching and caching all data for Score.
+ * Right now, it makes a network request for all possible games. In the future,
+ * we should limit this to games only in a certain time range, to prevent the
+ * app from slowing down and improve load times.
+ */
 @Singleton
 class ScoreRepository @Inject constructor(
-    private val apolloClient: ApolloClient
+    private val apolloClient: ApolloClient,
+    // TODO use this to launch queries
+    private val appScope: CoroutineScope,
 ) {
     private val _upcomingGamesFlow =
         MutableStateFlow<ApiResponse<List<Game>>>(ApiResponse.Loading)
