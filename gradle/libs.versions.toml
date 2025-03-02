@@ -27,5 +27,4 @@ apollo-runtime = { module = "com.apollographql.apollo:apollo-runtime" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
 apollo = { id = "com.apollographql.apollo", version.ref = "apollo" }

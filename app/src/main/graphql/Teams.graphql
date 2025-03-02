@@ -1,0 +1,6 @@
+query Teams {
+    teams {
+        name
+        image
+    }
+}

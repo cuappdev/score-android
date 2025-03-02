@@ -1,6 +1,7 @@
 package com.cornellappdev.score.di
 
 import com.apollographql.apollo.ApolloClient
+import com.cornellappdev.score.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +15,6 @@ object AppModule {
     @Provides
     @Singleton
     fun provideApolloClient(): ApolloClient = ApolloClient.Builder()
-        .serverUrl("https://score-dev.cornellappdev.com/graphql")
+        .serverUrl(BuildConfig.BASE_URL)
         .build()
 }

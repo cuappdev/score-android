@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid) version "1.9.10"
     alias(libs.plugins.apollo)
-
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // this version matches your Kotlin version
@@ -25,9 +24,14 @@ android {
     }
     buildFeatures {
         compose =true
+        buildConfig = true
     }
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://score-dev.cornellappdev.com/graphql\"")
+        }
         release {
+            buildConfigField("String", "BASE_URL", "\"https://score-dev.cornellappdev.com/graphql\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -39,15 +43,6 @@ android {
         kotlinCompilerExtensionVersion = "1.5.3"
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -84,7 +79,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
+    implementation(libs.apollo.runtime)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
     implementation(libs.apollo.runtime)
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
