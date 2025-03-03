@@ -14,37 +14,38 @@ import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.nav.root.RootNavigationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
-@RequiresApi(Build.VERSION_CODES.O)
+data class HomeUiState(
+    val selectedGender: GenderDivision,
+    val sportSelect: SportSelection,
+    val selectionList: List<SportSelection>,
+    val upcomingGameList: List<GameCardData>,
+    // TODO Add remaining dynamic data for UI
+) {
+    val filteredGames: List<GameCardData>
+        get() = upcomingGameList.filter { game ->
+            (selectedGender == GenderDivision.ALL || game.gender == selectedGender.displayName)
+                    && (sportSelect is SportSelection.All || (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName))
+        }
+}
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val rootNavigationRepository: RootNavigationRepository,
     private val scoreRepository: ScoreRepository
-) : BaseViewModel<HomeViewModel.HomeUiState>(
+) : BaseViewModel<HomeUiState>(
     initialUiState = HomeUiState(
         selectedGender = GenderDivision.ALL,
         sportSelect = SportSelection.All,
-        selectionList = Sport.getSportSelectionList(),//sportSelectionList,
+        selectionList = Sport.getSportSelectionList(),
         upcomingGameList = emptyList()
     )
 ) {
-    data class HomeUiState(
-        val selectedGender: GenderDivision,
-        val sportSelect: SportSelection,
-        val selectionList: List<SportSelection>,
-        val upcomingGameList: List<GameCardData>,
-        // TODO Add remaining dynamic data for UI
-    ) {
-        val filteredGames: List<GameCardData>
-            get() = upcomingGameList.filter { game ->
-                (selectedGender == GenderDivision.ALL || game.gender == selectedGender.displayName)
-                        && (sportSelect is SportSelection.All || (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName))
-            }
-    }
-
     fun onGenderSelected(gender: GenderDivision) {
         applyMutation {
             copy(
@@ -95,12 +96,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onRefresh() {
-        viewModelScope.launch {
-            val response = scoreRepository.fetchGames()
-            updateGameList(response)
-        }
-    }
+//    fun onRefresh() {
+//        viewModelScope.launch {
+//            val response = scoreRepository.fetchGames()
+//            updateGameList(response)
+//        }
+//    }
 
     //Converts date from String "month day" to a LocalDate object
     private fun formatDate(strDate: String): LocalDate? {
@@ -133,7 +134,10 @@ class HomeViewModel @Inject constructor(
         return LocalDate.of(currentYear, month, day)
     }
 
-    //Converts from format "#xxxxxx" to a valid hex, with alpha = 40. Ready to be passed into Color()
+    /**
+     * Converts from format "#xxxxxx" to a valid hex, with alpha = 40. Ready to be passed into Color()
+     */
+
     private fun formatColor(color: String): Int {
         val alpha = (40 * 255 / 100)// Convert percent to hex (0-255)
         val colorInt = Integer.parseInt(color.removePrefix("#"), 16)
@@ -148,12 +152,15 @@ class HomeViewModel @Inject constructor(
         return "${date.month.value}/${date.dayOfMonth}/${date.year}"
     }
 
-    init {
+    private fun observeUpcomingGames() = scoreRepository.upcomingGamesFlow.onEach { response ->
+        //Log.d("HomeViewModel", "Response: $response")
+        updateGameList(response)
+    }.launchIn(viewModelScope)
 
-        asyncCollect(scoreRepository.upcomingGamesFlow) { response ->
-            Log.d("HomeViewModel", "Response: $response")
-            updateGameList(response)
+    init {
+        observeUpcomingGames()
+        viewModelScope.launch{
+            scoreRepository.fetchGames()
         }
-        onRefresh()
     }
 }

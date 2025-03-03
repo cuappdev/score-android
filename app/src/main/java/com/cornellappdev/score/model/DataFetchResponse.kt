@@ -1,7 +1,6 @@
 package com.cornellappdev.score.model
 
 
-
 /**
  * Represents the state of an ApiResponse fetching data of type [T].
  * Can be: [Loading], which represents the call still loading in, [Error], which represents the

@@ -24,8 +24,8 @@ import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.theme.CornellRed
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
-import com.cornellappdev.score.theme.PennBlue
 import com.cornellappdev.score.theme.Style.title
+import com.cornellappdev.score.util.gameList
 
 @Composable
 fun DotIndicator(
@@ -99,8 +99,8 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
     }
 }
 
-//@Preview(showBackground = true, widthDp = 360)
-//@Composable
-//fun UpcomingGamesCarouselPreview() {
-//    UpcomingGamesCarousel(gameList)
-//}
+@Preview(showBackground = true, widthDp = 360)
+@Composable
+private fun UpcomingGamesCarouselPreview() {
+    UpcomingGamesCarousel(gameList)
+}

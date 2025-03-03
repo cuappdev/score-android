@@ -6,6 +6,7 @@ import com.example.score.GamesQuery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,9 +31,9 @@ class ScoreRepository @Inject constructor(
      * Asynchronously fetches the list of games from the API. Once finished, will send down
      * `upcomingGamesFlow` to be observed.
      */
-    suspend fun fetchGames(): ApiResponse<List<Game>> {
+    fun fetchGames() = appScope.launch {
         _upcomingGamesFlow.value = ApiResponse.Loading
-        return try {
+        try {
             val response = (apolloClient.query(GamesQuery()).execute())
             val games = response.data?.games ?: emptyList()
             Log.d("ScoreRepository", "response fetched successfully")
@@ -51,14 +52,10 @@ class ScoreRepository @Inject constructor(
                 }
             }
             Log.d("ScoreRepository", "#games: ${list.size}")
-
             _upcomingGamesFlow.value = ApiResponse.Success(list.toList())
-            ApiResponse.Success(list)
         } catch (e: Exception) {
             Log.e("ScoreRepository", "Error fetching posts: ", e)
-
             _upcomingGamesFlow.value = ApiResponse.Error
-            ApiResponse.Error
         }
     }
 }
