@@ -1,12 +1,32 @@
 package com.cornellappdev.score.model
 
+import androidx.compose.ui.graphics.painter.Painter
+import java.time.LocalDate
+
 // TODO Refactor to make easier to filter... actual gender, etc.
-data class GameCardData(
-    val teamLogo: Int,
-    val team: String,
+
+data class Game(
+    val teamName: String,
+    val teamLogo: String,
+    val teamColor: String,
+    val gender: String,
+    val sport: String,
     val date: String,
+    val city: String
+)
+
+//Data for HomeScreen game displays
+data class GameCardData(
+    val teamLogo: String,
+    val team: String,
+    val teamColor: Int,
+    val date: LocalDate?,
+    val dateString: String,
+    val isLive: Boolean,
     val location: String,
+    val gender: String,
     val genderIcon: Int,
+    val sport: String,
     val sportIcon: Int
 )
 

@@ -1,5 +1,7 @@
 package com.cornellappdev.score.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +12,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -20,21 +24,27 @@ import com.cornellappdev.score.components.SportCard
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.components.UpcomingGamesCarousel
 import com.cornellappdev.score.theme.Style.title
-import com.cornellappdev.score.util.gameList
 import com.cornellappdev.score.viewmodel.HomeViewModel
 
-
+@RequiresApi(Build.VERSION_CODES.O)//TODO - change the manifest or leave this?
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val uiState = homeViewModel.collectUiStateValue()
+    val uiState by homeViewModel.uiStateFlow.collectAsState()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-        modifier = Modifier.statusBarsPadding())
+        modifier = Modifier.statusBarsPadding()
+    )
     {
-        UpcomingGamesCarousel(uiState.upcomingGameList)
+        //TODO: check - displaying the earliest three games
+        UpcomingGamesCarousel(
+            uiState.upcomingGameList.subList(
+                0,
+                minOf(3, uiState.upcomingGameList.size)
+            )
+        )
         Column {
             Text(
                 text = "Game Schedule",
@@ -46,7 +56,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(8.dp))
             SportSelectorHeader(
                 sports = uiState.selectionList,
-                selectedGender =  uiState.selectedGender,
+                selectedGender = uiState.selectedGender,
                 selectedSport = uiState.sportSelect,
                 onGenderSelected = {
                     homeViewModel.onGenderSelected(it)
@@ -56,12 +66,13 @@ fun HomeScreen(
                 }
             )
             LazyColumn(modifier = Modifier.padding(horizontal = 24.dp)) {
-                items(gameList.size) { page ->
-                    val game = gameList[page]
+                items(uiState.filteredGames.size) { page ->
+                    val game = uiState.filteredGames[page]
                     SportCard(
-                        teamLogo = painterResource(game.teamLogo),
+                        teamLogo = game.teamLogo,//painterResource(game.teamLogo),
                         team = game.team,
-                        date = game.date,
+                        date = game.dateString,
+                        isLive = game.isLive,
                         genderIcon = painterResource(game.genderIcon),
                         sportIcon = painterResource(game.sportIcon),
                         location = game.location,
@@ -73,6 +84,7 @@ fun HomeScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable

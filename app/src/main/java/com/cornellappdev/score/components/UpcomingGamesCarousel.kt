@@ -1,7 +1,6 @@
 package com.cornellappdev.score.components
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,11 +24,9 @@ import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.theme.CornellRed
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
-import com.cornellappdev.score.theme.PennBlue
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.util.gameList
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DotIndicator(
     pagerState: androidx.compose.foundation.pager.PagerState,
@@ -56,7 +53,6 @@ fun DotIndicator(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UpcomingGamesCarousel(games: List<GameCardData>) {
     val pagerState = rememberPagerState(pageCount = { games.size })
@@ -79,16 +75,17 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
             val game = games[page]
             UpcomingGameCard(
                 leftTeamLogo = painterResource(R.drawable.cornell_logo),
-                rightTeamLogo = painterResource(game.teamLogo),
+                rightTeamLogo = game.teamLogo,
                 team = game.team,
-                date = game.date,
+                date = game.dateString,
+                isLive = game.isLive,
                 genderIcon = painterResource(game.genderIcon),
                 sportIcon = painterResource(game.sportIcon),
                 location = game.location,
                 modifier = Modifier,
                 headerModifier = Modifier,
-                gradientColor1 = CornellRed,
-                gradientColor2 = PennBlue
+                gradientColor1 = CornellRed, //TODO: is it okay if this is hardcoded
+                gradientColor2 = Color(game.teamColor)
             )
         }
 
@@ -104,6 +101,6 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
 
 @Preview(showBackground = true, widthDp = 360)
 @Composable
-fun UpcomingGamesCarouselPreview() {
+private fun UpcomingGamesCarouselPreview() {
     UpcomingGamesCarousel(gameList)
 }
