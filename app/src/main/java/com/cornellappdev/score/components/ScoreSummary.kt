@@ -14,9 +14,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.model.ScoreEvent
+import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.bodyMedium
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading5
+import com.cornellappdev.score.theme.Style.metricNormal
+import com.cornellappdev.score.theme.Style.metricSemibold
 import com.cornellappdev.score.util.scoreEvents1
 
 
@@ -56,12 +59,14 @@ fun ScoreEventItem(event: ScoreEvent) {
             Text(
                 text = event.time,
                 style = bodyNormal,
+                color = GrayPrimary,
                 textAlign = TextAlign.Center
             )
 
             Text(
                 text = event.quarter,
                 style = bodyNormal,
+                color = GrayPrimary,
                 textAlign = TextAlign.Center
             )
         }
@@ -74,6 +79,7 @@ fun ScoreEventItem(event: ScoreEvent) {
             Text(
                 text = event.eventType,
                 style = bodyMedium,
+                color = GrayPrimary,
                 textAlign = TextAlign.Center
             )
             val (homeScore, awayScore) = event.score.split(" - ").map { it.toInt() }
@@ -81,18 +87,20 @@ fun ScoreEventItem(event: ScoreEvent) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = homeScore.toString(),
-                    style = if (event.team.name == "Cornell") heading5.copy(fontWeight = FontWeight.Bold) else heading5,
+                    style = if (event.team.name == "Cornell") metricSemibold else metricNormal,
+                    color = GrayPrimary,
                     textAlign = TextAlign.Center
                 )
                 Text(
                     text = " - ",
-
-                    style = heading5,
+                    style = bodyNormal,
+                    color = GrayPrimary,
                     textAlign = TextAlign.Center
                 )
                 Text(
                     text = awayScore.toString(),
-                    style = if (event.team.name != "Cornell") heading5.copy(fontWeight = FontWeight.Bold) else heading5,
+                    style = if (event.team.name != "Cornell") metricSemibold else metricNormal,
+                    color = GrayPrimary,
                     textAlign = TextAlign.Center
                 )
             }

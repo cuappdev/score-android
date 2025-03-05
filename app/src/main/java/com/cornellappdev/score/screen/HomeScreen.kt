@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.components.SportCard
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.components.UpcomingGamesCarousel
+import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.viewmodel.HomeViewModel
 
@@ -48,7 +49,7 @@ fun HomeScreen(
         Column {
             Text(
                 text = "Game Schedule",
-                style = title,
+                style = heading1,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp, vertical = 8.dp)

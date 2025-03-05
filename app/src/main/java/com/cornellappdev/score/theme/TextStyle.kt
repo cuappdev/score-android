@@ -173,21 +173,33 @@ object Style {
         fontWeight = FontWeight(700)
     )
 
-    val labelLight = TextStyle(
+    val labelsLight = TextStyle(
         fontSize = 12.sp,
         fontFamily = poppinsFamily,
         fontWeight = FontWeight(300)
     )
 
-    val labelNormal = TextStyle(
+    val labelsNormal = TextStyle(
         fontSize = 12.sp,
         fontFamily = poppinsFamily,
         fontWeight = FontWeight(400)
     )
 
-    val labelMedium = TextStyle(
+    val labelsMedium = TextStyle(
         fontSize = 12.sp,
         fontFamily = poppinsFamily,
         fontWeight = FontWeight(500)
+    )
+
+    val metricNormal = TextStyle(
+        fontSize = 18.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(400)
+    )
+
+    val metricSemibold = TextStyle(
+        fontSize = 18.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(600)
     )
 }

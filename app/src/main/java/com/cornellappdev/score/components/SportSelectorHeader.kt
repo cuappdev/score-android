@@ -37,8 +37,12 @@ import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayMedium
+import com.cornellappdev.score.theme.Style.bodyMedium
+import com.cornellappdev.score.theme.Style.bodySemibold
 import com.cornellappdev.score.theme.Style.genderFilterText
 import com.cornellappdev.score.theme.Style.genderText
+import com.cornellappdev.score.theme.Style.labelsMedium
+import com.cornellappdev.score.theme.Style.labelsNormal
 import com.cornellappdev.score.theme.Style.sportFilterText
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.sportSelectionList
@@ -134,7 +138,8 @@ fun GenderSelector(option: GenderDivision, isSelected: Boolean, onSelect: () -> 
     ) {
         Text(
             text = option.displayName,
-            style = if (isSelected) genderFilterText else genderText
+            style = if (isSelected) bodySemibold else bodyMedium,
+            color = if (isSelected) White else GrayMedium
         )
     }
 }
@@ -166,7 +171,7 @@ fun SportSelector(
         )
         Text(
             text = option,
-            style = sportFilterText,
+            style = if (enabled) labelsMedium else labelsNormal,
             color = if (enabled) CrimsonPrimary else GrayMedium
         )
     }
