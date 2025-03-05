@@ -26,6 +26,7 @@ import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.spanBodyNormal
 import com.cornellappdev.score.util.scoreEvents2
+import androidx.compose.foundation.layout.fillMaxSize
 
 @Composable
 fun GameScoreSummaryScreenDetail(scoreEvents: List<ScoreEvent>) {
