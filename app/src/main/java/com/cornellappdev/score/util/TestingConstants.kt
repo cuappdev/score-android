@@ -4,27 +4,38 @@ import com.cornellappdev.score.R
 import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.model.GameData
 import com.cornellappdev.score.model.ScoreEvent
-import com.cornellappdev.score.model.Team
-import com.cornellappdev.score.model.TeamScore
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
+import com.cornellappdev.score.model.Team
+import com.cornellappdev.score.model.TeamScore
+import java.time.LocalDate
 
 val PENN_GAME = GameCardData(
-    teamLogo = R.drawable.penn_logo,
+    teamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",
     team = "Penn",
-    date = "5/20/2024",
+    teamColor = 0x66B31B1B,
+    date = LocalDate.now(),
+    dateString = "3/1/25",
+    isLive = false,
     location = "Philadelphia, PA",
+    gender = "Male",
     genderIcon = R.drawable.ic_gender_men,
-    sportIcon = R.drawable.ic_baseball
+    sport = "Baseball",
+    sportIcon = R.drawable.ic_baseball,
 )
 
 val PRINCETON_GAME = GameCardData(
-    teamLogo = R.drawable.princeton_logo,
+    teamLogo = "https://cornellbigred.com/images/logos/Princeton_Tigers.png?width=80&height=80&mode=max",
     team = "Princeton",
-    date = "5/21/2024",
-    location = "Princeton, NY",
+    teamColor = 0x66FF6000,
+    date = LocalDate.now(),
+    dateString = "3/1/25",
+    isLive = false,
+    location = "Boston, MA",
+    gender = "Female",
     genderIcon = R.drawable.ic_gender_men,
-    sportIcon = R.drawable.ic_baseball
+    sport = "Swim Dive",
+    sportIcon = R.drawable.ic_swim_dive,
 )
 val gameList = listOf(PENN_GAME, PRINCETON_GAME)
 
@@ -97,7 +108,9 @@ val scoreEvents2 = listOf(
         eventType = "Touchdown",
         score = "7 - 0",
         description = "Wang, Jameson left pass complete to Lee, Brendan for 34 yards to the YALOO, TOUCHDOWN. (Zhao, Alan kick attempt good.)"
-    ))
+    )
+)
+
 fun emptyGameData(): GameData {
     return GameData(
         teamScores = Pair(
@@ -114,6 +127,7 @@ fun emptyGameData(): GameData {
         )
     )
 }
+
 val sportList = listOf(
     Sport.BASEBALL,
     Sport.BASKETBALL,

@@ -3,6 +3,7 @@ package com.cornellappdev.score.theme
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -146,6 +147,12 @@ object Style {
         fontSize = 14.sp,
         fontFamily = poppinsFamily,
         fontWeight = FontWeight(400)
+    )
+
+    val spanBodyNormal = SpanStyle(
+        fontSize = 14.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(400),
     )
 
     val bodyMedium = TextStyle(

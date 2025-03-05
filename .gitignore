@@ -34,3 +34,6 @@ app/google-services.json
 
 # Secrets
 secrets.properties
+
+# Mac
+.DS_store
