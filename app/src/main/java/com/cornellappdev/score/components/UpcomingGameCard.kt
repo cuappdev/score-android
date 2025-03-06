@@ -76,7 +76,7 @@ fun UpcomingGameHeader(
 
 @Preview
 @Composable
-fun UpcomingGameHeaderPreview() {
+private fun UpcomingGameHeaderPreview() {
     UpcomingGameHeader(
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = "https://cornellbigred.com/images/logos/YALE_LOGO_2020.png?width=80&height=80&mode=max",
@@ -96,10 +96,10 @@ fun UpcomingGameCard(
     genderIcon: Painter,
     sportIcon: Painter,
     date: String,
-    modifier: Modifier = Modifier,
-    headerModifier: Modifier,
     gradientColor1: Color,
-    gradientColor2: Color
+    gradientColor2: Color,
+    modifier: Modifier = Modifier,
+    headerModifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -138,7 +138,7 @@ fun UpcomingGameCard(
 
 @Preview(showBackground = true)
 @Composable
-fun GameScheduleScreen() {
+private fun GameScheduleScreen() {
     UpcomingGameCard(
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",//painterResource(R.drawable.penn_logo),

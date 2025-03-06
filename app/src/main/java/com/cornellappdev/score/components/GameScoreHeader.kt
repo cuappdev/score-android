@@ -94,7 +94,7 @@ fun GameScoreHeader(
 
 @Preview
 @Composable
-fun GameScoreHeaderPreview() {
+private fun GameScoreHeaderPreview() {
     GameScoreHeader(
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = painterResource(R.drawable.penn_logo),
