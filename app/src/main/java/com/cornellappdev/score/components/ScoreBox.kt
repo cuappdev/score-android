@@ -125,12 +125,12 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewBoxScore() {
+private fun PreviewBoxScore() {
     BoxScore(gameData = gameData)
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewBoxScoreEmpty() {
+private fun PreviewBoxScoreEmpty() {
     BoxScore(gameData = emptyGameData())
 }

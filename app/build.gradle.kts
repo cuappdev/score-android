@@ -23,15 +23,23 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
-        compose =true
+        compose = true
         buildConfig = true
     }
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"https://score-dev.cornellappdev.com/graphql\"")
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"https://score-dev.cornellappdev.com/graphql\""
+            )
         }
         release {
-            buildConfigField("String", "BASE_URL", "\"https://score-dev.cornellappdev.com/graphql\"")
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"https://score-dev.cornellappdev.com/graphql\""
+            )
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -84,6 +92,7 @@ dependencies {
     implementation(libs.apollo.runtime)
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
+    lintChecks(libs.compose.lint.checks)
 }
 
 apollo {

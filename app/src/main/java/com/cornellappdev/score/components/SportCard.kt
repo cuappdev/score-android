@@ -192,7 +192,7 @@ fun SportCard(
 
 @Preview(showBackground = true)
 @Composable
-fun SportCardPreview() {
+private fun SportCardPreview() {
     Column {
         SportCard(
             teamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max", //painterResource(id = R.drawable.penn_logo),

@@ -94,9 +94,10 @@ fun GameDetailsScreen() {
     }
 }
 
+
 @Preview
 @Composable
-fun GameDetailsScreenPreview() {
+private fun GameDetailsScreenPreview() {
     GameDetailsScreen()
 // import androidx.compose.ui.tooling.preview.Preview
 // import androidx.compose.ui.unit.dp
