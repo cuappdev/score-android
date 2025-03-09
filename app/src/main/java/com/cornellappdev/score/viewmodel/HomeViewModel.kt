@@ -36,7 +36,7 @@ data class HomeUiState(
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val rootNavigationViewModel: RootNavigationViewModel,
+    //private val rootNavigationViewModel: RootNavigationViewModel,
     private val scoreRepository: ScoreRepository
 ) : BaseViewModel<HomeUiState>(
     HomeUiState(
