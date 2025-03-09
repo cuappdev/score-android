@@ -24,6 +24,7 @@ import com.cornellappdev.score.components.SportCard
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.components.UpcomingGamesCarousel
 import com.cornellappdev.score.model.ApiResponse
+import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.viewmodel.HomeViewModel
 import kotlin.math.min
@@ -48,6 +49,35 @@ fun HomeScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
+                }
+            
+                //TODO: check - displaying the earliest three games
+                UpcomingGamesCarousel(
+                    uiState.upcomingGameList.subList(
+                        0,
+                        minOf(3, uiState.upcomingGameList.size)
+                    )
+                )
+                Column {
+                    Text(
+                        text = "Game Schedule",
+                        style = heading1,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 8.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    SportSelectorHeader(
+                        sports = uiState.selectionList,
+                        selectedGender = uiState.selectedGender,
+                        selectedSport = uiState.sportSelect,
+                        onGenderSelected = {
+                            homeViewModel.onGenderSelected(it)
+                        },
+                        onSportSelected = {
+                            homeViewModel.onSportSelected(it)
+                        }
+                    )
                 }
             }
 
@@ -105,6 +135,6 @@ fun HomeScreen(
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun HomeScreenPreview() {
+private fun HomeScreenPreview() {
     HomeScreen()
 }

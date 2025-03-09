@@ -50,7 +50,8 @@ fun TimeUntilStartCard(days: Int, hours: Int) {
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "days",
-                style = bodyNormal
+                style = bodyNormal,
+                color = GrayPrimary
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
@@ -60,7 +61,8 @@ fun TimeUntilStartCard(days: Int, hours: Int) {
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "hours",
-                style = bodyNormal
+                style = bodyNormal,
+                color = GrayPrimary
             )
         }
     }
@@ -68,6 +70,6 @@ fun TimeUntilStartCard(days: Int, hours: Int) {
 
 @Preview
 @Composable
-fun TimeUntilStartCardPreview() {
+private fun TimeUntilStartCardPreview() {
     TimeUntilStartCard(2, 0)
 }

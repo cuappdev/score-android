@@ -21,19 +21,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cornellappdev.score.components.NavigationHeader
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.spanBodyNormal
 import com.cornellappdev.score.util.scoreEvents2
+import androidx.compose.foundation.layout.fillMaxSize
 
 @Composable
 fun GameScoreSummaryScreenDetail(scoreEvents: List<ScoreEvent>) {
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        items(scoreEvents.size) { event ->
-            ScoreEventItemDetailed(event = scoreEvents[event])
-            Divider(color = Color.LightGray, thickness = 0.5.dp)
+    Column(modifier = Modifier.fillMaxSize()){
+        // TODO: add navigation
+        NavigationHeader(title = "Scoring Summary", {})
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 8.dp)
+        ) {
+            items(scoreEvents.size) { event ->
+                ScoreEventItemDetailed(event = scoreEvents[event])
+                Divider(color = Color.LightGray, thickness = 0.5.dp)
+            }
         }
     }
 }
@@ -101,6 +107,6 @@ fun ScoreEventItemDetailed(event: ScoreEvent) {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewScoringDetailsScreen() {
+private fun PreviewScoringDetailsScreen() {
     GameScoreSummaryScreenDetail(scoreEvents = scoreEvents2)
 }

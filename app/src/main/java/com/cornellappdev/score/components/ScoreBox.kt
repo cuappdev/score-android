@@ -15,8 +15,11 @@ import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.model.GameData
 import com.cornellappdev.score.model.TeamScore
 import com.cornellappdev.score.theme.CrimsonPrimary
+import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading6
+import com.cornellappdev.score.theme.Style.metricNormal
+import com.cornellappdev.score.theme.Style.metricSemibold
 import com.cornellappdev.score.theme.Style.scoreText
 import com.cornellappdev.score.theme.saturatedGreen
 import com.cornellappdev.score.util.emptyGameData
@@ -53,12 +56,14 @@ fun BoxScore(gameData: GameData) {
                     text = "${period + 1}",
                     modifier = Modifier.weight(1f),
                     color = Color.White,
+                    style = bodyNormal,
                     textAlign = TextAlign.Center
                 )
             }
             Text(
                 text = "Total",
                 modifier = Modifier.weight(1f),
+                style = bodyNormal,
                 color = Color.White,
                 textAlign = TextAlign.Center
             )
@@ -91,6 +96,7 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
         Text(
             text = teamScore.team.name,
             style = bodyNormal,
+            color = GrayPrimary,
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center
         )
@@ -99,7 +105,8 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
             Text(
                 text = if (showEmpty) "-" else score.toString(),
                 modifier = Modifier.weight(1f),
-                style = scoreText,
+                style = metricNormal,
+                color = GrayPrimary,
                 textAlign = TextAlign.Center
             )
         }
@@ -108,6 +115,8 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
             Text(
                 text = "-",
                 modifier = Modifier.weight(1f),
+                style = metricNormal,
+                color = GrayPrimary,
                 textAlign = TextAlign.Center
             )
         }
@@ -115,7 +124,7 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
         Text(
             text = if (showEmpty) "-" else teamScore.totalScore.toString(),
             modifier = Modifier.weight(1f),
-            style = heading6,
+            style = metricSemibold,
             color = if (showEmpty) Color.Gray else totalTextColor,
             fontWeight = if (showEmpty) FontWeight.Normal else FontWeight.Bold,
             textAlign = TextAlign.Center
@@ -125,12 +134,12 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewBoxScore() {
+private fun PreviewBoxScore() {
     BoxScore(gameData = gameData)
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewBoxScoreEmpty() {
+private fun PreviewBoxScoreEmpty() {
     BoxScore(gameData = emptyGameData())
 }

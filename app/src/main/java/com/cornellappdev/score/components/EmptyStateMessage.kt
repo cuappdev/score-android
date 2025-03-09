@@ -52,7 +52,7 @@ fun EmptyStateMessage(modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-fun PreviewEmptyStateMessage() {
+private fun PreviewEmptyStateMessage() {
     Box(modifier = Modifier.background(Color.White)) {
         EmptyStateMessage()
     }

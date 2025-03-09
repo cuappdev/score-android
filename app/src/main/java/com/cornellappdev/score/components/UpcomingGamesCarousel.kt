@@ -24,6 +24,8 @@ import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.theme.CornellRed
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
+import com.cornellappdev.score.theme.GrayPrimary
+import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.util.gameList
 
@@ -64,7 +66,8 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
     ) {
         Text(
             text = "Upcoming",
-            style = title,
+            style = heading1,
+            color = GrayPrimary,
             modifier = Modifier.fillMaxWidth()
         )
 
