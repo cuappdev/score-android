@@ -1,8 +1,6 @@
 package com.cornellappdev.score.screen
 
 import android.content.res.Configuration
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,11 +14,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,7 +40,7 @@ fun HomeScreen(
     ) {
         when (uiState.loadedState) {
             is ApiResponse.Loading -> {
-                // Show a loading indicator
+                //TODO: Add loading screen
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -53,8 +48,9 @@ fun HomeScreen(
                     CircularProgressIndicator()
                 }
             }
+
             is ApiResponse.Error -> {
-                // Show an error message
+                //TODO: Add Error screen
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -64,6 +60,7 @@ fun HomeScreen(
                     )
                 }
             }
+
             is ApiResponse.Success -> {
                 UpcomingGamesCarousel(filteredGames)
                 Column {
@@ -101,51 +98,6 @@ fun HomeScreen(
             }
         }
     }
-//    Column(
-//        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-//        modifier = Modifier.statusBarsPadding()
-//    )
-//    {
-//        UpcomingGamesCarousel(
-//            uiState.filteredGames
-//        )
-//        Column {
-//            Text(
-//                text = "Game Schedule",
-//                style = title,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(horizontal = 24.dp, vertical = 8.dp)
-//            )
-//            Spacer(modifier = Modifier.height(8.dp))
-//            SportSelectorHeader(
-//                sports = uiState.selectionList,
-//                selectedGender = uiState.selectedGender,
-//                selectedSport = uiState.sportSelect,
-//                onGenderSelected = {
-//                    homeViewModel.onGenderSelected(it)
-//                },
-//                onSportSelected = {
-//                    homeViewModel.onSportSelected(it)
-//                }
-//            )
-//            LazyColumn(modifier = Modifier.padding(horizontal = 24.dp)) {
-//                items(uiState.filteredGames.size) { page ->
-//                    val game = uiState.filteredGames[page]
-//                    SportCard(
-//                        teamLogo = game.teamLogo,
-//                        team = game.team,
-//                        date = game.dateString,
-//                        isLive = game.isLive,
-//                        genderIcon = painterResource(game.genderIcon),
-//                        sportIcon = painterResource(game.sportIcon),
-//                        location = game.location,
-//                        topCornerRound = true
-//                    )
-//                }
-//            }
-//        }
-//    }
 }
 
 @Preview(showBackground = true)
