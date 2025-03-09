@@ -26,6 +26,7 @@ import com.cornellappdev.score.components.UpcomingGamesCarousel
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.viewmodel.HomeViewModel
+import kotlin.math.min
 
 @Composable
 fun HomeScreen(
@@ -33,6 +34,7 @@ fun HomeScreen(
 ) {
     val uiState = homeViewModel.collectUiStateValue()
     val filteredGames = uiState.filteredGames
+    val firstThreeGames = filteredGames.subList(0, min(filteredGames.size, 3)) //TODO: is this okay to be in the view?
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
@@ -62,7 +64,7 @@ fun HomeScreen(
             }
 
             is ApiResponse.Success -> {
-                UpcomingGamesCarousel(filteredGames)
+                UpcomingGamesCarousel(firstThreeGames)
                 Column {
                     Text(
                         text = "Game Schedule",
