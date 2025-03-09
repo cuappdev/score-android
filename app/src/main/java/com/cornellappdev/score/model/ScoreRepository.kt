@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.cornellappdev.score.model.toResult
 
 /**
  * This is a singleton responsible for fetching and caching all data for Score.
@@ -35,24 +36,31 @@ class ScoreRepository @Inject constructor(
         _upcomingGamesFlow.value = ApiResponse.Loading
         try {
             val response = (apolloClient.query(GamesQuery()).execute())
-            val games = response.data?.games ?: emptyList()
-            Log.d("ScoreRepository", "response fetched successfully")
+            val result = response.toResult()
 
-            val list: List<Game> = games.mapNotNull { game ->
-                game?.team?.image?.let {
-                    Game(
-                        teamLogo = it,//game.team.image,
-                        teamName = game.team.name,
-                        teamColor = game.team.color,
-                        gender = game.gender,
-                        sport = game.sport,
-                        date = game.date,
-                        city = game.city
-                    )
+            if(result.isSuccess){
+                val games = response.data?.games ?: emptyList()
+                Log.d("ScoreRepository", "response fetched successfully")
+
+                val list: List<Game> = games.mapNotNull { game ->
+                    game?.team?.image?.let {
+                        Game(
+                            teamLogo = it,//game.team.image,
+                            teamName = game.team.name,
+                            teamColor = game.team.color,
+                            gender = game.gender,
+                            sport = game.sport,
+                            date = game.date,
+                            city = game.city
+                        )
+                    }
                 }
+                Log.d("ScoreRepository", "#games: ${list.size}")
+                _upcomingGamesFlow.value = ApiResponse.Success(list.toList())
+            }else{
+                _upcomingGamesFlow.value = ApiResponse.Error
             }
-            Log.d("ScoreRepository", "#games: ${list.size}")
-            _upcomingGamesFlow.value = ApiResponse.Success(list.toList())
+
         } catch (e: Exception) {
             Log.e("ScoreRepository", "Error fetching posts: ", e)
             _upcomingGamesFlow.value = ApiResponse.Error
