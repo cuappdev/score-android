@@ -2,10 +2,13 @@ package com.cornellappdev.score.model
 
 import android.util.Log
 import com.apollographql.apollo.ApolloClient
+import com.example.score.GameByIdQuery
 import com.example.score.GamesQuery
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,7 +29,8 @@ class ScoreRepository @Inject constructor(
         MutableStateFlow<ApiResponse<List<Game>>>(ApiResponse.Loading)
     val upcomingGamesFlow = _upcomingGamesFlow.asStateFlow()
 
-
+    private val _currGameFlow = MutableStateFlow<ApiResponse<GameDetailsGame>>(ApiResponse.Loading)
+    val currGamesFlow = _currGameFlow.asStateFlow()
     /**
      * Asynchronously fetches the list of games from the API. Once finished, will send down
      * `upcomingGamesFlow` to be observed.
@@ -58,4 +62,58 @@ class ScoreRepository @Inject constructor(
             _upcomingGamesFlow.value = ApiResponse.Error
         }
     }
+
+    fun getGameById(id: String) = appScope.launch {
+        _currGameFlow.value = ApiResponse.Loading
+        try {
+            val response = apolloClient.query(GameByIdQuery(id)).execute()
+            val game = response.data?.game
+
+            if (game != null) {
+                val temp = GameDetailsGame(
+                    id = game.id ?: "",
+                    city = game.city,
+                    date = game.date,
+                    gender = game.gender,
+                    location = game.location,
+                    opponentId = game.opponentId,
+                    result = game.result,
+                    sport = game.sport,
+                    state = game.state,
+                    time = game.time,
+                    scoreBreakdown = game.scoreBreakdown,
+                    team = game.team?.let { team ->
+                        GameDetailsTeam(
+                            id = team.id,
+                            color = team.color,
+                            image = team.image,
+                            name = team.name
+                        )
+                    },
+                    boxScore = game.boxScore?.mapNotNull { boxScore ->
+                        boxScore?.let {
+                            GameDetailsBoxScore(
+                                team = it.team,
+                                period = it.period,
+                                time = it.time,
+                                description = it.description,
+                                scorer = it.scorer,
+                                assist = it.assist,
+                                scoreBy = it.scoreBy,
+                                corScore = it.corScore,
+                                oppScore = it.oppScore
+                            )
+                        }
+                    }
+                )
+                _currGameFlow.value = ApiResponse.Success(temp)
+            } else {
+                _currGameFlow.value = ApiResponse.Error
+            }
+        } catch (e: Exception) {
+            Log.e("ScoreRepository", "Error fetching game with id: ${id}: ", e)
+            _currGameFlow.value = ApiResponse.Error
+        }
+    }
+
 }

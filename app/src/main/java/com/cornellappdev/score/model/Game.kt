@@ -15,6 +15,45 @@ data class Game(
     val city: String
 )
 
+/**
+ * Clean up?
+ */
+data class GameDetailsTeam(
+    val id: String?,
+    val color: String?,
+    val image: String?,
+    val name: String?
+)
+
+data class GameDetailsBoxScore(
+    val team: String?,
+    val period: String?,
+    val time: String?,
+    val description: String?,
+    val scorer: String?,
+    val assist: String?,
+    val scoreBy: String?,
+    val corScore: Int?,
+    val oppScore: Int?
+)
+
+data class GameDetailsGame(
+    val id: String,
+    val city: String?,
+    val date: String?,
+    val gender: String?,
+    val location: String?,
+    val opponentId: String?,
+    val result: String?,
+    val sport: String?,
+    val state: String?,
+    val time: String?,
+    val scoreBreakdown: List<List<String?>?>?,
+    val team: GameDetailsTeam?,
+    val boxScore: List<GameDetailsBoxScore>?
+)
+
+
 //Data for HomeScreen game displays
 data class GameCardData(
     val teamLogo: String,
