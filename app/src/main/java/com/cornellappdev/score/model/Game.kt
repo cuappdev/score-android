@@ -8,7 +8,7 @@ import java.time.LocalDate
 data class Game(
     val teamName: String,
     val teamLogo: String,
-    val teamColor: String,
+    val teamColor: String, //should this also be a Color?
     val gender: String,
     val sport: String,
     val date: String,

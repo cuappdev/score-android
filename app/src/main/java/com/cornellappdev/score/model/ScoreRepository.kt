@@ -35,28 +35,26 @@ class ScoreRepository @Inject constructor(
     fun fetchGames() = appScope.launch {
         _upcomingGamesFlow.value = ApiResponse.Loading
         try {
-            val response = (apolloClient.query(GamesQuery()).execute())
-            val result = response.toResult()
+            val result = (apolloClient.query(GamesQuery()).execute()).toResult()
 
             if(result.isSuccess){
-                val games = response.data?.games ?: emptyList()
-                Log.d("ScoreRepository", "response fetched successfully")
+                val games = result.getOrNull()
 
-                val list: List<Game> = games.mapNotNull { game ->
-                    game?.team?.image?.let {
-                        Game(
-                            teamLogo = it,//game.team.image,
-                            teamName = game.team.name,
-                            teamColor = game.team.color,
-                            gender = game.gender,
-                            sport = game.sport,
-                            date = game.date,
-                            city = game.city
-                        )
-                    }
-                }
-                Log.d("ScoreRepository", "#games: ${list.size}")
-                _upcomingGamesFlow.value = ApiResponse.Success(list.toList())
+                val upcomingGameslist: List<Game> =
+                    games?.games?.mapNotNull { game ->
+                        game?.team?.image?.let {
+                            Game(
+                                teamLogo = it,
+                                teamName = game.team.name,
+                                teamColor = game.team.color,
+                                gender = game.gender,
+                                sport = game.sport,
+                                date = game.date,
+                                city = game.city
+                            )
+                        }
+                    }  ?: emptyList()
+                _upcomingGamesFlow.value = ApiResponse.Success(upcomingGameslist)
             }else{
                 _upcomingGamesFlow.value = ApiResponse.Error
             }

@@ -5,9 +5,9 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Converts date of form String "month-abbr day (day-of-week)" (for example, "Apr 29 (Tue)") to a LocalDate object
+ * Returns null when parsing [strDate] fails
  */
-
-fun formatDate(strDate: String): LocalDate? {
+fun parseDate(strDate: String): LocalDate? {
     val subDate = strDate.substringBefore(" (")
     val formatter = DateTimeFormatter.ofPattern("MMM d")
 
@@ -34,6 +34,5 @@ fun dateToString(date: LocalDate?): String {
     if (date == null) {
         return "--"
     }
-    //Log.d("HomeViewModel", "formatedDate: ${date.month.value}/${date.dayOfMonth}/${date.year}")
     return "${date.month.value}/${date.dayOfMonth}/${date.year}"
 }

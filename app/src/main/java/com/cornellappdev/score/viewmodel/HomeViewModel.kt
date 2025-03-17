@@ -1,6 +1,5 @@
 package com.cornellappdev.score.viewmodel
 
-import android.util.Log
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GameCardData
@@ -11,7 +10,7 @@ import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.nav.root.RootNavigationViewModel
 import com.cornellappdev.score.util.dateToString
 import com.cornellappdev.score.util.formatColor
-import com.cornellappdev.score.util.formatDate
+import com.cornellappdev.score.util.parseDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import javax.inject.Inject
@@ -22,6 +21,7 @@ data class HomeUiState(
     val selectionList: List<SportSelection>,
     val loadedState: ApiResponse<List<GameCardData>>
 ) {
+    //TODO: refactor filters to use flows - not best practice to expose original games list to the view
     val filteredGames: List<GameCardData>
         get() = when (loadedState) {
             is ApiResponse.Success -> loadedState.data.filter { game ->
@@ -32,11 +32,11 @@ data class HomeUiState(
             ApiResponse.Loading -> emptyList()
             ApiResponse.Error -> emptyList()
         }
+    val upcomingGames: List<GameCardData> = filteredGames.take(3)
 }
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    //private val rootNavigationViewModel: RootNavigationViewModel,
     private val scoreRepository: ScoreRepository
 ) : BaseViewModel<HomeUiState>(
     HomeUiState(
@@ -47,10 +47,7 @@ class HomeViewModel @Inject constructor(
     )
 ) {
     init {
-        Log.d("HomeViewModel", "init reached")
         scoreRepository.fetchGames()
-        Log.d("HomeViewModel", "games fetched")
-
         asyncCollect(scoreRepository.upcomingGamesFlow) { response ->
             applyMutation {
                 copy(
@@ -62,9 +59,9 @@ class HomeViewModel @Inject constructor(
                                         teamLogo = game.teamLogo,
                                         team = game.teamName,
                                         teamColor = formatColor(game.teamColor),
-                                        date = formatDate(game.date),
-                                        dateString = dateToString(formatDate(game.date)),
-                                        isLive = (LocalDate.now() == formatDate(game.date)),
+                                        date = parseDate(game.date),
+                                        dateString = dateToString(parseDate(game.date)),
+                                        isLive = (LocalDate.now() == parseDate(game.date)),
                                         location = game.city,
                                         gender = game.gender,
                                         genderIcon = if (game.gender == "Mens") R.drawable.ic_gender_men else R.drawable.ic_gender_women,
