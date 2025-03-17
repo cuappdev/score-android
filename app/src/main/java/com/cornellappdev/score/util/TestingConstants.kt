@@ -1,5 +1,6 @@
 package com.cornellappdev.score.util
 
+import androidx.compose.ui.graphics.Color
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.model.GameData
@@ -13,7 +14,7 @@ import java.time.LocalDate
 val PENN_GAME = GameCardData(
     teamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",
     team = "Penn",
-    teamColor = 0x66B31B1B,
+    teamColor = Color(0x66B31B1B),
     date = LocalDate.now(),
     dateString = "3/1/25",
     isLive = false,
@@ -27,7 +28,7 @@ val PENN_GAME = GameCardData(
 val PRINCETON_GAME = GameCardData(
     teamLogo = "https://cornellbigred.com/images/logos/Princeton_Tigers.png?width=80&height=80&mode=max",
     team = "Princeton",
-    teamColor = 0x66FF6000,
+    teamColor = Color(0x66FF6000),
     date = LocalDate.now(),
     dateString = "3/1/25",
     isLive = false,

@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 import com.cornellappdev.score.model.toResult
+import com.cornellappdev.score.util.formatColor
 
 /**
  * This is a singleton responsible for fetching and caching all data for Score.
@@ -46,7 +47,7 @@ class ScoreRepository @Inject constructor(
                             Game(
                                 teamLogo = it,
                                 teamName = game.team.name,
-                                teamColor = game.team.color,
+                                teamColor = formatColor(game.team.color), //if we need to adjust alpha or something later, this should be an int)
                                 gender = game.gender,
                                 sport = game.sport,
                                 date = game.date,

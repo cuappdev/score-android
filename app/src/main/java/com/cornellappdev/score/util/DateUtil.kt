@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
  */
 fun parseDate(strDate: String): LocalDate? {
     val subDate = strDate.substringBefore(" (")
-    val formatter = DateTimeFormatter.ofPattern("MMM d")
+    val formatter = DateTimeFormatter.ofPattern("MMM d yyyy")
 
     return try {
         LocalDate.parse("$subDate ${LocalDate.now().year}", formatter) //assumes current year
@@ -27,12 +27,4 @@ fun formatColor(color: String): Int {
     return (alpha shl 24) or colorInt
 }
 
-/**
- *  Takes in a LocalDate? object and returns it as a String of format "MM/DD/YYY"
- */
-fun dateToString(date: LocalDate?): String {
-    if (date == null) {
-        return "--"
-    }
-    return "${date.month.value}/${date.dayOfMonth}/${date.year}"
-}
+val outputFormatter = DateTimeFormatter.ofPattern("M/d/yyyy")

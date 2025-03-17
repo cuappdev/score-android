@@ -1,5 +1,6 @@
 package com.cornellappdev.score.model
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import java.time.LocalDate
 
@@ -8,7 +9,7 @@ import java.time.LocalDate
 data class Game(
     val teamName: String,
     val teamLogo: String,
-    val teamColor: String, //should this also be a Color?
+    val teamColor: Int, //doesn't make senes for this to be a color since its data not ui stuff?
     val gender: String,
     val sport: String,
     val date: String,
@@ -19,7 +20,7 @@ data class Game(
 data class GameCardData(
     val teamLogo: String,
     val team: String,
-    val teamColor: Int,
+    val teamColor: Color,
     val date: LocalDate?,
     val dateString: String,
     val isLive: Boolean,

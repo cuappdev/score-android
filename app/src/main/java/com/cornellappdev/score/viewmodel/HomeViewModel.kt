@@ -1,5 +1,6 @@
 package com.cornellappdev.score.viewmodel
 
+import androidx.compose.ui.graphics.Color
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GameCardData
@@ -8,9 +9,6 @@ import com.cornellappdev.score.model.ScoreRepository
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.nav.root.RootNavigationViewModel
-import com.cornellappdev.score.util.dateToString
-import com.cornellappdev.score.util.formatColor
-import com.cornellappdev.score.util.parseDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import javax.inject.Inject
@@ -58,9 +56,9 @@ class HomeViewModel @Inject constructor(
                                     GameCardData(
                                         teamLogo = game.teamLogo,
                                         team = game.teamName,
-                                        teamColor = formatColor(game.teamColor),
+                                        teamColor = Color(game.teamColor),
                                         date = parseDate(game.date),
-                                        dateString = dateToString(parseDate(game.date)),
+                                        dateString = parseDate(game.date)?.format(outputFormatter) ?: game.date,
                                         isLive = (LocalDate.now() == parseDate(game.date)),
                                         location = game.city,
                                         gender = game.gender,
