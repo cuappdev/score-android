@@ -12,3 +12,10 @@ sealed class ApiResponse<out T : Any> {
     data class Success<out T : Any>(val data: T) : ApiResponse<T>()
 
 }
+
+fun <T : Any, R : Any> ApiResponse<T>.map(transform: (T) -> R): ApiResponse<R> =
+    when (this) {
+        ApiResponse.Error -> ApiResponse.Error
+        ApiResponse.Loading -> ApiResponse.Loading
+        is ApiResponse.Success -> ApiResponse.Success(transform(this.data))
+    }
