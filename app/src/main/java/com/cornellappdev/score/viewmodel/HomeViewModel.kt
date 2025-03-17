@@ -12,6 +12,8 @@ import com.cornellappdev.score.nav.root.RootNavigationViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import javax.inject.Inject
+import com.cornellappdev.score.util.parseDate
+import com.cornellappdev.score.util.outputFormatter
 
 data class HomeUiState(
     val selectedGender: GenderDivision,
@@ -67,6 +69,9 @@ class HomeViewModel @Inject constructor(
                                         sportIcon = Sport.fromDisplayName(game.sport)?.emptyIcon
                                             ?: R.drawable.ic_empty_placeholder
                                     )
+                                }
+                                .filter{game ->
+                                    game.date?.isAfter(LocalDate.now().minusDays(1)) ?: false
                                 }
                                 .sortedBy { it.date }
                             ApiResponse.Success(gameCards)
