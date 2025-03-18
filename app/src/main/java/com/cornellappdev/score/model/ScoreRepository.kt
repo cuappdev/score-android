@@ -45,7 +45,7 @@ class ScoreRepository @Inject constructor(
                             Game(
                                 teamLogo = it,
                                 teamName = game.team.name,
-                                teamColor = formatColor(game.team.color), //if we need to adjust alpha or something later, this should be an int)
+                                teamColor = formatColor(game.team.color),
                                 gender = game.gender,
                                 sport = game.sport,
                                 date = game.date,

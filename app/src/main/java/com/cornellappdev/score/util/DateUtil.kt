@@ -19,6 +19,11 @@ fun parseDate(strDate: String): LocalDate? {
 }
 
 /**
+ * DateTimeFormatter of pattern "M/d/yyyy"
+ */
+val outputFormatter = DateTimeFormatter.ofPattern("M/d/yyyy")
+
+/**
  * Converts from format "#xxxxxx" to a valid hex, with alpha = 40. Ready to be passed into Color()
  */
 fun formatColor(color: String): Int {
@@ -27,4 +32,4 @@ fun formatColor(color: String): Int {
     return (alpha shl 24) or colorInt
 }
 
-val outputFormatter = DateTimeFormatter.ofPattern("M/d/yyyy")
+
