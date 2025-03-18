@@ -2,6 +2,7 @@ package com.cornellappdev.score.model
 
 import android.util.Log
 import com.apollographql.apollo.ApolloClient
+import com.cornellappdev.score.util.formatColor
 import com.example.score.GamesQuery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,8 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
-import com.cornellappdev.score.model.toResult
-import com.cornellappdev.score.util.formatColor
 
 /**
  * This is a singleton responsible for fetching and caching all data for Score.
@@ -21,7 +20,6 @@ import com.cornellappdev.score.util.formatColor
 @Singleton
 class ScoreRepository @Inject constructor(
     private val apolloClient: ApolloClient,
-    // TODO use this to launch queries
     private val appScope: CoroutineScope,
 ) {
     private val _upcomingGamesFlow =
@@ -38,7 +36,7 @@ class ScoreRepository @Inject constructor(
         try {
             val result = (apolloClient.query(GamesQuery()).execute()).toResult()
 
-            if(result.isSuccess){
+            if (result.isSuccess) {
                 val games = result.getOrNull()
 
                 val upcomingGameslist: List<Game> =
@@ -54,9 +52,9 @@ class ScoreRepository @Inject constructor(
                                 city = game.city
                             )
                         }
-                    }  ?: emptyList()
+                    } ?: emptyList()
                 _upcomingGamesFlow.value = ApiResponse.Success(upcomingGameslist)
-            }else{
+            } else {
                 _upcomingGamesFlow.value = ApiResponse.Error
             }
 
