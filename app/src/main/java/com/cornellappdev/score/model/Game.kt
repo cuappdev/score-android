@@ -27,7 +27,9 @@ data class GameCardData(
     val gender: String,
     val genderIcon: Int,
     val sport: String,
-    val sportIcon: Int
+    val sportIcon: Int,
+    val cornellScore: Int? = null,
+    val otherScore: Int? = null,
 )
 
 // Scoring information for a specific team, used in the box score

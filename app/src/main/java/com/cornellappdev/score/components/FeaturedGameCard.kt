@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,22 +23,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.cornellappdev.score.R
 import com.cornellappdev.score.theme.CornellRed
 import com.cornellappdev.score.theme.PennBlue
+import com.cornellappdev.score.theme.Style.losingScoreText
 import com.cornellappdev.score.theme.Style.vsText
+import com.cornellappdev.score.theme.Style.winningScoreText
 
 @Composable
-fun UpcomingGameHeader(
+fun FeaturedGameHeader(
     leftTeamLogo: Painter,
     rightTeamLogo: String,
+    leftScore: Int? = null,
+    rightScore: Int? = null,
     gradientColor1: Color,
     gradientColor2: Color,
     modifier: Modifier = Modifier
 ) {
+    val isPast = (leftScore != null && rightScore != null)
+
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
@@ -49,7 +59,7 @@ fun UpcomingGameHeader(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterHorizontally),
+            horizontalArrangement = if(isPast) Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally) else Arrangement.spacedBy(32.dp, Alignment.CenterHorizontally),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 36.dp)
@@ -60,11 +70,32 @@ fun UpcomingGameHeader(
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.size(60.dp)
             )
-
-            Text(
-                text = "VS",
-                style = vsText
-            )
+            if(leftScore != null && rightScore != null) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                            text = leftScore.toString(),
+                            style = if(leftScore > rightScore) winningScoreText else losingScoreText,
+                        modifier = Modifier.width(52.dp)
+                            .wrapContentWidth(Alignment.CenterHorizontally)
+                        )
+                    Text(
+                        text = "-",
+                        style = vsText.copy(fontSize = 32.sp, fontStyle = FontStyle.Normal)
+                    )
+                    Text(
+                        text = rightScore.toString(),
+                        style = if(leftScore < rightScore) winningScoreText else losingScoreText,
+                                modifier = Modifier.width(52.dp)
+                                    .wrapContentWidth(Alignment.CenterHorizontally)
+                    )
+                }
+            }
+            else {
+                Text(
+                    text = "VS",
+                    style = vsText
+                )
+            }
             AsyncImage(
                 model = rightTeamLogo,
                 contentDescription = "Right Team Logo",
@@ -76,8 +107,8 @@ fun UpcomingGameHeader(
 
 @Preview
 @Composable
-fun UpcomingGameHeaderPreview() {
-    UpcomingGameHeader(
+private fun FeaturedGameCardPreview() {
+    FeaturedGameHeader(
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = "https://cornellbigred.com/images/logos/YALE_LOGO_2020.png?width=80&height=80&mode=max",
         gradientColor1 = CornellRed,
@@ -87,9 +118,11 @@ fun UpcomingGameHeaderPreview() {
 }
 
 @Composable
-fun UpcomingGameCard(
+fun FeaturedGameCard(
     leftTeamLogo: Painter,
     rightTeamLogo: String,
+    leftScore: Int? = null,
+    rightScore: Int? = null,
     team: String,
     location: String,
     isLive: Boolean,
@@ -106,15 +139,17 @@ fun UpcomingGameCard(
             .fillMaxWidth()
     ) {
 
-        UpcomingGameHeader(
+        FeaturedGameHeader(
             leftTeamLogo = leftTeamLogo,
             rightTeamLogo = rightTeamLogo,
+            leftScore = leftScore,
+            rightScore = rightScore,
             gradientColor1 = gradientColor1,
             gradientColor2 = gradientColor2,
             modifier = headerModifier
         )
 
-        SportCard(
+        GameCard(
             teamLogo = rightTeamLogo,
             team = team,
             date = date,
@@ -139,9 +174,11 @@ fun UpcomingGameCard(
 @Preview(showBackground = true)
 @Composable
 fun GameScheduleScreen() {
-    UpcomingGameCard(
+    FeaturedGameCard(
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",//painterResource(R.drawable.penn_logo),
+        leftScore = 32,
+        rightScore = 30,
         team = "Penn",
         location = "Philadelphia, NJ",
         date = "5/20/2024",

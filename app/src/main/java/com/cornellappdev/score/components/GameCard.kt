@@ -1,6 +1,5 @@
 package com.cornellappdev.score.components
 
-import android.icu.text.SimpleDateFormat
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -9,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,23 +28,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.cornellappdev.score.R
+import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.theme.AmbientColor
 import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.SpotColor
 import com.cornellappdev.score.theme.Style.bodyNormal
-import com.cornellappdev.score.theme.Style.dateText
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.labelsNormal
-import com.cornellappdev.score.theme.Style.teamName
-import com.cornellappdev.score.theme.Style.universityText
 import com.cornellappdev.score.theme.saturatedGreen
-import java.util.Date
-import java.util.Locale
 
 @Composable
-fun SportCard(
+fun GameCard(
     teamLogo: String,
     team: String,
     date: String,
@@ -54,6 +50,7 @@ fun SportCard(
     sportIcon: Painter,
     topCornerRound: Boolean,
     modifier: Modifier = Modifier,
+    onClick: (Boolean) -> Unit = {}
 ) {
     val cardShape = if (topCornerRound) {
         RoundedCornerShape(16.dp) // Rounded all
@@ -84,7 +81,7 @@ fun SportCard(
                                 )
                         )
                 }
-            )
+            ).clickable { onClick(false) }
     ) {
         Column(
             modifier = Modifier
@@ -199,9 +196,9 @@ fun SportCard(
 
 @Preview(showBackground = true)
 @Composable
-fun SportCardPreview() {
+private fun GameCardPreview() {
     Column {
-        SportCard(
+        GameCard(
             teamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max", //painterResource(id = R.drawable.penn_logo),
             team = "Penn",
             date = "5/20/2024",
