@@ -2,7 +2,6 @@ package com.cornellappdev.score.model
 
 import android.util.Log
 import com.apollographql.apollo.ApolloClient
-import com.cornellappdev.score.util.formatColor
 import com.example.score.GamesQuery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,4 +62,13 @@ class ScoreRepository @Inject constructor(
             _upcomingGamesFlow.value = ApiResponse.Error
         }
     }
+}
+
+/**
+ * Converts from format "#xxxxxx" to a valid hex, with alpha = 40. Ready to be passed into Color()
+ */
+fun formatColor(color: String): Int {
+    val alpha = (40 * 255 / 100)// Convert percent to hex (0-255)
+    val colorInt = Integer.parseInt(color.removePrefix("#"), 16)
+    return (alpha shl 24) or colorInt
 }
