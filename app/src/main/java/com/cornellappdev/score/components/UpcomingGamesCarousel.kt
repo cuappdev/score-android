@@ -87,8 +87,8 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
                 location = game.location,
                 modifier = Modifier,
                 headerModifier = Modifier,
-                gradientColor1 = CornellRed, //TODO: is it okay if this is hardcoded
-                gradientColor2 = Color(game.teamColor)
+                gradientColor1 = CornellRed,
+                gradientColor2 = game.teamColor
             )
         }
 

@@ -1,6 +1,5 @@
 package com.cornellappdev.score.components
 
-import android.icu.text.SimpleDateFormat
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -9,7 +8,14 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -40,8 +46,6 @@ import com.cornellappdev.score.theme.Style.labelsNormal
 import com.cornellappdev.score.theme.Style.teamName
 import com.cornellappdev.score.theme.Style.universityText
 import com.cornellappdev.score.theme.saturatedGreen
-import java.util.Date
-import java.util.Locale
 
 @Composable
 fun SportCard(
@@ -101,7 +105,9 @@ fun SportCard(
                 ) {
                     AsyncImage(
                         model = teamLogo,
-                        modifier = Modifier.height(20.dp).padding(start = 4.dp, end = 4.dp),
+                        modifier = Modifier
+                            .height(20.dp)
+                            .padding(horizontal = 4.dp),
                         contentDescription = ""
                     )
 
