@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.cornellappdev.score.util.parseColor
 
 /**
  * This is a singleton responsible for fetching and caching all data for Score.
@@ -19,7 +20,6 @@ import javax.inject.Singleton
 @Singleton
 class ScoreRepository @Inject constructor(
     private val apolloClient: ApolloClient,
-    // TODO use this to launch queries
     private val appScope: CoroutineScope,
 ) {
     private val _upcomingGamesFlow =
@@ -34,25 +34,30 @@ class ScoreRepository @Inject constructor(
     fun fetchGames() = appScope.launch {
         _upcomingGamesFlow.value = ApiResponse.Loading
         try {
-            val response = (apolloClient.query(GamesQuery()).execute())
-            val games = response.data?.games ?: emptyList()
-            Log.d("ScoreRepository", "response fetched successfully")
+            val result = (apolloClient.query(GamesQuery()).execute()).toResult()
 
-            val list: List<Game> = games.mapNotNull { game ->
-                game?.team?.image?.let {
-                    Game(
-                        teamLogo = it,//game.team.image,
-                        teamName = game.team.name,
-                        teamColor = game.team.color,
-                        gender = game.gender,
-                        sport = game.sport,
-                        date = game.date,
-                        city = game.city
-                    )
-                }
+            if (result.isSuccess) {
+                val games = result.getOrNull()
+
+                val upcomingGameslist: List<Game> =
+                    games?.games?.mapNotNull { game ->
+                        game?.team?.image?.let {
+                            Game(
+                                teamLogo = it,
+                                teamName = game.team.name,
+                                teamColor = parseColor(game.team.color).copy(alpha = 0.4f*255),
+                                gender = game.gender,
+                                sport = game.sport,
+                                date = game.date,
+                                city = game.city
+                            )
+                        }
+                    } ?: emptyList()
+                _upcomingGamesFlow.value = ApiResponse.Success(upcomingGameslist)
+            } else {
+                _upcomingGamesFlow.value = ApiResponse.Error
             }
-            Log.d("ScoreRepository", "#games: ${list.size}")
-            _upcomingGamesFlow.value = ApiResponse.Success(list.toList())
+
         } catch (e: Exception) {
             Log.e("ScoreRepository", "Error fetching posts: ", e)
             _upcomingGamesFlow.value = ApiResponse.Error
