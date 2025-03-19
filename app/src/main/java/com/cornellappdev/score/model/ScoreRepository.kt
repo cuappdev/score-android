@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.cornellappdev.score.util.parseColor
 
 /**
  * This is a singleton responsible for fetching and caching all data for Score.
@@ -44,7 +45,7 @@ class ScoreRepository @Inject constructor(
                             Game(
                                 teamLogo = it,
                                 teamName = game.team.name,
-                                teamColor = formatColor(game.team.color),
+                                teamColor = parseColor(game.team.color).copy(alpha = 0.4f*255),
                                 gender = game.gender,
                                 sport = game.sport,
                                 date = game.date,
@@ -62,13 +63,4 @@ class ScoreRepository @Inject constructor(
             _upcomingGamesFlow.value = ApiResponse.Error
         }
     }
-}
-
-/**
- * Converts from format "#xxxxxx" to a valid hex, with alpha = 40. Ready to be passed into Color()
- */
-fun formatColor(color: String): Int {
-    val alpha = (40 * 255 / 100)// Convert percent to hex (0-255)
-    val colorInt = Integer.parseInt(color.removePrefix("#"), 16)
-    return (alpha shl 24) or colorInt
 }

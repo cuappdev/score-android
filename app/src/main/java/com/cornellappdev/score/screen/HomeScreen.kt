@@ -30,6 +30,7 @@ import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.util.gameList
+import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.HomeUiState
 import com.cornellappdev.score.viewmodel.HomeViewModel
 
@@ -130,7 +131,7 @@ private fun HomeScreenPreview() {
             HomeUiState(
                 selectedGender = GenderDivision.ALL,
                 sportSelect = SportSelection.All,
-                selectionList = emptyList(),
+                selectionList = sportSelectionList,
                 loadedState = ApiResponse.Success(gameList)
             ),
             onGenderSelected = {},

@@ -3,7 +3,7 @@ package com.cornellappdev.score.model
 import androidx.compose.ui.graphics.Color
 import com.cornellappdev.score.R
 import com.cornellappdev.score.util.outputFormatter
-import com.cornellappdev.score.util.parseDate
+import com.cornellappdev.score.util.parseDateOrNull
 import java.time.LocalDate
 
 // TODO Refactor to make easier to filter... actual gender, etc.
@@ -11,29 +11,12 @@ import java.time.LocalDate
 data class Game(
     val teamName: String,
     val teamLogo: String,
-    val teamColor: Int,
+    val teamColor: Color,
     val gender: String,
     val sport: String,
     val date: String,
     val city: String
-) {
-    val toGameCardData =
-        GameCardData(
-            teamLogo = teamLogo,
-            team = teamName,
-            teamColor = Color(teamColor),
-            date = parseDate(date),
-            dateString = parseDate(date)?.format(outputFormatter)
-                ?: date,
-            isLive = (LocalDate.now() == parseDate(date)),
-            location = city,
-            gender = gender,
-            genderIcon = if (gender == "Mens") R.drawable.ic_gender_men else R.drawable.ic_gender_women,
-            sport = sport,
-            sportIcon = Sport.fromDisplayName(sport)?.emptyIcon
-                ?: R.drawable.ic_empty_placeholder
-        )
-}
+)
 
 //Data for HomeScreen game displays
 data class GameCardData(
@@ -118,4 +101,22 @@ enum class GameStatus {
     NOT_STARTED,
     IN_PROGRESS,
     COMPLETED
+}
+
+fun Game.toGameCardData(): GameCardData{
+    return GameCardData(
+        teamLogo = teamLogo,
+        team = teamName,
+        teamColor = teamColor,
+        date = parseDateOrNull(date),
+        dateString = parseDateOrNull(date)?.format(outputFormatter)
+            ?: date,
+        isLive = (LocalDate.now() == parseDateOrNull(date)),
+        location = city,
+        gender = gender,
+        genderIcon = if (gender == "Mens") R.drawable.ic_gender_men else R.drawable.ic_gender_women,
+        sport = sport,
+        sportIcon = Sport.fromDisplayName(sport)?.emptyIcon
+            ?: R.drawable.ic_empty_placeholder
+    )
 }

@@ -7,6 +7,7 @@ import com.cornellappdev.score.model.ScoreRepository
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.model.map
+import com.cornellappdev.score.model.toGameCardData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import javax.inject.Inject
@@ -49,7 +50,7 @@ class HomeViewModel @Inject constructor(
                 copy(
                     loadedState = response.map { list ->
                         list.map { game ->
-                            game.toGameCardData
+                            game.toGameCardData()
                         }.filter { game ->
                             game.date?.isAfter(LocalDate.now().minusDays(1)) ?: false
                         }.sortedBy { it.date }

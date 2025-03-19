@@ -107,7 +107,7 @@ fun SportCard(
                         model = teamLogo,
                         modifier = Modifier
                             .height(20.dp)
-                            .padding(start = 4.dp, end = 4.dp),
+                            .padding(horizontal = 4.dp),
                         contentDescription = ""
                     )
 
