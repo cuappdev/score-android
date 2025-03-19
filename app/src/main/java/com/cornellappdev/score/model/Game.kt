@@ -55,7 +55,7 @@ data class GameDetailsGame(
 
 
 
-//Data for HomeScreen game displays
+// Data for HomeScreen game displays
 data class GameCardData(
     val teamLogo: String,
     val team: String,
@@ -68,6 +68,23 @@ data class GameCardData(
     val genderIcon: Int,
     val sport: String,
     val sportIcon: Int
+)
+
+// Data for GameDetailsScreen
+data class DetailsCardData(
+    val opponentLogo: String,
+    val opponent: String,
+    val opponentColor: Int,
+    val date: LocalDate?,
+    val dateString: String,
+    val isLive: Boolean,
+    val location: String,
+    val gender: String,
+    val genderIcon: Int,
+    val sport: String,
+    val sportIcon: Int,
+    val boxScore: List<GameDetailsBoxScore>,
+    val scoreBreakdown: List<List<String>>
 )
 
 // Scoring information for a specific team, used in the box score

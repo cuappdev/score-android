@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,10 +22,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.ButtonPrimary
 import com.cornellappdev.score.components.GameScoreHeader
-import com.cornellappdev.score.components.NavigationHeader
 import com.cornellappdev.score.components.TimeUntilStartCard
 import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.GrayPrimary
@@ -30,17 +33,37 @@ import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.theme.Style.heading3
 import com.cornellappdev.score.theme.White
+import com.cornellappdev.score.viewmodel.GameDetailsViewModel
+import com.cornellappdev.score.viewmodel.HomeViewModel
 
 @Composable
-fun GameDetailsScreen() {
-    Column(modifier = Modifier.background(White).fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        // TODO: add navigation
-        NavigationHeader(title = "Game Details", {})
+fun GameDetailsScreen(
+    gameId: String,
+    gameDetailsViewModel: GameDetailsViewModel = hiltViewModel())
+{
+    val uiState by gameDetailsViewModel.uiStateFlow.collectAsState()
+    Column(
+        modifier = Modifier
+            .background(White)
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(modifier = Modifier.height(95.dp))
+        val gameCard = uiState.gameCard
+        if (gameCard == null) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = GrayPrimary)
+            }
+            return
+        }
         GameScoreHeader(
             leftTeamLogo = painterResource(R.drawable.cornell_logo),
-            rightTeamLogo = painterResource(R.drawable.penn_logo),
+            rightTeamLogo = gameCard.team!!.image!!,
             gradientColor1 = Color(0xFFE1A69F),
-            gradientColor2 = Color(0xFF011F5B),
+            gradientColor2 = Color(gameCard.team.color),
             modifier = Modifier.height(185.dp)
         )
 
@@ -48,7 +71,7 @@ fun GameDetailsScreen() {
 
         Column(Modifier.padding(horizontal = 24.dp)) {
             Text(
-                text = "Men's Football",
+                text = gameCard.sport,
                 style = heading3.copy(color = GrayPrimary)
             )
             Text(
@@ -91,11 +114,10 @@ fun GameDetailsScreen() {
     }
 }
 
-
 @Preview
 @Composable
 private fun GameDetailsScreenPreview() {
-    GameDetailsScreen()
+//    GameDetailsScreen()
 // import androidx.compose.ui.tooling.preview.Preview
 // import androidx.compose.ui.unit.dp
 // import com.cornellappdev.score.R
