@@ -17,9 +17,9 @@ data class Game(
 
 data class GameDetailsTeam(
     val id: String?,
-    val color: String?,
+    val color: String,
     val image: String?,
-    val name: String?
+    val name: String
 )
 
 data class GameDetailsBoxScore(
@@ -35,20 +35,21 @@ data class GameDetailsBoxScore(
 )
 
 data class GameDetailsGame(
-    val id: String,
-    val city: String?,
-    val date: String?,
-    val gender: String?,
+    val id: String?,
+    val city: String,
+    val date: String,
+    val gender: String,
     val location: String?,
-    val opponentId: String?,
+    val opponentId: String,
     val result: String?,
-    val sport: String?,
-    val state: String?,
+    val sport: String,
+    val state: String,
     val time: String?,
     val scoreBreakdown: List<List<String?>?>?,
     val team: GameDetailsTeam?,
     val boxScore: List<GameDetailsBoxScore>?
 )
+
 
 
 //Data for HomeScreen game displays
