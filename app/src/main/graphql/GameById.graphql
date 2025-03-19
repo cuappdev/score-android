@@ -1,0 +1,32 @@
+query GameById($id: String!) {
+    game(id: $id){
+        id
+        city
+        date
+        gender
+        location
+        opponentId
+        result
+        sport
+        state
+        time
+        scoreBreakdown
+        team {
+            id
+            color
+            image
+            name
+        }
+        boxScore {
+            team
+            period
+            time
+            description
+            scorer
+            assist
+            scoreBy
+            corScore
+            oppScore
+        }
+    }
+}

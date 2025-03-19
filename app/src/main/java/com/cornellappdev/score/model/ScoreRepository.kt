@@ -2,10 +2,13 @@ package com.cornellappdev.score.model
 
 import android.util.Log
 import com.apollographql.apollo.ApolloClient
+import com.example.score.GameByIdQuery
 import com.example.score.GamesQuery
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,7 +29,8 @@ class ScoreRepository @Inject constructor(
         MutableStateFlow<ApiResponse<List<Game>>>(ApiResponse.Loading)
     val upcomingGamesFlow = _upcomingGamesFlow.asStateFlow()
 
-
+    private val _currentGameFlow = MutableStateFlow<ApiResponse<GameDetailsGame>>(ApiResponse.Loading)
+    val currentGamesFlow = _currentGameFlow.asStateFlow()
     /**
      * Asynchronously fetches the list of games from the API. Once finished, will send down
      * `upcomingGamesFlow` to be observed.
@@ -58,4 +62,26 @@ class ScoreRepository @Inject constructor(
             _upcomingGamesFlow.value = ApiResponse.Error
         }
     }
+
+    /**
+     * Asynchronously fetches game details for a particular game. Once finished, will send down
+     * `currentGamesFlow` to be observed.
+     */
+    fun getGameById(id: String) = appScope.launch {
+        _currentGameFlow.value = ApiResponse.Loading
+        try {
+            val response = apolloClient.query(GameByIdQuery(id)).execute()
+            val game = response.data?.game
+
+            if (game != null) {
+                _currentGameFlow.value = ApiResponse.Success(game.toGameDetails())
+            } else {
+                _currentGameFlow.value = ApiResponse.Error
+            }
+        } catch (e: Exception) {
+            Log.e("ScoreRepository", "Error fetching game with id: ${id}: ", e)
+            _currentGameFlow.value = ApiResponse.Error
+        }
+    }
+
 }
