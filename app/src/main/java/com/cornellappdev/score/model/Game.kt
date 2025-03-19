@@ -15,9 +15,6 @@ data class Game(
     val city: String
 )
 
-/**
- * Clean up?
- */
 data class GameDetailsTeam(
     val id: String?,
     val color: String?,
