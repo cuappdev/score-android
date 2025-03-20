@@ -2,6 +2,7 @@ package com.cornellappdev.score.nav.root
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,6 +31,7 @@ import com.cornellappdev.score.screen.PastGamesScreen
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.bodyMedium
+import com.cornellappdev.score.theme.White
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 
@@ -49,7 +51,7 @@ fun RootNavigation(
     }
 
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
-        NavigationBar {
+        NavigationBar(containerColor = White) {
             tabs.map { item ->
                 val isSelected = item.screen == navBackStackEntry?.toScreen()
 

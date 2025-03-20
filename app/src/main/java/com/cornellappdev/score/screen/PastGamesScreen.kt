@@ -19,12 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import android.util.Log
+import androidx.compose.foundation.background
 import com.cornellappdev.score.components.GameCard
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.components.PastGameCard
 import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.theme.Style.heading1
+import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.viewmodel.HomeViewModel
 import com.cornellappdev.score.viewmodel.PastGamesViewModel
 
@@ -38,7 +41,7 @@ fun PastGamesScreen(
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-        modifier = Modifier.statusBarsPadding()
+        modifier = Modifier.statusBarsPadding().background(White)
     )
     {
         //TODO: check - displaying the earliest three games
@@ -78,10 +81,12 @@ fun PastGamesScreen(
                         genderIcon = painterResource(game.genderIcon),
                         sportIcon = painterResource(game.sportIcon),
                         location = game.location,
-                        cornellScore = game.cornellScore!!,
-                        otherScore = game.otherScore!!,
+                        cornellScore = game.cornellScore ?: -1,
+                        otherScore = game.otherScore ?: -1,
                         onClick = navigateToGameDetails
                     )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Log.d("game", game.toString())
                 }
             }
         }

@@ -2,6 +2,7 @@ package com.cornellappdev.score.screen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,7 @@ import com.cornellappdev.score.components.GameCard
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.theme.Style.heading1
+import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.viewmodel.HomeViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)//TODO - change the manifest or leave this?
@@ -36,7 +38,7 @@ fun HomeScreen(
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-        modifier = Modifier.statusBarsPadding()
+        modifier = Modifier.statusBarsPadding().background(White)
     )
     {
         //TODO: check - displaying the earliest three games

@@ -57,11 +57,11 @@ fun PastGameCard(
     genderIcon: Painter,
     sportIcon: Painter,
     modifier: Modifier = Modifier,
-    cornellScore: Int,
-    otherScore: Int,
+    cornellScore: Number,
+    otherScore: Number,
     onClick: (Boolean) -> Unit = {}
 ) {
-    val cornellWins = cornellScore > otherScore
+    val cornellWins = cornellScore.toFloat() > otherScore.toFloat()
     val isHome = location == "Ithaca, NY"
     val firstWins = (cornellWins && isHome) || (!cornellWins && !isHome)
 
@@ -96,7 +96,7 @@ fun PastGameCard(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()) {
-                    Row(modifier = Modifier.widthIn(0.dp, 170.dp)) {
+                    Row(modifier = Modifier.widthIn(0.dp, 170.dp), verticalAlignment = Alignment.CenterVertically) {
                         if (isHome){
                             Image(
                                 painter = painterResource(R.drawable.cornell_logo),
@@ -137,7 +137,7 @@ fun PastGameCard(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                    Row(modifier = Modifier.widthIn(0.dp, 170.dp)) {
+                    Row(modifier = Modifier.widthIn(0.dp, 170.dp), verticalAlignment = Alignment.CenterVertically) {
                         if (!isHome){
                             Image(
                                 painter = painterResource(R.drawable.cornell_logo),

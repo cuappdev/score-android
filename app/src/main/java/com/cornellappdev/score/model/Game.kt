@@ -12,7 +12,9 @@ data class Game(
     val gender: String,
     val sport: String,
     val date: String,
-    val city: String
+    val city: String,
+    val cornellScore: Number? = null,
+    val otherScore: Number? = null,
 )
 
 //Data for HomeScreen game displays
@@ -28,8 +30,8 @@ data class GameCardData(
     val genderIcon: Int,
     val sport: String,
     val sportIcon: Int,
-    val cornellScore: Int? = null,
-    val otherScore: Int? = null,
+    val cornellScore: Number? = null,
+    val otherScore: Number? = null,
 )
 
 // Scoring information for a specific team, used in the box score

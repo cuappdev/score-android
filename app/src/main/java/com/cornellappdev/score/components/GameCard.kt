@@ -94,7 +94,7 @@ fun GameCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically, modifier = Modifier.widthIn(0.dp, 250.dp)
                 ) {
                     AsyncImage(
                         model = teamLogo,

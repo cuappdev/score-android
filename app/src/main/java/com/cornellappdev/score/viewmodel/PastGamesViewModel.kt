@@ -70,7 +70,9 @@ class PastGamesViewModel @Inject constructor(
         val pastGames = games.filter { game ->
             val gameDate = formatDate(game.date)
             gameDate != null && gameDate.isBefore(LocalDate.now()) // Only select past games
+            game.cornellScore != null && game.otherScore != null
         }.map { game ->
+            Log.d("VM Scores",   "sport: " + game.sport + " date: " + game.date + " cornell: " + game.cornellScore + "other: " + game.otherScore)
             GameCardData(
                 teamLogo = game.teamLogo,
                 team = game.teamName,
@@ -84,8 +86,8 @@ class PastGamesViewModel @Inject constructor(
                 sport = game.sport,
                 sportIcon = Sport.fromDisplayName(game.sport)?.emptyIcon
                     ?: R.drawable.ic_empty_placeholder,
-                cornellScore = 3,
-                otherScore = 0
+                cornellScore = game.cornellScore,
+                otherScore = game.otherScore
             )
         }.sortedByDescending { it.date } // Sort past games by most recent
 

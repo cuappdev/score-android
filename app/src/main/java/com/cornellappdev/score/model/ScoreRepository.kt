@@ -37,8 +37,15 @@ class ScoreRepository @Inject constructor(
             val response = (apolloClient.query(GamesQuery()).execute())
             val games = response.data?.games ?: emptyList()
             Log.d("ScoreRepository", "response fetched successfully")
-
             val list: List<Game> = games.mapNotNull { game ->
+              val scores = game?.result?.split(",")?.getOrNull(1)?.split("-")
+//                val cornellScore = game?.boxScore?.lastOrNull()?.corScore
+//                val otherScore = game?.boxScore?.lastOrNull()?.oppScore
+                val cornellScore = scores?.getOrNull(0)?.toNumberOrNull()
+                val otherScore = scores?.getOrNull(1)?.toNumberOrNull()
+                if (game != null) {
+                    Log.d("Scores", " sport: " + game.sport + " date: "+ game.date + " result: DO LATER" + "cornell: " + cornellScore + "other: " + otherScore)
+                }
                 game?.team?.image?.let {
                     Game(
                         teamLogo = it,//game.team.image,
@@ -47,7 +54,9 @@ class ScoreRepository @Inject constructor(
                         gender = game.gender,
                         sport = game.sport,
                         date = game.date,
-                        city = game.city
+                        city = game.city,
+                        cornellScore = cornellScore,
+                        otherScore = otherScore
                     )
                 }
             }
@@ -57,5 +66,12 @@ class ScoreRepository @Inject constructor(
             Log.e("ScoreRepository", "Error fetching posts: ", e)
             _upcomingGamesFlow.value = ApiResponse.Error
         }
+    }
+}
+
+fun String.toNumberOrNull(): Number? {
+    return when {
+        this.contains(".") -> this.toFloatOrNull()  // Try converting to Float if there's a decimal
+        else -> this.toIntOrNull()  // Otherwise, try converting to Int
     }
 }
