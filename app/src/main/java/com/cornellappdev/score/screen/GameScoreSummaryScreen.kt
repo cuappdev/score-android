@@ -107,6 +107,6 @@ fun ScoreEventItemDetailed(event: ScoreEvent) {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewScoringDetailsScreen() {
+private fun PreviewScoringDetailsScreen() {
     GameScoreSummaryScreenDetail(scoreEvents = scoreEvents2)
 }

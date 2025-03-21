@@ -129,10 +129,10 @@ fun FeaturedGameCard(
     genderIcon: Painter,
     sportIcon: Painter,
     date: String,
-    modifier: Modifier = Modifier,
-    headerModifier: Modifier,
     gradientColor1: Color,
-    gradientColor2: Color
+    gradientColor2: Color,
+    modifier: Modifier = Modifier,
+    headerModifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -173,7 +173,7 @@ fun FeaturedGameCard(
 
 @Preview(showBackground = true)
 @Composable
-fun GameScheduleScreen() {
+private fun GameScheduleScreen() {
     FeaturedGameCard(
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",//painterResource(R.drawable.penn_logo),

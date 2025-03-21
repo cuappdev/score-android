@@ -1,8 +1,5 @@
 package com.cornellappdev.score.nav.root
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -35,7 +32,6 @@ import com.cornellappdev.score.theme.White
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RootNavigation(
     rootNavigationViewModel: RootNavigationViewModel = hiltViewModel(),

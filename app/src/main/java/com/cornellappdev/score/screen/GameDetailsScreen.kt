@@ -91,9 +91,10 @@ fun GameDetailsScreen(gameId: String = "", onBackArrow: () -> Unit = {}) {
     }
 }
 
+
 @Preview
 @Composable
-fun GameDetailsScreenPreview() {
+private fun GameDetailsScreenPreview() {
     GameDetailsScreen()
 // import androidx.compose.ui.tooling.preview.Preview
 // import androidx.compose.ui.unit.dp

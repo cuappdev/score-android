@@ -23,15 +23,23 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
-        compose =true
+        compose = true
         buildConfig = true
     }
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"https://score-dev.cornellappdev.com/graphql\"")
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"https://score-dev.cornellappdev.com/graphql\""
+            )
         }
         release {
-            buildConfigField("String", "BASE_URL", "\"https://score-dev.cornellappdev.com/graphql\"")
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"https://score-dev.cornellappdev.com/graphql\""
+            )
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -63,7 +71,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.2")
     implementation("androidx.compose.material3:material3:1.0.0")
     implementation("com.google.dagger:hilt-android:2.51.1")
-    implementation(libs.androidx.media3.common.ktx)
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("com.google.accompanist:accompanist-pager:0.24.0-alpha")
@@ -85,6 +92,7 @@ dependencies {
     implementation(libs.apollo.runtime)
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
+    lintChecks(libs.compose.lint.checks)
 }
 
 apollo {

@@ -1,6 +1,9 @@
 package com.cornellappdev.score.model
 
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.Color
+import com.cornellappdev.score.R
+import com.cornellappdev.score.util.outputFormatter
+import com.cornellappdev.score.util.parseDateOrNull
 import java.time.LocalDate
 
 // TODO Refactor to make easier to filter... actual gender, etc.
@@ -8,7 +11,7 @@ import java.time.LocalDate
 data class Game(
     val teamName: String,
     val teamLogo: String,
-    val teamColor: String,
+    val teamColor: Color,
     val gender: String,
     val sport: String,
     val date: String,
@@ -21,7 +24,7 @@ data class Game(
 data class GameCardData(
     val teamLogo: String,
     val team: String,
-    val teamColor: Int,
+    val teamColor: Color,
     val date: LocalDate?,
     val dateString: String,
     val isLive: Boolean,
@@ -102,4 +105,22 @@ enum class GameStatus {
     NOT_STARTED,
     IN_PROGRESS,
     COMPLETED
+}
+
+fun Game.toGameCardData(): GameCardData{
+    return GameCardData(
+        teamLogo = teamLogo,
+        team = teamName,
+        teamColor = teamColor,
+        date = parseDateOrNull(date),
+        dateString = parseDateOrNull(date)?.format(outputFormatter)
+            ?: date,
+        isLive = (LocalDate.now() == parseDateOrNull(date)),
+        location = city,
+        gender = gender,
+        genderIcon = if (gender == "Mens") R.drawable.ic_gender_men else R.drawable.ic_gender_women,
+        sport = sport,
+        sportIcon = Sport.fromDisplayName(sport)?.emptyIcon
+            ?: R.drawable.ic_empty_placeholder
+    )
 }
