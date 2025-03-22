@@ -22,7 +22,10 @@ import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.Style.heading1
 
 @Composable
-fun LoadingState() {
+fun LoadingState(
+    topHeader: String,
+    bottomHeader: String
+) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -31,7 +34,7 @@ fun LoadingState() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Loading Upcoming",
+                text = topHeader,
                 style = heading1,
                 color = GrayStroke,
                 modifier = Modifier
@@ -57,7 +60,7 @@ fun LoadingState() {
             }
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "Loading Schedule...",
+                text = bottomHeader,
                 style = heading1,
                 color = GrayStroke,
                 modifier = Modifier
@@ -119,5 +122,5 @@ private fun LoadingFilterPreview() {
 @Preview
 @Composable
 private fun LoadingStatePreview() {
-    LoadingState()
+    LoadingState("Loading Upcoming...", "Loading Schedules...")
 }

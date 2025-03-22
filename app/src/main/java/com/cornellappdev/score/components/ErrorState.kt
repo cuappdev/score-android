@@ -24,7 +24,10 @@ import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading2
 
 @Composable
-fun ErrorState() {
+fun ErrorState(
+    onRefresh: () -> Unit,
+    message: String
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,7 +44,7 @@ fun ErrorState() {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Oops! Schedules failed to load.",
+                text = message,
                 style = heading2.copy(color = GrayPrimary)
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -52,7 +55,7 @@ fun ErrorState() {
         }
         Button(
             colors = ButtonDefaults.buttonColors(containerColor = CrimsonPrimary),
-            onClick = {}
+            onClick = onRefresh
         ) {
             Row() {
                 Image(
@@ -68,5 +71,5 @@ fun ErrorState() {
 @Preview
 @Composable
 private fun ErrorStatePreview() {
-    ErrorState()
+    ErrorState({}, "Oops! Failed to load.")
 }
