@@ -64,6 +64,7 @@ fun LoadingState() {
                     .fillMaxWidth()
                     .align(Alignment.Start)
             )
+            Spacer(modifier = Modifier.height(16.dp))
             LoadingStateBox(100, 50.dp)
             Spacer(modifier = Modifier.height(24.dp))
             Row(
