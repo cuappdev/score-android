@@ -60,6 +60,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun onRefresh() {
+        applyMutation {
+            copy(loadedState = ApiResponse.Loading)
+        }
+
+        scoreRepository.fetchGames()
+    }
+
     fun onGenderSelected(gender: GenderDivision) {
         applyMutation {
             copy(
