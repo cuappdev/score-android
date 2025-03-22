@@ -39,14 +39,13 @@ import com.cornellappdev.score.theme.Style.winningScoreText
 fun FeaturedGameHeader(
     leftTeamLogo: Painter,
     rightTeamLogo: String,
-    leftScore: Int? = null,
-    rightScore: Int? = null,
     gradientColor1: Color,
     gradientColor2: Color,
-    modifier: Modifier = Modifier
+    isPast: Boolean,
+    modifier: Modifier = Modifier,
+    leftScore: Int? = null,
+    rightScore: Int? = null
 ) {
-    val isPast = (leftScore != null && rightScore != null)
-
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
@@ -59,7 +58,10 @@ fun FeaturedGameHeader(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = if(isPast) Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally) else Arrangement.spacedBy(32.dp, Alignment.CenterHorizontally),
+            horizontalArrangement = if (isPast) Arrangement.spacedBy(
+                12.dp,
+                Alignment.CenterHorizontally
+            ) else Arrangement.spacedBy(32.dp, Alignment.CenterHorizontally),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 36.dp)
@@ -70,27 +72,28 @@ fun FeaturedGameHeader(
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.size(60.dp)
             )
-            if(leftScore != null && rightScore != null) {
+            if (leftScore != null && rightScore != null) {
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
-                            text = leftScore.toString(),
-                            style = if(leftScore > rightScore) winningScoreText else losingScoreText,
-                        modifier = Modifier.width(52.dp)
+                        text = leftScore.toString(),
+                        style = if (leftScore > rightScore) winningScoreText else losingScoreText,
+                        modifier = Modifier
+                            .width(52.dp)
                             .wrapContentWidth(Alignment.CenterHorizontally)
-                        )
+                    )
                     Text(
                         text = "-",
                         style = vsText.copy(fontSize = 32.sp, fontStyle = FontStyle.Normal)
                     )
                     Text(
                         text = rightScore.toString(),
-                        style = if(leftScore < rightScore) winningScoreText else losingScoreText,
-                                modifier = Modifier.width(52.dp)
-                                    .wrapContentWidth(Alignment.CenterHorizontally)
+                        style = if (leftScore < rightScore) winningScoreText else losingScoreText,
+                        modifier = Modifier
+                            .width(52.dp)
+                            .wrapContentWidth(Alignment.CenterHorizontally)
                     )
                 }
-            }
-            else {
+            } else {
                 Text(
                     text = "VS",
                     style = vsText
@@ -113,6 +116,7 @@ private fun FeaturedGameCardPreview() {
         rightTeamLogo = "https://cornellbigred.com/images/logos/YALE_LOGO_2020.png?width=80&height=80&mode=max",
         gradientColor1 = CornellRed,
         gradientColor2 = PennBlue,
+        isPast = true,
         modifier = Modifier
     )
 }
@@ -121,11 +125,10 @@ private fun FeaturedGameCardPreview() {
 fun FeaturedGameCard(
     leftTeamLogo: Painter,
     rightTeamLogo: String,
-    leftScore: Int? = null,
-    rightScore: Int? = null,
     team: String,
     location: String,
     isLive: Boolean,
+    isPast: Boolean,
     genderIcon: Painter,
     sportIcon: Painter,
     date: String,
@@ -133,6 +136,8 @@ fun FeaturedGameCard(
     gradientColor2: Color,
     modifier: Modifier = Modifier,
     headerModifier: Modifier = Modifier,
+    leftScore: Int? = null,
+    rightScore: Int? = null
 ) {
     Column(
         modifier = modifier
@@ -146,6 +151,7 @@ fun FeaturedGameCard(
             rightScore = rightScore,
             gradientColor1 = gradientColor1,
             gradientColor2 = gradientColor2,
+            isPast = isPast,
             modifier = headerModifier
         )
 
@@ -183,6 +189,7 @@ private fun GameScheduleScreen() {
         location = "Philadelphia, NJ",
         date = "5/20/2024",
         isLive = true,
+        isPast = false,
         genderIcon = painterResource(id = R.drawable.ic_gender_men),
         sportIcon = painterResource(id = R.drawable.ic_baseball),
         modifier = Modifier,

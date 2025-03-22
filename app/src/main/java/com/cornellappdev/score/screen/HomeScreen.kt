@@ -25,17 +25,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.components.GameCard
 import com.cornellappdev.score.components.SportSelectorHeader
-import com.cornellappdev.score.components.UpcomingGamesCarousel
 import com.cornellappdev.score.model.ApiResponse
+import com.cornellappdev.score.model.GamesCarouselVariant
 import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.util.gameList
 import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.HomeUiState
-import com.cornellappdev.score.components.GamesCarousel
-import com.cornellappdev.score.theme.Style.heading1
-import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.viewmodel.HomeViewModel
 
 @Composable
@@ -47,7 +44,9 @@ fun HomeScreen(
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-        modifier = Modifier.statusBarsPadding()
+        modifier = Modifier
+            .statusBarsPadding()
+            .background(Color.White)
     ) {
         when (uiState.loadedState) {
             is ApiResponse.Loading -> {
@@ -76,7 +75,8 @@ fun HomeScreen(
                 HomeContent(
                     uiState = uiState,
                     onGenderSelected = { homeViewModel.onGenderSelected(it) },
-                    onSportSelected = { homeViewModel.onSportSelected(it) }
+                    onSportSelected = { homeViewModel.onSportSelected(it) },
+                    navigateToGameDetails = navigateToGameDetails
                 )
             }
         }
@@ -87,9 +87,10 @@ fun HomeScreen(
 private fun HomeContent(
     uiState: HomeUiState,
     onGenderSelected: (GenderDivision) -> Unit,
-    onSportSelected: (SportSelection) -> Unit
+    onSportSelected: (SportSelection) -> Unit,
+    navigateToGameDetails: (Boolean) -> Unit = {}
 ) {
-    GamesCarousel(uiState.upcomingGames)
+    GamesCarousel(uiState.upcomingGames, GamesCarouselVariant.UPCOMING_VARIANT)
     Column {
         Text(
             text = "Game Schedule",
@@ -117,8 +118,10 @@ private fun HomeContent(
                     genderIcon = painterResource(game.genderIcon),
                     sportIcon = painterResource(game.sportIcon),
                     location = game.location,
-                    topCornerRound = true
+                    topCornerRound = true,
+                    onClick = navigateToGameDetails
                 )
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

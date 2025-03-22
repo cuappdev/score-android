@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.GameCardData
+import com.cornellappdev.score.model.TeamScore
 import com.cornellappdev.score.theme.AmbientColor
 import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayMedium
@@ -56,9 +57,9 @@ fun PastGameCard(
     location: String,
     genderIcon: Painter,
     sportIcon: Painter,
-    modifier: Modifier = Modifier,
     cornellScore: Number,
     otherScore: Number,
+    modifier: Modifier = Modifier,
     onClick: (Boolean) -> Unit = {}
 ) {
     val cornellWins = cornellScore.toFloat() > otherScore.toFloat()
@@ -82,106 +83,28 @@ fun PastGameCard(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(modifier = Modifier
-                .width(224.dp)
-                .drawBehind {
-                    drawLine(
-                        color = GrayLight,
-                        start = Offset(size.width, 0f),
-                        end = Offset(size.width, size.height),
-                        strokeWidth = 1.dp.toPx()
-                    )
-                }) {
-                Row(horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()) {
-                    Row(modifier = Modifier.widthIn(0.dp, 170.dp), verticalAlignment = Alignment.CenterVertically) {
-                        if (isHome){
-                            Image(
-                                painter = painterResource(R.drawable.cornell_logo),
-                                contentDescription = "Cornell Logo",
-                                modifier = Modifier.height(27.dp).padding(horizontal = 2.dp, vertical = 4.dp)
-                            )
-                        } else {
-                            AsyncImage(
-                                model = teamLogo,
-                                modifier = Modifier
-                                    .height(20.dp)
-                                    .padding(horizontal = 4.dp),
-                                contentDescription = ""
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = if(isHome) "Cornell" else team,
-                            style = heading2,
-                            color = if(firstWins) GrayPrimary else GrayLight
+            Column(
+                modifier = Modifier
+                    .width(224.dp)
+                    .drawBehind {
+                        drawLine(
+                            color = GrayLight,
+                            start = Offset(size.width, 0f),
+                            end = Offset(size.width, size.height),
+                            strokeWidth = 1.dp.toPx()
                         )
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = if(isHome) cornellScore.toString() else otherScore.toString(),
-                            style = metricMedium,
-                            color = if(firstWins) GrayPrimary else GrayLight)
-                        Spacer(modifier = Modifier.width(12.dp))
-                        if(firstWins) {
-                            Icon(painter = painterResource(id = R.drawable.ic_arrow_back),
-                                contentDescription = "Indicates winning team",
-                                modifier = Modifier
-                                    .width(11.dp)
-                                    .height(14.dp),)
-                        } else {
-                             Box(modifier = Modifier.width(11.dp))
-                        }
-                    }
-                }
+                    }) {
+                TeamScore(isHome, teamLogo, team, firstWins, cornellScore, otherScore)
                 Spacer(modifier = Modifier.height(10.dp))
-                Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                    Row(modifier = Modifier.widthIn(0.dp, 170.dp), verticalAlignment = Alignment.CenterVertically) {
-                        if (!isHome){
-                            Image(
-                                painter = painterResource(R.drawable.cornell_logo),
-                                contentDescription = "Cornell Logo",
-                                modifier = Modifier.height(27.dp).padding(horizontal = 4.dp, vertical = 4.dp)
-                            )
-                        } else {
-                            AsyncImage(
-                                model = teamLogo,
-                                modifier = Modifier
-                                    .height(20.dp)
-                                    .padding(horizontal = 4.dp),
-                                contentDescription = ""
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = if(!isHome) "Cornell" else team,
-                            style = heading2,
-                            color = if(firstWins) GrayLight else GrayPrimary
-                        )
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = if(!isHome) cornellScore.toString() else otherScore.toString(),
-                            style = metricMedium,
-                            color = if(firstWins) GrayLight else GrayPrimary)
-                        Spacer(modifier = Modifier.width(12.dp))
-                        if(!firstWins) {
-                            Icon(painter = painterResource(id = R.drawable.ic_arrow_back),
-                                contentDescription = "Indicates winning team",
-                                modifier = Modifier
-                                    .width(11.dp)
-                                    .height(14.dp),)
-                        } else {
-                            Box(modifier = Modifier.width(11.dp))
-                        }
-                    }
-                }
+                TeamScore(!isHome, teamLogo, team, !firstWins, cornellScore, otherScore)
             }
             Spacer(modifier = Modifier.width(24.dp))
-            Column(modifier = Modifier.height(64.dp),
-                verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.End) {
+            Column(
+                modifier = Modifier.height(64.dp),
+                verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.End
+            ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.Start),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
@@ -212,6 +135,71 @@ fun PastGameCard(
     }
 }
 
+@Composable
+private fun TeamScore(
+    isCornell: Boolean,
+    teamLogo: String,
+    team: String,
+    winningTeam: Boolean,
+    cornellScore: Number,
+    otherScore: Number
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.widthIn(0.dp, 170.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (isCornell) {
+                Image(
+                    painter = painterResource(R.drawable.cornell_logo),
+                    contentDescription = "Cornell Logo",
+                    modifier = Modifier
+                        .height(27.dp)
+                        .padding(horizontal = 2.dp, vertical = 4.dp)
+                )
+            } else {
+                AsyncImage(
+                    model = teamLogo,
+                    modifier = Modifier
+                        .height(20.dp)
+                        .padding(horizontal = 4.dp),
+                    contentDescription = ""
+                )
+            }
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = if (isCornell) "Cornell" else team,
+                style = heading2,
+                color = if (winningTeam) GrayPrimary else GrayLight
+            )
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = if (cornellScore == -1 && otherScore == -1) "-" else if (isCornell) cornellScore.toString() else otherScore.toString(),
+                style = metricMedium,
+                color = if (winningTeam) GrayPrimary else GrayLight
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            if (winningTeam) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_arrow_back),
+                    contentDescription = "Indicates winning team",
+                    modifier = Modifier
+                        .width(11.dp)
+                        .height(14.dp),
+                )
+            } else {
+                Box(modifier = Modifier.width(11.dp))
+            }
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun PastGameCardPreview() {
@@ -220,7 +208,7 @@ private fun PastGameCardPreview() {
             teamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max", //painterResource(id = R.drawable.penn_logo),
             team = "University of Pennsylvania",
             date = "5/20/2024",
-            location = "U. Pennsylvania",
+            location = "Ithaca, NY",
             genderIcon = painterResource(id = R.drawable.ic_gender_men),
             sportIcon = painterResource(id = R.drawable.ic_baseball),
             modifier = Modifier.padding(16.dp),

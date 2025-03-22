@@ -54,15 +54,24 @@ fun RootNavigation(
                 NavigationBarItem(
                     selected = isSelected,
                     onClick = { navController.navigate(item.screen) },
-                    icon = { Icon(painter = painterResource(id = if (isSelected) item.selectedIcon else item.unselectedIcon), contentDescription = null,
-                        tint = Color.Unspecified) } ,
-                    label = { Text(text = item.label,
-                        style = bodyMedium,
-                        color = if (isSelected) {
-                            CrimsonPrimary
-                        } else {
-                            GrayPrimary
-                        }) }
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = if (isSelected) item.selectedIcon else item.unselectedIcon),
+                            contentDescription = null,
+                            tint = Color.Unspecified
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = item.label,
+                            style = bodyMedium,
+                            color = if (isSelected) {
+                                CrimsonPrimary
+                            } else {
+                                GrayPrimary
+                            }
+                        )
+                    }
                 )
             }
         }
@@ -74,27 +83,21 @@ fun RootNavigation(
                 startDestination = ScoreRootScreens.Home
             ) {
                 composable<ScoreRootScreens.Home> {
-                    HomeScreen(navigateToGameDetails = { isPast : Boolean ->
-                        navController.navigate(ScoreRootScreens.GameDetailsPage("", isPast))
+                    HomeScreen(navigateToGameDetails = {
+                        navController.navigate(ScoreRootScreens.GameDetailsPage(""))
                     })
                 }
 
-                composable<ScoreRootScreens.GameDetailsPage> { navBackStackEntry ->
-                    val isPast = navBackStackEntry.toRoute<ScoreRootScreens.GameDetailsPage>().isPast
-                    if(isPast) {
-                        GameDetailsScreen("", onBackArrow = {
-                            navController.navigate(ScoreRootScreens.ScoresScreen)
-                        })
-                    } else {
-                        GameDetailsScreen("", onBackArrow = {
-                            navController.navigate(ScoreRootScreens.Home)
-                        })
-                    }
+                composable<ScoreRootScreens.GameDetailsPage> {
+                    GameDetailsScreen("", onBackArrow = {
+                        navController.navigateUp()
+                    })
+
                 }
 
                 composable<ScoreRootScreens.ScoresScreen> {
-                    PastGamesScreen(navigateToGameDetails = { isPast : Boolean ->
-                        navController.navigate(ScoreRootScreens.GameDetailsPage("", isPast))
+                    PastGamesScreen(navigateToGameDetails = {
+                        navController.navigate(ScoreRootScreens.GameDetailsPage(""))
                     })
                 }
             }
@@ -109,7 +112,7 @@ sealed class ScoreRootScreens {
     data object Home : ScoreRootScreens()
 
     @Serializable
-    data class GameDetailsPage(val gameId: String, val isPast: Boolean) : ScoreRootScreens()
+    data class GameDetailsPage(val gameId: String) : ScoreRootScreens()
 
     @Serializable
     data object ScoresScreen : ScoreRootScreens()
@@ -119,7 +122,7 @@ sealed class ScoreRootScreens {
             "Home" -> toRoute<Home>()
             "GameDetailsPage" -> toRoute<GameDetailsPage>()
             "ScoresScreen" -> toRoute<ScoresScreen>()
-            else -> null
+            else -> throw IllegalArgumentException("Invalid screen")
         }
 }
 

@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.GameCardData
+import com.cornellappdev.score.model.GamesCarouselVariant
 import com.cornellappdev.score.theme.CornellRed
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
@@ -55,7 +56,7 @@ fun DotIndicator(
 }
 
 @Composable
-fun GamesCarousel(games: List<GameCardData>, upcoming: Boolean) {
+fun GamesCarousel(games: List<GameCardData>, variant: GamesCarouselVariant) {
     val pagerState = rememberPagerState(pageCount = { games.size })
     Column(
         modifier = Modifier
@@ -64,7 +65,7 @@ fun GamesCarousel(games: List<GameCardData>, upcoming: Boolean) {
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
     ) {
         Text(
-            text = if (upcoming) "Upcoming" else "Latest",
+            text = if (variant == GamesCarouselVariant.UPCOMING_VARIANT) "Upcoming" else "Latest",
             style = heading1,
             color = GrayPrimary,
             modifier = Modifier.fillMaxWidth()
@@ -81,6 +82,7 @@ fun GamesCarousel(games: List<GameCardData>, upcoming: Boolean) {
                 team = game.team,
                 date = game.dateString,
                 isLive = game.isLive,
+                isPast = game.isPast,
                 genderIcon = painterResource(game.genderIcon),
                 sportIcon = painterResource(game.sportIcon),
                 location = game.location,
@@ -104,5 +106,5 @@ fun GamesCarousel(games: List<GameCardData>, upcoming: Boolean) {
 @Preview(showBackground = true, widthDp = 360)
 @Composable
 private fun GamesCarouselPreview() {
-    GamesCarousel(gameList, true)
+    GamesCarousel(gameList, GamesCarouselVariant.UPCOMING_VARIANT)
 }

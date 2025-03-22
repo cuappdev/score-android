@@ -18,7 +18,13 @@ data class Game(
     val city: String,
     val cornellScore: Number? = null,
     val otherScore: Number? = null,
-)
+) {
+    val isPast: Boolean
+        get() = when {
+            parseDateOrNull(date)!! < LocalDate.now() -> true
+            else -> false
+        }
+}
 
 //Data for HomeScreen game displays
 data class GameCardData(
@@ -28,6 +34,7 @@ data class GameCardData(
     val date: LocalDate?,
     val dateString: String,
     val isLive: Boolean,
+    val isPast: Boolean,
     val location: String,
     val gender: String,
     val genderIcon: Int,
@@ -107,7 +114,12 @@ enum class GameStatus {
     COMPLETED
 }
 
-fun Game.toGameCardData(): GameCardData{
+enum class GamesCarouselVariant {
+    UPCOMING_VARIANT,
+    PAST_VARIANT
+}
+
+fun Game.toGameCardData(): GameCardData {
     return GameCardData(
         teamLogo = teamLogo,
         team = teamName,
@@ -116,6 +128,7 @@ fun Game.toGameCardData(): GameCardData{
         dateString = parseDateOrNull(date)?.format(outputFormatter)
             ?: date,
         isLive = (LocalDate.now() == parseDateOrNull(date)),
+        isPast = isPast,
         location = city,
         gender = gender,
         genderIcon = if (gender == "Mens") R.drawable.ic_gender_men else R.drawable.ic_gender_women,
