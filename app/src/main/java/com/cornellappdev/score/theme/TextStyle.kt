@@ -24,7 +24,12 @@ object Style {
         fontFamily = poppinsFamily,
         fontWeight = FontWeight(700),
         fontStyle = FontStyle.Italic,
-        color = Color.White
+        color = Color.White,
+                shadow = Shadow(
+                color = Color(0f, 0f, 0f, 0.4f),
+        offset = Offset(0f, 0f),
+        blurRadius = 4f
+    )
     )
 
     val universityText = TextStyle(
@@ -197,9 +202,40 @@ object Style {
         fontWeight = FontWeight(400)
     )
 
+    val metricMedium = TextStyle(
+        fontSize = 18.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(500)
+    )
+
     val metricSemibold = TextStyle(
         fontSize = 18.sp,
         fontFamily = poppinsFamily,
         fontWeight = FontWeight(600)
     )
+
+    val winningScoreText = TextStyle(
+        fontSize = 32.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight.SemiBold, // FontWeight(600) = SemiBold
+        color = Color.White,
+        shadow = Shadow(
+            color = Color(163f, 239f, 32f, 0.5f), // RGBA(163, 239, 32, 0.50)
+            offset = Offset(0f, 0f), // No offset, just blur
+            blurRadius = 6f // Matches 6px blur in CSS
+        )
+    )
+
+    val losingScoreText = TextStyle(
+        fontSize = 32.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight.SemiBold, // FontWeight(600) = SemiBold
+        color = Color.White.copy(alpha = 0.6f),
+        shadow = Shadow(
+            color = Color(0f, 0f, 0f, 0.4f), // RGBA(163, 239, 32, 0.50)
+            offset = Offset(0f, 0f), // No offset, just blur
+            blurRadius = 4f // Matches 6px blur in CSS
+        )
+    )
+
 }

@@ -39,8 +39,11 @@ class ScoreRepository @Inject constructor(
             if (result.isSuccess) {
                 val games = result.getOrNull()
 
-                val upcomingGameslist: List<Game> =
+                val gamesList: List<Game> =
                     games?.games?.mapNotNull { game ->
+                        val scores = game?.result?.split(",")?.getOrNull(1)?.split("-")
+                        val cornellScore = scores?.getOrNull(0)?.toNumberOrNull()
+                        val otherScore = scores?.getOrNull(1)?.toNumberOrNull()
                         game?.team?.image?.let {
                             Game(
                                 teamLogo = it,
@@ -49,11 +52,13 @@ class ScoreRepository @Inject constructor(
                                 gender = game.gender,
                                 sport = game.sport,
                                 date = game.date,
-                                city = game.city
+                                city = game.city,
+                                cornellScore = cornellScore,
+                                otherScore = otherScore
                             )
                         }
                     } ?: emptyList()
-                _upcomingGamesFlow.value = ApiResponse.Success(upcomingGameslist)
+                _upcomingGamesFlow.value = ApiResponse.Success(gamesList)
             } else {
                 _upcomingGamesFlow.value = ApiResponse.Error
             }
@@ -62,5 +67,12 @@ class ScoreRepository @Inject constructor(
             Log.e("ScoreRepository", "Error fetching posts: ", e)
             _upcomingGamesFlow.value = ApiResponse.Error
         }
+    }
+}
+
+fun String.toNumberOrNull(): Number? {
+    return when {
+        this.contains(".") -> this.toFloatOrNull()  // Try converting to Float if there's a decimal
+        else -> this.toIntOrNull()  // Otherwise, try converting to Int
     }
 }

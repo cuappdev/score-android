@@ -12,6 +12,7 @@ activity = "1.8.0"
 constraintlayout = "2.1.4"
 runtimeAndroid = "1.7.2"
 apollo = "4.1.1"
+media3CommonKtx = "1.5.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -25,6 +26,7 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
 apollo-runtime = { module = "com.apollographql.apollo:apollo-runtime" }
+androidx-media3-common-ktx = { group = "androidx.media3", name = "media3-common-ktx", version.ref = "media3CommonKtx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
