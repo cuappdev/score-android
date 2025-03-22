@@ -48,8 +48,8 @@ class ScoreRepository @Inject constructor(
                             Game(
                                 teamLogo = it,
                                 teamName = game.team.name,
-                                teamColor = parseColor(game.team.color).copy(alpha = 0.4f*255),
-                                gender = game.gender,
+                                teamColor = parseColor(game.team.color).copy(alpha = 0.4f * 255),
+                                gender = if (game.gender == "Mens") "Men's" else "Women's",
                                 sport = game.sport,
                                 date = game.date,
                                 city = game.city,
