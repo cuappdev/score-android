@@ -28,6 +28,7 @@ import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.spanBodyNormal
 import com.cornellappdev.score.util.scoreEvents2
 import androidx.compose.foundation.layout.fillMaxSize
+import coil3.compose.AsyncImage
 
 @Composable
 fun GameScoreSummaryScreenDetail(scoreEvents: List<ScoreEvent>) {
@@ -54,11 +55,10 @@ fun ScoreEventItemDetailed(event: ScoreEvent) {
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Image(
-            painter = painterResource(event.team.logo),
+        AsyncImage(
+            model = event.team.logo,
             contentDescription = event.team.name,
-            modifier = Modifier
-                .size(40.dp)
+            modifier = Modifier.size(40.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column(
