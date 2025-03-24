@@ -6,6 +6,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.cornellappdev.score.screen.GameDetailsScreen
 import com.cornellappdev.score.screen.HomeScreen
 import kotlinx.serialization.Serializable
 
@@ -27,11 +29,14 @@ fun RootNavigation(
         startDestination = ScoreRootScreens.Home
     ) {
         composable<ScoreRootScreens.Home> {
-            HomeScreen()
+            HomeScreen(navigate = { id ->
+                navController.navigate(ScoreRootScreens.GameDetailPage(id))
+            })
         }
 
-        composable<ScoreRootScreens.GameDetailPage> {
-
+        composable<ScoreRootScreens.GameDetailPage> {navBackStackEntry ->
+            val id = navBackStackEntry.toRoute<ScoreRootScreens.GameDetailPage>().gameId
+            GameDetailsScreen(id)
         }
 
         composable<ScoreRootScreens.Onboarding> {
@@ -47,7 +52,7 @@ sealed class ScoreRootScreens {
     data object Home : ScoreRootScreens()
 
     @Serializable
-    data object GameDetailPage : ScoreRootScreens()
+    data class GameDetailPage(val gameId: String) : ScoreRootScreens()
 
     @Serializable
     data object Onboarding : ScoreRootScreens()
