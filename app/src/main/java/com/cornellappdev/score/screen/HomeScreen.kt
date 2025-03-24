@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +37,8 @@ import com.cornellappdev.score.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    navigate: (String) -> Unit
 ) {
     val uiState = homeViewModel.collectUiStateValue()
 
@@ -44,6 +46,7 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
         modifier = Modifier.statusBarsPadding()
     ) {
+        Button(onClick = {navigate("67a51d698bc06c5edeba401d")}) { }
         when (uiState.loadedState) {
             is ApiResponse.Loading -> {
                 //TODO: Add loading screen
