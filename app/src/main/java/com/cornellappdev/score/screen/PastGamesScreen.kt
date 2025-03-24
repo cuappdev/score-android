@@ -98,7 +98,7 @@ private fun PastGamesContent(
     onSportSelected: (SportSelection) -> Unit,
     navigateToGameDetails: (Boolean) -> Unit = {}
 ) {
-    GamesCarousel(uiState.pastGames, GamesCarouselVariant.PAST_VARIANT)
+    GamesCarousel(uiState.pastGames, GamesCarouselVariant.PAST)
     Column {
         Text(
             text = "All Scores",
@@ -119,14 +119,7 @@ private fun PastGamesContent(
             items(uiState.filteredGames) {
                 val game = it
                 PastGameCard(
-                    teamLogo = game.teamLogo,
-                    team = game.team,
-                    date = game.dateString,
-                    genderIcon = painterResource(game.genderIcon),
-                    sportIcon = painterResource(game.sportIcon),
-                    location = game.location,
-                    cornellScore = game.cornellScore ?: -1,
-                    otherScore = game.otherScore ?: -1,
+                    data = game,
                     onClick = navigateToGameDetails
                 )
                 Spacer(modifier = Modifier.height(16.dp))

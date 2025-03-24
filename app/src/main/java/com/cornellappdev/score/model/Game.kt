@@ -20,9 +20,9 @@ data class Game(
     val otherScore: Number? = null,
 ) {
     val isPast: Boolean
-        get() = when {
-            parseDateOrNull(date)!! < LocalDate.now() -> true
-            else -> false
+        get() {
+            val parsedDate = parseDateOrNull(date) ?: LocalDate.MAX
+            return parsedDate < LocalDate.now()
         }
 }
 
@@ -40,9 +40,17 @@ data class GameCardData(
     val genderIcon: Int,
     val sport: String,
     val sportIcon: Int,
+    val isHome: Boolean = location == "Ithaca, NY",
     val cornellScore: Number? = null,
     val otherScore: Number? = null,
-)
+) {
+    val firstTeamListedWins: Boolean
+        get() {
+            val cornellWins = (cornellScore?.toFloat() ?: 0f) > (otherScore?.toFloat() ?: 0f)
+            val firstWins = (cornellWins && isHome) || (!cornellWins && !isHome)
+            return firstWins
+        }
+}
 
 // Scoring information for a specific team, used in the box score
 data class TeamScore(
@@ -115,8 +123,8 @@ enum class GameStatus {
 }
 
 enum class GamesCarouselVariant {
-    UPCOMING_VARIANT,
-    PAST_VARIANT
+    UPCOMING,
+    PAST
 }
 
 fun Game.toGameCardData(): GameCardData {

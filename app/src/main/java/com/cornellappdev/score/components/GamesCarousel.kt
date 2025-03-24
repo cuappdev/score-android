@@ -65,7 +65,7 @@ fun GamesCarousel(games: List<GameCardData>, variant: GamesCarouselVariant) {
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
     ) {
         Text(
-            text = if (variant == GamesCarouselVariant.UPCOMING_VARIANT) "Upcoming" else "Latest",
+            text = if (variant == GamesCarouselVariant.UPCOMING) "Upcoming" else "Latest",
             style = heading1,
             color = GrayPrimary,
             modifier = Modifier.fillMaxWidth()
@@ -106,5 +106,5 @@ fun GamesCarousel(games: List<GameCardData>, variant: GamesCarouselVariant) {
 @Preview(showBackground = true, widthDp = 360)
 @Composable
 private fun GamesCarouselPreview() {
-    GamesCarousel(gameList, GamesCarouselVariant.UPCOMING_VARIANT)
+    GamesCarousel(gameList, GamesCarouselVariant.UPCOMING)
 }

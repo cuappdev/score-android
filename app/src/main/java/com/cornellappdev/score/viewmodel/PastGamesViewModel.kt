@@ -44,7 +44,6 @@ class PastGamesViewModel @Inject constructor(
     )
 ) {
     init {
-        scoreRepository.fetchGames()
         asyncCollect(scoreRepository.upcomingGamesFlow) { response ->
             applyMutation {
                 copy(

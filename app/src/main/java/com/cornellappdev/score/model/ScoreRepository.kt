@@ -41,6 +41,15 @@ class ScoreRepository @Inject constructor(
 
                 val gamesList: List<Game> =
                     games?.games?.mapNotNull { game ->
+                        /**
+                         * The final scores in the past game cards are obtained by parsing a String
+                         * result from the GameQuery, which is oftentimes in the format
+                         * Result, CornellScore-OpponentScore (e.g. "W, 2-1"). Not all of the strings
+                         * are in this format (e.g. 4th of 6, 1498 points for women's Swimming and
+                         * Diving), but in this case, the cornellScore and otherScore parameters of
+                         * the game and associated card should be null, and as of right now,
+                         * null-scored games are filtered out.
+                         */
                         val scores = game?.result?.split(",")?.getOrNull(1)?.split("-")
                         val cornellScore = scores?.getOrNull(0)?.toNumberOrNull()
                         val otherScore = scores?.getOrNull(1)?.toNumberOrNull()

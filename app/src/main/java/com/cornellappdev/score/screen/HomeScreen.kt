@@ -90,7 +90,7 @@ private fun HomeContent(
     onSportSelected: (SportSelection) -> Unit,
     navigateToGameDetails: (Boolean) -> Unit = {}
 ) {
-    GamesCarousel(uiState.upcomingGames, GamesCarouselVariant.UPCOMING_VARIANT)
+    GamesCarousel(uiState.upcomingGames, GamesCarouselVariant.UPCOMING)
     Column {
         Text(
             text = "Game Schedule",

@@ -1,23 +1,13 @@
 package com.cornellappdev.score.components
 
-import android.graphics.drawable.Icon
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,45 +17,29 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.GameCardData
-import com.cornellappdev.score.model.TeamScore
 import com.cornellappdev.score.theme.AmbientColor
 import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.SpotColor
-import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.labelsNormal
 import com.cornellappdev.score.theme.Style.metricMedium
-import com.cornellappdev.score.theme.saturatedGreen
+import java.time.LocalDate
 
 @Composable
 fun PastGameCard(
-    teamLogo: String,
-    team: String,
-    date: String,
-    location: String,
-    genderIcon: Painter,
-    sportIcon: Painter,
-    cornellScore: Number,
-    otherScore: Number,
+    data: GameCardData,
     modifier: Modifier = Modifier,
     onClick: (Boolean) -> Unit = {}
 ) {
-    val cornellWins = cornellScore.toFloat() > otherScore.toFloat()
-    val isHome = location == "Ithaca, NY"
-    val firstWins = (cornellWins && isHome) || (!cornellWins && !isHome)
-
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.White),
         modifier = modifier
@@ -94,9 +68,23 @@ fun PastGameCard(
                             strokeWidth = 1.dp.toPx()
                         )
                     }) {
-                TeamScore(isHome, teamLogo, team, firstWins, cornellScore, otherScore)
+                TeamScore(
+                    data.isHome,
+                    data.teamLogo,
+                    data.team,
+                    data.firstTeamListedWins,
+                    data.cornellScore ?: -1,
+                    data.otherScore ?: -1
+                )
                 Spacer(modifier = Modifier.height(10.dp))
-                TeamScore(!isHome, teamLogo, team, !firstWins, cornellScore, otherScore)
+                TeamScore(
+                    !data.isHome,
+                    data.teamLogo,
+                    data.team,
+                    !data.firstTeamListedWins,
+                    data.cornellScore ?: -1,
+                    data.otherScore ?: -1
+                )
             }
             Spacer(modifier = Modifier.width(24.dp))
             Column(
@@ -108,7 +96,7 @@ fun PastGameCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = sportIcon,
+                        painter = painterResource(data.sportIcon),
                         contentDescription = "Sport Icon",
                         modifier = Modifier
                             .width(24.dp)
@@ -116,7 +104,7 @@ fun PastGameCard(
                         tint = Color.Unspecified
                     )
                     Icon(
-                        painter = genderIcon,
+                        painter = painterResource(data.genderIcon),
                         contentDescription = "Gender Icon",
                         modifier = Modifier
                             .padding(2.5.dp)
@@ -126,7 +114,7 @@ fun PastGameCard(
                     )
                 }
                 Text(
-                    text = date,
+                    text = data.dateString,
                     style = labelsNormal,
                     color = GrayMedium
                 )
@@ -203,17 +191,26 @@ private fun TeamScore(
 @Preview(showBackground = true)
 @Composable
 private fun PastGameCardPreview() {
+    val gameCard = GameCardData(
+        teamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",
+        team = "University of Pennsylvania",
+        teamColor = Color.Red,
+        date = LocalDate.of(2025, 3, 24),
+        dateString = "March 24, 2025",
+        isLive = false,
+        isPast = true,
+        location = "Ithaca, NY",
+        gender = "Men",
+        genderIcon = R.drawable.ic_gender_men, // replace with your actual drawable resource
+        sport = "Basketball",
+        sportIcon = R.drawable.ic_basketball, // replace with your actual drawable resource
+        cornellScore = 85,
+        otherScore = 80
+    )
+
     Column {
         PastGameCard(
-            teamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max", //painterResource(id = R.drawable.penn_logo),
-            team = "University of Pennsylvania",
-            date = "5/20/2024",
-            location = "Ithaca, NY",
-            genderIcon = painterResource(id = R.drawable.ic_gender_men),
-            sportIcon = painterResource(id = R.drawable.ic_baseball),
-            modifier = Modifier.padding(16.dp),
-            cornellScore = 3,
-            otherScore = 0
+            data = gameCard
         )
     }
 }
