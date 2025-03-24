@@ -2,9 +2,14 @@ package com.cornellappdev.score.model
 
 import androidx.compose.ui.graphics.Color
 import com.cornellappdev.score.R
+import com.cornellappdev.score.util.formatDateTimeDisplay
 import com.cornellappdev.score.util.outputFormatter
+import com.cornellappdev.score.util.parseColor
 import com.cornellappdev.score.util.parseDateOrNull
+import com.cornellappdev.score.util.parseDateTimeOrNull
+import com.cornellappdev.score.util.toGameData
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 // TODO Refactor to make easier to filter... actual gender, etc.
 
@@ -20,7 +25,7 @@ data class Game(
 
 data class GameDetailsTeam(
     val id: String?,
-    val color: String,
+    val color: Color,
     val image: String?,
     val name: String
 )
@@ -72,24 +77,29 @@ data class GameCardData(
 
 // Data for GameDetailsScreen
 data class DetailsCardData(
+    val title: String,
     val opponentLogo: String,
     val opponent: String,
-    val opponentColor: Int,
+    val opponentColor: Color,
     val date: LocalDate?,
+    val time: String,
     val dateString: String,
-    val isLive: Boolean,
+    val isPastStartTime: Boolean,
     val location: String,
+    val locationString: String,
     val gender: String,
     val genderIcon: Int,
     val sport: String,
     val sportIcon: Int,
-    val boxScore: List<GameDetailsBoxScore>,
-    val scoreBreakdown: List<List<String>>
+    val boxScore: List<GameDetailsBoxScore?>,
+    val scoreBreakdown: List<List<String?>?>?,
+    val gameData: GameData,
+    val scoreEvent:List<ScoreEvent>
 )
 
 // Scoring information for a specific team, used in the box score
 data class TeamScore(
-    val team: Team,
+    val team: TeamBoxScore,
     val scoresByPeriod: List<Int>,
     val totalScore: Int
 )
@@ -114,7 +124,7 @@ data class ScoreEvent(
     val id: Int,
     val time: String,
     val quarter: String,
-    val team: Team,
+    val team: TeamGameSummary,
     val eventType: String,
     val score: String,
     val description: String? = null
@@ -124,11 +134,13 @@ data class ScoreEvent(
     val awayScore get() = scoreTuple[1]
 }
 
-data class Team(
-    val name: String,
-    val logo: Int
+data class TeamBoxScore(
+    val name: String
 )
-
+data class TeamGameSummary(
+    val name: String,
+    val logo: String
+)
 data class GameSummary(
     val gameData: GameData,
     val scoreEvents: List<ScoreEvent>
@@ -173,4 +185,48 @@ fun Game.toGameCardData(): GameCardData{
         sportIcon = Sport.fromDisplayName(sport)?.emptyIcon
             ?: R.drawable.ic_empty_placeholder
     )
+}
+
+fun GameDetailsGame.toGameCardData(): DetailsCardData{
+    return DetailsCardData(
+        title = "Cornell Vs. ${team?.name ?: ""}",
+        opponentLogo = team?.image ?: "",
+        opponent = team?.name ?: "",
+        opponentColor = team?.color ?: Color.White,
+        date = parseDateOrNull(date),
+        time = time ?: "",
+        dateString = formatDateTimeDisplay(date, time ?: ""),
+        isPastStartTime = parseDateTimeOrNull(date, time ?: "")?.let {
+            !LocalDateTime.now().isBefore(it)
+        } ?: false,
+        location = city,
+        locationString = "${city}, ${state}",
+        gender = gender,
+        genderIcon = if (gender == "Mens") R.drawable.ic_gender_men else R.drawable.ic_gender_women,
+        sport = sport,
+        sportIcon = Sport.fromDisplayName(sport)?.emptyIcon
+            ?: R.drawable.ic_empty_placeholder,
+        boxScore = boxScore ?: emptyList(),
+        scoreBreakdown = scoreBreakdown ?: emptyList(),
+        gameData = toGameData(scoreBreakdown = scoreBreakdown, team1 = TeamBoxScore("Cornell", ), team2 = TeamBoxScore(team?.name ?: "")),
+        scoreEvent = boxScore?.toScoreEvents(team?.image ?: "") ?: emptyList()
+    )
+}
+
+fun List<GameDetailsBoxScore>.toScoreEvents(teamLogo: String): List<ScoreEvent> {
+    return this.mapIndexed { index, boxScore ->
+        val teamName = boxScore.team ?: ""
+        val corScore = boxScore.corScore ?: 0
+        val oppScore = boxScore.oppScore ?: 0
+
+        ScoreEvent(
+            id = index,
+            time = boxScore.time ?: "",
+            quarter = boxScore.period ?: "",
+            team = TeamGameSummary(teamName, logo = teamLogo),
+            eventType = "Score", // TODO: Change to what ios has and not figma
+            score = "$corScore - $oppScore",
+            description = boxScore.description
+        )
+    }
 }

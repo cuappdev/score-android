@@ -75,11 +75,15 @@ class ScoreRepository @Inject constructor(
     fun getGameById(id: String) = appScope.launch {
         _currentGameFlow.value = ApiResponse.Loading
         try {
-            val response = apolloClient.query(GameByIdQuery(id)).execute()
-            val game = response.data?.game
-
-            if (game != null) {
-                _currentGameFlow.value = ApiResponse.Success(game.toGameDetails())
+            val result = (apolloClient.query(GameByIdQuery(id)).execute()).toResult()
+            if (result.isSuccess) {
+                val game = result.getOrNull()
+                if (game?.game != null) {
+                    _currentGameFlow.value = ApiResponse.Success(game.game.toGameDetails())
+                } else {
+                    Log.e("ScoreRepository", "Game or game.game is null for id: $id")
+                    _currentGameFlow.value = ApiResponse.Error
+                }
             } else {
                 _currentGameFlow.value = ApiResponse.Error
             }

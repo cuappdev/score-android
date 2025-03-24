@@ -1,5 +1,6 @@
 package com.cornellappdev.score.model
 
+import com.cornellappdev.score.util.parseColor
 import com.example.score.GameByIdQuery
 
 fun GameByIdQuery.Game.toGameDetails(): GameDetailsGame {
@@ -22,7 +23,7 @@ fun GameByIdQuery.Game.toGameDetails(): GameDetailsGame {
 fun GameByIdQuery.Team.toGameDetailsTeam(): GameDetailsTeam {
     return GameDetailsTeam(
         id = this.id,
-        color = this.color,
+        color = parseColor(this.color).copy(alpha = 0.4f*255),
         image = this.image,
         name = this.name
     )
