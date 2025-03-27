@@ -14,6 +14,9 @@ import com.cornellappdev.score.screen.PastGamesScreen
 
 @Composable
 fun ScoreNavHost(navController: NavHostController) {
+    // This ViewModelStoreOwner is used to scope the past and home screen view models to the root
+    //  screen instead of their individual tabs. This way the view models are not reconstructed
+    //  everytime you switch tabs.
     val mainScreenViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current)
 
     NavHost(
