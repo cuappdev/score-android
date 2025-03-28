@@ -31,6 +31,7 @@ import com.cornellappdev.score.R
 import com.cornellappdev.score.components.BoxScore
 import com.cornellappdev.score.components.ButtonPrimary
 import com.cornellappdev.score.components.GameScoreHeader
+import com.cornellappdev.score.components.NavigationHeader
 import com.cornellappdev.score.components.TimeUntilStartCard
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.DetailsCardData
@@ -49,7 +50,8 @@ import com.cornellappdev.score.viewmodel.HomeViewModel
 @Composable
 fun GameDetailsScreen(
     gameId: String,
-    gameDetailsViewModel: GameDetailsViewModel = hiltViewModel())
+    gameDetailsViewModel: GameDetailsViewModel = hiltViewModel(),
+    onBackArrow: () -> Unit = {})
 {
     val uiState by gameDetailsViewModel.uiStateFlow.collectAsState()
     when (val state = uiState.loadedState) {
@@ -72,18 +74,23 @@ fun GameDetailsScreen(
         }
 
         is ApiResponse.Success -> {
-            GameDetailsContent(gameCard = state.data)
+            GameDetailsContent(
+                gameCard = state.data, onBackArrow = onBackArrow
+                )
         }
     }
 }
 
 @Composable
-private fun GameDetailsContent(gameCard: DetailsCardData,){
+private fun GameDetailsContent(
+    gameCard: DetailsCardData,
+    onBackArrow: () -> Unit = {}){
     Column(
         modifier = Modifier
             .background(White)
             .fillMaxSize(),
     ) {
+        NavigationHeader(title = "Game Details", onBackPressed = onBackArrow)
         Box(modifier = Modifier.height(27.dp))
         Row(
             modifier = Modifier

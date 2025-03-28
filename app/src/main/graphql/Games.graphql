@@ -10,5 +10,10 @@ query Games{
             color
         }
         gender
+        boxScore {
+            corScore
+            oppScore
+        }
+        result
     }
 }
