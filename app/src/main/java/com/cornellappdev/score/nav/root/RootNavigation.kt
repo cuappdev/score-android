@@ -30,7 +30,6 @@ import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.bodyMedium
 import com.cornellappdev.score.theme.White
 import kotlinx.serialization.Serializable
-import java.time.LocalDate
 
 @Composable
 fun RootNavigation(
@@ -84,7 +83,7 @@ fun RootNavigation(
             ) {
                 composable<ScoreRootScreens.Home> {
                     HomeScreen(navigateToGameDetails = {
-                        navController.navigate(ScoreRootScreens.GameDetailsPage(""))
+                        navController.navigate(ScoreRootScreens.GameDetailsPage("67e585b941adb1bafec37766"))
                     })
                 }
 

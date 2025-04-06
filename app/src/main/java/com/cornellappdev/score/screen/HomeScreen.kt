@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,6 +49,7 @@ fun HomeScreen(
             .statusBarsPadding()
             .background(Color.White)
     ) {
+        Button(onClick = { navigateToGameDetails(true) }) { }
         when (uiState.loadedState) {
             is ApiResponse.Loading -> {
                 //TODO: Add loading screen

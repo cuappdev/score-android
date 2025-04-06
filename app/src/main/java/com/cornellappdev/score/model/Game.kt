@@ -2,11 +2,13 @@ package com.cornellappdev.score.model
 
 import androidx.compose.ui.graphics.Color
 import com.cornellappdev.score.R
+import com.cornellappdev.score.util.convertScores
 import com.cornellappdev.score.util.formatDateTimeDisplay
+import com.cornellappdev.score.util.getTimeUntilStart
 import com.cornellappdev.score.util.outputFormatter
-import com.cornellappdev.score.util.parseColor
 import com.cornellappdev.score.util.parseDateOrNull
 import com.cornellappdev.score.util.parseDateTimeOrNull
+import com.cornellappdev.score.util.parseResultScore
 import com.cornellappdev.score.util.toGameData
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -67,7 +69,6 @@ data class GameDetailsGame(
 )
 
 
-
 // Data for HomeScreen game displays
 data class GameCardData(
     val teamLogo: String,
@@ -113,7 +114,11 @@ data class DetailsCardData(
     val boxScore: List<GameDetailsBoxScore?>,
     val scoreBreakdown: List<List<String?>?>?,
     val gameData: GameData,
-    val scoreEvent:List<ScoreEvent>
+    val scoreEvent: List<ScoreEvent>,
+    val daysUntilGame: Int?,
+    val hoursUntilGame: Int?,
+    val homeScore: Int,
+    val oppScore: Int
 )
 
 // Scoring information for a specific team, used in the box score
@@ -156,10 +161,12 @@ data class ScoreEvent(
 data class TeamBoxScore(
     val name: String
 )
+
 data class TeamGameSummary(
     val name: String,
     val logo: String
 )
+
 data class GameSummary(
     val gameData: GameData,
     val scoreEvents: List<ScoreEvent>
@@ -212,7 +219,9 @@ fun Game.toGameCardData(): GameCardData {
     )
 }
 
-fun GameDetailsGame.toGameCardData(): DetailsCardData{
+fun GameDetailsGame.toGameCardData(): DetailsCardData {
+    val (daysUntil, hoursUntil) = getTimeUntilStart(date, time ?: "") ?: (null to null)
+    val parsedScores = parseResultScore(result)
     return DetailsCardData(
         title = "Cornell Vs. ${team?.name ?: ""}",
         opponentLogo = team?.image ?: "",
@@ -233,8 +242,19 @@ fun GameDetailsGame.toGameCardData(): DetailsCardData{
             ?: R.drawable.ic_empty_placeholder,
         boxScore = boxScore ?: emptyList(),
         scoreBreakdown = scoreBreakdown ?: emptyList(),
-        gameData = toGameData(scoreBreakdown = scoreBreakdown, team1 = TeamBoxScore("Cornell", ), team2 = TeamBoxScore(team?.name ?: "")),
-        scoreEvent = boxScore?.toScoreEvents(team?.image ?: "") ?: emptyList()
+        gameData = toGameData(
+            scoreBreakdown = scoreBreakdown,
+            team1 = TeamBoxScore("Cornell"),
+            team2 = TeamBoxScore(team?.name ?: ""),
+            sport = sport
+        ),
+        scoreEvent = boxScore?.toScoreEvents(team?.image ?: "") ?: emptyList(),
+        daysUntilGame = daysUntil,
+        hoursUntilGame = hoursUntil,
+        homeScore = convertScores(scoreBreakdown?.getOrNull(0), sport).second
+            ?: parsedScores?.first ?: 0,
+        oppScore = convertScores(scoreBreakdown?.getOrNull(1), sport).second
+            ?: parsedScores?.second ?: 0
     )
 }
 

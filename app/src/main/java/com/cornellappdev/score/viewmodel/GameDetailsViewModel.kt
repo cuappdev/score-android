@@ -1,6 +1,5 @@
 package com.cornellappdev.score.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.DetailsCardData
@@ -19,21 +18,25 @@ class GameDetailsViewModel @Inject constructor(
     scoreRepository: ScoreRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<GameDetailsUiState>(
-        initialUiState = GameDetailsUiState(
-            loadedState = ApiResponse.Loading
+    initialUiState = GameDetailsUiState(
+        loadedState = ApiResponse.Loading
     )
 ) {
     init {
         val gameId: String? = savedStateHandle["gameId"]
-        scoreRepository.getGameById(gameId ?: "")
-        asyncCollect(scoreRepository.currentGamesFlow) { response ->
-            applyMutation {
-                copy(
-                    loadedState = response.map { gameCard ->
-                        gameCard.toGameCardData()
-                    }
-                )
+        gameId?.let {
+            scoreRepository.getGameById(it)
+            asyncCollect(scoreRepository.currentGamesFlow) { response ->
+                applyMutation {
+                    copy(
+                        loadedState = response.map { gameCard ->
+                            gameCard.toGameCardData()
+                        }
+                    )
+                }
             }
+        } ?: applyMutation {
+            copy(loadedState = ApiResponse.Error)
         }
     }
 }
