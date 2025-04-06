@@ -43,14 +43,14 @@ import com.cornellappdev.score.viewmodel.GameDetailsViewModel
 
 @Composable
 fun GameDetailsScreen(
-    gameId: String,
     gameDetailsViewModel: GameDetailsViewModel = hiltViewModel(),
     onBackArrow: () -> Unit = {}
 ) {
     val uiState by gameDetailsViewModel.uiStateFlow.collectAsState()
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(White)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(White)
     ) {
         NavigationHeader(
             title = "Game Details",
@@ -99,8 +99,8 @@ private fun GameDetailsContent(
             rightTeamLogo = gameCard.opponentLogo,
             gradientColor1 = Color(0xFFE1A69F),
             gradientColor2 = gameCard.opponentColor,
-            leftScore = 0, //TODO Score
-            rightScore = 0, //TODO Score
+            leftScore = gameCard.homeScore,
+            rightScore = gameCard.oppScore, //TODO Score
             modifier = Modifier.height(185.dp)
         )
 

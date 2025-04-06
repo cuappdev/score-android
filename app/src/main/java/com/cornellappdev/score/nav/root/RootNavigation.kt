@@ -88,7 +88,7 @@ fun RootNavigation(
                 }
 
                 composable<ScoreRootScreens.GameDetailsPage> {
-                    GameDetailsScreen("", onBackArrow = {
+                    GameDetailsScreen(onBackArrow = {
                         navController.navigateUp()
                     })
 
