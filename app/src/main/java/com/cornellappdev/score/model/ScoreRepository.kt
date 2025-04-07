@@ -39,21 +39,35 @@ class ScoreRepository @Inject constructor(
             if (result.isSuccess) {
                 val games = result.getOrNull()
 
-                val upcomingGameslist: List<Game> =
+                val gamesList: List<Game> =
                     games?.games?.mapNotNull { game ->
+                        /**
+                         * The final scores in the past game cards are obtained by parsing a String
+                         * result from the GameQuery, which is oftentimes in the format
+                         * Result, CornellScore-OpponentScore (e.g. "W, 2-1"). Not all of the strings
+                         * are in this format (e.g. 4th of 6, 1498 points for women's Swimming and
+                         * Diving), but in this case, the cornellScore and otherScore parameters of
+                         * the game and associated card should be null, and as of right now,
+                         * null-scored games are filtered out.
+                         */
+                        val scores = game?.result?.split(",")?.getOrNull(1)?.split("-")
+                        val cornellScore = scores?.getOrNull(0)?.toNumberOrNull()
+                        val otherScore = scores?.getOrNull(1)?.toNumberOrNull()
                         game?.team?.image?.let {
                             Game(
                                 teamLogo = it,
                                 teamName = game.team.name,
-                                teamColor = parseColor(game.team.color).copy(alpha = 0.4f*255),
-                                gender = game.gender,
+                                teamColor = parseColor(game.team.color).copy(alpha = 0.4f * 255),
+                                gender = if (game.gender == "Mens") "Men's" else "Women's",
                                 sport = game.sport,
                                 date = game.date,
-                                city = game.city
+                                city = game.city,
+                                cornellScore = cornellScore,
+                                otherScore = otherScore
                             )
                         }
                     } ?: emptyList()
-                _upcomingGamesFlow.value = ApiResponse.Success(upcomingGameslist)
+                _upcomingGamesFlow.value = ApiResponse.Success(gamesList)
             } else {
                 _upcomingGamesFlow.value = ApiResponse.Error
             }
@@ -62,5 +76,12 @@ class ScoreRepository @Inject constructor(
             Log.e("ScoreRepository", "Error fetching posts: ", e)
             _upcomingGamesFlow.value = ApiResponse.Error
         }
+    }
+}
+
+fun String.toNumberOrNull(): Number? {
+    return when {
+        this.contains(".") -> this.toFloatOrNull()  // Try converting to Float if there's a decimal
+        else -> this.toIntOrNull()  // Otherwise, try converting to Int
     }
 }

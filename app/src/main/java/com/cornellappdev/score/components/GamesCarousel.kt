@@ -21,12 +21,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.GameCardData
+import com.cornellappdev.score.model.GamesCarouselVariant
 import com.cornellappdev.score.theme.CornellRed
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.heading1
-import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.util.gameList
 
 @Composable
@@ -56,7 +56,7 @@ fun DotIndicator(
 }
 
 @Composable
-fun UpcomingGamesCarousel(games: List<GameCardData>) {
+fun GamesCarousel(games: List<GameCardData>, variant: GamesCarouselVariant) {
     val pagerState = rememberPagerState(pageCount = { games.size })
     Column(
         modifier = Modifier
@@ -65,7 +65,7 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
     ) {
         Text(
-            text = "Upcoming",
+            text = if (variant == GamesCarouselVariant.UPCOMING) "Upcoming" else "Latest",
             style = heading1,
             color = GrayPrimary,
             modifier = Modifier.fillMaxWidth()
@@ -76,12 +76,13 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
             modifier = Modifier.fillMaxWidth()
         ) { page ->
             val game = games[page]
-            UpcomingGameCard(
+            FeaturedGameCard(
                 leftTeamLogo = painterResource(R.drawable.cornell_logo),
                 rightTeamLogo = game.teamLogo,
                 team = game.team,
                 date = game.dateString,
                 isLive = game.isLive,
+                isPast = game.isPast,
                 genderIcon = painterResource(game.genderIcon),
                 sportIcon = painterResource(game.sportIcon),
                 location = game.location,
@@ -104,6 +105,6 @@ fun UpcomingGamesCarousel(games: List<GameCardData>) {
 
 @Preview(showBackground = true, widthDp = 360)
 @Composable
-private fun UpcomingGamesCarouselPreview() {
-    UpcomingGamesCarousel(gameList)
+private fun GamesCarouselPreview() {
+    GamesCarousel(gameList, GamesCarouselVariant.UPCOMING)
 }
