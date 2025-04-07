@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.LoadingScreen
-import com.cornellappdev.score.components.SportCard
 import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.components.GameCard
 import com.cornellappdev.score.components.SportSelectorHeader
