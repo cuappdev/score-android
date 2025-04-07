@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.components.ErrorState
-import com.cornellappdev.score.components.LoadingState
+import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.SportCard
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.components.UpcomingGamesCarousel
@@ -46,7 +46,7 @@ fun HomeScreen(
     ) {
         when (uiState.loadedState) {
             is ApiResponse.Loading -> {
-                LoadingState("Loading Upcoming...", "Loading Schedules...")
+                LoadingScreen("Loading Upcoming...", "Loading Schedules...")
             }
 
             is ApiResponse.Error -> {
@@ -54,7 +54,7 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Bottom
-                ){
+                ) {
                     ErrorState({ homeViewModel.onRefresh() }, "Oops! Schedules failed to load.")
                     Spacer(modifier = Modifier.height(70.dp))
                 }

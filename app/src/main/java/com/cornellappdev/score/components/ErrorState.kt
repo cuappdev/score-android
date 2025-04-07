@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,15 +26,16 @@ import com.cornellappdev.score.theme.Style.heading2
 @Composable
 fun ErrorState(
     onRefresh: () -> Unit,
-    message: String
+    message: String,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(422.dp),
+        modifier = modifier
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.spacedBy(100.dp)
     ) {
+        Spacer(modifier = Modifier.height(200.dp))
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -53,18 +54,22 @@ fun ErrorState(
                 style = bodyNormal.copy(color = GrayMedium)
             )
         }
+
         Button(
             colors = ButtonDefaults.buttonColors(containerColor = CrimsonPrimary),
             onClick = onRefresh
         ) {
-            Row() {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Image(
                     painter = painterResource(R.drawable.ic_cached),
-                    contentDescription = "cached"
+                    contentDescription = "refresh icon"
                 )
                 Text("Try again")
             }
         }
+        Spacer(modifier = Modifier.height(70.dp))
     }
 }
 

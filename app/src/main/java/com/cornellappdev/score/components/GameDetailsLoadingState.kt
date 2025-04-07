@@ -4,7 +4,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,17 +21,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
-import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayStroke
+import com.cornellappdev.score.util.LocalInfiniteLoading
+import com.cornellappdev.score.util.Stroke
+import com.cornellappdev.score.util.Wash
+import com.cornellappdev.score.util.interpolateColorHSV
 
 @Composable
-fun GameDetailsLoadingState() {
+fun GameDetailsLoadingState(
+    modifier: Modifier = Modifier
+) {
+    val shimmerColor = interpolateColorHSV(Wash, Stroke, LocalInfiniteLoading.current)
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
-                .background(color = GrayStroke)
+                .background(color = shimmerColor)
                 .fillMaxWidth()
                 .height(185.dp),
             horizontalArrangement = Arrangement.Center,
@@ -43,39 +47,24 @@ fun GameDetailsLoadingState() {
                 modifier = Modifier
                     .size(72.dp)
             ) {
-                drawCircle(color = GrayLight)
+                drawCircle(color = shimmerColor)
             }
             Spacer(modifier = Modifier.width(24.dp))
-            Box(
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(33.dp)
-                    .background(color = GrayLight, shape = RoundedCornerShape(100))
-            )
+            LoadingStateBox(100, 33.dp, Modifier.width(100.dp))
             Spacer(modifier = Modifier.width(24.dp))
             Canvas(
                 modifier = Modifier
                     .size(72.dp)
             ) {
-                drawCircle(color = GrayLight)
+                drawCircle(color = shimmerColor)
             }
         }
         Column(
             modifier = Modifier.padding(24.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(16.dp)
-                    .background(color = GrayStroke, shape = RoundedCornerShape(12))
-            )
+            LoadingStateBox(12, 16.dp, Modifier.width(100.dp))
             Spacer(modifier = Modifier.height(12.dp))
-            Box(
-                modifier = Modifier
-                    .width(200.dp)
-                    .height(32.dp)
-                    .background(color = GrayStroke, shape = RoundedCornerShape(100))
-            )
+            LoadingStateBox(100, 32.dp, Modifier.width(200.dp))
             Spacer(modifier = Modifier.height(16.dp))
             LoadingStateBox(12, 16.dp)
 

@@ -20,14 +20,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.Style.heading1
+import com.cornellappdev.score.util.LocalInfiniteLoading
+import com.cornellappdev.score.util.Stroke
+import com.cornellappdev.score.util.Wash
+import com.cornellappdev.score.util.interpolateColorHSV
 
 @Composable
-fun LoadingState(
+fun LoadingScreen(
     topHeader: String,
-    bottomHeader: String
+    bottomHeader: String,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier.padding(24.dp),
@@ -94,6 +99,8 @@ fun LoadingState(
 
 @Composable
 private fun LoadingFilter() {
+    val shimmerColor = interpolateColorHSV(Wash, Stroke, LocalInfiniteLoading.current)
+
     Column(
         modifier = Modifier
             .width(54.dp)
@@ -106,7 +113,7 @@ private fun LoadingFilter() {
                 .size(24.dp)
                 .padding(2.dp)
         ) {
-            drawCircle(color = GrayStroke)
+            drawCircle(color = shimmerColor)
         }
         Spacer(modifier = Modifier.height(6.dp))
         LoadingStateBox(100, 12.dp)
@@ -121,6 +128,6 @@ private fun LoadingFilterPreview() {
 
 @Preview
 @Composable
-private fun LoadingStatePreview() {
-    LoadingState("Loading Upcoming...", "Loading Schedules...")
+private fun LoadingScreenPreview() {
+    LoadingScreen("Loading Upcoming...", "Loading Schedules...")
 }
