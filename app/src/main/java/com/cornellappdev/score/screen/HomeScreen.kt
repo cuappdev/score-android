@@ -152,11 +152,6 @@ private fun HomeLazyColumn(
     }
 }
 
-@Composable
-private fun HomeLazyColumn() {
-
-}
-
 @Preview
 @Composable
 private fun HomeScreenPreview() {
