@@ -79,7 +79,7 @@ fun HomeScreen(
                     onGenderSelected = { homeViewModel.onGenderSelected(it) },
                     onSportSelected = { homeViewModel.onSportSelected(it) },
                     navigateToGameDetails = navigateToGameDetails,
-                    onRefresh = { TODO() }
+                    onRefresh = { homeViewModel.onRefresh() }
                 )
             }
         }
