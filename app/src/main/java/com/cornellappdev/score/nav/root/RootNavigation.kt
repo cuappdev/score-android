@@ -3,34 +3,22 @@ package com.cornellappdev.score.nav.root
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.cornellappdev.score.R
-import com.cornellappdev.score.nav.root.ScoreRootScreens.Home.toScreen
-import com.cornellappdev.score.screen.GameDetailsScreen
-import com.cornellappdev.score.screen.HomeScreen
-import com.cornellappdev.score.screen.PastGamesScreen
-import com.cornellappdev.score.theme.CrimsonPrimary
-import com.cornellappdev.score.theme.GrayPrimary
-import com.cornellappdev.score.theme.Style.bodyMedium
-import com.cornellappdev.score.theme.White
+import com.cornellappdev.score.nav.ScoreNavHost
+import com.cornellappdev.score.nav.ScoreNavigationBar
+import com.cornellappdev.score.nav.root.ScoreScreens.GameDetailsPage
+import com.cornellappdev.score.nav.root.ScoreScreens.Home
+import com.cornellappdev.score.nav.root.ScoreScreens.ScoresScreen
 import kotlinx.serialization.Serializable
-import java.time.LocalDate
 
 @Composable
 fun RootNavigation(
@@ -46,88 +34,40 @@ fun RootNavigation(
         }
     }
 
+    
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
-        NavigationBar(containerColor = White) {
-            tabs.map { item ->
-                val isSelected = item.screen == navBackStackEntry?.toScreen()
-
-                NavigationBarItem(
-                    selected = isSelected,
-                    onClick = { navController.navigate(item.screen) },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = if (isSelected) item.selectedIcon else item.unselectedIcon),
-                            contentDescription = null,
-                            tint = Color.Unspecified
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = item.label,
-                            style = bodyMedium,
-                            color = if (isSelected) {
-                                CrimsonPrimary
-                            } else {
-                                GrayPrimary
-                            }
-                        )
-                    }
-                )
-            }
-        }
+        ScoreNavigationBar({ navController.navigate(it) }, navBackStackEntry)
     }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            NavHost(
-                navController = navController,
-                startDestination = ScoreRootScreens.Home
-            ) {
-                composable<ScoreRootScreens.Home> {
-                    HomeScreen(navigateToGameDetails = {
-                        navController.navigate(ScoreRootScreens.GameDetailsPage(""))
-                    })
-                }
-
-                composable<ScoreRootScreens.GameDetailsPage> {
-                    GameDetailsScreen("", onBackArrow = {
-                        navController.navigateUp()
-                    })
-
-                }
-
-                composable<ScoreRootScreens.ScoresScreen> {
-                    PastGamesScreen(navigateToGameDetails = {
-                        navController.navigate(ScoreRootScreens.GameDetailsPage(""))
-                    })
-                }
-            }
+            ScoreNavHost(navController)
         }
     }
 }
 
 
 @Serializable
-sealed class ScoreRootScreens {
+sealed class ScoreScreens {
     @Serializable
-    data object Home : ScoreRootScreens()
+    data object Home : ScoreScreens()
 
     @Serializable
-    data class GameDetailsPage(val gameId: String) : ScoreRootScreens()
+    data class GameDetailsPage(val gameId: String) : ScoreScreens()
 
     @Serializable
-    data object ScoresScreen : ScoreRootScreens()
-
-    fun NavBackStackEntry.toScreen(): ScoreRootScreens? =
-        when (destination.route?.substringAfterLast(".")?.substringBefore("/")) {
-            "Home" -> toRoute<Home>()
-            "GameDetailsPage" -> toRoute<GameDetailsPage>()
-            "ScoresScreen" -> toRoute<ScoresScreen>()
-            else -> throw IllegalArgumentException("Invalid screen")
-        }
+    data object ScoresScreen : ScoreScreens()
 }
 
+fun NavBackStackEntry.toScreen(): ScoreScreens? =
+    when (destination.route?.substringAfterLast(".")?.substringBefore("/")) {
+        "Home" -> toRoute<Home>()
+        "GameDetailsPage" -> toRoute<GameDetailsPage>()
+        "ScoresScreen" -> toRoute<ScoresScreen>()
+        else -> throw IllegalArgumentException("Invalid screen")
+    }
+
 data class NavItem(
-    val screen: ScoreRootScreens,
+    val screen: ScoreScreens,
     val label: String,
     val unselectedIcon: Int,
     val selectedIcon: Int
@@ -138,12 +78,12 @@ val tabs = listOf(
         label = "Schedule",
         unselectedIcon = R.drawable.ic_schedule,
         selectedIcon = R.drawable.ic_schedule_filled,
-        screen = ScoreRootScreens.Home,
+        screen = ScoreScreens.Home,
     ),
     NavItem(
         label = "Scores",
         unselectedIcon = R.drawable.ic_scores,
         selectedIcon = R.drawable.ic_scores_filled,
-        screen = ScoreRootScreens.ScoresScreen,
+        screen = ScoreScreens.ScoresScreen,
     ),
 )
