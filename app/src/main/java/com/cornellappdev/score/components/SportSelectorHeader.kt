@@ -39,11 +39,8 @@ import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.Style.bodyMedium
 import com.cornellappdev.score.theme.Style.bodySemibold
-import com.cornellappdev.score.theme.Style.genderFilterText
-import com.cornellappdev.score.theme.Style.genderText
 import com.cornellappdev.score.theme.Style.labelsMedium
 import com.cornellappdev.score.theme.Style.labelsNormal
-import com.cornellappdev.score.theme.Style.sportFilterText
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.sportSelectionList
 
@@ -53,18 +50,17 @@ fun SportSelectorHeader(
     selectedGender: GenderDivision,
     selectedSport: SportSelection,
     onGenderSelected: (GenderDivision) -> Unit,
-    onSportSelected: (SportSelection) -> Unit
+    onSportSelected: (SportSelection) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .background(color = White)
-            .padding(start = 24.dp, bottom = 16.dp),
+            .background(color = White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
             modifier = Modifier
-                .padding(end = 24.dp)
                 .border(
                     border = BorderStroke(1.dp, GrayLight),
                     shape = RoundedCornerShape(100)
