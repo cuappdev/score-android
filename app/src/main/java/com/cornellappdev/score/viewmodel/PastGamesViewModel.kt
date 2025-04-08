@@ -74,4 +74,10 @@ class PastGamesViewModel @Inject constructor(
             )
         }
     }
+
+    fun onRefresh() {
+        applyMutation { copy(loadedState = ApiResponse.Loading) }
+
+        scoreRepository.fetchGames()
+    }
 }

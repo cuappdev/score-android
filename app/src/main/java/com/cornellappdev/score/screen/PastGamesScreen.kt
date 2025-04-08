@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.components.PastGameCard
+import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GamesCarouselVariant
@@ -75,7 +76,8 @@ fun PastGamesScreen(
                     uiState = uiState,
                     onGenderSelected = { pastGamesViewModel.onGenderSelected(it) },
                     onSportSelected = { pastGamesViewModel.onSportSelected(it) },
-                    navigateToGameDetails = navigateToGameDetails
+                    navigateToGameDetails = navigateToGameDetails,
+                    onRefresh = pastGamesViewModel::onRefresh
                 )
             }
         }
@@ -88,7 +90,21 @@ private fun PastGamesContent(
     uiState: PastGamesUiState,
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
+    onRefresh: () -> Unit,
     navigateToGameDetails: (Boolean) -> Unit = {}
+) {
+    ScorePullToRefreshBox(uiState.loadedState == ApiResponse.Loading, onRefresh = onRefresh) {
+        PastGamesLazyColumn(uiState, onGenderSelected, onSportSelected, navigateToGameDetails)
+    }
+}
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun PastGamesLazyColumn(
+    uiState: PastGamesUiState,
+    onGenderSelected: (GenderDivision) -> Unit,
+    onSportSelected: (SportSelection) -> Unit,
+    navigateToGameDetails: (Boolean) -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp, start = 24.dp, end = 24.dp)) {
         item {
@@ -139,5 +155,6 @@ private fun PastGamesPreview() {
         ),
         onGenderSelected = {},
         onSportSelected = {},
+        onRefresh = {},
     )
 }
