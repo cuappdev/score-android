@@ -40,7 +40,16 @@ val PRINCETON_GAME = GameCardData(
     sport = "Swim Dive",
     sportIcon = R.drawable.ic_swim_dive,
 )
-val gameList = listOf(PENN_GAME, PRINCETON_GAME)
+val gameList = listOf(
+    PENN_GAME,
+    PRINCETON_GAME,
+    PENN_GAME,
+    PRINCETON_GAME,
+    PENN_GAME,
+    PRINCETON_GAME,
+    PENN_GAME,
+    PRINCETON_GAME
+)
 
 val team1 = Team(name = "Cornell", R.drawable.cornell_logo)
 val team2 = Team(name = "Yale", R.drawable.yale_logo)

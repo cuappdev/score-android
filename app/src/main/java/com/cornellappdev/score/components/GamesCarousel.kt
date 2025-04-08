@@ -56,12 +56,15 @@ fun DotIndicator(
 }
 
 @Composable
-fun GamesCarousel(games: List<GameCardData>, variant: GamesCarouselVariant) {
+fun GamesCarousel(
+    games: List<GameCardData>,
+    variant: GamesCarouselVariant,
+    modifier: Modifier = Modifier
+) {
     val pagerState = rememberPagerState(pageCount = { games.size })
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp),
+        modifier = modifier
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
     ) {
         Text(
