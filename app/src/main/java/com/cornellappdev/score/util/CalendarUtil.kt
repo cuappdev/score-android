@@ -17,7 +17,7 @@ fun addToCalendar(context: Context, details: DetailsCardData) {
         .toInstant()
         .toEpochMilli()
 
-    val endMillis = startMillis + (2 * 60 * 60 * 1000) // 2 hours later
+    val endMillis = startMillis + (2 * 60 * 60 * 1000)
 
     val intent = Intent(Intent.ACTION_INSERT).apply {
         data = CalendarContract.Events.CONTENT_URI
