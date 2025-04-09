@@ -22,7 +22,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.BoxScore
@@ -93,7 +95,7 @@ private fun GameDetailsContent(
             .background(White)
             .fillMaxSize(),
     ) {
-        Box(modifier = Modifier.height(27.dp))
+//        Box(modifier = Modifier.height(27.dp))
         GameScoreHeader(
             leftTeamLogo = painterResource(R.drawable.cornell_logo),
             rightTeamLogo = gameCard.opponentLogo,
@@ -115,7 +117,7 @@ private fun GameDetailsContent(
                 text = gameCard.title,
                 style = heading1.copy(color = GrayPrimary)
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(13.5.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
@@ -141,12 +143,20 @@ private fun GameDetailsContent(
                 Text(text = gameCard.dateString, style = bodyNormal.copy(color = GrayPrimary))
             }
 
-            //render the below if the game is in the future
+            // render the below if the game is in the future
+            // TODO: MESSY, is it every the case when there is a boxscore but no scoring summary
             if (gameCard.isPastStartTime) {
                 if (!gameCard.scoreBreakdown.isNullOrEmpty()) {
+                    Spacer(modifier = Modifier.height(24.dp))
                     BoxScore(gameCard.gameData)
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
                 if (gameCard.boxScore.isNotEmpty()) {
+                    Text(
+                        "Scoring Summary", fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium,
+                    ) // TODO: NAVIGATION
+                    Spacer(modifier = Modifier.height(16.dp))
                     ScoringSummary(gameCard.scoreEvent)
                 } else {
                     Text("No Scoring Summary") // TODO: Make state when there are no scores
@@ -168,7 +178,7 @@ private fun GameDetailsContent(
                 "Add to Calendar",
                 painterResource(R.drawable.ic_calendar),
                 onClick = { addToCalendar(context = context, gameCard) }
-            ) //TODO polish calendar
+            )
         }
 
     }
