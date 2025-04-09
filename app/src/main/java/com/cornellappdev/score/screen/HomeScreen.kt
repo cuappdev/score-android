@@ -1,15 +1,15 @@
 package com.cornellappdev.score.screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -31,6 +31,7 @@ import com.cornellappdev.score.model.GamesCarouselVariant
 import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.Style.title
+import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.gameList
 import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.HomeUiState
@@ -46,7 +47,6 @@ fun HomeScreen(
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
         modifier = Modifier
-            .statusBarsPadding()
             .background(Color.White)
     ) {
         Button(onClick = { navigateToGameDetails(true) }) { }
@@ -85,6 +85,7 @@ fun HomeScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HomeContent(
     uiState: HomeUiState,
@@ -92,39 +93,46 @@ private fun HomeContent(
     onSportSelected: (SportSelection) -> Unit,
     navigateToGameDetails: (Boolean) -> Unit = {}
 ) {
-    GamesCarousel(uiState.upcomingGames, GamesCarouselVariant.UPCOMING)
-    Column {
-        Text(
-            text = "Game Schedule",
-            style = title,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 8.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        SportSelectorHeader(
-            sports = uiState.selectionList,
-            selectedGender = uiState.selectedGender,
-            selectedSport = uiState.sportSelect,
-            onGenderSelected = onGenderSelected,
-            onSportSelected = onSportSelected
-        )
-        LazyColumn(modifier = Modifier.padding(horizontal = 24.dp)) {
-            items(uiState.filteredGames) {
-                val game = it
-                GameCard(
-                    teamLogo = game.teamLogo,
-                    team = game.team,
-                    date = game.dateString,
-                    isLive = game.isLive,
-                    genderIcon = painterResource(game.genderIcon),
-                    sportIcon = painterResource(game.sportIcon),
-                    location = game.location,
-                    topCornerRound = true,
-                    onClick = navigateToGameDetails
+    LazyColumn(contentPadding = PaddingValues(top = 24.dp, start = 24.dp, end = 24.dp)) {
+        item {
+            GamesCarousel(uiState.upcomingGames, GamesCarouselVariant.UPCOMING)
+        }
+        stickyHeader {
+            Column(modifier = Modifier.background(White)) {
+                Spacer(Modifier.height(24.dp))
+                Text(
+                    text = "Game Schedule",
+                    style = title,
+                    modifier = Modifier
+                        .fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+                SportSelectorHeader(
+                    sports = uiState.selectionList,
+                    selectedGender = uiState.selectedGender,
+                    selectedSport = uiState.sportSelect,
+                    onGenderSelected = onGenderSelected,
+                    onSportSelected = onSportSelected,
+                )
             }
+        }
+        item {
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+        items(uiState.filteredGames) {
+            val game = it
+            GameCard(
+                teamLogo = game.teamLogo,
+                team = game.team,
+                date = game.dateString,
+                isLive = game.isLive,
+                genderIcon = painterResource(game.genderIcon),
+                sportIcon = painterResource(game.sportIcon),
+                location = game.location,
+                topCornerRound = true,
+                onClick = navigateToGameDetails
+            )
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
