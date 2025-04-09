@@ -39,8 +39,6 @@ fun LoadingStateBox(
 
 @Preview
 @Composable
-private fun LoadingStateBoxPreview() {
-    ScorePreview {
-        LoadingStateBox(12, 16.dp)
-    }
+private fun LoadingStateBoxPreview() = ScorePreview {
+    LoadingStateBox(12, 16.dp)
 }

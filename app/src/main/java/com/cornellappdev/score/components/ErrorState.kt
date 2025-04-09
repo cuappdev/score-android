@@ -73,8 +73,8 @@ fun ErrorState(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-private fun ErrorStatePreview() {
+private fun ErrorStatePreview() = ScorePreview{
     ErrorState({}, "Oops! Failed to load.")
 }

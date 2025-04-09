@@ -1,5 +1,9 @@
 package com.cornellappdev.score.components
 
+import androidx.compose.animation.core.InfiniteRepeatableSpec
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -17,12 +21,28 @@ fun ScorePreview(
     backgroundColor: Color = Color.White,
     content: @Composable () -> Unit
 ) {
+    val transition = rememberInfiniteTransition()
+
+    val animatedValue = transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = InfiniteRepeatableSpec(
+            animation = keyframes {
+                durationMillis = 2000
+                0f at 0
+                1f at 1000
+                0f at 2000
+            }
+        ),
+        label = "infinite loading"
+    ).value
+
     CompositionLocalProvider(
-        LocalInfiniteLoading provides 0f
+        LocalInfiniteLoading provides animatedValue
     ) {
         Column(
             modifier = Modifier
-                .background(backgroundColor)
+                .background(color = backgroundColor)
                 .padding(padding)
         ) {
             content()

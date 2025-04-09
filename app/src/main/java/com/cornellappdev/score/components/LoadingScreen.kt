@@ -122,16 +122,12 @@ private fun LoadingFilter() {
 
 @Preview
 @Composable
-private fun LoadingFilterPreview() {
-    ScorePreview {
-        LoadingFilter()
-    }
+private fun LoadingFilterPreview() = ScorePreview{
+    LoadingFilter()
 }
 
 @Preview
 @Composable
-private fun LoadingScreenPreview() {
-    ScorePreview {
-        LoadingScreen("Loading Upcoming...", "Loading Schedules...")
-    }
+private fun LoadingScreenPreview() = ScorePreview {
+    LoadingScreen("Loading Upcoming...", "Loading Schedules...")
 }

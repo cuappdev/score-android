@@ -1,6 +1,5 @@
 package com.cornellappdev.score.theme
 
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 val GrayPrimary = Color(0xFF333333)
@@ -27,4 +26,3 @@ val PrincetonOrange = Color(0x66FF6000)
 
 val Wash = Color(0xFFF4F4F4)
 val Stroke = Color(0xFFD6D6D6)
-val LocalInfiniteLoading = compositionLocalOf<Float> { error("No infinite loading provided") }
