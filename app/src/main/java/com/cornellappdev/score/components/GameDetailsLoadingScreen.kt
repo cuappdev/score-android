@@ -28,7 +28,7 @@ import com.cornellappdev.score.theme.Wash
 import com.cornellappdev.score.util.interpolateColorHSV
 
 @Composable
-fun GameDetailsLoadingState(
+fun GameDetailsLoadingScreen(
     modifier: Modifier = Modifier
 ) {
     val shimmerColor = interpolateColorHSV(Wash, Stroke, LocalInfiniteLoading.current)
@@ -104,6 +104,6 @@ fun GameDetailsLoadingState(
 @Composable
 private fun GameDetailsLoadingStatePreview(){
     ScorePreview {
-        GameDetailsLoadingState()
+        GameDetailsLoadingScreen()
     }
 }
