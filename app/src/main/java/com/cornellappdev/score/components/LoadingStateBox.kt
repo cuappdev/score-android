@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.cornellappdev.score.util.LocalInfiniteLoading
-import com.cornellappdev.score.util.Stroke
-import com.cornellappdev.score.util.Wash
+import com.cornellappdev.score.theme.LocalInfiniteLoading
+import com.cornellappdev.score.theme.Stroke
+import com.cornellappdev.score.theme.Wash
 import com.cornellappdev.score.util.interpolateColorHSV
 
 @Composable
@@ -40,5 +40,7 @@ fun LoadingStateBox(
 @Preview
 @Composable
 private fun LoadingStateBoxPreview() {
-    LoadingStateBox(12, 16.dp)
+    ScorePreview {
+        LoadingStateBox(12, 16.dp)
+    }
 }

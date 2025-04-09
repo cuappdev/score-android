@@ -29,14 +29,13 @@ import com.cornellappdev.score.R
 import com.cornellappdev.score.nav.root.ScoreRootScreens.Home.toScreen
 import com.cornellappdev.score.screen.GameDetailsScreen
 import com.cornellappdev.score.screen.HomeScreen
-import com.cornellappdev.score.util.LocalInfiniteLoading
 import com.cornellappdev.score.screen.PastGamesScreen
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayPrimary
+import com.cornellappdev.score.theme.LocalInfiniteLoading
 import com.cornellappdev.score.theme.Style.bodyMedium
 import com.cornellappdev.score.theme.White
 import kotlinx.serialization.Serializable
-import java.time.LocalDate
 
 @Composable
 fun RootNavigation(
@@ -100,7 +99,7 @@ fun RootNavigation(
     }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            CompositionLocalProvider(LocalInfiniteLoading provides animatedValue){
+            CompositionLocalProvider(LocalInfiniteLoading provides animatedValue) {
                 NavHost(
                     navController = navController,
                     startDestination = ScoreRootScreens.Home

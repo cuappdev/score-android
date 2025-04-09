@@ -73,7 +73,7 @@ fun ErrorState(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun ErrorStatePreview() {
     ErrorState({}, "Oops! Failed to load.")

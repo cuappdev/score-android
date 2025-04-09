@@ -22,9 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.theme.GrayStroke
-import com.cornellappdev.score.util.LocalInfiniteLoading
-import com.cornellappdev.score.util.Stroke
-import com.cornellappdev.score.util.Wash
+import com.cornellappdev.score.theme.LocalInfiniteLoading
+import com.cornellappdev.score.theme.Stroke
+import com.cornellappdev.score.theme.Wash
 import com.cornellappdev.score.util.interpolateColorHSV
 
 @Composable
@@ -102,6 +102,8 @@ fun GameDetailsLoadingState(
 
 @Preview
 @Composable
-private fun GameDetailsLoadingStatePreview() {
-    GameDetailsLoadingState()
+private fun GameDetailsLoadingStatePreview(){
+    ScorePreview {
+        GameDetailsLoadingState()
+    }
 }
