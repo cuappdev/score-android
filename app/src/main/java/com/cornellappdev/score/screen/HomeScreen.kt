@@ -54,14 +54,7 @@ fun HomeScreen(
             }
 
             is ApiResponse.Error -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-                    ErrorState({ homeViewModel.onRefresh() }, "Oops! Schedules failed to load.")
-                    Spacer(modifier = Modifier.height(70.dp))
-                }
+                ErrorState({ homeViewModel.onRefresh() }, "Oops! Schedules failed to load.")
             }
 
             is ApiResponse.Success -> {
