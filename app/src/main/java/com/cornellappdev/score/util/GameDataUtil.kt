@@ -4,6 +4,7 @@ import com.cornellappdev.score.model.GameData
 import com.cornellappdev.score.model.TeamBoxScore
 import com.cornellappdev.score.model.TeamScore
 
+// TODO: ASK ABOUT OT 
 fun convertScores(scoreList: List<String?>?, sport: String): Pair<List<Int>, Int?> {
     if (scoreList == null || scoreList.size < 2) return Pair(emptyList(), null)
 
