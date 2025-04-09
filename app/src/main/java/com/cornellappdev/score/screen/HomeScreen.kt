@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,6 +49,7 @@ fun HomeScreen(
         modifier = Modifier
             .background(Color.White)
     ) {
+        Button(onClick = { navigateToGameDetails(true) }) { }
         when (uiState.loadedState) {
             is ApiResponse.Loading -> {
                 //TODO: Add loading screen
