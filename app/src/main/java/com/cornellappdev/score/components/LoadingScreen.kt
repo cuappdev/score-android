@@ -19,9 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.theme.GrayStroke
-import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.theme.LocalInfiniteLoading
 import com.cornellappdev.score.theme.Stroke
+import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.theme.Wash
 import com.cornellappdev.score.util.interpolateColorHSV
 
@@ -122,7 +122,7 @@ private fun LoadingFilter() {
 
 @Preview
 @Composable
-private fun LoadingFilterPreview() = ScorePreview{
+private fun LoadingFilterPreview() = ScorePreview {
     LoadingFilter()
 }
 

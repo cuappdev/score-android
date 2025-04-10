@@ -1,7 +1,7 @@
 package com.cornellappdev.score.screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,6 +22,7 @@ import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.PastGameCard
+import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GamesCarouselVariant
@@ -114,7 +115,7 @@ private fun PastGamesContent(
 
 @Composable
 @Preview
-private fun PastGamesPreview() {
+private fun PastGamesPreview() = ScorePreview {
     PastGamesContent(
         uiState = PastGamesUiState(
             selectedGender = GenderDivision.ALL,

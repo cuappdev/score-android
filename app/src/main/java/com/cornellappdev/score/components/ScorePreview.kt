@@ -14,11 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.theme.LocalInfiniteLoading
+import com.cornellappdev.score.theme.White
 
 @Composable
 fun ScorePreview(
     padding: Dp = 0.dp,
-    backgroundColor: Color = Color.White,
+    backgroundColor: Color = White,
     content: @Composable () -> Unit
 ) {
     val transition = rememberInfiniteTransition()

@@ -102,6 +102,6 @@ fun GameDetailsLoadingScreen(
 
 @Preview
 @Composable
-private fun GameDetailsLoadingStatePreview() = ScorePreview{
+private fun GameDetailsLoadingStatePreview() = ScorePreview {
     GameDetailsLoadingScreen()
 }

@@ -110,7 +110,7 @@ fun FeaturedGameHeader(
 
 @Preview
 @Composable
-private fun FeaturedGameCardPreview() {
+private fun FeaturedGameCardPreview() = ScorePreview {
     FeaturedGameHeader(
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = "https://cornellbigred.com/images/logos/YALE_LOGO_2020.png?width=80&height=80&mode=max",
@@ -177,9 +177,9 @@ fun FeaturedGameCard(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-private fun GameScheduleScreen() {
+private fun GameScheduleScreen() = ScorePreview {
     FeaturedGameCard(
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",//painterResource(R.drawable.penn_logo),
