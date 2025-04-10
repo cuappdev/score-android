@@ -1,9 +1,14 @@
 package com.cornellappdev.score.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,10 +22,8 @@ import com.cornellappdev.score.model.TeamScore
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.bodyNormal
-import com.cornellappdev.score.theme.Style.heading6
 import com.cornellappdev.score.theme.Style.metricNormal
 import com.cornellappdev.score.theme.Style.metricSemibold
-import com.cornellappdev.score.theme.Style.scoreText
 import com.cornellappdev.score.theme.saturatedGreen
 import com.cornellappdev.score.util.emptyGameData
 import com.cornellappdev.score.util.gameData
@@ -82,6 +85,7 @@ fun BoxScore(gameData: GameData) {
         )
     }
 }
+
 @Composable
 fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
     val showEmpty = teamScore.scoresByPeriod.isEmpty()
@@ -132,14 +136,14 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-private fun PreviewBoxScore() {
+private fun PreviewBoxScore() = ScorePreview {
     BoxScore(gameData = gameData)
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-private fun PreviewBoxScoreEmpty() {
+private fun PreviewBoxScoreEmpty() = ScorePreview {
     BoxScore(gameData = emptyGameData())
 }

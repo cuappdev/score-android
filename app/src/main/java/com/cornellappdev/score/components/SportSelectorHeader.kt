@@ -175,7 +175,7 @@ fun SportSelector(
 
 @Preview
 @Composable
-private fun PreviewSportSelectorHeader() {
+private fun PreviewSportSelectorHeader() = ScorePreview {
     var selectedOption by remember { mutableStateOf(GenderDivision.ALL) }
     var selectedSport: SportSelection by remember { mutableStateOf(SportSelection.All) }
 

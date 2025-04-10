@@ -3,16 +3,13 @@ package com.cornellappdev.score.screen
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,8 +18,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GamesCarousel
+import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.PastGameCard
+import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GamesCarouselVariant
@@ -49,25 +49,11 @@ fun PastGamesScreen(
     ) {
         when (uiState.loadedState) {
             is ApiResponse.Loading -> {
-                //TODO: Add loading screen
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+                LoadingScreen("Loading Latest", "Loading Scores")
             }
 
             is ApiResponse.Error -> {
-                //TODO: Add Error screen
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Failed to load games. Please try again.",
-                    )
-                }
+                ErrorState({ pastGamesViewModel.onRefresh() }, "Oops! Scores failed to load.")
             }
 
             is ApiResponse.Success -> {
@@ -129,7 +115,7 @@ private fun PastGamesContent(
 
 @Composable
 @Preview
-private fun PastGamesPreview() {
+private fun PastGamesPreview() = ScorePreview {
     PastGamesContent(
         uiState = PastGamesUiState(
             selectedGender = GenderDivision.ALL,

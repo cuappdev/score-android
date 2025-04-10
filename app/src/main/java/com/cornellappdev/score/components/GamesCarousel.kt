@@ -27,6 +27,7 @@ import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.heading1
+import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.gameList
 
 @Composable
@@ -106,8 +107,8 @@ fun GamesCarousel(
     }
 }
 
-@Preview(showBackground = true, widthDp = 360)
 @Composable
-private fun GamesCarouselPreview() {
+@Preview
+private fun GamesCarouselPreview() = ScorePreview {
     GamesCarousel(gameList, GamesCarouselVariant.UPCOMING)
 }

@@ -70,6 +70,6 @@ fun TimeUntilStartCard(days: Int, hours: Int) {
 
 @Preview
 @Composable
-private fun TimeUntilStartCardPreview() {
+private fun TimeUntilStartCardPreview() = ScorePreview {
     TimeUntilStartCard(2, 0)
 }
