@@ -3,9 +3,11 @@ package com.cornellappdev.score.screen
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.cornellappdev.score.components.EmptyState
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.components.LoadingScreen
@@ -102,13 +105,23 @@ private fun PastGamesContent(
         item {
             Spacer(modifier = Modifier.height(24.dp))
         }
-        items(uiState.filteredGames) {
-            val game = it
-            PastGameCard(
-                data = game,
-                onClick = navigateToGameDetails
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+        if (!uiState.filteredGames.isEmpty()) {
+            items(uiState.filteredGames) {
+                val game = it
+                PastGameCard(
+                    data = game,
+                    onClick = navigateToGameDetails
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+    if (uiState.filteredGames.isEmpty()) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            EmptyState()
         }
     }
 }

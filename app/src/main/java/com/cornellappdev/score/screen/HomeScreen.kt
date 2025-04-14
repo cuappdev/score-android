@@ -3,6 +3,7 @@ package com.cornellappdev.score.screen
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.cornellappdev.score.components.EmptyState
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GameCard
 import com.cornellappdev.score.components.GamesCarousel
@@ -78,9 +80,14 @@ private fun HomeContent(
     onSportSelected: (SportSelection) -> Unit,
     navigateToGameDetails: (Boolean) -> Unit = {}
 ) {
-    LazyColumn(contentPadding = PaddingValues(top = 24.dp, start = 24.dp, end = 24.dp)) {
-        item {
-            GamesCarousel(uiState.upcomingGames, GamesCarouselVariant.UPCOMING)
+    LazyColumn(
+        //modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(top = 24.dp, start = 24.dp, end = 24.dp)
+    ) {
+        if (!uiState.filteredGames.isEmpty()) {
+            item {
+                GamesCarousel(uiState.upcomingGames, GamesCarouselVariant.UPCOMING)
+            }
         }
         stickyHeader {
             Column(modifier = Modifier.background(White)) {
@@ -104,20 +111,30 @@ private fun HomeContent(
         item {
             Spacer(modifier = Modifier.height(24.dp))
         }
-        items(uiState.filteredGames) {
-            val game = it
-            GameCard(
-                teamLogo = game.teamLogo,
-                team = game.team,
-                date = game.dateString,
-                isLive = game.isLive,
-                genderIcon = painterResource(game.genderIcon),
-                sportIcon = painterResource(game.sportIcon),
-                location = game.location,
-                topCornerRound = true,
-                onClick = navigateToGameDetails
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+        if (!uiState.filteredGames.isEmpty()) {
+            items(uiState.filteredGames) {
+                val game = it
+                GameCard(
+                    teamLogo = game.teamLogo,
+                    team = game.team,
+                    date = game.dateString,
+                    isLive = game.isLive,
+                    genderIcon = painterResource(game.genderIcon),
+                    sportIcon = painterResource(game.sportIcon),
+                    location = game.location,
+                    topCornerRound = true,
+                    onClick = navigateToGameDetails
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+    if (uiState.filteredGames.isEmpty()) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            EmptyState()
         }
     }
 }
