@@ -39,7 +39,7 @@ class PastGamesViewModel @Inject constructor(
     PastGamesUiState(
         selectedGender = GenderDivision.ALL,
         sportSelect = SportSelection.All,
-        selectionList = Sport.getSportSelectionList(),
+        selectionList = Sport.getSportSelectionList(GenderDivision.ALL),
         loadedState = ApiResponse.Loading
     )
 ) {
@@ -70,7 +70,8 @@ class PastGamesViewModel @Inject constructor(
     fun onGenderSelected(gender: GenderDivision) {
         applyMutation {
             copy(
-                selectedGender = gender
+                selectedGender = gender,
+                selectionList = Sport.getSportSelectionList(gender)
             )
         }
     }
