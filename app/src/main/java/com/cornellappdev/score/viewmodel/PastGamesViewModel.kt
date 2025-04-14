@@ -30,7 +30,15 @@ data class PastGamesUiState(
             ApiResponse.Loading -> emptyList()
             ApiResponse.Error -> emptyList()
         }
-    val pastGames: List<GameCardData> = filteredGames.take(3)
+    val pastGames: List<GameCardData>
+        get() = when (loadedState) {
+            is ApiResponse.Success -> loadedState.data.filter { game ->
+                (game.sport == "Baseball" || game.sport == "Basketball" || game.sport == "Field Hockey" || game.sport == "Football" || game.sport == "Ice Hockey" || game.sport == "Lacrosse" || game.sport == "Soccer")
+            }
+
+            ApiResponse.Loading -> emptyList()
+            ApiResponse.Error -> emptyList()
+        }.take(3)
 }
 
 @HiltViewModel
