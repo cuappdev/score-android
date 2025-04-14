@@ -143,13 +143,13 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
 
 @Preview
 @Composable
-private fun PreviewBoxScore() {
+private fun PreviewBoxScore() = ScorePreview {
     BoxScore(gameData = gameData)
 }
 
 @Preview
 @Composable
-private fun PreviewBoxScoreForLongGame() {
+private fun PreviewBoxScoreForLongGame() = ScorePreview {
     BoxScore(longGameData)
 }
 
