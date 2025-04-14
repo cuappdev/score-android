@@ -2,7 +2,6 @@ package com.cornellappdev.score.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +22,7 @@ import com.cornellappdev.score.R
 import com.cornellappdev.score.components.ButtonPrimary
 import com.cornellappdev.score.components.GameScoreHeader
 import com.cornellappdev.score.components.NavigationHeader
+import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.TimeUntilStartCard
 import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.GrayPrimary
@@ -33,7 +33,12 @@ import com.cornellappdev.score.theme.White
 
 @Composable
 fun GameDetailsScreen(gameId: String = "", onBackArrow: () -> Unit = {}) {
-    Column(modifier = Modifier.background(White).fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier
+            .background(White)
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         // TODO: add navigation
         NavigationHeader(title = "Game Details", onBackArrow)
         GameScoreHeader(
@@ -94,7 +99,7 @@ fun GameDetailsScreen(gameId: String = "", onBackArrow: () -> Unit = {}) {
 
 @Preview
 @Composable
-private fun GameDetailsScreenPreview() {
+private fun GameDetailsScreenPreview() = ScorePreview {
     GameDetailsScreen()
 // import androidx.compose.ui.tooling.preview.Preview
 // import androidx.compose.ui.unit.dp
