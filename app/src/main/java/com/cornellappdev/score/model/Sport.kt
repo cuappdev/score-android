@@ -69,6 +69,7 @@ enum class Sport(
         emptyIcon = R.drawable.ic_ice_hockey,
         filledIcon = R.drawable.ic_ice_hockey_filled
     ),
+
     //TODO: awaiting polo icon from design
 //    POLO(
 //        displayName = "Polo",
@@ -168,10 +169,10 @@ enum class Sport(
 
         fun getSportSelectionList(selectedGender: GenderDivision?): List<SportSelection> {
             val filteredSports = when (selectedGender) {
-                null -> Sport.entries
                 GenderDivision.MALE -> Sport.entries.filter { it.gender == GenderDivision.MALE || it.gender == GenderDivision.ALL }
                 GenderDivision.FEMALE -> Sport.entries.filter { it.gender == GenderDivision.FEMALE || it.gender == GenderDivision.ALL }
-                GenderDivision.ALL -> Sport.entries
+                GenderDivision.ALL,
+                null -> Sport.entries
             }
 
             return listOf(SportSelection.All) + filteredSports.map { SportSelection.SportSelect(it) }
