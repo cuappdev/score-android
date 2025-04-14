@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -161,27 +162,34 @@ fun GameDetailsContent(gameCard: DetailsCardData) {
                     Text("No Scoring Summary") // TODO: Make state when there are no scores
                 }
             } else {
-                Spacer(modifier = Modifier.height(40.dp))
-                if (gameCard.daysUntilGame != null && gameCard.hoursUntilGame != null) {
-                    TimeUntilStartCard(
-                        gameCard.daysUntilGame,
-                        gameCard.hoursUntilGame
+                val context = LocalContext.current
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(40.dp))
+
+                    if (gameCard.daysUntilGame != null && gameCard.hoursUntilGame != null) {
+                        TimeUntilStartCard(
+                            gameCard.daysUntilGame,
+                            gameCard.hoursUntilGame
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    ButtonPrimary(
+                        "Add to Calendar",
+                        painterResource(R.drawable.ic_calendar),
+                        onClick = {
+                            gameCard.toCalendarEvent()?.let { event ->
+                                addToCalendar(context = context, event)
+                            }
+                        }
                     )
                 }
+
             }
-        }
-        if (!gameCard.isPastStartTime) {
-            val context = LocalContext.current
-            Spacer(modifier = Modifier.height(84.dp))
-            ButtonPrimary(
-                "Add to Calendar",
-                painterResource(R.drawable.ic_calendar),
-                onClick = {
-                    gameCard.toCalendarEvent()?.let { event ->
-                        addToCalendar(context = context, event)
-                    }
-                }
-            )
         }
 
     }
