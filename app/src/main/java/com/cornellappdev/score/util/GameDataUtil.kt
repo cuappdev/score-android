@@ -4,7 +4,19 @@ import com.cornellappdev.score.model.GameData
 import com.cornellappdev.score.model.TeamBoxScore
 import com.cornellappdev.score.model.TeamScore
 
-// TODO: ASK ABOUT OT 
+/**
+ * Converts a list of score strings into a list of integers by period and a total score.
+ *
+ * Handles null values and non-numeric values:
+ * - Nulls or "X" are 0
+ * - If the sport is baseball, only the first 9 periods counted
+ * - For other sports, the last item in the list is treated as the total score.
+ *
+ * @param scoreList the list of score strings, where each item represents a period score and the last item may be the total
+ * @param sport the sport type, used to apply specific rules
+ * @return a pair where the first value is a list of parsed period scores and the second is the total score (or null if invalid)
+ */
+// TODO: ASK ABOUT OT. Other sports might be added.
 fun convertScores(scoreList: List<String?>?, sport: String): Pair<List<Int>, Int?> {
     if (scoreList == null || scoreList.size < 2) return Pair(emptyList(), null)
 
@@ -28,19 +40,31 @@ fun convertScores(scoreList: List<String?>?, sport: String): Pair<List<Int>, Int
     return Pair(scoresByPeriod, totalScore)
 }
 
+/**
+ * Converts score breakdowns and team box scores into a GameData object.
+ *
+ * Uses convertScores to parse individual team scores. If a score breakdown is missing or invalid,
+ * returns empty scores and zero totals.
+ *
+ * @param scoreBreakdown a list containing two lists of score strings, one for each team
+ * @param team1 the first team's box score information
+ * @param team2 the second team's box score information
+ * @param sport the sport type, passed through to convertScores
+ * @return a GameData object containing structured scores for both teams
+ */
 fun toGameData(
     scoreBreakdown: List<List<String?>?>?,
     team1: TeamBoxScore,
     team2: TeamBoxScore,
     sport: String
 ): GameData {
-    val (team1Scores, team1Total) = if (!scoreBreakdown.isNullOrEmpty())
-        convertScores(scoreBreakdown[0], sport)
-    else Pair(emptyList(), null)
+    val (team1Scores, team1Total) = scoreBreakdown?.getOrNull(0)?.let {
+        convertScores(it, sport)
+    } ?: (emptyList<Int>() to null)
 
-    val (team2Scores, team2Total) = if (scoreBreakdown != null && scoreBreakdown.size > 1)
-        convertScores(scoreBreakdown[1], sport)
-    else Pair(emptyList(), null)
+    val (team2Scores, team2Total) = scoreBreakdown?.getOrNull(1)?.let {
+        convertScores(it, sport)
+    } ?: (emptyList<Int>() to null)
 
     val team1Score =
         TeamScore(team = team1, scoresByPeriod = team1Scores, totalScore = team1Total ?: 0)
@@ -50,6 +74,15 @@ fun toGameData(
     return GameData(teamScores = Pair(team1Score, team2Score))
 }
 
+/**
+ * Parses a result string into a pair of home and opponent scores.
+ *
+ * Expected format: "Some text,HOME-OPP", where HOME and OPP are integers.
+ * If the format is invalid or parsing fails, returns null.
+ *
+ * @param result the result string to parse, e.g., "L,3-2"
+ * @return a pair of (homeScore, oppScore) if parsing succeeds, or null if the format is invalid
+ */
 fun parseResultScore(result: String?): Pair<Int, Int>? {
     if (result.isNullOrBlank()) return null
 

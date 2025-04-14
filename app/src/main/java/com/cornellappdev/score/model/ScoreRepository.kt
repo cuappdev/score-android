@@ -84,7 +84,7 @@ class ScoreRepository @Inject constructor(
     }
 
     /**
-     * Asynchronously fetches game details for a particular game. Once finished, will send down
+     * Asynchronously fetches game details for a particular game. Once finished, will update
      * `currentGamesFlow` to be observed.
      */
     fun getGameById(id: String) = appScope.launch {

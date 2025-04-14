@@ -10,19 +10,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,9 +37,11 @@ import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading1
+import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.heading3
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.addToCalendar
+import com.cornellappdev.score.util.toCalendarEvent
 import com.cornellappdev.score.viewmodel.GameDetailsViewModel
 
 @Composable
@@ -48,7 +49,7 @@ fun GameDetailsScreen(
     gameDetailsViewModel: GameDetailsViewModel = hiltViewModel(),
     onBackArrow: () -> Unit = {}
 ) {
-    val uiState by gameDetailsViewModel.uiStateFlow.collectAsState()
+    val uiState = gameDetailsViewModel.collectUiStateValue()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -95,14 +96,14 @@ private fun GameDetailsContent(
             .background(White)
             .fillMaxSize(),
     ) {
-//        Box(modifier = Modifier.height(27.dp))
+
         GameScoreHeader(
             leftTeamLogo = painterResource(R.drawable.cornell_logo),
             rightTeamLogo = gameCard.opponentLogo,
             gradientColor1 = Color(0xFFE1A69F),
             gradientColor2 = gameCard.opponentColor,
             leftScore = gameCard.homeScore,
-            rightScore = gameCard.oppScore, //TODO Score
+            rightScore = gameCard.oppScore,
             modifier = Modifier.height(185.dp)
         )
 
@@ -131,13 +132,12 @@ private fun GameDetailsContent(
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(text = gameCard.locationString, style = bodyNormal.copy(color = GrayPrimary))
                 Spacer(modifier = Modifier.width(12.dp))
-                Image(
+                Icon(
                     painter = painterResource(id = R.drawable.ic_time),
                     contentDescription = "Time Icon",
                     modifier = Modifier
-                        .width(24.dp)
-                        .height(24.dp),
-                    colorFilter = ColorFilter.tint(GrayMedium)
+                        .size(24.dp),
+                    tint = GrayMedium
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(text = gameCard.dateString, style = bodyNormal.copy(color = GrayPrimary))
@@ -146,7 +146,7 @@ private fun GameDetailsContent(
             // render the below if the game is in the future
             // TODO: MESSY, is it every the case when there is a boxscore but no scoring summary
             if (gameCard.isPastStartTime) {
-                if (!gameCard.scoreBreakdown.isNullOrEmpty()) {
+                if (gameCard.scoreBreakdown?.isNotEmpty() == true) {
                     Spacer(modifier = Modifier.height(24.dp))
                     BoxScore(gameCard.gameData)
                     Spacer(modifier = Modifier.height(24.dp))
@@ -154,7 +154,7 @@ private fun GameDetailsContent(
                 if (gameCard.boxScore.isNotEmpty()) {
                     Text(
                         "Scoring Summary", fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
+                        style = heading2,
                     ) // TODO: NAVIGATION
                     Spacer(modifier = Modifier.height(16.dp))
                     ScoringSummary(gameCard.scoreEvent)
@@ -177,7 +177,11 @@ private fun GameDetailsContent(
             ButtonPrimary(
                 "Add to Calendar",
                 painterResource(R.drawable.ic_calendar),
-                onClick = { addToCalendar(context = context, gameCard) }
+                onClick = {
+                    gameCard.toCalendarEvent()?.let { event ->
+                        addToCalendar(context = context, event)
+                    }
+                }
             )
         }
 

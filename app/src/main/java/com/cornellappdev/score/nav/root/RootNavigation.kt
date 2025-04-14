@@ -83,7 +83,7 @@ fun RootNavigation(
             ) {
                 composable<ScoreRootScreens.Home> {
                     HomeScreen(navigateToGameDetails = {
-                        navController.navigate(ScoreRootScreens.GameDetailsPage("67e585b941adb1bafec37766"))
+                        navController.navigate(ScoreRootScreens.GameDetailsPage("67e585b941adb1bafec37771"))
                     })
                 }
 

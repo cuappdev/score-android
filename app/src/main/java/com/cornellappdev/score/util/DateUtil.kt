@@ -28,14 +28,11 @@ fun parseDateOrNull(strDate: String): LocalDate? {
 val outputFormatter = DateTimeFormatter.ofPattern("M/d/yyyy")
 
 /**
- * Parses a date and time string into a [LocalDateTime] object.
+ * Parses a date and time string into a LocalDateTime object.
  *
- * Expected input format:
- * - [date]: String of form "MMM d (EEE)". For example, "Apr 5 (Sat)"
- * - [time]: String of form "h:mm a" with or without periods. For example, "3:45 PM" or "3:45 p.m."
- *
- * The current year is assumed in the final parsed result.
- * returns [LocalDateTime] object if parsing succeeds, or [null] if the format is invalid.
+ * @param date the date string to parse, in the format "MMM d (EEE)"
+ * @param time the time string to parse, in the format "h:mm a", with or without periods
+ * @return a LocalDateTime object if parsing succeeds, or null if the format is invalid
  */
 fun parseDateTimeOrNull(date: String, time: String): LocalDateTime? {
     val subDate = date.substringBefore(" (") + date.substringAfter(")")
@@ -59,9 +56,9 @@ fun parseDateTimeOrNull(date: String, time: String): LocalDateTime? {
 /**
  * Formats a date and time string into a user-friendly display string.
  *
- * Combines [date] and [time] inputs and attempts to parse them using [parseDateTimeOrNull].
- * If parsing succeeds, returns a string in the format "MMM d, h:mma" (For example, "Apr 5, 3:45PM").
- * If parsing fails, returns an empty string.
+ * @param date the date string to parse, in the format "MMM d (EEE)"
+ * @param time the time string to parse, in the format "h:mm a", with or without periods
+ * @return a formatted date-time string in the format "MMM d, h:mma", or an empty string if parsing fails
  */
 fun formatDateTimeDisplay(date: String, time: String): String {
     val dateTime = parseDateTimeOrNull(date, time)
@@ -70,6 +67,13 @@ fun formatDateTimeDisplay(date: String, time: String): String {
     return dateTime?.format(formatter) ?: ""
 }
 
+/**
+ * Calculates the time remaining until a specified start date and time.
+ *
+ * @param date the date string to parse, in the format "MMM d (EEE)"
+ * @param time the time string to parse, in the format "h:mm a", with or without periods
+ * @return a pair of (days, hours) until the start time, or null if parsing fails or the time is in the past
+ */
 fun getTimeUntilStart(date: String, time: String): Pair<Int, Int>? {
     val gameStart = parseDateTimeOrNull(date, time) ?: return null
     val now = LocalDateTime.now()
@@ -79,6 +83,6 @@ fun getTimeUntilStart(date: String, time: String): Pair<Int, Int>? {
     val duration = Duration.between(now, gameStart)
     val days = duration.toDays().toInt()
     val hours = duration.minusDays(days.toLong()).toHours().toInt()
-    return Pair(days, hours)
+    return days to hours
 }
 
