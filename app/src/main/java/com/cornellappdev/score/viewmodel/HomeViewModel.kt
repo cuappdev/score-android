@@ -24,6 +24,7 @@ data class HomeUiState(
             is ApiResponse.Success -> loadedState.data.filter { game ->
                 (selectedGender == GenderDivision.ALL || game.gender == selectedGender.displayName) &&
                         (sportSelect is SportSelection.All || (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName))
+                        && (game.sport == "Baseball" || game.sport == "Basketball" || game.sport == "Field Hockey" || game.sport == "Football" || game.sport == "Ice Hockey" || game.sport == "Lacrosse" || game.sport == "Soccer")
             }
 
             ApiResponse.Loading -> emptyList()
@@ -39,7 +40,9 @@ class HomeViewModel @Inject constructor(
     HomeUiState(
         selectedGender = GenderDivision.ALL,
         sportSelect = SportSelection.All,
-        selectionList = Sport.getSportSelectionList(),
+        selectionList = Sport.getSportSelectionList().filter {
+            it is SportSelection.All || (it is SportSelection.SportSelect && (it.sport.displayName == "Baseball" || it.sport.displayName == "Basketball" || it.sport.displayName == "Field Hockey" || it.sport.displayName == "Football" || it.sport.displayName == "Ice Hockey" || it.sport.displayName == "Lacrosse" || it.sport.displayName == "Soccer"))
+        },
         loadedState = ApiResponse.Loading
     )
 ) {
