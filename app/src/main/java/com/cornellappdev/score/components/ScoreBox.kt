@@ -30,6 +30,7 @@ import com.cornellappdev.score.theme.Style.metricSemibold
 import com.cornellappdev.score.theme.saturatedGreen
 import com.cornellappdev.score.util.emptyGameData
 import com.cornellappdev.score.util.gameData
+import com.cornellappdev.score.util.longGameData
 
 @Composable
 fun BoxScore(gameData: GameData) {
@@ -139,6 +140,7 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
     }
 }
 
+
 @Preview
 @Composable
 private fun PreviewBoxScore() {
@@ -147,9 +149,16 @@ private fun PreviewBoxScore() {
 
 @Preview
 @Composable
-private fun PreviewBoxScoreEmpty() {
+private fun PreviewBoxScoreForLongGame() {
+    BoxScore(longGameData)
+}
+
+@Preview
+@Composable
+private fun PreviewBoxScoreEmpty() = ScorePreview {
     BoxScore(gameData = emptyGameData())
 }
+
 
 @Preview
 @Composable

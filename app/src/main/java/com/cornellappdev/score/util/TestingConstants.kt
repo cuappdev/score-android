@@ -65,6 +65,19 @@ val teamScore2 = TeamScore(
     totalScore = 23
 )
 
+val longGameTeamScore1 = TeamScore(
+    team = team1,
+    scoresByPeriod = listOf(13, 14, 6, 14, 13, 2, 4, 6, 2, 2),
+    totalScore = 47
+)
+val longGameTeamScore2 = TeamScore(
+    team = team1,
+    scoresByPeriod = listOf(7, 7, 9, 0, 7, 7, 9, 0, 7, 2),
+    totalScore = 47
+)
+
+val longGameData = GameData(teamScores = longGameTeamScore1 to longGameTeamScore2)
+
 val gameData = GameData(teamScores = Pair(teamScore1, teamScore2))
 
 val scoreEvents1 = listOf(
