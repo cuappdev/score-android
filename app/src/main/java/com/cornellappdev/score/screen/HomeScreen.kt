@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,9 +31,11 @@ import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.model.ApiResponse
-import com.cornellappdev.score.model.GamesCarouselVariant
 import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.SportSelection
+import com.cornellappdev.score.theme.GrayPrimary
+import com.cornellappdev.score.theme.GrayStroke
+import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.gameList
@@ -80,17 +84,27 @@ private fun HomeContent(
     onSportSelected: (SportSelection) -> Unit,
     navigateToGameDetails: (Boolean) -> Unit = {}
 ) {
-    LazyColumn(
-        //modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(top = 24.dp, start = 24.dp, end = 24.dp)
-    ) {
-        if (!uiState.filteredGames.isEmpty()) {
-            item {
-                GamesCarousel(uiState.upcomingGames, GamesCarouselVariant.UPCOMING)
-            }
+    LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
+        item {
+            Text(
+                text = "Latest",
+                style = heading1,
+                color = GrayPrimary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp)
+            )
+        }
+        item {
+            Spacer(Modifier.height(16.dp))
+        }
+        item {
+            GamesCarousel(uiState.upcomingGames)
         }
         stickyHeader {
-            Column(modifier = Modifier.background(White)) {
+            Column(modifier = Modifier
+                .background(White)
+                .padding(horizontal = 24.dp)) {
                 Spacer(Modifier.height(24.dp))
                 Text(
                     text = "Game Schedule",
@@ -109,23 +123,28 @@ private fun HomeContent(
             }
         }
         item {
-            Spacer(modifier = Modifier.height(24.dp))
+            HorizontalDivider(
+                modifier = Modifier.padding(top = 16.dp, bottom = 24.dp),
+                color = GrayStroke,
+            )
         }
         if (!uiState.filteredGames.isEmpty()) {
             items(uiState.filteredGames) {
                 val game = it
-                GameCard(
-                    teamLogo = game.teamLogo,
-                    team = game.team,
-                    date = game.dateString,
-                    isLive = game.isLive,
-                    genderIcon = painterResource(game.genderIcon),
-                    sportIcon = painterResource(game.sportIcon),
-                    location = game.location,
-                    topCornerRound = true,
-                    onClick = navigateToGameDetails
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+                    GameCard(
+                        teamLogo = game.teamLogo,
+                        team = game.team,
+                        date = game.dateString,
+                        isLive = game.isLive,
+                        genderIcon = painterResource(game.genderIcon),
+                        sportIcon = painterResource(game.sportIcon),
+                        location = game.location,
+                        topCornerRound = true,
+                        onClick = navigateToGameDetails
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
         }
     }
