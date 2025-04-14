@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,7 +40,7 @@ import com.cornellappdev.score.viewmodel.HomeViewModel
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    navigateToGameDetails: (Boolean) -> Unit = {}
+    navigateToGameDetails: (String) -> Unit = {}
 ) {
     val uiState = homeViewModel.collectUiStateValue()
 
@@ -51,7 +49,6 @@ fun HomeScreen(
         modifier = Modifier
             .background(Color.White)
     ) {
-        Button(onClick = { navigateToGameDetails(true) }) { }
         when (uiState.loadedState) {
             is ApiResponse.Loading -> {
                 LoadingScreen("Loading Upcoming...", "Loading Schedules...")
@@ -79,11 +76,15 @@ private fun HomeContent(
     uiState: HomeUiState,
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
-    navigateToGameDetails: (Boolean) -> Unit = {}
+    navigateToGameDetails: (String) -> Unit = {}
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp, start = 24.dp, end = 24.dp)) {
         item {
-            GamesCarousel(uiState.upcomingGames, GamesCarouselVariant.UPCOMING)
+            GamesCarousel(
+                uiState.upcomingGames,
+                GamesCarouselVariant.UPCOMING,
+                onClick = navigateToGameDetails
+            )
         }
         stickyHeader {
             Column(modifier = Modifier.background(White)) {
@@ -110,6 +111,7 @@ private fun HomeContent(
         items(uiState.filteredGames) {
             val game = it
             GameCard(
+                id = game.id,
                 teamLogo = game.teamLogo,
                 team = game.team,
                 date = game.dateString,

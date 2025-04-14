@@ -2,6 +2,7 @@ package com.cornellappdev.score.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -123,6 +124,7 @@ private fun FeaturedGameCardPreview() = ScorePreview {
 
 @Composable
 fun FeaturedGameCard(
+    id: String,
     leftTeamLogo: Painter,
     rightTeamLogo: String,
     team: String,
@@ -137,11 +139,12 @@ fun FeaturedGameCard(
     modifier: Modifier = Modifier,
     headerModifier: Modifier = Modifier,
     leftScore: Int? = null,
-    rightScore: Int? = null
+    rightScore: Int? = null,
+    onClick: (String) -> Unit = {}
 ) {
     Column(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth().clickable { onClick(id) }
     ) {
 
         FeaturedGameHeader(
@@ -156,6 +159,7 @@ fun FeaturedGameCard(
         )
 
         GameCard(
+            id = id,
             teamLogo = rightTeamLogo,
             team = team,
             date = date,
@@ -172,7 +176,8 @@ fun FeaturedGameCard(
                         bottomStart = 16.dp,
                         bottomEnd = 16.dp
                     )
-                )
+                ),
+            onClick = onClick
         )
     }
 }
@@ -181,6 +186,7 @@ fun FeaturedGameCard(
 @Composable
 private fun GameScheduleScreen() = ScorePreview {
     FeaturedGameCard(
+        id = "1",
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",//painterResource(R.drawable.penn_logo),
         leftScore = 32,

@@ -38,7 +38,7 @@ import com.cornellappdev.score.viewmodel.PastGamesViewModel
 @Composable
 fun PastGamesScreen(
     pastGamesViewModel: PastGamesViewModel = hiltViewModel(),
-    navigateToGameDetails: (Boolean) -> Unit = {}
+    navigateToGameDetails: (String) -> Unit = {}
 ) {
     val uiState = pastGamesViewModel.collectUiStateValue()
 
@@ -74,11 +74,15 @@ private fun PastGamesContent(
     uiState: PastGamesUiState,
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
-    navigateToGameDetails: (Boolean) -> Unit = {}
+    navigateToGameDetails: (String) -> Unit = {}
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp, start = 24.dp, end = 24.dp)) {
         item {
-            GamesCarousel(uiState.pastGames, GamesCarouselVariant.PAST)
+            GamesCarousel(
+                uiState.pastGames,
+                GamesCarouselVariant.PAST,
+                onClick = navigateToGameDetails
+            )
         }
         stickyHeader {
             Column(modifier = Modifier.background(White)) {

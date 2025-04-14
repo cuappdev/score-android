@@ -13,6 +13,7 @@ import com.cornellappdev.score.model.TeamScore
 import java.time.LocalDate
 
 val PENN_GAME = GameCardData(
+    id = "1",
     teamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",
     team = "Penn",
     teamColor = Color(0x66B31B1B),
@@ -28,6 +29,7 @@ val PENN_GAME = GameCardData(
 )
 
 val PRINCETON_GAME = GameCardData(
+    id = "1",
     teamLogo = "https://cornellbigred.com/images/logos/Princeton_Tigers.png?width=80&height=80&mode=max",
     team = "Princeton",
     teamColor = Color(0x66FF6000),
@@ -68,8 +70,14 @@ val teamScore2 = TeamScore(
 
 val gameData = GameData(teamScores = Pair(teamScore1, teamScore2))
 
-val team3 = TeamGameSummary(name = "Cornell", "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max")
-val team4 = TeamGameSummary(name = "Yale", "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max")
+val team3 = TeamGameSummary(
+    name = "Cornell",
+    "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max"
+)
+val team4 = TeamGameSummary(
+    name = "Yale",
+    "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max"
+)
 val scoreEvents1 = listOf(
     ScoreEvent(
         id = 1,

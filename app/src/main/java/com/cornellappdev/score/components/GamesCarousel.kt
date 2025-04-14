@@ -27,7 +27,6 @@ import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.heading1
-import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.gameList
 
 @Composable
@@ -60,7 +59,8 @@ fun DotIndicator(
 fun GamesCarousel(
     games: List<GameCardData>,
     variant: GamesCarouselVariant,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (String) -> Unit,
 ) {
     val pagerState = rememberPagerState(pageCount = { games.size })
     Column(
@@ -81,6 +81,7 @@ fun GamesCarousel(
         ) { page ->
             val game = games[page]
             FeaturedGameCard(
+                id = game.id,
                 leftTeamLogo = painterResource(R.drawable.cornell_logo),
                 rightTeamLogo = game.teamLogo,
                 team = game.team,
@@ -93,7 +94,8 @@ fun GamesCarousel(
                 modifier = Modifier,
                 headerModifier = Modifier,
                 gradientColor1 = CornellRed,
-                gradientColor2 = game.teamColor
+                gradientColor2 = game.teamColor,
+                onClick = onClick
             )
         }
 
@@ -110,5 +112,5 @@ fun GamesCarousel(
 @Composable
 @Preview
 private fun GamesCarouselPreview() = ScorePreview {
-    GamesCarousel(gameList, GamesCarouselVariant.UPCOMING)
+    GamesCarousel(gameList, GamesCarouselVariant.UPCOMING, onClick = {})
 }

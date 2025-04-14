@@ -106,20 +106,20 @@ fun RootNavigation(
                 ) {
                     composable<ScoreRootScreens.Home> {
                         HomeScreen(navigateToGameDetails = {
-                            navController.navigate(ScoreRootScreens.GameDetailsPage(""))
+                            navController.navigate(ScoreRootScreens.GameDetailsPage(it))
                         })
                     }
 
-                composable<ScoreRootScreens.GameDetailsPage> {
-                    GameDetailsScreen(onBackArrow = {
-                        navController.navigateUp()
-                    })
+                    composable<ScoreRootScreens.GameDetailsPage> {
+                        GameDetailsScreen(onBackArrow = {
+                            navController.navigateUp()
+                        })
 
                     }
 
                     composable<ScoreRootScreens.ScoresScreen> {
                         PastGamesScreen(navigateToGameDetails = {
-                            navController.navigate(ScoreRootScreens.GameDetailsPage(""))
+                            navController.navigate(ScoreRootScreens.GameDetailsPage(it))
                         })
                     }
                 }

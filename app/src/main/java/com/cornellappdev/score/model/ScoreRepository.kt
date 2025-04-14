@@ -60,6 +60,7 @@ class ScoreRepository @Inject constructor(
                         val otherScore = scores?.getOrNull(1)?.toNumberOrNull()
                         game?.team?.image?.let {
                             Game(
+                                id = game.id ?: "", // Should never be null
                                 teamLogo = it,
                                 teamName = game.team.name,
                                 teamColor = parseColor(game.team.color).copy(alpha = 0.4f * 255),
@@ -90,6 +91,7 @@ class ScoreRepository @Inject constructor(
     fun getGameById(id: String) = appScope.launch {
         _currentGameFlow.value = ApiResponse.Loading
         try {
+            Log.d("ScoreRepository", "getGameById: ${id}")
             val result = (apolloClient.query(GameByIdQuery(id)).execute()).toResult()
             result.getOrNull()?.game?.let {
                 _currentGameFlow.value = ApiResponse.Success(it.toGameDetails())

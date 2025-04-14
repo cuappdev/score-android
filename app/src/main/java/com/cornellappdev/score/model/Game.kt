@@ -16,6 +16,7 @@ import java.time.LocalDateTime
 // TODO Refactor to make easier to filter... actual gender, etc.
 
 data class Game(
+    val id: String,
     val teamName: String,
     val teamLogo: String,
     val teamColor: Color,
@@ -71,6 +72,7 @@ data class GameDetailsGame(
 
 // Data for HomeScreen game displays
 data class GameCardData(
+    val id: String,
     val teamLogo: String,
     val team: String,
     val teamColor: Color,
@@ -202,6 +204,7 @@ enum class GamesCarouselVariant {
 
 fun Game.toGameCardData(): GameCardData {
     return GameCardData(
+        id = id,
         teamLogo = teamLogo,
         team = teamName,
         teamColor = teamColor,
