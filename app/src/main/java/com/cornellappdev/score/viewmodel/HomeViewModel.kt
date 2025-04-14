@@ -39,7 +39,7 @@ class HomeViewModel @Inject constructor(
     HomeUiState(
         selectedGender = GenderDivision.ALL,
         sportSelect = SportSelection.All,
-        selectionList = Sport.getSportSelectionList(),
+        selectionList = Sport.getSportSelectionList(GenderDivision.ALL),
         loadedState = ApiResponse.Loading
     )
 ) {
@@ -71,7 +71,8 @@ class HomeViewModel @Inject constructor(
     fun onGenderSelected(gender: GenderDivision) {
         applyMutation {
             copy(
-                selectedGender = gender
+                selectedGender = gender,
+                selectionList = Sport.getSportSelectionList(gender)
             )
         }
     }
