@@ -23,12 +23,12 @@ import com.cornellappdev.score.theme.Style.heading2
 fun NavigationHeader(title: String, onBackPressed: () -> Unit) {
     Box(
         modifier = Modifier
-//           .shadow(elevation=8.dp, clip = false, spotColor = Color.Black.copy(0.05f)) todo: what is this for
-            .background(Color.White)
+             //.shadow(elevation = 8.dp, clip = false, spotColor = Color.Black.copy(0.05f))
+             .background(Color.White)
     ) {
         Box(
             modifier = Modifier
-                 .padding(start = 24.dp, bottom = 12.dp, end = 24.dp)
+                 .padding(start = 24.dp, top = 56.dp, bottom = 12.dp, end = 24.dp)
                  .background(Color.White)
                  .fillMaxWidth()
                  .height(27.dp)
@@ -55,5 +55,5 @@ fun NavigationHeader(title: String, onBackPressed: () -> Unit) {
 @Preview
 @Composable
 private fun NavigationHeaderPreview() {
-    NavigationHeader("Game Details", {})
+     NavigationHeader("Game Details", {})
 }

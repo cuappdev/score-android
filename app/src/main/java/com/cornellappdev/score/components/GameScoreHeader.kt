@@ -97,7 +97,7 @@ fun GameScoreHeader(
 
 @Preview
 @Composable
-private fun GameScoreHeaderPreview() {
+private fun GameScoreHeaderPreview() = ScorePreview {
     GameScoreHeader(
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2fcornellbigred.com%2fimages%2flogos%2fpenn_200x200.png&height=80&width=80&type=webp",

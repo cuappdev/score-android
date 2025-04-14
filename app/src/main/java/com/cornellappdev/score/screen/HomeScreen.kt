@@ -3,7 +3,6 @@ package com.cornellappdev.score.screen
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -23,8 +22,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GameCard
 import com.cornellappdev.score.components.GamesCarousel
+import com.cornellappdev.score.components.LoadingScreen
+import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GamesCarouselVariant
@@ -52,25 +54,11 @@ fun HomeScreen(
         Button(onClick = { navigateToGameDetails(true) }) { }
         when (uiState.loadedState) {
             is ApiResponse.Loading -> {
-                //TODO: Add loading screen
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+                LoadingScreen("Loading Upcoming...", "Loading Schedules...")
             }
 
             is ApiResponse.Error -> {
-                //TODO: Add Error screen
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Failed to load games. Please try again.",
-                    )
-                }
+                ErrorState({ homeViewModel.onRefresh() }, "Oops! Schedules failed to load.")
             }
 
             is ApiResponse.Success -> {
@@ -139,7 +127,7 @@ private fun HomeContent(
 
 @Preview
 @Composable
-private fun HomeScreenPreview() {
+private fun HomeScreenPreview() = ScorePreview {
     Column(
         modifier = Modifier
             .fillMaxSize()

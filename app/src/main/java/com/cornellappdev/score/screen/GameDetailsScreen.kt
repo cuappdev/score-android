@@ -3,7 +3,6 @@ package com.cornellappdev.score.screen
 import ScoringSummary
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -88,15 +87,14 @@ fun GameDetailsScreen(
 }
 
 @Composable
-private fun GameDetailsContent(
-    gameCard: DetailsCardData,
-) {
+fun GameDetailsScreen(gameCard: DetailsCardData) {
     Column(
         modifier = Modifier
             .background(White)
             .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
+        // TODO: add navigation
         GameScoreHeader(
             leftTeamLogo = painterResource(R.drawable.cornell_logo),
             rightTeamLogo = gameCard.opponentLogo,
