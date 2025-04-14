@@ -97,13 +97,17 @@ private fun PastGamesContent(
         item {
             Spacer(Modifier.height(16.dp))
         }
-        item {
-            GamesCarousel(uiState.pastGames)
+        if (!uiState.filteredGames.isEmpty()) {
+            item {
+                GamesCarousel(uiState.pastGames)
+            }
         }
         stickyHeader {
-            Column(modifier = Modifier
-                .background(White)
-                .padding(horizontal = 24.dp)) {
+            Column(
+                modifier = Modifier
+                    .background(White)
+                    .padding(horizontal = 24.dp)
+            ) {
                 Spacer(Modifier.height(24.dp))
                 Text(
                     text = "All Scores",
@@ -130,11 +134,13 @@ private fun PastGamesContent(
         if (!uiState.filteredGames.isEmpty()) {
             items(uiState.filteredGames) {
                 val game = it
-                PastGameCard(
-                    data = game,
-                    onClick = navigateToGameDetails
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+                    PastGameCard(
+                        data = game,
+                        onClick = navigateToGameDetails
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
         }
     }

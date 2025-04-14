@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,6 +41,7 @@ import com.cornellappdev.score.util.gameList
 import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.HomeUiState
 import com.cornellappdev.score.viewmodel.HomeViewModel
+import androidx.compose.material3.HorizontalDivider
 
 @Composable
 fun HomeScreen(
@@ -98,13 +98,17 @@ private fun HomeContent(
         item {
             Spacer(Modifier.height(16.dp))
         }
-        item {
-            GamesCarousel(uiState.upcomingGames)
+        if (!uiState.filteredGames.isEmpty()) {
+            item {
+                GamesCarousel(uiState.upcomingGames)
+            }
         }
         stickyHeader {
-            Column(modifier = Modifier
-                .background(White)
-                .padding(horizontal = 24.dp)) {
+            Column(
+                modifier = Modifier
+                    .background(White)
+                    .padding(horizontal = 24.dp)
+            ) {
                 Spacer(Modifier.height(24.dp))
                 Text(
                     text = "Game Schedule",
