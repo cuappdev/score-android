@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,6 +30,7 @@ import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GamesCarouselVariant
 import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.SportSelection
+import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.Style.title
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.gameList
@@ -100,7 +103,10 @@ private fun PastGamesContent(
             }
         }
         item {
-            Spacer(modifier = Modifier.height(24.dp))
+            HorizontalDivider(
+                modifier = Modifier.padding(top = 16.dp, bottom = 24.dp),
+                color = GrayStroke,
+            )
         }
         items(uiState.filteredGames) {
             val game = it
