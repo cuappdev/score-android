@@ -18,20 +18,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.cornellappdev.score.R
-import com.cornellappdev.score.nav.root.ScoreRootScreens.Home.toScreen
-import com.cornellappdev.score.screen.GameDetailsScreen
-import com.cornellappdev.score.screen.HomeScreen
-import com.cornellappdev.score.screen.PastGamesScreen
-import com.cornellappdev.score.theme.CrimsonPrimary
-import com.cornellappdev.score.theme.GrayPrimary
-import com.cornellappdev.score.theme.LocalInfiniteLoading
-import com.cornellappdev.score.theme.Style.bodyMedium
-import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.nav.ScoreNavHost
 import com.cornellappdev.score.nav.ScoreNavigationBar
 import com.cornellappdev.score.nav.root.ScoreScreens.GameDetailsPage
 import com.cornellappdev.score.nav.root.ScoreScreens.Home
 import com.cornellappdev.score.nav.root.ScoreScreens.ScoresScreen
+import com.cornellappdev.score.theme.LocalInfiniteLoading
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -66,7 +58,7 @@ fun RootNavigation(
 
 
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
-        if (navBackStackEntry?.toScreen() is ScoreRootScreens.GameDetailsPage) {
+        if (navBackStackEntry?.toScreen() is GameDetailsPage) {
             return@Scaffold
         }
         ScoreNavigationBar({ navController.navigate(it) }, navBackStackEntry)
@@ -75,7 +67,7 @@ fun RootNavigation(
         Box(modifier = Modifier.padding(innerPadding)) {
             CompositionLocalProvider(LocalInfiniteLoading provides animatedValue) {
 
-            ScoreNavHost(navController)
+                ScoreNavHost(navController)
             }
         }
     }
