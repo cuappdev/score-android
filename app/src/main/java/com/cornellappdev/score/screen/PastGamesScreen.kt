@@ -84,15 +84,17 @@ private fun PastGamesContent(
     navigateToGameDetails: (Boolean) -> Unit = {}
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
-        item {
-            Text(
-                text = "Upcoming",
-                style = heading1,
-                color = GrayPrimary,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 24.dp)
-            )
+        if (!uiState.filteredGames.isEmpty()) {
+            item {
+                Text(
+                    text = "Latest",
+                    style = heading1,
+                    color = GrayPrimary,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp)
+                )
+            }
         }
         item {
             Spacer(Modifier.height(16.dp))
