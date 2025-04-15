@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -32,6 +34,7 @@ import com.cornellappdev.score.components.BoxScore
 import com.cornellappdev.score.components.ButtonPrimary
 import com.cornellappdev.score.components.GameScoreHeader
 import com.cornellappdev.score.components.NavigationHeader
+import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.TimeUntilStartCard
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.DetailsCardData
@@ -59,10 +62,14 @@ fun GameDetailsScreen(
     onBackArrow: () -> Unit = {}
 ) {
     val uiState = gameDetailsViewModel.collectUiStateValue()
+    ScorePullToRefreshBox(
+        uiState.loadedState == ApiResponse.Loading,
+        { gameDetailsViewModel.onRefresh() }) { }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(White)
+            .verticalScroll(rememberScrollState())
     ) {
         NavigationHeader(
             title = "Game Details",
