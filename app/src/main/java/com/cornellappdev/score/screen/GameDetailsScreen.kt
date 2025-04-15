@@ -64,43 +64,45 @@ fun GameDetailsScreen(
     val uiState = gameDetailsViewModel.collectUiStateValue()
     ScorePullToRefreshBox(
         uiState.loadedState == ApiResponse.Loading,
-        { gameDetailsViewModel.onRefresh() }) { }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(White)
-            .verticalScroll(rememberScrollState())
-    ) {
-        NavigationHeader(
-            title = "Game Details",
-            onBackPressed = onBackArrow
-        )
-        when (val state = uiState.loadedState) {
-            is ApiResponse.Loading, ApiResponse.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = GrayPrimary)
+        { gameDetailsViewModel.onRefresh() }) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(White)
+                .verticalScroll(rememberScrollState())
+        ) {
+            NavigationHeader(
+                title = "Game Details",
+                onBackPressed = onBackArrow
+            )
+            when (val state = uiState.loadedState) {
+                is ApiResponse.Loading, ApiResponse.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = GrayPrimary)
+                    }
                 }
-            }
 
-            is ApiResponse.Error -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "Failed to load game.")
+                is ApiResponse.Error -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "Failed to load game.")
+                    }
                 }
-            }
 
-            is ApiResponse.Success -> {
-                GameDetailsContent(
-                    gameCard = state.data
-                )
+                is ApiResponse.Success -> {
+                    GameDetailsContent(
+                        gameCard = state.data
+                    )
+                }
             }
         }
     }
+
 }
 
 @Composable
