@@ -38,7 +38,7 @@ fun ScoreNavHost(navController: NavHostController) {
             }
         }
         composable<ScoreScreens.GameDetailsPage> {
-            GameDetailsScreen("", onBackArrow = {
+            GameDetailsScreen(onBackArrow = {
                 navController.navigateUp()
             })
         }
