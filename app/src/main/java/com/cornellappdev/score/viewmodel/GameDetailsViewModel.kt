@@ -17,17 +17,16 @@ data class GameDetailsUiState(
 
 @HiltViewModel
 class GameDetailsViewModel @Inject constructor(
-    scoreRepository: ScoreRepository,
-    savedStateHandle: SavedStateHandle
+    private val scoreRepository: ScoreRepository,
+    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel<GameDetailsUiState>(
     initialUiState = GameDetailsUiState(
         loadedState = ApiResponse.Loading
     )
 ) {
-    private val gameDetailsPageData = savedStateHandle.toRoute<ScoreScreens.GameDetailsPage>()
+    private val gameId: String = checkNotNull(savedStateHandle["gameId"])
 
     init {
-        scoreRepository.getGameById(gameDetailsPageData.gameId)
         asyncCollect(scoreRepository.currentGamesFlow) { response ->
             applyMutation {
                 copy(
@@ -37,5 +36,11 @@ class GameDetailsViewModel @Inject constructor(
                 )
             }
         }
+        onRefresh()
+    }
+
+    fun onRefresh() {
+        applyMutation { copy(loadedState = ApiResponse.Loading) }
+        scoreRepository.getGameById(gameId)
     }
 }

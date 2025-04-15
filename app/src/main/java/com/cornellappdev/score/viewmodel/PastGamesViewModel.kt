@@ -58,15 +58,7 @@ class PastGamesViewModel @Inject constructor(
             }
         }
     }
-
-    fun onRefresh() {
-        applyMutation {
-            copy(loadedState = ApiResponse.Loading)
-        }
-
-        scoreRepository.fetchGames()
-    }
-
+    
     fun onGenderSelected(gender: GenderDivision) {
         applyMutation {
             copy(
@@ -82,5 +74,11 @@ class PastGamesViewModel @Inject constructor(
                 sportSelect = sport
             )
         }
+    }
+
+    fun onRefresh() {
+        applyMutation { copy(loadedState = ApiResponse.Loading) }
+
+        scoreRepository.fetchGames()
     }
 }

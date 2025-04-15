@@ -3,6 +3,7 @@ package com.cornellappdev.score.screen
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +26,7 @@ import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.PastGameCard
 import com.cornellappdev.score.components.ScorePreview
+import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GenderDivision
@@ -65,7 +67,8 @@ fun PastGamesScreen(
                     uiState = uiState,
                     onGenderSelected = { pastGamesViewModel.onGenderSelected(it) },
                     onSportSelected = { pastGamesViewModel.onSportSelected(it) },
-                    navigateToGameDetails = navigateToGameDetails
+                    navigateToGameDetails = navigateToGameDetails,
+                    onRefresh = pastGamesViewModel::onRefresh
                 )
             }
         }
@@ -78,7 +81,21 @@ private fun PastGamesContent(
     uiState: PastGamesUiState,
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
+    onRefresh: () -> Unit,
     navigateToGameDetails: (String) -> Unit = {}
+) {
+    ScorePullToRefreshBox(uiState.loadedState == ApiResponse.Loading, onRefresh = onRefresh) {
+        PastGamesLazyColumn(uiState, onGenderSelected, onSportSelected, navigateToGameDetails)
+    }
+}
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun PastGamesLazyColumn(
+    uiState: PastGamesUiState,
+    onGenderSelected: (GenderDivision) -> Unit,
+    onSportSelected: (SportSelection) -> Unit,
+    navigateToGameDetails: (String) -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
         item {
@@ -98,9 +115,11 @@ private fun PastGamesContent(
             GamesCarousel(uiState.pastGames, navigateToGameDetails)
         }
         stickyHeader {
-            Column(modifier = Modifier
-                .background(White)
-                .padding(horizontal = 24.dp)) {
+            Column(
+                modifier = Modifier
+                    .background(White)
+                    .padding(horizontal = 24.dp)
+            ) {
                 Spacer(Modifier.height(24.dp))
                 Text(
                     text = "All Scores",
@@ -117,19 +136,22 @@ private fun PastGamesContent(
                     onSportSelected = onSportSelected
                 )
             }
+            Box(modifier = Modifier.background(White)) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(top = 16.dp),
+                    color = GrayStroke,
+                )
+            }
         }
         item {
-            HorizontalDivider(
-                modifier = Modifier.padding(top = 16.dp, bottom = 24.dp),
-                color = GrayStroke,
-            )
+            Spacer(modifier = Modifier.height(24.dp))
         }
         items(uiState.filteredGames) {
             val game = it
-            Column (modifier = Modifier.padding(horizontal = 24.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                 PastGameCard(
                     data = game,
-                    onClick = {navigateToGameDetails(game.id)}
+                    onClick = { navigateToGameDetails(game.id) }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -149,5 +171,6 @@ private fun PastGamesPreview() = ScorePreview {
         ),
         onGenderSelected = {},
         onSportSelected = {},
+        onRefresh = {},
     )
 }
