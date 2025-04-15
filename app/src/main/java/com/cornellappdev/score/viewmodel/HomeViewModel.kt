@@ -6,7 +6,6 @@ import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.ScoreRepository
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
-import com.cornellappdev.score.model.isValidSport
 import com.cornellappdev.score.model.map
 import com.cornellappdev.score.model.toGameCardData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,8 +24,7 @@ data class HomeUiState(
             is ApiResponse.Success -> loadedState.data.filter { game ->
                 (selectedGender == GenderDivision.ALL || game.gender == selectedGender.displayName) &&
                         (sportSelect is SportSelection.All ||
-                                (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName)) &&
-                        isValidSport(game.sport)
+                                (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName))
             }
 
             ApiResponse.Loading -> emptyList()
@@ -34,9 +32,7 @@ data class HomeUiState(
         }
     val upcomingGames: List<GameCardData>
         get() = when (loadedState) {
-            is ApiResponse.Success -> loadedState.data.filter { game ->
-                isValidSport(game.sport)
-            }
+            is ApiResponse.Success -> loadedState.data
 
             ApiResponse.Loading -> emptyList()
             ApiResponse.Error -> emptyList()
@@ -50,10 +46,7 @@ class HomeViewModel @Inject constructor(
     HomeUiState(
         selectedGender = GenderDivision.ALL,
         sportSelect = SportSelection.All,
-        selectionList = Sport.getSportSelectionList(GenderDivision.ALL).filter {
-            it is SportSelection.All ||
-                    (it is SportSelection.SportSelect && isValidSport(it.sport.displayName))
-        },
+        selectionList = Sport.getSportSelectionList(GenderDivision.ALL),
         loadedState = ApiResponse.Loading
     )
 ) {
@@ -86,10 +79,7 @@ class HomeViewModel @Inject constructor(
         applyMutation {
             copy(
                 selectedGender = gender,
-                selectionList = Sport.getSportSelectionList(gender).filter {
-                    it is SportSelection.All ||
-                            (it is SportSelection.SportSelect && isValidSport(it.sport.displayName))
-                },
+                selectionList = Sport.getSportSelectionList(gender),
             )
         }
     }

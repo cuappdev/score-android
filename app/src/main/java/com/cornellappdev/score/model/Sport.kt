@@ -1,6 +1,7 @@
 package com.cornellappdev.score.model
 
 import androidx.annotation.DrawableRes
+import com.cornellappdev.score.util.isValidSport
 import com.cornellappdev.score.R
 
 enum class Sport(
@@ -173,7 +174,7 @@ enum class Sport(
                 GenderDivision.FEMALE -> Sport.entries.filter { it.gender == GenderDivision.FEMALE || it.gender == GenderDivision.ALL }
                 GenderDivision.ALL,
                 null -> Sport.entries
-            }
+            }.filter { isValidSport(it.displayName) }
 
             return listOf(SportSelection.All) + filteredSports.map { SportSelection.SportSelect(it) }
         }
