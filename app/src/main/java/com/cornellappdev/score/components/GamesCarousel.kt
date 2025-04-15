@@ -55,7 +55,8 @@ fun DotIndicator(
 @Composable
 fun GamesCarousel(
     games: List<GameCardData>,
-    modifier: Modifier = Modifier
+    onClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val pagerState = rememberPagerState(pageCount = { games.size })
     Column(
@@ -83,7 +84,8 @@ fun GamesCarousel(
                 modifier = Modifier,
                 headerModifier = Modifier,
                 gradientColor1 = CornellRed,
-                gradientColor2 = game.teamColor
+                gradientColor2 = game.teamColor,
+                onClick = { onClick(game.id) }
             )
         }
 
@@ -100,5 +102,5 @@ fun GamesCarousel(
 @Composable
 @Preview
 private fun GamesCarouselPreview() = ScorePreview {
-    GamesCarousel(gameList)
+    GamesCarousel(gameList, onClick = {})
 }

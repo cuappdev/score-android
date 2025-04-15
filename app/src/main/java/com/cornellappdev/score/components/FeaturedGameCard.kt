@@ -2,6 +2,7 @@ package com.cornellappdev.score.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -137,11 +138,13 @@ fun FeaturedGameCard(
     modifier: Modifier = Modifier,
     headerModifier: Modifier = Modifier,
     leftScore: Int? = null,
-    rightScore: Int? = null
+    rightScore: Int? = null,
+    onClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .clickable { onClick() }
     ) {
 
         FeaturedGameHeader(
@@ -172,7 +175,8 @@ fun FeaturedGameCard(
                         bottomStart = 16.dp,
                         bottomEnd = 16.dp
                     )
-                )
+                ),
+            onClick = onClick
         )
     }
 }

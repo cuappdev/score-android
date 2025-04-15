@@ -57,7 +57,7 @@ fun GameCard(
     sportIcon: Painter,
     topCornerRound: Boolean,
     modifier: Modifier = Modifier,
-    onClick: (Boolean) -> Unit = {}
+    onClick: () -> Unit
 ) {
     val cardShape = if (topCornerRound) {
         RoundedCornerShape(16.dp) // Rounded all
@@ -89,7 +89,7 @@ fun GameCard(
                         )
                 }
             )
-            .clickable { onClick(false) }
+            .clickable { onClick() }
     ) {
         Column(
             modifier = Modifier
@@ -219,6 +219,7 @@ private fun GameCardPreview() = ScorePreview {
             sportIcon = painterResource(id = R.drawable.ic_baseball),
             topCornerRound = false,
             modifier = Modifier.padding(16.dp),
+            onClick = {}
         )
     }
 }

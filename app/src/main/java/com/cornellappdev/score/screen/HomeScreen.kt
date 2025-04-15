@@ -44,7 +44,7 @@ import com.cornellappdev.score.viewmodel.HomeViewModel
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    navigateToGameDetails: (Boolean) -> Unit = {}
+    navigateToGameDetails: (String) -> Unit = {}
 ) {
     val uiState = homeViewModel.collectUiStateValue()
 
@@ -80,7 +80,7 @@ private fun HomeContent(
     uiState: HomeUiState,
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
-    navigateToGameDetails: (Boolean) -> Unit = {}
+    navigateToGameDetails: (String) -> Unit = {}
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
         item {
@@ -97,12 +97,14 @@ private fun HomeContent(
             Spacer(Modifier.height(16.dp))
         }
         item {
-            GamesCarousel(uiState.upcomingGames)
+            GamesCarousel(uiState.upcomingGames, navigateToGameDetails)
         }
         stickyHeader {
-            Column(modifier = Modifier
-                .background(White)
-                .padding(horizontal = 24.dp)) {
+            Column(
+                modifier = Modifier
+                    .background(White)
+                    .padding(horizontal = 24.dp)
+            ) {
                 Spacer(Modifier.height(24.dp))
                 Text(
                     text = "Game Schedule",
@@ -128,7 +130,7 @@ private fun HomeContent(
         }
         items(uiState.filteredGames) {
             val game = it
-            Column (modifier = Modifier.padding(horizontal = 24.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                 GameCard(
                     teamLogo = game.teamLogo,
                     team = game.team,
@@ -138,7 +140,7 @@ private fun HomeContent(
                     sportIcon = painterResource(game.sportIcon),
                     location = game.location,
                     topCornerRound = true,
-                    onClick = navigateToGameDetails
+                    onClick = { navigateToGameDetails(game.id) }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }

@@ -47,7 +47,7 @@ import java.time.LocalDate
 fun PastGameCard(
     data: GameCardData,
     modifier: Modifier = Modifier,
-    onClick: (Boolean) -> Unit = {}
+    onClick: () -> Unit = {}
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -58,7 +58,7 @@ fun PastGameCard(
                 Modifier
                     .border(width = 1.dp, color = GrayStroke, RoundedCornerShape(16.dp))
             )
-            .clickable { onClick(true) }
+            .clickable { onClick() }
     ) {
         Row(
             modifier = Modifier
@@ -201,6 +201,7 @@ private fun TeamScore(
 @Composable
 private fun PastGameCardPreview() = ScorePreview {
     val gameCard = GameCardData(
+        id = "1",
         teamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",
         team = "University of Pennsylvania",
         teamColor = Color.Red,

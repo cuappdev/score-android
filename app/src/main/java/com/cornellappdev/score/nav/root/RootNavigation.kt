@@ -68,6 +68,9 @@ fun RootNavigation(
     }
 
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
+        if (navBackStackEntry?.toScreen() is ScoreRootScreens.GameDetailsPage) {
+            return@Scaffold
+        }
         NavigationBar(containerColor = White) {
             tabs.map { item ->
                 val isSelected = item.screen == navBackStackEntry?.toScreen()
@@ -106,12 +109,12 @@ fun RootNavigation(
                 ) {
                     composable<ScoreRootScreens.Home> {
                         HomeScreen(navigateToGameDetails = {
-                            navController.navigate(ScoreRootScreens.GameDetailsPage(""))
+                            navController.navigate(ScoreRootScreens.GameDetailsPage(it))
                         })
                     }
 
                     composable<ScoreRootScreens.GameDetailsPage> {
-                        GameDetailsScreen("", onBackArrow = {
+                        GameDetailsScreen(onBackArrow = {
                             navController.navigateUp()
                         })
 
@@ -119,7 +122,7 @@ fun RootNavigation(
 
                     composable<ScoreRootScreens.ScoresScreen> {
                         PastGamesScreen(navigateToGameDetails = {
-                            navController.navigate(ScoreRootScreens.GameDetailsPage(""))
+                            navController.navigate(ScoreRootScreens.GameDetailsPage(it))
                         })
                     }
                 }
