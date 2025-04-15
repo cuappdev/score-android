@@ -2,6 +2,7 @@ package com.cornellappdev.score.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -110,7 +111,7 @@ fun FeaturedGameHeader(
 
 @Preview
 @Composable
-private fun FeaturedGameCardPreview() {
+private fun FeaturedGameCardPreview() = ScorePreview {
     FeaturedGameHeader(
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = "https://cornellbigred.com/images/logos/YALE_LOGO_2020.png?width=80&height=80&mode=max",
@@ -137,11 +138,13 @@ fun FeaturedGameCard(
     modifier: Modifier = Modifier,
     headerModifier: Modifier = Modifier,
     leftScore: Int? = null,
-    rightScore: Int? = null
+    rightScore: Int? = null,
+    onClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .clickable { onClick() }
     ) {
 
         FeaturedGameHeader(
@@ -172,14 +175,15 @@ fun FeaturedGameCard(
                         bottomStart = 16.dp,
                         bottomEnd = 16.dp
                     )
-                )
+                ),
+            onClick = onClick
         )
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-private fun GameScheduleScreen() {
+private fun GameScheduleScreen() = ScorePreview {
     FeaturedGameCard(
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",//painterResource(R.drawable.penn_logo),

@@ -13,15 +13,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import com.cornellappdev.score.R
+import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.bodyMedium
 import com.cornellappdev.score.theme.Style.bodyNormal
-import com.cornellappdev.score.theme.Style.heading5
 import com.cornellappdev.score.theme.Style.metricNormal
 import com.cornellappdev.score.theme.Style.metricSemibold
 import com.cornellappdev.score.util.scoreEvents1
@@ -47,13 +48,25 @@ fun ScoreEventItem(event: ScoreEvent) {
             .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(event.team.logo),
-            contentDescription = event.team.name,
-            modifier = Modifier
-                .size(40.dp)
-                .padding(end = 12.dp)
-        )
+        if (event.team.name == "COR"){ // TODO: Check if its "COR" for all queries. It is for baseball
+            Image(
+                painter = painterResource(R.drawable.cornell_logo),
+                contentDescription = event.team.name,
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(end = 12.dp)
+            )
+        }
+        else{
+            AsyncImage(
+                model = event.team.logo,
+                contentDescription = event.team.name, // Turn this into a if statement if i know the link for cornell logo
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(end = 12.dp)
+            )
+        }
+
 
         Row(
             modifier = Modifier.weight(2f),
@@ -91,7 +104,7 @@ fun ScoreEventItem(event: ScoreEvent) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = homeScore.toString(),
-                    style = if (event.team.name == "Cornell") metricSemibold else metricNormal,
+                    style = if (event.team.name == "Cornell") metricSemibold else metricNormal, // TODO: Check name
                     color = GrayPrimary,
                     textAlign = TextAlign.Center
                 )
@@ -112,8 +125,8 @@ fun ScoreEventItem(event: ScoreEvent) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-private fun PreviewScoringSummary() {
+private fun PreviewScoringSummary() = ScorePreview {
     ScoringSummary(scoreEvents = scoreEvents1)
 }

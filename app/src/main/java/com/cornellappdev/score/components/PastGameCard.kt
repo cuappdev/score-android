@@ -3,7 +3,16 @@ package com.cornellappdev.score.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -38,7 +47,7 @@ import java.time.LocalDate
 fun PastGameCard(
     data: GameCardData,
     modifier: Modifier = Modifier,
-    onClick: (Boolean) -> Unit = {}
+    onClick: () -> Unit = {}
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -49,7 +58,7 @@ fun PastGameCard(
                 Modifier
                     .border(width = 1.dp, color = GrayStroke, RoundedCornerShape(16.dp))
             )
-            .clickable { onClick(true) }
+            .clickable { onClick() }
     ) {
         Row(
             modifier = Modifier
@@ -188,10 +197,11 @@ private fun TeamScore(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-private fun PastGameCardPreview() {
+private fun PastGameCardPreview() = ScorePreview {
     val gameCard = GameCardData(
+        id = "1",
         teamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",
         team = "University of Pennsylvania",
         teamColor = Color.Red,

@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.cornellappdev.score.R
 import com.cornellappdev.score.theme.Style.scoreHeaderText
 import com.cornellappdev.score.theme.Style.vsText
@@ -35,9 +36,11 @@ import com.cornellappdev.score.theme.Style.vsText
 @Composable
 fun GameScoreHeader(
     leftTeamLogo: Painter,
-    rightTeamLogo: Painter,
+    rightTeamLogo: String,
     gradientColor1: Color,
     gradientColor2: Color,
+    leftScore: Int,
+    rightScore: Int,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -64,7 +67,7 @@ fun GameScoreHeader(
 
             Row {
                 Text(
-                    text = "0",
+                    text = leftScore.toString(),
                     style = scoreHeaderText,
                     modifier = Modifier.width(52.dp),
                     textAlign = TextAlign.Center
@@ -76,15 +79,15 @@ fun GameScoreHeader(
                 )
 
                 Text(
-                    text = "0",
+                    text = rightScore.toString(),
                     style = scoreHeaderText,
                     modifier = Modifier.width(52.dp),
                     textAlign = TextAlign.Center
                 )
             }
 
-            Image(
-                painter = rightTeamLogo,
+            AsyncImage(
+                model = rightTeamLogo,
                 contentDescription = "Right Team Logo",
                 modifier = Modifier.height(70.dp)
             )
@@ -94,12 +97,14 @@ fun GameScoreHeader(
 
 @Preview
 @Composable
-private fun GameScoreHeaderPreview() {
+private fun GameScoreHeaderPreview() = ScorePreview {
     GameScoreHeader(
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
-        rightTeamLogo = painterResource(R.drawable.penn_logo),
+        rightTeamLogo = "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2fcornellbigred.com%2fimages%2flogos%2fpenn_200x200.png&height=80&width=80&type=webp",
         gradientColor1 = Color(0xFFE1A69F),
         gradientColor2 = Color(0xFF011F5B),
+        leftScore = 0,
+        rightScore = 0,
         modifier = Modifier.height(185.dp)
     )
 }
