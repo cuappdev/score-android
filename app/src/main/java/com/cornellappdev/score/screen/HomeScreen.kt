@@ -100,9 +100,11 @@ private fun HomeContent(
             GamesCarousel(uiState.upcomingGames, navigateToGameDetails)
         }
         stickyHeader {
-            Column(modifier = Modifier
-                .background(White)
-                .padding(horizontal = 24.dp)) {
+            Column(
+                modifier = Modifier
+                    .background(White)
+                    .padding(horizontal = 24.dp)
+            ) {
                 Spacer(Modifier.height(24.dp))
                 Text(
                     text = "Game Schedule",
@@ -128,20 +130,20 @@ private fun HomeContent(
         }
         items(uiState.filteredGames) {
             val game = it
-            Column (modifier = Modifier.padding(horizontal = 24.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                 GameCard(
-                    id = game.id,
-                teamLogo = game.teamLogo,
-                team = game.team,
-                date = game.dateString,
-                isLive = game.isLive,
-                genderIcon = painterResource(game.genderIcon),
-                sportIcon = painterResource(game.sportIcon),
-                location = game.location,
-                topCornerRound = true,
-                onClick = navigateToGameDetails
-            )
-            Spacer(modifier = Modifier.height(16.dp))}
+                    teamLogo = game.teamLogo,
+                    team = game.team,
+                    date = game.dateString,
+                    isLive = game.isLive,
+                    genderIcon = painterResource(game.genderIcon),
+                    sportIcon = painterResource(game.sportIcon),
+                    location = game.location,
+                    topCornerRound = true,
+                    onClick = { navigateToGameDetails(game.id) }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
     }
 }

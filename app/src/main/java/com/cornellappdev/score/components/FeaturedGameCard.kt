@@ -124,7 +124,6 @@ private fun FeaturedGameCardPreview() = ScorePreview {
 
 @Composable
 fun FeaturedGameCard(
-    id: String,
     leftTeamLogo: Painter,
     rightTeamLogo: String,
     team: String,
@@ -140,11 +139,12 @@ fun FeaturedGameCard(
     headerModifier: Modifier = Modifier,
     leftScore: Int? = null,
     rightScore: Int? = null,
-    onClick: (String) -> Unit = {}
+    onClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
-            .fillMaxWidth().clickable { onClick(id) }
+            .fillMaxWidth()
+            .clickable { onClick() }
     ) {
 
         FeaturedGameHeader(
@@ -159,7 +159,6 @@ fun FeaturedGameCard(
         )
 
         GameCard(
-            id = id,
             teamLogo = rightTeamLogo,
             team = team,
             date = date,
@@ -186,7 +185,6 @@ fun FeaturedGameCard(
 @Composable
 private fun GameScheduleScreen() = ScorePreview {
     FeaturedGameCard(
-        id = "1",
         leftTeamLogo = painterResource(R.drawable.cornell_logo),
         rightTeamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",//painterResource(R.drawable.penn_logo),
         leftScore = 32,

@@ -13,7 +13,7 @@ import com.cornellappdev.score.model.TeamScore
 import java.time.LocalDate
 
 val PENN_GAME = GameCardData(
-    id = "1",
+    id = "",
     teamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",
     team = "Penn",
     teamColor = Color(0x66B31B1B),
@@ -29,7 +29,7 @@ val PENN_GAME = GameCardData(
 )
 
 val PRINCETON_GAME = GameCardData(
-    id = "1",
+    id = "",
     teamLogo = "https://cornellbigred.com/images/logos/Princeton_Tigers.png?width=80&height=80&mode=max",
     team = "Princeton",
     teamColor = Color(0x66FF6000),

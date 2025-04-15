@@ -72,7 +72,6 @@ fun GamesCarousel(
         ) { page ->
             val game = games[page]
             FeaturedGameCard(
-                id = game.id,
                 leftTeamLogo = painterResource(R.drawable.cornell_logo),
                 rightTeamLogo = game.teamLogo,
                 team = game.team,
@@ -86,7 +85,7 @@ fun GamesCarousel(
                 headerModifier = Modifier,
                 gradientColor1 = CornellRed,
                 gradientColor2 = game.teamColor,
-                onClick = onClick
+                onClick = { onClick(game.id) }
             )
         }
 

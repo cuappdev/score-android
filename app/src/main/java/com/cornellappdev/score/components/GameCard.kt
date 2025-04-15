@@ -48,7 +48,6 @@ import com.cornellappdev.score.theme.saturatedGreen
 
 @Composable
 fun GameCard(
-    id: String,
     teamLogo: String,
     team: String,
     date: String,
@@ -58,7 +57,7 @@ fun GameCard(
     sportIcon: Painter,
     topCornerRound: Boolean,
     modifier: Modifier = Modifier,
-    onClick: (String) -> Unit
+    onClick: () -> Unit
 ) {
     val cardShape = if (topCornerRound) {
         RoundedCornerShape(16.dp) // Rounded all
@@ -90,7 +89,7 @@ fun GameCard(
                         )
                 }
             )
-            .clickable { onClick(id) }
+            .clickable { onClick() }
     ) {
         Column(
             modifier = Modifier
@@ -211,7 +210,6 @@ fun GameCard(
 private fun GameCardPreview() = ScorePreview {
     Column {
         GameCard(
-            id = "1",
             teamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max", //painterResource(id = R.drawable.penn_logo),
             team = "Penn",
             date = "5/20/2024",

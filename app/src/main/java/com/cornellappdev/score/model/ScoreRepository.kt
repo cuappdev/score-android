@@ -91,7 +91,6 @@ class ScoreRepository @Inject constructor(
     fun getGameById(id: String) = appScope.launch {
         _currentGameFlow.value = ApiResponse.Loading
         try {
-            Log.d("ScoreRepository", "getGameById: ${id}")
             val result = (apolloClient.query(GameByIdQuery(id)).execute()).toResult()
             result.getOrNull()?.game?.let {
                 _currentGameFlow.value = ApiResponse.Success(it.toGameDetails())

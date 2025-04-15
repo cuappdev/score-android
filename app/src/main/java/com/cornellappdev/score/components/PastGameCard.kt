@@ -47,7 +47,7 @@ import java.time.LocalDate
 fun PastGameCard(
     data: GameCardData,
     modifier: Modifier = Modifier,
-    onClick: (String) -> Unit = {}
+    onClick: () -> Unit = {}
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -58,7 +58,7 @@ fun PastGameCard(
                 Modifier
                     .border(width = 1.dp, color = GrayStroke, RoundedCornerShape(16.dp))
             )
-            .clickable { onClick(data.id) }
+            .clickable { onClick() }
     ) {
         Row(
             modifier = Modifier

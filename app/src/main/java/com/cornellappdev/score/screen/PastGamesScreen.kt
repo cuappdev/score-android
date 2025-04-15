@@ -129,7 +129,7 @@ private fun PastGamesContent(
             Column (modifier = Modifier.padding(horizontal = 24.dp)) {
                 PastGameCard(
                     data = game,
-                    onClick = navigateToGameDetails
+                    onClick = {navigateToGameDetails(game.id)}
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
