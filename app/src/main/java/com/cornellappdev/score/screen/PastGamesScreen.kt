@@ -3,6 +3,7 @@ package com.cornellappdev.score.screen
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -94,7 +95,7 @@ private fun PastGamesLazyColumn(
     uiState: PastGamesUiState,
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
-    navigateToGameDetails: (Boolean) -> Unit
+    navigateToGameDetails: (String) -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
         item {
@@ -114,9 +115,11 @@ private fun PastGamesLazyColumn(
             GamesCarousel(uiState.pastGames, navigateToGameDetails)
         }
         stickyHeader {
-            Column(modifier = Modifier
-                .background(White)
-                .padding(horizontal = 24.dp)) {
+            Column(
+                modifier = Modifier
+                    .background(White)
+                    .padding(horizontal = 24.dp)
+            ) {
                 Spacer(Modifier.height(24.dp))
                 Text(
                     text = "All Scores",
@@ -133,19 +136,22 @@ private fun PastGamesLazyColumn(
                     onSportSelected = onSportSelected
                 )
             }
+            Box(modifier = Modifier.background(White)) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(top = 16.dp),
+                    color = GrayStroke,
+                )
+            }
         }
         item {
-            HorizontalDivider(
-                modifier = Modifier.padding(top = 16.dp, bottom = 24.dp),
-                color = GrayStroke,
-            )
+            Spacer(modifier = Modifier.height(24.dp))
         }
         items(uiState.filteredGames) {
             val game = it
-            Column (modifier = Modifier.padding(horizontal = 24.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                 PastGameCard(
                     data = game,
-                    onClick = {navigateToGameDetails(game.id)}
+                    onClick = { navigateToGameDetails(game.id) }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }

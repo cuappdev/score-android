@@ -3,6 +3,7 @@ package com.cornellappdev.score.screen
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -98,7 +98,7 @@ private fun HomeLazyColumn(
     uiState: HomeUiState,
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
-    navigateToGameDetails: (Boolean) -> Unit
+    navigateToGameDetails: (String) -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
         item {
@@ -139,12 +139,15 @@ private fun HomeLazyColumn(
                     onSportSelected = onSportSelected,
                 )
             }
+            Box(modifier = Modifier.background(White)) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(top = 16.dp),
+                    color = GrayStroke,
+                )
+            }
         }
         item {
-            HorizontalDivider(
-                modifier = Modifier.padding(top = 16.dp, bottom = 24.dp),
-                color = GrayStroke,
-            )
+            Spacer(modifier = Modifier.height(24.dp))
         }
         items(uiState.filteredGames) {
             val game = it
