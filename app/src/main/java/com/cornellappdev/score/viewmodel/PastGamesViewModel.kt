@@ -85,7 +85,10 @@ class PastGamesViewModel @Inject constructor(
         applyMutation {
             copy(
                 selectedGender = gender,
-                selectionList = Sport.getSportSelectionList(gender)
+                selectionList = Sport.getSportSelectionList(gender).filter {
+                    it is SportSelection.All ||
+                            (it is SportSelection.SportSelect && isValidSport(it.sport.displayName))
+                },
             )
         }
     }

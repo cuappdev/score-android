@@ -50,7 +50,7 @@ class HomeViewModel @Inject constructor(
     HomeUiState(
         selectedGender = GenderDivision.ALL,
         sportSelect = SportSelection.All,
-        selectionList = Sport.getSportSelectionList(GenderDivison.ALL).filter {
+        selectionList = Sport.getSportSelectionList(GenderDivision.ALL).filter {
             it is SportSelection.All ||
                     (it is SportSelection.SportSelect && isValidSport(it.sport.displayName))
         },
@@ -86,7 +86,10 @@ class HomeViewModel @Inject constructor(
         applyMutation {
             copy(
                 selectedGender = gender,
-                selectionList = Sport.getSportSelectionList(gender)
+                selectionList = Sport.getSportSelectionList(gender).filter {
+                    it is SportSelection.All ||
+                            (it is SportSelection.SportSelect && isValidSport(it.sport.displayName))
+                },
             )
         }
     }
