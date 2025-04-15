@@ -68,6 +68,9 @@ fun RootNavigation(
     }
 
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
+        if (navBackStackEntry?.toScreen() is ScoreRootScreens.GameDetailsPage) {
+            return@Scaffold
+        }
         NavigationBar(containerColor = White) {
             tabs.map { item ->
                 val isSelected = item.screen == navBackStackEntry?.toScreen()

@@ -102,7 +102,8 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
             style = bodyNormal,
             color = GrayPrimary,
             modifier = Modifier.weight(1f),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            maxLines = 1,
         )
 
         teamScore.scoresByPeriod.forEach { score ->
