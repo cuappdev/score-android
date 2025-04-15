@@ -26,14 +26,14 @@ fun ScoreNavHost(navController: NavHostController) {
         composable<Home> {
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
                 HomeScreen(navigateToGameDetails = {
-                    navController.navigate(ScoreScreens.GameDetailsPage(""))
+                    navController.navigate(ScoreScreens.GameDetailsPage(it))
                 })
             }
         }
         composable<ScoreScreens.ScoresScreen> {
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
                 PastGamesScreen(navigateToGameDetails = {
-                    navController.navigate(ScoreScreens.GameDetailsPage(""))
+                    navController.navigate(ScoreScreens.GameDetailsPage(it))
                 })
             }
         }
