@@ -3,7 +3,6 @@ package com.cornellappdev.score.screen
 import ScoringSummary
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.BoxScore
 import com.cornellappdev.score.components.ButtonPrimary
+import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GameDetailsLoadingScreen
 import com.cornellappdev.score.components.GameScoreHeader
 import com.cornellappdev.score.components.NavigationHeader
@@ -64,8 +63,11 @@ fun GameDetailsScreen(
 ) {
     val uiState = gameDetailsViewModel.collectUiStateValue()
     ScorePullToRefreshBox(
-        uiState.loadedState == ApiResponse.Loading,
-        { gameDetailsViewModel.onRefresh() }) {
+        // We have a separate loading state for this screen so we don't want the refresh indicator
+        // to persist as the screen loads.
+        false,
+        gameDetailsViewModel::onRefresh
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -78,16 +80,11 @@ fun GameDetailsScreen(
             )
             when (val state = uiState.loadedState) {
                 is ApiResponse.Loading, ApiResponse.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(color = GrayPrimary)
-                    }
+                    GameDetailsLoadingScreen()
                 }
 
                 is ApiResponse.Error -> {
-                    GameDetailsLoadingScreen()
+                    ErrorState(gameDetailsViewModel::onRefresh, "Failed to load game details")
                 }
 
                 is ApiResponse.Success -> {
@@ -98,7 +95,6 @@ fun GameDetailsScreen(
             }
         }
     }
-
 }
 
 @Composable
