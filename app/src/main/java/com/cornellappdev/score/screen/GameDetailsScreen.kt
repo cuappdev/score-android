@@ -32,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.BoxScore
 import com.cornellappdev.score.components.ButtonPrimary
+import com.cornellappdev.score.components.GameDetailsLoadingScreen
 import com.cornellappdev.score.components.GameScoreHeader
 import com.cornellappdev.score.components.NavigationHeader
 import com.cornellappdev.score.components.ScorePullToRefreshBox
@@ -86,12 +87,7 @@ fun GameDetailsScreen(
                 }
 
                 is ApiResponse.Error -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(text = "Failed to load game.")
-                    }
+                    GameDetailsLoadingScreen()
                 }
 
                 is ApiResponse.Success -> {
