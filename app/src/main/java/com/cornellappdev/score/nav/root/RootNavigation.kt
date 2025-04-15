@@ -1,10 +1,15 @@
 package com.cornellappdev.score.nav.root
 
+import androidx.compose.animation.core.InfiniteRepeatableSpec
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -13,6 +18,15 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.cornellappdev.score.R
+import com.cornellappdev.score.nav.root.ScoreRootScreens.Home.toScreen
+import com.cornellappdev.score.screen.GameDetailsScreen
+import com.cornellappdev.score.screen.HomeScreen
+import com.cornellappdev.score.screen.PastGamesScreen
+import com.cornellappdev.score.theme.CrimsonPrimary
+import com.cornellappdev.score.theme.GrayPrimary
+import com.cornellappdev.score.theme.LocalInfiniteLoading
+import com.cornellappdev.score.theme.Style.bodyMedium
+import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.nav.ScoreNavHost
 import com.cornellappdev.score.nav.ScoreNavigationBar
 import com.cornellappdev.score.nav.root.ScoreScreens.GameDetailsPage
@@ -28,19 +42,41 @@ fun RootNavigation(
     val uiState = rootNavigationViewModel.collectUiStateValue()
     val navBackStackEntry = navController.currentBackStackEntryAsState().value
 
+    val transition = rememberInfiniteTransition()
+    // Animate a value from 0 to 1 infinitely
+    val animatedValue = transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = InfiniteRepeatableSpec(
+            animation = keyframes {
+                durationMillis = 2000
+                0f at 0
+                1f at 1000
+                0f at 2000
+            }
+        ),
+        label = "infinite loading"
+    ).value
+
     LaunchedEffect(uiState.navigationEvent) {
         uiState.navigationEvent?.consumeSuspend { screen ->
             navController.navigate(screen)
         }
     }
 
-    
+
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
+        if (navBackStackEntry?.toScreen() is ScoreRootScreens.GameDetailsPage) {
+            return@Scaffold
+        }
         ScoreNavigationBar({ navController.navigate(it) }, navBackStackEntry)
     }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
+            CompositionLocalProvider(LocalInfiniteLoading provides animatedValue) {
+
             ScoreNavHost(navController)
+            }
         }
     }
 }

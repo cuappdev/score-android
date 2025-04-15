@@ -4,13 +4,13 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,12 +21,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.GameCardData
-import com.cornellappdev.score.model.GamesCarouselVariant
 import com.cornellappdev.score.theme.CornellRed
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
-import com.cornellappdev.score.theme.GrayPrimary
-import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.util.gameList
 
 @Composable
@@ -56,24 +53,22 @@ fun DotIndicator(
 }
 
 @Composable
-fun GamesCarousel(games: List<GameCardData>, variant: GamesCarouselVariant) {
+fun GamesCarousel(
+    games: List<GameCardData>,
+    onClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val pagerState = rememberPagerState(pageCount = { games.size })
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp),
+        modifier = modifier
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
     ) {
-        Text(
-            text = if (variant == GamesCarouselVariant.UPCOMING) "Upcoming" else "Latest",
-            style = heading1,
-            color = GrayPrimary,
-            modifier = Modifier.fillMaxWidth()
-        )
-
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(horizontal = 24.dp),
+            pageSpacing = 24.dp
         ) { page ->
             val game = games[page]
             FeaturedGameCard(
@@ -89,7 +84,8 @@ fun GamesCarousel(games: List<GameCardData>, variant: GamesCarouselVariant) {
                 modifier = Modifier,
                 headerModifier = Modifier,
                 gradientColor1 = CornellRed,
-                gradientColor2 = game.teamColor
+                gradientColor2 = game.teamColor,
+                onClick = { onClick(game.id) }
             )
         }
 
@@ -103,8 +99,8 @@ fun GamesCarousel(games: List<GameCardData>, variant: GamesCarouselVariant) {
     }
 }
 
-@Preview(showBackground = true, widthDp = 360)
 @Composable
-private fun GamesCarouselPreview() {
-    GamesCarousel(gameList, GamesCarouselVariant.UPCOMING)
+@Preview
+private fun GamesCarouselPreview() = ScorePreview {
+    GamesCarousel(gameList, onClick = {})
 }

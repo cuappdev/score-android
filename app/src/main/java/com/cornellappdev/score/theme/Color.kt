@@ -23,3 +23,6 @@ val AmbientColor = Color(0x12000000)
 val CornellRed = Color(0x66B31B1B)
 val PennBlue = Color(0x66021E59)
 val PrincetonOrange = Color(0x66FF6000)
+
+val Wash = Color(0xFFF4F4F4)
+val Stroke = Color(0xFFD6D6D6)

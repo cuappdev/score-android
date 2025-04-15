@@ -9,7 +9,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -36,21 +36,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.cornellappdev.score.R
-import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.theme.AmbientColor
 import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.SpotColor
 import com.cornellappdev.score.theme.Style.bodyNormal
-import com.cornellappdev.score.theme.Style.dateText
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.labelsNormal
-import com.cornellappdev.score.theme.Style.teamName
-import com.cornellappdev.score.theme.Style.universityText
 import com.cornellappdev.score.theme.saturatedGreen
-import java.util.Date
-import java.util.Locale
 
 @Composable
 fun GameCard(
@@ -63,7 +57,7 @@ fun GameCard(
     sportIcon: Painter,
     topCornerRound: Boolean,
     modifier: Modifier = Modifier,
-    onClick: (Boolean) -> Unit = {}
+    onClick: () -> Unit
 ) {
     val cardShape = if (topCornerRound) {
         RoundedCornerShape(16.dp) // Rounded all
@@ -94,7 +88,8 @@ fun GameCard(
                                 )
                         )
                 }
-            ).clickable { onClick(false) }
+            )
+            .clickable { onClick() }
     ) {
         Column(
             modifier = Modifier
@@ -107,7 +102,8 @@ fun GameCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically, modifier = Modifier.widthIn(0.dp, 250.dp)
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.widthIn(0.dp, 250.dp)
                 ) {
                     AsyncImage(
                         model = teamLogo,
@@ -209,9 +205,9 @@ fun GameCard(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-private fun GameCardPreview() {
+private fun GameCardPreview() = ScorePreview {
     Column {
         GameCard(
             teamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max", //painterResource(id = R.drawable.penn_logo),
@@ -223,6 +219,7 @@ private fun GameCardPreview() {
             sportIcon = painterResource(id = R.drawable.ic_baseball),
             topCornerRound = false,
             modifier = Modifier.padding(16.dp),
+            onClick = {}
         )
     }
 }
