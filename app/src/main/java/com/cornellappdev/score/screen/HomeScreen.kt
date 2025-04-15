@@ -42,7 +42,6 @@ import com.cornellappdev.score.util.gameList
 import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.HomeUiState
 import com.cornellappdev.score.viewmodel.HomeViewModel
-import androidx.compose.material3.HorizontalDivider
 
 @Composable
 fun HomeScreen(
