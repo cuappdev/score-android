@@ -172,7 +172,8 @@ fun FeaturedGameCard(
                         bottomStart = 16.dp,
                         bottomEnd = 16.dp
                     )
-                )
+                ),
+            isFeatured = true
         )
     }
 }
