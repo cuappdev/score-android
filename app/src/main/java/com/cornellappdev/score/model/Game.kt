@@ -145,3 +145,12 @@ fun Game.toGameCardData(): GameCardData {
             ?: R.drawable.ic_empty_placeholder
     )
 }
+
+val validSports = setOf(
+    "Baseball", "Basketball", "Field Hockey",
+    "Football", "Ice Hockey", "Lacrosse", "Soccer"
+)
+
+fun isValidSport(sportName: String): Boolean {
+    return sportName in validSports
+}

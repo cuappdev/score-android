@@ -6,6 +6,7 @@ import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.ScoreRepository
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
+import com.cornellappdev.score.model.isValidSport
 import com.cornellappdev.score.model.map
 import com.cornellappdev.score.model.toGameCardData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,8 +24,9 @@ data class HomeUiState(
         get() = when (loadedState) {
             is ApiResponse.Success -> loadedState.data.filter { game ->
                 (selectedGender == GenderDivision.ALL || game.gender == selectedGender.displayName) &&
-                        (sportSelect is SportSelection.All || (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName))
-                        && (game.sport == "Baseball" || game.sport == "Basketball" || game.sport == "Field Hockey" || game.sport == "Football" || game.sport == "Ice Hockey" || game.sport == "Lacrosse" || game.sport == "Soccer")
+                        (sportSelect is SportSelection.All ||
+                                (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName)) &&
+                        isValidSport(game.sport)
             }
 
             ApiResponse.Loading -> emptyList()
@@ -33,7 +35,7 @@ data class HomeUiState(
     val upcomingGames: List<GameCardData>
         get() = when (loadedState) {
             is ApiResponse.Success -> loadedState.data.filter { game ->
-                (game.sport == "Baseball" || game.sport == "Basketball" || game.sport == "Field Hockey" || game.sport == "Football" || game.sport == "Ice Hockey" || game.sport == "Lacrosse" || game.sport == "Soccer")
+                isValidSport(game.sport)
             }
 
             ApiResponse.Loading -> emptyList()
@@ -49,7 +51,8 @@ class HomeViewModel @Inject constructor(
         selectedGender = GenderDivision.ALL,
         sportSelect = SportSelection.All,
         selectionList = Sport.getSportSelectionList().filter {
-            it is SportSelection.All || (it is SportSelection.SportSelect && (it.sport.displayName == "Baseball" || it.sport.displayName == "Basketball" || it.sport.displayName == "Field Hockey" || it.sport.displayName == "Football" || it.sport.displayName == "Ice Hockey" || it.sport.displayName == "Lacrosse" || it.sport.displayName == "Soccer"))
+            it is SportSelection.All ||
+                    (it is SportSelection.SportSelect && isValidSport(it.sport.displayName))
         },
         loadedState = ApiResponse.Loading
     )
