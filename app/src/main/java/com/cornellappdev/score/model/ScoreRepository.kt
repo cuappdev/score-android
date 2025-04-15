@@ -2,14 +2,16 @@ package com.cornellappdev.score.model
 
 import android.util.Log
 import com.apollographql.apollo.ApolloClient
+import com.cornellappdev.score.util.parseColor
+import com.example.score.GameByIdQuery
 import com.example.score.GamesQuery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
-import com.cornellappdev.score.util.parseColor
 
 /**
  * This is a singleton responsible for fetching and caching all data for Score.
@@ -26,6 +28,9 @@ class ScoreRepository @Inject constructor(
         MutableStateFlow<ApiResponse<List<Game>>>(ApiResponse.Loading)
     val upcomingGamesFlow = _upcomingGamesFlow.asStateFlow()
 
+    private val _currentGameFlow =
+        MutableStateFlow<ApiResponse<GameDetailsGame>>(ApiResponse.Loading)
+    val currentGamesFlow = _currentGameFlow.asStateFlow()
 
     /**
      * Asynchronously fetches the list of games from the API. Once finished, will send down
@@ -55,6 +60,7 @@ class ScoreRepository @Inject constructor(
                         val otherScore = scores?.getOrNull(1)?.toNumberOrNull()
                         game?.team?.image?.let {
                             Game(
+                                id = game.id ?: "", // Should never be null
                                 teamLogo = it,
                                 teamName = game.team.name,
                                 teamColor = parseColor(game.team.color).copy(alpha = 0.4f * 255),
@@ -77,6 +83,24 @@ class ScoreRepository @Inject constructor(
             _upcomingGamesFlow.value = ApiResponse.Error
         }
     }
+
+    /**
+     * Asynchronously fetches game details for a particular game. Once finished, will update
+     * `currentGamesFlow` to be observed.
+     */
+    fun getGameById(id: String) = appScope.launch {
+        _currentGameFlow.value = ApiResponse.Loading
+        try {
+            val result = (apolloClient.query(GameByIdQuery(id)).execute()).toResult()
+            result.getOrNull()?.game?.let {
+                _currentGameFlow.value = ApiResponse.Success(it.toGameDetails())
+            } ?: _currentGameFlow.update { ApiResponse.Error }
+        } catch (e: Exception) {
+            Log.e("ScoreRepository", "Error fetching game with id: ${id}: ", e)
+            _currentGameFlow.value = ApiResponse.Error
+        }
+    }
+
 }
 
 fun String.toNumberOrNull(): Number? {

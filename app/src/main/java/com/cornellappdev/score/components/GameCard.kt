@@ -59,7 +59,7 @@ fun GameCard(
     topCornerRound: Boolean,
     modifier: Modifier = Modifier,
     isFeatured: Boolean = false,
-    onClick: (Boolean) -> Unit = {}
+    onClick: () -> Unit
 ) {
     val cardShape = if (topCornerRound) {
         RoundedCornerShape(16.dp) // Rounded all
@@ -91,7 +91,7 @@ fun GameCard(
                         )
                 }
             )
-            .clickable { onClick(false) }
+            .clickable { onClick() }
     ) {
         Column(
             modifier = Modifier
@@ -122,7 +122,6 @@ fun GameCard(
                         maxLines = if (isFeatured) 1 else Int.MAX_VALUE,
                         overflow = if (isFeatured) TextOverflow.Ellipsis else TextOverflow.Clip
                     )
-
                 }
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.Start),
@@ -224,6 +223,7 @@ private fun GameCardPreview() = ScorePreview {
             sportIcon = painterResource(id = R.drawable.ic_baseball),
             topCornerRound = false,
             modifier = Modifier.padding(16.dp),
+            onClick = {}
         )
     }
 }
