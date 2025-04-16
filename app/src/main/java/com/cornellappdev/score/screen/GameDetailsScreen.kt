@@ -3,7 +3,6 @@ package com.cornellappdev.score.screen
 import ScoringSummary
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,8 +30,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.BoxScore
 import com.cornellappdev.score.components.ButtonPrimary
+import com.cornellappdev.score.components.ErrorState
+import com.cornellappdev.score.components.GameDetailsLoadingScreen
 import com.cornellappdev.score.components.GameScoreHeader
 import com.cornellappdev.score.components.NavigationHeader
+import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.TimeUntilStartCard
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.DetailsCardData
@@ -59,38 +62,36 @@ fun GameDetailsScreen(
     onBackArrow: () -> Unit = {}
 ) {
     val uiState = gameDetailsViewModel.collectUiStateValue()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(White)
+    ScorePullToRefreshBox(
+        // We have a separate loading state for this screen so we don't want the refresh indicator
+        // to persist as the screen loads.
+        false,
+        gameDetailsViewModel::onRefresh
     ) {
-        NavigationHeader(
-            title = "Game Details",
-            onBackPressed = onBackArrow
-        )
-        when (val state = uiState.loadedState) {
-            is ApiResponse.Loading, ApiResponse.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = GrayPrimary)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(White)
+                .verticalScroll(rememberScrollState())
+        ) {
+            NavigationHeader(
+                title = "Game Details",
+                onBackPressed = onBackArrow
+            )
+            when (val state = uiState.loadedState) {
+                is ApiResponse.Loading, ApiResponse.Loading -> {
+                    GameDetailsLoadingScreen()
                 }
-            }
 
-            is ApiResponse.Error -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "Failed to load game.")
+                is ApiResponse.Error -> {
+                    ErrorState(gameDetailsViewModel::onRefresh, "Failed to load game details")
                 }
-            }
 
-            is ApiResponse.Success -> {
-                GameDetailsContent(
-                    gameCard = state.data
-                )
+                is ApiResponse.Success -> {
+                    GameDetailsContent(
+                        gameCard = state.data
+                    )
+                }
             }
         }
     }

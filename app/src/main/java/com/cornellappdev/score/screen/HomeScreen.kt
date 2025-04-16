@@ -3,6 +3,7 @@ package com.cornellappdev.score.screen
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +29,7 @@ import com.cornellappdev.score.components.GameCard
 import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.ScorePreview
+import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GenderDivision
@@ -67,20 +70,35 @@ fun HomeScreen(
                     uiState = uiState,
                     onGenderSelected = { homeViewModel.onGenderSelected(it) },
                     onSportSelected = { homeViewModel.onSportSelected(it) },
-                    navigateToGameDetails = navigateToGameDetails
+                    navigateToGameDetails = navigateToGameDetails,
+                    onRefresh = { homeViewModel.onRefresh() }
                 )
             }
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeContent(
     uiState: HomeUiState,
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
+    onRefresh: () -> Unit,
     navigateToGameDetails: (String) -> Unit = {}
+) {
+    ScorePullToRefreshBox(isRefreshing = uiState.loadedState == ApiResponse.Loading, onRefresh) {
+        HomeLazyColumn(uiState, onGenderSelected, onSportSelected, navigateToGameDetails)
+    }
+}
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun HomeLazyColumn(
+    uiState: HomeUiState,
+    onGenderSelected: (GenderDivision) -> Unit,
+    onSportSelected: (SportSelection) -> Unit,
+    navigateToGameDetails: (String) -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
         item {
@@ -121,12 +139,15 @@ private fun HomeContent(
                     onSportSelected = onSportSelected,
                 )
             }
+            Box(modifier = Modifier.background(White)) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(top = 16.dp),
+                    color = GrayStroke,
+                )
+            }
         }
         item {
-            HorizontalDivider(
-                modifier = Modifier.padding(top = 16.dp, bottom = 24.dp),
-                color = GrayStroke,
-            )
+            Spacer(modifier = Modifier.height(24.dp))
         }
         items(uiState.filteredGames) {
             val game = it
@@ -164,7 +185,8 @@ private fun HomeScreenPreview() = ScorePreview {
                 loadedState = ApiResponse.Success(gameList)
             ),
             onGenderSelected = {},
-            onSportSelected = {}
+            onSportSelected = {},
+            onRefresh = {},
         )
     }
 }
