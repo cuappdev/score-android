@@ -100,7 +100,7 @@ private fun PastGamesLazyColumn(
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
         item {
             Text(
-                text = "Upcoming",
+                text = "Latest",
                 style = heading1,
                 color = GrayPrimary,
                 modifier = Modifier
