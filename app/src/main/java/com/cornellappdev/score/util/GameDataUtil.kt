@@ -102,3 +102,12 @@ fun parseResultScore(result: String?): Pair<Int, Int>? {
     }
 }
 
+val validSports = setOf(
+    "Baseball", "Basketball", "Field Hockey",
+    "Football", "Ice Hockey", "Lacrosse", "Soccer"
+)
+
+fun isValidSport(sportName: String): Boolean {
+    return sportName in validSports
+}
+

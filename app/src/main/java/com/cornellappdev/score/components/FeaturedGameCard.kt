@@ -176,6 +176,7 @@ fun FeaturedGameCard(
                         bottomEnd = 16.dp
                     )
                 ),
+            isFeatured = true,
             onClick = onClick
         )
     }

@@ -23,13 +23,20 @@ data class HomeUiState(
         get() = when (loadedState) {
             is ApiResponse.Success -> loadedState.data.filter { game ->
                 (selectedGender == GenderDivision.ALL || game.gender == selectedGender.displayName) &&
-                        (sportSelect is SportSelection.All || (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName))
+                        (sportSelect is SportSelection.All ||
+                                (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName))
             }
 
             ApiResponse.Loading -> emptyList()
             ApiResponse.Error -> emptyList()
         }
-    val upcomingGames: List<GameCardData> = filteredGames.take(3)
+    val upcomingGames: List<GameCardData>
+        get() = when (loadedState) {
+            is ApiResponse.Success -> loadedState.data
+
+            ApiResponse.Loading -> emptyList()
+            ApiResponse.Error -> emptyList()
+        }.take(3)
 }
 
 @HiltViewModel
@@ -72,7 +79,7 @@ class HomeViewModel @Inject constructor(
         applyMutation {
             copy(
                 selectedGender = gender,
-                selectionList = Sport.getSportSelectionList(gender)
+                selectionList = Sport.getSportSelectionList(gender),
             )
         }
     }
