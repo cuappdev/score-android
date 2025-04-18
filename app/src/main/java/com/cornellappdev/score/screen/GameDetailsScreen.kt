@@ -84,7 +84,10 @@ fun GameDetailsScreen(
                 }
 
                 is ApiResponse.Error -> {
-                    ErrorState(gameDetailsViewModel::onRefresh, "Failed to load game details")
+                    ErrorState(
+                        { gameDetailsViewModel.onRefresh() },
+                        "Oops! Details failed to load."
+                    )
                 }
 
                 is ApiResponse.Success -> {
