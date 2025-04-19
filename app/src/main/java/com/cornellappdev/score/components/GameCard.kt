@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -57,7 +58,8 @@ fun GameCard(
     sportIcon: Painter,
     topCornerRound: Boolean,
     modifier: Modifier = Modifier,
-    onClick: (Boolean) -> Unit = {}
+    isFeatured: Boolean = false,
+    onClick: () -> Unit
 ) {
     val cardShape = if (topCornerRound) {
         RoundedCornerShape(16.dp) // Rounded all
@@ -89,7 +91,7 @@ fun GameCard(
                         )
                 }
             )
-            .clickable { onClick(false) }
+            .clickable { onClick() }
     ) {
         Column(
             modifier = Modifier
@@ -116,7 +118,9 @@ fun GameCard(
                     Text(
                         text = team,
                         style = heading2,
-                        color = GrayPrimary
+                        color = GrayPrimary,
+                        maxLines = if (isFeatured) 1 else Int.MAX_VALUE,
+                        overflow = if (isFeatured) TextOverflow.Ellipsis else TextOverflow.Clip
                     )
                 }
                 Row(
@@ -219,6 +223,7 @@ private fun GameCardPreview() = ScorePreview {
             sportIcon = painterResource(id = R.drawable.ic_baseball),
             topCornerRound = false,
             modifier = Modifier.padding(16.dp),
+            onClick = {}
         )
     }
 }

@@ -1,7 +1,7 @@
 package com.cornellappdev.score.nav.root
 
-import com.cornellappdev.score.viewmodel.BaseViewModel
 import com.cornellappdev.score.util.UIEvent
+import com.cornellappdev.score.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -13,7 +13,7 @@ class RootNavigationViewModel @Inject constructor(
 ) {
 
     data class RootNavigationUiState(
-        val navigationEvent: UIEvent<ScoreRootScreens>? = null,
+        val navigationEvent: UIEvent<ScoreScreens>? = null,
     )
 
     init {

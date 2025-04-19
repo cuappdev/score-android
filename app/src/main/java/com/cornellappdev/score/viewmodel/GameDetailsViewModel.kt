@@ -1,20 +1,46 @@
 package com.cornellappdev.score.viewmodel
 
-import com.cornellappdev.score.model.GameCardData
-import com.cornellappdev.score.nav.root.RootNavigationRepository
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.toRoute
+import com.cornellappdev.score.model.ApiResponse
+import com.cornellappdev.score.model.DetailsCardData
+import com.cornellappdev.score.model.ScoreRepository
+import com.cornellappdev.score.model.map
+import com.cornellappdev.score.model.toGameCardData
+import com.cornellappdev.score.nav.root.ScoreScreens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+data class GameDetailsUiState(
+    val loadedState: ApiResponse<DetailsCardData>
+)
+
 @HiltViewModel
 class GameDetailsViewModel @Inject constructor(
-    private val rootNavigationRepository: RootNavigationRepository,
-    ) : BaseViewModel<GameDetailsViewModel.GameDetailsUiState>(
-        initialUiState = GameDetailsUiState(
-            homeScore = 0, awayScore = 0
+    private val scoreRepository: ScoreRepository,
+    savedStateHandle: SavedStateHandle,
+) : BaseViewModel<GameDetailsUiState>(
+    initialUiState = GameDetailsUiState(
+        loadedState = ApiResponse.Loading
     )
 ) {
-    data class GameDetailsUiState(
-        val homeScore: Int,
-        val awayScore: Int,
-    )
+    private val gameId: String = checkNotNull(savedStateHandle["gameId"])
+
+    init {
+        asyncCollect(scoreRepository.currentGamesFlow) { response ->
+            applyMutation {
+                copy(
+                    loadedState = response.map { gameCard ->
+                        gameCard.toGameCardData()
+                    }
+                )
+            }
+        }
+        onRefresh()
+    }
+
+    fun onRefresh() {
+        applyMutation { copy(loadedState = ApiResponse.Loading) }
+        scoreRepository.getGameById(gameId)
+    }
 }

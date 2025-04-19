@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,11 +24,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.components.EmptyState
+import com.cornellappdev.score.components.EmptyState
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.PastGameCard
 import com.cornellappdev.score.components.ScorePreview
+import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GenderDivision
@@ -45,7 +48,7 @@ import com.cornellappdev.score.viewmodel.PastGamesViewModel
 @Composable
 fun PastGamesScreen(
     pastGamesViewModel: PastGamesViewModel = hiltViewModel(),
-    navigateToGameDetails: (Boolean) -> Unit = {}
+    navigateToGameDetails: (String) -> Unit = {}
 ) {
     val uiState = pastGamesViewModel.collectUiStateValue()
 
@@ -68,7 +71,8 @@ fun PastGamesScreen(
                     uiState = uiState,
                     onGenderSelected = { pastGamesViewModel.onGenderSelected(it) },
                     onSportSelected = { pastGamesViewModel.onSportSelected(it) },
-                    navigateToGameDetails = navigateToGameDetails
+                    navigateToGameDetails = navigateToGameDetails,
+                    onRefresh = pastGamesViewModel::onRefresh
                 )
             }
         }
@@ -81,7 +85,21 @@ private fun PastGamesContent(
     uiState: PastGamesUiState,
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
-    navigateToGameDetails: (Boolean) -> Unit = {}
+    onRefresh: () -> Unit,
+    navigateToGameDetails: (String) -> Unit = {}
+) {
+    ScorePullToRefreshBox(uiState.loadedState == ApiResponse.Loading, onRefresh = onRefresh) {
+        PastGamesLazyColumn(uiState, onGenderSelected, onSportSelected, navigateToGameDetails)
+    }
+}
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun PastGamesLazyColumn(
+    uiState: PastGamesUiState,
+    onGenderSelected: (GenderDivision) -> Unit,
+    onSportSelected: (SportSelection) -> Unit,
+    navigateToGameDetails: (String) -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
         if (uiState.filteredGames.isNotEmpty()) {
@@ -102,9 +120,8 @@ private fun PastGamesContent(
 
         if (uiState.filteredGames.isNotEmpty()) {
             item {
-                GamesCarousel(uiState.pastGames)
+                GamesCarousel(uiState.pastGames,  navigateToGameDetails)
             }
-        }
         stickyHeader {
             Column(
                 modifier = Modifier
@@ -127,25 +144,29 @@ private fun PastGamesContent(
                     onSportSelected = onSportSelected
                 )
             }
-        }
-        item {
-            HorizontalDivider(
-                modifier = Modifier.padding(top = 16.dp, bottom = 24.dp),
-                color = GrayStroke,
-            )
-        }
-        if (uiState.filteredGames.isNotEmpty()) {
-            items(uiState.filteredGames) {
-                val game = it
-                Column(modifier = Modifier.padding(horizontal = 24.dp)) {
-                    PastGameCard(
-                        data = game,
-                        onClick = navigateToGameDetails
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
+            Box(modifier = Modifier.background(White)) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(top = 16.dp),
+                    color = GrayStroke,
+                )
             }
         }
+        item {
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+            if (uiState.filteredGames.isNotEmpty()) {
+                items(uiState.filteredGames) {
+                    val game = it
+                    Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+                        PastGameCard(
+                            data = game,
+                            onClick = { navigateToGameDetails(game.id) }
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                }
+            }
+            }
     }
     if (uiState.filteredGames.isEmpty()) {
         Box(
@@ -169,5 +190,6 @@ private fun PastGamesPreview() = ScorePreview {
         ),
         onGenderSelected = {},
         onSportSelected = {},
+        onRefresh = {},
     )
 }
