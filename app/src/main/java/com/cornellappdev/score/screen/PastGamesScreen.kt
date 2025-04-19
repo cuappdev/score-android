@@ -84,7 +84,7 @@ private fun PastGamesContent(
     navigateToGameDetails: (Boolean) -> Unit = {}
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
-        if (!uiState.filteredGames.isEmpty()) {
+        if (uiState.filteredGames.isNotEmpty()) {
             item {
                 Text(
                     text = "Latest",
@@ -95,11 +95,12 @@ private fun PastGamesContent(
                         .padding(start = 24.dp)
                 )
             }
+            item {
+                Spacer(Modifier.height(16.dp))
+            }
         }
-        item {
-            Spacer(Modifier.height(16.dp))
-        }
-        if (!uiState.filteredGames.isEmpty()) {
+
+        if (uiState.filteredGames.isNotEmpty()) {
             item {
                 GamesCarousel(uiState.pastGames)
             }
@@ -133,7 +134,7 @@ private fun PastGamesContent(
                 color = GrayStroke,
             )
         }
-        if (!uiState.filteredGames.isEmpty()) {
+        if (uiState.filteredGames.isNotEmpty()) {
             items(uiState.filteredGames) {
                 val game = it
                 Column(modifier = Modifier.padding(horizontal = 24.dp)) {

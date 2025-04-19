@@ -85,7 +85,7 @@ private fun HomeContent(
     navigateToGameDetails: (Boolean) -> Unit = {}
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
-        if (!uiState.filteredGames.isEmpty()) {
+        if (uiState.filteredGames.isNotEmpty()) {
             item {
                 Text(
                     text = "Upcoming",
@@ -96,11 +96,11 @@ private fun HomeContent(
                         .padding(start = 24.dp)
                 )
             }
+            item {
+                Spacer(Modifier.height(16.dp))
+            }
         }
-        item {
-            Spacer(Modifier.height(16.dp))
-        }
-        if (!uiState.filteredGames.isEmpty()) {
+        if (uiState.filteredGames.isNotEmpty()) {
             item {
                 GamesCarousel(uiState.upcomingGames)
             }
@@ -134,7 +134,7 @@ private fun HomeContent(
                 color = GrayStroke,
             )
         }
-        if (!uiState.filteredGames.isEmpty()) {
+        if (uiState.filteredGames.isNotEmpty()) {
             items(uiState.filteredGames) {
                 val game = it
                 Column(modifier = Modifier.padding(horizontal = 24.dp)) {
@@ -178,6 +178,27 @@ private fun HomeScreenPreview() = ScorePreview {
                 sportSelect = SportSelection.All,
                 selectionList = sportSelectionList,
                 loadedState = ApiResponse.Success(gameList)
+            ),
+            onGenderSelected = {},
+            onSportSelected = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun HomeScreenEmptyStatePreview() = ScorePreview{
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+    ) {
+        HomeContent(
+            HomeUiState(
+                selectedGender = GenderDivision.ALL,
+                sportSelect = SportSelection.All,
+                selectionList = sportSelectionList,
+                loadedState = ApiResponse.Success(emptyList())
             ),
             onGenderSelected = {},
             onSportSelected = {}

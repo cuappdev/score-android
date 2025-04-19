@@ -24,29 +24,24 @@ fun EmptyState(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ic_speaker_gray),
-                contentDescription = "score speaker icon"
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "No games yet.",
-                style = heading2.copy(color = GrayPrimary)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Check back here later!",
-                style = bodyNormal.copy(color = GrayMedium)
-            )
-        }
+        Image(
+            painter = painterResource(R.drawable.ic_speaker_gray),
+            contentDescription = "score speaker icon"
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "No games yet.",
+            style = heading2.copy(color = GrayPrimary)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Check back here later!",
+            style = bodyNormal.copy(color = GrayMedium)
+        )
     }
 }
 
