@@ -121,61 +121,60 @@ private fun HomeLazyColumn(
             item {
                 GamesCarousel(uiState.upcomingGames, navigateToGameDetails)
             }
-            stickyHeader {
-                Column(
+        }
+        stickyHeader {
+            Column(
+                modifier = Modifier
+                    .background(White)
+                    .padding(horizontal = 24.dp)
+            ) {
+                Spacer(Modifier.height(24.dp))
+                Text(
+                    text = "Game Schedule",
+                    style = title,
                     modifier = Modifier
-                        .background(White)
-                        .padding(horizontal = 24.dp)
-                ) {
-                    Spacer(Modifier.height(24.dp))
-                    Text(
-                        text = "Game Schedule",
-                        style = title,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SportSelectorHeader(
-                        sports = uiState.selectionList,
-                        selectedGender = uiState.selectedGender,
-                        selectedSport = uiState.sportSelect,
-                        onGenderSelected = onGenderSelected,
-                        onSportSelected = onSportSelected,
-                    )
-                }
-                Box(modifier = Modifier.background(White)) {
-                    HorizontalDivider(
-                        modifier = Modifier.padding(top = 16.dp),
-                        color = GrayStroke,
-                    )
-                }
+                        .fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                SportSelectorHeader(
+                    sports = uiState.selectionList,
+                    selectedGender = uiState.selectedGender,
+                    selectedSport = uiState.sportSelect,
+                    onGenderSelected = onGenderSelected,
+                    onSportSelected = onSportSelected,
+                )
+            }
+            Box(modifier = Modifier.background(White)) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(top = 16.dp),
+                    color = GrayStroke,
+                )
             }
         }
 
-            if (uiState.filteredGames.isNotEmpty()) {
-
-                item {
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
-                items(uiState.filteredGames) {
-                    val game = it
-                    Column(modifier = Modifier.padding(horizontal = 24.dp)) {
-                        GameCard(
-                            teamLogo = game.teamLogo,
-                            team = game.team,
-                            date = game.dateString,
-                            isLive = game.isLive,
-                            genderIcon = painterResource(game.genderIcon),
-                            sportIcon = painterResource(game.sportIcon),
-                            location = game.location,
-                            topCornerRound = true,
-                            onClick = { navigateToGameDetails(game.id) }
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
+        if (uiState.filteredGames.isNotEmpty()) {
+            item {
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+            items(uiState.filteredGames) {
+                val game = it
+                Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+                    GameCard(
+                        teamLogo = game.teamLogo,
+                        team = game.team,
+                        date = game.dateString,
+                        isLive = game.isLive,
+                        genderIcon = painterResource(game.genderIcon),
+                        sportIcon = painterResource(game.sportIcon),
+                        location = game.location,
+                        topCornerRound = true,
+                        onClick = { navigateToGameDetails(game.id) }
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
+    }
     if (uiState.filteredGames.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -184,8 +183,8 @@ private fun HomeLazyColumn(
             EmptyState()
         }
     }
-
 }
+
 @Preview
 @Composable
 private fun HomeScreenPreview() = ScorePreview {
@@ -210,7 +209,7 @@ private fun HomeScreenPreview() = ScorePreview {
 
 @Preview
 @Composable
-private fun HomeScreenEmptyStatePreview() = ScorePreview{
+private fun HomeScreenEmptyStatePreview() = ScorePreview {
     Column(
         modifier = Modifier
             .fillMaxSize()
