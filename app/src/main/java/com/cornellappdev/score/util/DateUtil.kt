@@ -8,18 +8,32 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /**
- * Converts date of form String "month-abbr day (day-of-week)" (for example, "Apr 29 (Tue)") to a LocalDate object
+ * Converts date of form String "MMM d (E) yyyy" to a local date object. If the date has no year
+ * associated with it, we assume the year is this year.
  * Returns null when parsing [strDate] fails
  */
 fun parseDateOrNull(strDate: String): LocalDate? {
-    val subDate = strDate.substringBefore(" (")
-    val formatter = DateTimeFormatter.ofPattern("MMM d yyyy")
+    val format = DateTimeFormatter.ofPattern("MMM d (E) yyyy")
 
+    val resultWithYear = try {
+        LocalDate.parse(strDate, format)
+    } catch (_: Exception) {
+        null
+    }
+    resultWithYear?.let {
+        return it
+    }
+
+    // If we don't have the year from the backend, simply assume the current year
     return try {
-        LocalDate.parse("$subDate ${LocalDate.now().year}", formatter) //assumes current year
+        LocalDate.parse(
+            "$strDate ${LocalDate.now().year}",
+            format
+        ) //assumes current year
     } catch (e: Exception) {
         null
     }
+
 }
 
 /**
