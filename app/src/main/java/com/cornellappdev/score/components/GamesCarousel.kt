@@ -85,6 +85,8 @@ fun GamesCarousel(
                 headerModifier = Modifier,
                 gradientColor1 = CornellRed,
                 gradientColor2 = game.teamColor,
+                leftScore = game.cornellScore?.toInt(),
+                rightScore = game.otherScore?.toInt(),
                 onClick = { onClick(game.id) }
             )
         }
