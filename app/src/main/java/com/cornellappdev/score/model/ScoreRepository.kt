@@ -2,6 +2,7 @@ package com.cornellappdev.score.model
 
 import android.util.Log
 import com.apollographql.apollo.ApolloClient
+import com.cornellappdev.score.util.isValidSport
 import com.cornellappdev.score.util.parseColor
 import com.example.score.GameByIdQuery
 import com.example.score.GamesQuery
@@ -10,9 +11,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 import javax.inject.Singleton
-import com.cornellappdev.score.util.isValidSport
+
+private const val TIMEOUT_TIME_MILLIS = 5000L
 
 /**
  * This is a singleton responsible for fetching and caching all data for Score.
@@ -40,7 +43,10 @@ class ScoreRepository @Inject constructor(
     fun fetchGames() = appScope.launch {
         _upcomingGamesFlow.value = ApiResponse.Loading
         try {
-            val result = (apolloClient.query(GamesQuery()).execute()).toResult()
+            val result =
+                withTimeout(TIMEOUT_TIME_MILLIS) {
+                    apolloClient.query((GamesQuery())).execute().toResult()
+                }
 
             if (result.isSuccess) {
                 val games = result.getOrNull()
@@ -93,7 +99,12 @@ class ScoreRepository @Inject constructor(
     fun getGameById(id: String) = appScope.launch {
         _currentGameFlow.value = ApiResponse.Loading
         try {
-            val result = (apolloClient.query(GameByIdQuery(id)).execute()).toResult()
+            val result =
+                withTimeout(TIMEOUT_TIME_MILLIS) {
+                    apolloClient.query(GameByIdQuery(id)).execute().toResult()
+                }
+
+
             result.getOrNull()?.game?.let {
                 _currentGameFlow.value = ApiResponse.Success(it.toGameDetails())
             } ?: _currentGameFlow.update { ApiResponse.Error }
