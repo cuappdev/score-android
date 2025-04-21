@@ -21,8 +21,6 @@ import com.cornellappdev.score.R
 import com.cornellappdev.score.nav.ScoreNavHost
 import com.cornellappdev.score.nav.ScoreNavigationBar
 import com.cornellappdev.score.nav.root.ScoreScreens.GameDetailsPage
-import com.cornellappdev.score.nav.root.ScoreScreens.Home
-import com.cornellappdev.score.nav.root.ScoreScreens.ScoresScreen
 import com.cornellappdev.score.theme.LocalInfiniteLoading
 import kotlinx.serialization.Serializable
 
@@ -84,13 +82,17 @@ sealed class ScoreScreens {
 
     @Serializable
     data object ScoresScreen : ScoreScreens()
+
+    @Serializable
+    data class GameScoreSummaryPage(val scoreEvents: String) : ScoreScreens()
 }
 
 fun NavBackStackEntry.toScreen(): ScoreScreens? =
     when (destination.route?.substringAfterLast(".")?.substringBefore("/")) {
-        "Home" -> toRoute<Home>()
-        "GameDetailsPage" -> toRoute<GameDetailsPage>()
-        "ScoresScreen" -> toRoute<ScoresScreen>()
+        "Home" -> toRoute<ScoreScreens.Home>()
+        "GameDetailsPage" -> toRoute<ScoreScreens.GameDetailsPage>()
+        "ScoresScreen" -> toRoute<ScoreScreens.ScoresScreen>()
+        "GameScoreSummaryPage" -> toRoute<ScoreScreens.GameScoreSummaryPage>()
         else -> throw IllegalArgumentException("Invalid screen")
     }
 

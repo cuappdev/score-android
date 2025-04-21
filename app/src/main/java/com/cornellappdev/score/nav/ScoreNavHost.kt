@@ -1,16 +1,21 @@
 package com.cornellappdev.score.nav
 
+import GameScoreSummaryScreenDetail
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.nav.root.ScoreScreens
 import com.cornellappdev.score.nav.root.ScoreScreens.Home
 import com.cornellappdev.score.screen.GameDetailsScreen
 import com.cornellappdev.score.screen.HomeScreen
 import com.cornellappdev.score.screen.PastGamesScreen
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.json.Json
 
 @Composable
 fun ScoreNavHost(navController: NavHostController) {
@@ -38,9 +43,27 @@ fun ScoreNavHost(navController: NavHostController) {
             }
         }
         composable<ScoreScreens.GameDetailsPage> {
-            GameDetailsScreen(onBackArrow = {
+            GameDetailsScreen(
+                onBackArrow = {
+                    navController.navigateUp()
+                },
+                navigateToGameScoreSummary = { scoreEvents: List<ScoreEvent> ->
+                    val scoreEventsJson =
+                        Json.encodeToString(ListSerializer(ScoreEvent.serializer()), scoreEvents)
+                    navController.navigate(ScoreScreens.GameScoreSummaryPage(scoreEventsJson))
+                }
+            )
+        }
+
+        composable<ScoreScreens.GameScoreSummaryPage> { backStackEntry ->
+            val route = backStackEntry.toRoute<ScoreScreens.GameScoreSummaryPage>()
+            val scoreEvents: List<ScoreEvent> = Json.decodeFromString(route.scoreEvents)
+            GameScoreSummaryScreenDetail(scoreEvents = scoreEvents, onBackArrow = {
                 navController.navigateUp()
             })
         }
+
+
     }
 }
+

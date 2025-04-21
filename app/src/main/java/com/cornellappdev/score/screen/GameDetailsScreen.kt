@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -59,7 +60,8 @@ import java.time.LocalDate
 @Composable
 fun GameDetailsScreen(
     gameDetailsViewModel: GameDetailsViewModel = hiltViewModel(),
-    onBackArrow: () -> Unit = {}
+    onBackArrow: () -> Unit = {},
+    navigateToGameScoreSummary: (List<ScoreEvent>) -> Unit
 ) {
     val uiState = gameDetailsViewModel.collectUiStateValue()
     ScorePullToRefreshBox(
@@ -89,7 +91,8 @@ fun GameDetailsScreen(
 
                 is ApiResponse.Success -> {
                     GameDetailsContent(
-                        gameCard = state.data
+                        gameCard = state.data,
+                        navigateToGameScoreSummary = navigateToGameScoreSummary
                     )
                 }
             }
@@ -98,7 +101,10 @@ fun GameDetailsScreen(
 }
 
 @Composable
-fun GameDetailsContent(gameCard: DetailsCardData) {
+fun GameDetailsContent(
+    gameCard: DetailsCardData,
+    navigateToGameScoreSummary: (List<ScoreEvent>) -> Unit
+) {
     Column(
         modifier = Modifier
             .background(White)
@@ -161,10 +167,22 @@ fun GameDetailsContent(gameCard: DetailsCardData) {
                     Spacer(modifier = Modifier.height(24.dp))
                 }
                 if (gameCard.boxScore.isNotEmpty()) {
-                    Text(
-                        "Scoring Summary", fontSize = 18.sp,
-                        style = heading2,
-                    ) // TODO: NAVIGATION
+                    Row {
+                        Text(
+                            "Scoring Summary", fontSize = 18.sp,
+                            style = heading2,
+                        ) // TODO: NAVIGATION
+                        IconButton(onClick = { navigateToGameScoreSummary(gameCard.scoreEvent) }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_right_chevron),
+                                contentDescription = "Back button",
+                                modifier = Modifier
+                                    .width(24.dp)
+                                    .height(24.dp),
+                            )
+                        }
+                    }
+
                     Spacer(modifier = Modifier.height(16.dp))
                     ScoringSummary(gameCard.scoreEvent)
                 } else {
@@ -298,6 +316,6 @@ private fun GameDetailsPreview() {
             hoursUntilGame = 144,
             homeScore = 78,
             oppScore = 75
-        )
+        ), navigateToGameScoreSummary = {}
     )
 }

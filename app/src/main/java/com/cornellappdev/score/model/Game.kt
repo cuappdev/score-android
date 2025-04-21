@@ -10,6 +10,7 @@ import com.cornellappdev.score.util.parseDateOrNull
 import com.cornellappdev.score.util.parseDateTimeOrNull
 import com.cornellappdev.score.util.parseResultScore
 import com.cornellappdev.score.util.toGameData
+import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -146,6 +147,7 @@ data class GameData(
  * @property score Current score after the event (e.g., "10 - 7").
  * @property description Optional detailed description of the event.
  */
+@Serializable
 data class ScoreEvent(
     val id: Int,
     val time: String,
@@ -164,6 +166,7 @@ data class TeamBoxScore(
     val name: String
 )
 
+@Serializable
 data class TeamGameSummary(
     val name: String,
     val logo: String

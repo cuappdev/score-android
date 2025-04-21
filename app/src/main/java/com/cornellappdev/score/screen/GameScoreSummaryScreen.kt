@@ -1,4 +1,3 @@
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,28 +14,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.cornellappdev.score.components.NavigationHeader
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.spanBodyNormal
-import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.scoreEvents2
-import androidx.compose.foundation.layout.fillMaxSize
-import coil3.compose.AsyncImage
 
 @Composable
-fun GameScoreSummaryScreenDetail(scoreEvents: List<ScoreEvent>) {
+fun GameScoreSummaryScreenDetail(scoreEvents: List<ScoreEvent>, onBackArrow: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
         // TODO: add navigation
-        NavigationHeader(title = "Scoring Summary", {})
+        NavigationHeader(title = "Scoring Summary", onBackArrow)
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -113,5 +109,5 @@ fun ScoreEventItemDetailed(event: ScoreEvent) {
 @Preview
 @Composable
 private fun PreviewScoringDetailsScreen() = ScorePreview {
-    GameScoreSummaryScreenDetail(scoreEvents = scoreEvents2)
+    GameScoreSummaryScreenDetail(scoreEvents = scoreEvents2, onBackArrow = {})
 }
