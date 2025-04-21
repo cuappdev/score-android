@@ -3,6 +3,7 @@ package com.cornellappdev.score.nav
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -31,6 +32,9 @@ fun ScoreNavigationBar(
             NavigationBarItem(
                 selected = isSelected,
                 onClick = { navigateToScreen(item.screen) },
+                colors = NavigationBarItemDefaults.colors().copy(
+                    selectedIndicatorColor = Color.Transparent
+                ),
                 icon = {
                     Icon(
                         painter = painterResource(id = if (isSelected) item.selectedIcon else item.unselectedIcon),

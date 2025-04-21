@@ -92,10 +92,15 @@ data class GameCardData(
 ) {
     val firstTeamListedWins: Boolean
         get() {
+            if (cornellScore == null && otherScore == null) return false
+
             val cornellWins = (cornellScore?.toFloat() ?: 0f) > (otherScore?.toFloat() ?: 0f)
             val firstWins = (cornellWins && isHome) || (!cornellWins && !isHome)
             return firstWins
         }
+    val secondTeamListedWins: Boolean
+        get() =
+            (cornellScore != null || otherScore != null) && !firstTeamListedWins
 }
 
 // Data for GameDetailsScreen
@@ -221,7 +226,9 @@ fun Game.toGameCardData(): GameCardData {
         genderIcon = if (gender == "Mens") R.drawable.ic_gender_men else R.drawable.ic_gender_women,
         sport = sport,
         sportIcon = Sport.fromDisplayName(sport)?.emptyIcon
-            ?: R.drawable.ic_empty_placeholder
+            ?: R.drawable.ic_empty_placeholder,
+        cornellScore = cornellScore,
+        otherScore = otherScore
     )
 }
 
