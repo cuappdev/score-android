@@ -101,7 +101,7 @@ class ScoreRepository @Inject constructor(
         try {
             val result =
                 withTimeout(TIMEOUT_TIME_MILLIS) {
-                    (apolloClient.query(GameByIdQuery(id)).execute()).toResult()
+                    apolloClient.query(GameByIdQuery(id)).execute().toResult()
                 }
 
 
