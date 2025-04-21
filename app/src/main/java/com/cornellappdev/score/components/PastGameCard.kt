@@ -47,7 +47,7 @@ import java.time.LocalDate
 fun PastGameCard(
     data: GameCardData,
     modifier: Modifier = Modifier,
-    onClick: (Boolean) -> Unit = {}
+    onClick: () -> Unit = {}
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -58,7 +58,7 @@ fun PastGameCard(
                 Modifier
                     .border(width = 1.dp, color = GrayStroke, RoundedCornerShape(16.dp))
             )
-            .clickable { onClick(true) }
+            .clickable { onClick() }
     ) {
         Row(
             modifier = Modifier
@@ -82,17 +82,17 @@ fun PastGameCard(
                     data.teamLogo,
                     data.team,
                     data.firstTeamListedWins,
-                    data.cornellScore ?: -1,
-                    data.otherScore ?: -1
+                    data.cornellScore,
+                    data.otherScore,
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 TeamScore(
                     !data.isHome,
                     data.teamLogo,
                     data.team,
-                    !data.firstTeamListedWins,
-                    data.cornellScore ?: -1,
-                    data.otherScore ?: -1
+                    data.secondTeamListedWins,
+                    data.cornellScore,
+                    data.otherScore
                 )
             }
             Spacer(modifier = Modifier.width(24.dp))
@@ -138,9 +138,10 @@ private fun TeamScore(
     teamLogo: String,
     team: String,
     winningTeam: Boolean,
-    cornellScore: Number,
-    otherScore: Number
+    cornellScore: Number?,
+    otherScore: Number?
 ) {
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -177,7 +178,8 @@ private fun TeamScore(
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = if (cornellScore == -1 && otherScore == -1) "-" else if (isCornell) cornellScore.toString() else otherScore.toString(),
+                text = if (isCornell) cornellScore?.toString() ?: "-" else otherScore?.toString()
+                    ?: "-",
                 style = metricMedium,
                 color = if (winningTeam) GrayPrimary else GrayLight
             )
@@ -201,6 +203,7 @@ private fun TeamScore(
 @Composable
 private fun PastGameCardPreview() = ScorePreview {
     val gameCard = GameCardData(
+        id = "1",
         teamLogo = "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max",
         team = "University of Pennsylvania",
         teamColor = Color.Red,

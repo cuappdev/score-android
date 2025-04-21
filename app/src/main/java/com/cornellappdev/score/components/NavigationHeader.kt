@@ -29,7 +29,7 @@ fun NavigationHeader(title: String, onBackPressed: () -> Unit) {
     ) {
         Box(
             modifier = Modifier
-                 .padding(start = 24.dp, top = 56.dp, bottom = 12.dp, end = 24.dp)
+                 .padding(start = 24.dp, top = 24.dp, bottom = 12.dp, end = 24.dp)
                  .background(Color.White)
                  .fillMaxWidth()
                  .height(27.dp)
@@ -55,6 +55,6 @@ fun NavigationHeader(title: String, onBackPressed: () -> Unit) {
 
 @Preview
 @Composable
-private fun NavigationHeaderPreview() = ScorePreview {
-    NavigationHeader("Game Details", {})
+private fun NavigationHeaderPreview() {
+     NavigationHeader("Game Details", {})
 }

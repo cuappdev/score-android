@@ -2,11 +2,15 @@ package com.cornellappdev.score.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -29,49 +33,55 @@ fun ErrorState(
     message: String,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    Box(
         modifier = modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(100.dp)
+            .fillMaxSize()
+            .defaultMinSize(minHeight = 740.dp),
+        contentAlignment = Alignment.BottomCenter
     ) {
-        Spacer(modifier = Modifier.height(200.dp))
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .padding(bottom = 270.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(100.dp)
         ) {
-            Image(
-                painter = painterResource(R.drawable.ic_feedback),
-                contentDescription = "feedback bubble"
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = message,
-                style = heading2.copy(color = GrayPrimary)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Please try again later.",
-                style = bodyNormal.copy(color = GrayMedium)
-            )
-        }
-
-        Button(
-            colors = ButtonDefaults.buttonColors(containerColor = CrimsonPrimary),
-            onClick = onRefresh
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    painter = painterResource(R.drawable.ic_cached),
-                    contentDescription = "refresh icon"
+                    painter = painterResource(R.drawable.ic_feedback),
+                    contentDescription = "feedback bubble"
                 )
-                Text("Try again")
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = message,
+                    style = heading2.copy(color = GrayPrimary)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Please try again later.",
+                    style = bodyNormal.copy(color = GrayMedium)
+                )
+            }
+
+            Button(
+                colors = ButtonDefaults.buttonColors(containerColor = CrimsonPrimary),
+                onClick = onRefresh
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_cached),
+                        contentDescription = "refresh icon"
+                    )
+                    Text("Try again")
+                }
             }
         }
-        Spacer(modifier = Modifier.height(70.dp))
     }
 }
+
 
 @Preview
 @Composable

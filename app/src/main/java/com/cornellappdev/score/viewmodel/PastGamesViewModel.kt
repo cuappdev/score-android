@@ -23,13 +23,20 @@ data class PastGamesUiState(
         get() = when (loadedState) {
             is ApiResponse.Success -> loadedState.data.filter { game ->
                 (selectedGender == GenderDivision.ALL || game.gender == selectedGender.displayName) &&
-                        (sportSelect is SportSelection.All || (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName))
+                        (sportSelect is SportSelection.All ||
+                                (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName))
             }
 
             ApiResponse.Loading -> emptyList()
             ApiResponse.Error -> emptyList()
         }
-    val pastGames: List<GameCardData> = filteredGames.take(3)
+    val pastGames: List<GameCardData>
+        get() = when (loadedState) {
+            is ApiResponse.Success -> loadedState.data
+
+            ApiResponse.Loading -> emptyList()
+            ApiResponse.Error -> emptyList()
+        }.take(3)
 }
 
 @HiltViewModel
@@ -39,7 +46,7 @@ class PastGamesViewModel @Inject constructor(
     PastGamesUiState(
         selectedGender = GenderDivision.ALL,
         sportSelect = SportSelection.All,
-        selectionList = Sport.getSportSelectionList(),
+        selectionList = Sport.getSportSelectionList(GenderDivision.ALL),
         loadedState = ApiResponse.Loading
     )
 ) {
@@ -58,19 +65,12 @@ class PastGamesViewModel @Inject constructor(
             }
         }
     }
-
-    fun onRefresh() {
-        applyMutation {
-            copy(loadedState = ApiResponse.Loading)
-        }
-
-        scoreRepository.fetchGames()
-    }
-
+    
     fun onGenderSelected(gender: GenderDivision) {
         applyMutation {
             copy(
-                selectedGender = gender
+                selectedGender = gender,
+                selectionList = Sport.getSportSelectionList(gender),
             )
         }
     }
@@ -81,5 +81,11 @@ class PastGamesViewModel @Inject constructor(
                 sportSelect = sport
             )
         }
+    }
+
+    fun onRefresh() {
+        applyMutation { copy(loadedState = ApiResponse.Loading) }
+
+        scoreRepository.fetchGames()
     }
 }
