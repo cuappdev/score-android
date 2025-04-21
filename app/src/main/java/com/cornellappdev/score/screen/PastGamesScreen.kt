@@ -164,14 +164,15 @@ private fun PastGamesLazyColumn(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
-        }
-    }
-    if (uiState.filteredGames.isEmpty()) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            EmptyState()
+        } else{
+            item{
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    EmptyState()
+                }
+            }
         }
     }
 }

@@ -173,14 +173,15 @@ private fun HomeLazyColumn(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
-        }
-    }
-    if (uiState.filteredGames.isEmpty()) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            EmptyState()
+        } else {
+            item {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    EmptyState()
+                }
+            }
         }
     }
 }
@@ -210,22 +211,16 @@ private fun HomeScreenPreview() = ScorePreview {
 @Preview
 @Composable
 private fun HomeScreenEmptyStatePreview() = ScorePreview {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.White)
-    ) {
-        HomeContent(
-            HomeUiState(
-                selectedGender = GenderDivision.ALL,
-                sportSelect = SportSelection.All,
-                selectionList = sportSelectionList,
-                loadedState = ApiResponse.Success(emptyList())
-            ),
-            onGenderSelected = {},
-            onSportSelected = {},
-            onRefresh = {}
-        )
-    }
+    HomeContent(
+        HomeUiState(
+            selectedGender = GenderDivision.ALL,
+            sportSelect = SportSelection.All,
+            selectionList = sportSelectionList,
+            loadedState = ApiResponse.Success(emptyList())
+        ),
+        onGenderSelected = {},
+        onSportSelected = {},
+        onRefresh = {}
+    )
 }
 
