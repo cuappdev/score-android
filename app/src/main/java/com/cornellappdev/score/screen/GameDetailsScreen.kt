@@ -170,11 +170,15 @@ fun GameDetailsContent(
                     Spacer(modifier = Modifier.height(24.dp))
                 }
                 if (gameCard.boxScore.isNotEmpty()) {
-                    Row {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         Text(
                             "Scoring Summary", fontSize = 18.sp,
                             style = heading2,
-                        ) // TODO: NAVIGATION
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
                         IconButton(onClick = { navigateToGameScoreSummary(gameCard.scoreEvent) }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_right_chevron),
