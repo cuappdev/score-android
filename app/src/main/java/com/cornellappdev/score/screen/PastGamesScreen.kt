@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.components.EmptyState
+import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.components.LoadingScreen
@@ -164,14 +165,9 @@ private fun PastGamesLazyColumn(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
-        } else{
-            item{
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    EmptyState()
-                }
+        } else {
+            item {
+                EmptyStateBox()
             }
         }
     }

@@ -22,21 +22,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import com.cornellappdev.score.R
 import com.cornellappdev.score.components.NavigationHeader
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.spanBodyNormal
-import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.scoreEvents2
-import androidx.compose.foundation.layout.fillMaxSize
-import coil3.compose.AsyncImage
 
 @Composable
-fun GameScoreSummaryScreenDetail(scoreEvents: List<ScoreEvent>) {
+fun GameScoreSummaryScreenDetail(scoreEvents: List<ScoreEvent>, onBackArrow: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
         // TODO: add navigation
-        NavigationHeader(title = "Scoring Summary", {})
+        NavigationHeader(title = "Scoring Summary", onBackArrow)
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -59,11 +58,21 @@ fun ScoreEventItemDetailed(event: ScoreEvent) {
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        AsyncImage(
-            model = event.team.logo,
-            contentDescription = event.team.name,
-            modifier = Modifier.size(40.dp)
-        )
+        if (event.team.name == "COR") {
+            Image(
+                painter = painterResource(R.drawable.cornell_logo),
+                contentDescription = event.team.name,
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(end = 12.dp)
+            )
+        } else {
+            AsyncImage(
+                model = event.team.logo,
+                contentDescription = event.team.name,
+                modifier = Modifier.size(40.dp)
+            )
+        }
         Spacer(modifier = Modifier.width(8.dp))
         Column(
             modifier = Modifier
@@ -113,5 +122,5 @@ fun ScoreEventItemDetailed(event: ScoreEvent) {
 @Preview
 @Composable
 private fun PreviewScoringDetailsScreen() = ScorePreview {
-    GameScoreSummaryScreenDetail(scoreEvents = scoreEvents2)
+    GameScoreSummaryScreenDetail(scoreEvents = scoreEvents2, onBackArrow = {})
 }
