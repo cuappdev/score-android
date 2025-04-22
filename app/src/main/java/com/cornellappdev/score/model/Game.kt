@@ -223,7 +223,7 @@ fun Game.toGameCardData(): GameCardData {
         isPast = isPast,
         location = city,
         gender = gender,
-        genderIcon = if (gender == "Mens") R.drawable.ic_gender_men else R.drawable.ic_gender_women,
+        genderIcon = if (gender == "Men's") R.drawable.ic_gender_men else R.drawable.ic_gender_women,
         sport = sport,
         sportIcon = Sport.fromDisplayName(sport)?.emptyIcon
             ?: R.drawable.ic_empty_placeholder,
