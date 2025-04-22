@@ -18,7 +18,7 @@ android {
         applicationId = "com.cornellappdev.score"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -99,7 +99,7 @@ apollo {
     service("service") {
         packageName.set("com.example.score")
         introspection {
-            endpointUrl.set("https://score-dev.cornellappdev.com/graphql")
+            endpointUrl.set("https://score.cornellappdev.com/graphql")
             schemaFile.set(file("src/main/graphql/schema.graphqls"))
         }
     }
