@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.BoxScore
+import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GameDetailsLoadingScreen
 import com.cornellappdev.score.components.GameScoreHeader
@@ -166,15 +167,16 @@ fun GameDetailsContent(
                 BoxScore(gameCard.gameData)
                 Spacer(modifier = Modifier.height(24.dp))
                 // }
-                if (gameCard.boxScore.isNotEmpty()) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            "Scoring Summary", fontSize = 18.sp,
-                            style = heading2,
-                        )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        "Scoring Summary", fontSize = 18.sp,
+                        style = heading2,
+                    )
+                    if (gameCard.boxScore.isNotEmpty()) {
                         Spacer(modifier = Modifier.weight(1f))
                         IconButton(onClick = { navigateToGameScoreSummary(gameCard.scoreEvent) }) {
                             Icon(
@@ -186,11 +188,12 @@ fun GameDetailsContent(
                             )
                         }
                     }
-
+                }
+                if (gameCard.boxScore.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(16.dp))
                     ScoringSummary(gameCard.scoreEvent)
                 } else {
-                    Text("No Scoring Summary") // TODO: Make state when there are no scores
+                    EmptyStateBox(height = 200.dp, title = "No scores yet.")
                 }
             } else {
                 val context = LocalContext.current
