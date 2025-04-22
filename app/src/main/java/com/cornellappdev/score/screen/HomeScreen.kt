@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.cornellappdev.score.components.EmptyState
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GameCard
 import com.cornellappdev.score.components.GamesCarousel
@@ -101,21 +102,25 @@ private fun HomeLazyColumn(
     navigateToGameDetails: (String) -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
-        item {
-            Text(
-                text = "Latest",
-                style = heading1,
-                color = GrayPrimary,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 24.dp)
-            )
+        if (uiState.filteredGames.isNotEmpty()) {
+            item {
+                Text(
+                    text = "Upcoming",
+                    style = heading1,
+                    color = GrayPrimary,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp)
+                )
+            }
+            item {
+                Spacer(Modifier.height(16.dp))
+            }
         }
-        item {
-            Spacer(Modifier.height(16.dp))
-        }
-        item {
-            GamesCarousel(uiState.upcomingGames, navigateToGameDetails)
+        if (uiState.filteredGames.isNotEmpty()) {
+            item {
+                GamesCarousel(uiState.upcomingGames, navigateToGameDetails)
+            }
         }
         stickyHeader {
             Column(
@@ -146,24 +151,36 @@ private fun HomeLazyColumn(
                 )
             }
         }
-        item {
-            Spacer(modifier = Modifier.height(24.dp))
-        }
-        items(uiState.filteredGames) {
-            val game = it
-            Column(modifier = Modifier.padding(horizontal = 24.dp)) {
-                GameCard(
-                    teamLogo = game.teamLogo,
-                    team = game.team,
-                    date = game.dateString,
-                    isLive = game.isLive,
-                    genderIcon = painterResource(game.genderIcon),
-                    sportIcon = painterResource(game.sportIcon),
-                    location = game.location,
-                    topCornerRound = true,
-                    onClick = { navigateToGameDetails(game.id) }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+
+        if (uiState.filteredGames.isNotEmpty()) {
+            item {
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+            items(uiState.filteredGames) {
+                val game = it
+                Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+                    GameCard(
+                        teamLogo = game.teamLogo,
+                        team = game.team,
+                        date = game.dateString,
+                        isLive = game.isLive,
+                        genderIcon = painterResource(game.genderIcon),
+                        sportIcon = painterResource(game.sportIcon),
+                        location = game.location,
+                        topCornerRound = true,
+                        onClick = { navigateToGameDetails(game.id) }
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
+        } else {
+            item {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    EmptyState()
+                }
             }
         }
     }
@@ -189,5 +206,21 @@ private fun HomeScreenPreview() = ScorePreview {
             onRefresh = {},
         )
     }
+}
+
+@Preview
+@Composable
+private fun HomeScreenEmptyStatePreview() = ScorePreview {
+    HomeContent(
+        HomeUiState(
+            selectedGender = GenderDivision.ALL,
+            sportSelect = SportSelection.All,
+            selectionList = sportSelectionList,
+            loadedState = ApiResponse.Success(emptyList())
+        ),
+        onGenderSelected = {},
+        onSportSelected = {},
+        onRefresh = {}
+    )
 }
 

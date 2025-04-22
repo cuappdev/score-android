@@ -161,11 +161,11 @@ fun GameDetailsContent(
             // render the below if the game is in the future
             // TODO: MESSY, is it every the case when there is a boxscore but no scoring summary
             if (gameCard.isPastStartTime) {
-                if (gameCard.scoreBreakdown?.isNotEmpty() == true) {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    BoxScore(gameCard.gameData)
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
+                //if (gameCard.scoreBreakdown?.isNotEmpty() == true) {
+                Spacer(modifier = Modifier.height(24.dp))
+                BoxScore(gameCard.gameData)
+                Spacer(modifier = Modifier.height(24.dp))
+                // }
                 if (gameCard.boxScore.isNotEmpty()) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
