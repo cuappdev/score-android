@@ -164,10 +164,12 @@ private fun PastGamesLazyColumn(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
-        } else{
-            item{
+        } else {
+            item {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .height(550.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     EmptyState()

@@ -176,7 +176,7 @@ private fun HomeLazyColumn(
         } else {
             item {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth().height(600.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     EmptyState()

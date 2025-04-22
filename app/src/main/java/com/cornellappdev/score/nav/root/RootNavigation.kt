@@ -22,6 +22,7 @@ import com.cornellappdev.score.nav.ScoreNavHost
 import com.cornellappdev.score.nav.ScoreNavigationBar
 import com.cornellappdev.score.nav.root.ScoreScreens.GameDetailsPage
 import com.cornellappdev.score.theme.LocalInfiniteLoading
+import com.cornellappdev.score.theme.White
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -55,12 +56,14 @@ fun RootNavigation(
     }
 
 
-    Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
-        if (navBackStackEntry?.toScreen() is GameDetailsPage) {
-            return@Scaffold
-        }
-        ScoreNavigationBar({ navController.navigate(it) }, navBackStackEntry)
-    }
+    Scaffold(
+        modifier = Modifier.fillMaxSize(), bottomBar = {
+            if (navBackStackEntry?.toScreen() is GameDetailsPage) {
+                return@Scaffold
+            }
+            ScoreNavigationBar({ navController.navigate(it) }, navBackStackEntry)
+        },
+        containerColor = White
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             CompositionLocalProvider(LocalInfiniteLoading provides animatedValue) {
