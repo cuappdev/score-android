@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.BoxScore
-import com.cornellappdev.score.components.ButtonPrimary
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GameDetailsLoadingScreen
 import com.cornellappdev.score.components.GameScoreHeader
@@ -52,8 +51,6 @@ import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.heading3
 import com.cornellappdev.score.theme.White
-import com.cornellappdev.score.util.addToCalendar
-import com.cornellappdev.score.util.toCalendarEvent
 import com.cornellappdev.score.viewmodel.GameDetailsViewModel
 import java.time.LocalDate
 
@@ -212,15 +209,15 @@ fun GameDetailsContent(
 
                     Spacer(modifier = Modifier.weight(1f))
 
-                    ButtonPrimary(
-                        "Add to Calendar",
-                        painterResource(R.drawable.ic_calendar),
-                        onClick = {
-                            gameCard.toCalendarEvent()?.let { event ->
-                                addToCalendar(context = context, event)
-                            }
-                        }
-                    )
+//                    ButtonPrimary(
+//                        "Add to Calendar",
+//                        painterResource(R.drawable.ic_calendar),
+//                        onClick = {
+//                            gameCard.toCalendarEvent()?.let { event ->
+//                                addToCalendar(context = context, event)
+//                            }
+//                        }
+//                    )
                 }
 
             }

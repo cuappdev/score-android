@@ -1,3 +1,4 @@
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -21,6 +23,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.cornellappdev.score.R
 import com.cornellappdev.score.components.NavigationHeader
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.model.ScoreEvent
@@ -55,11 +58,21 @@ fun ScoreEventItemDetailed(event: ScoreEvent) {
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        AsyncImage(
-            model = event.team.logo,
-            contentDescription = event.team.name,
-            modifier = Modifier.size(40.dp)
-        )
+        if (event.team.name == "COR") {
+            Image(
+                painter = painterResource(R.drawable.cornell_logo),
+                contentDescription = event.team.name,
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(end = 12.dp)
+            )
+        } else {
+            AsyncImage(
+                model = event.team.logo,
+                contentDescription = event.team.name,
+                modifier = Modifier.size(40.dp)
+            )
+        }
         Spacer(modifier = Modifier.width(8.dp))
         Column(
             modifier = Modifier

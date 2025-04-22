@@ -33,8 +33,7 @@ import com.cornellappdev.score.util.gameData
 fun BoxScore(gameData: GameData) {
     val maxPeriods = maxOf(
         gameData.teamScores.first.scoresByPeriod.size,
-        gameData.teamScores.second.scoresByPeriod.size,
-        4
+        gameData.teamScores.second.scoresByPeriod.size
     )
 
     Column(
@@ -76,6 +75,7 @@ fun BoxScore(gameData: GameData) {
         TeamScoreRow(
             teamScore = gameData.teamScores.first,
             totalTextColor = saturatedGreen,
+            maxPeriods = maxPeriods
         )
 
         Divider(color = CrimsonPrimary, thickness = 1.dp)
@@ -83,12 +83,13 @@ fun BoxScore(gameData: GameData) {
         TeamScoreRow(
             teamScore = gameData.teamScores.second,
             totalTextColor = Color.Black,
+            maxPeriods = maxPeriods
         )
     }
 }
 
 @Composable
-fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
+fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color, maxPeriods: Int) {
     val showEmpty = teamScore.scoresByPeriod.isEmpty()
 
     Row(
@@ -118,7 +119,7 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color) {
             )
         }
 
-        repeat(4 - teamScore.scoresByPeriod.size) {
+        repeat(maxPeriods - teamScore.scoresByPeriod.size) {
             Text(
                 text = "-",
                 modifier = Modifier.weight(1f),

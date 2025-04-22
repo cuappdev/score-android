@@ -276,12 +276,16 @@ fun List<GameDetailsBoxScore>.toScoreEvents(teamLogo: String): List<ScoreEvent> 
         val teamName = boxScore.team ?: ""
         val corScore = boxScore.corScore ?: 0
         val oppScore = boxScore.oppScore ?: 0
-
+        val teamSummary = if (teamName == "COR") {
+            TeamGameSummary(teamName, logo = R.drawable.cornell_logo.toString())
+        } else {
+            TeamGameSummary(teamName, logo = teamLogo)
+        }
         ScoreEvent(
             id = index,
             time = boxScore.time ?: "",
             quarter = boxScore.period ?: "",
-            team = TeamGameSummary(teamName, logo = teamLogo),
+            team = teamSummary,
             eventType = "Score", // TODO: Change to what ios has and not figma
             score = "$corScore - $oppScore",
             description = boxScore.description
