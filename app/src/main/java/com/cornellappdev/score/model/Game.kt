@@ -10,6 +10,7 @@ import com.cornellappdev.score.util.parseDateOrNull
 import com.cornellappdev.score.util.parseDateTimeOrNull
 import com.cornellappdev.score.util.parseResultScore
 import com.cornellappdev.score.util.toGameData
+import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -151,6 +152,7 @@ data class GameData(
  * @property score Current score after the event (e.g., "10 - 7").
  * @property description Optional detailed description of the event.
  */
+@Serializable
 data class ScoreEvent(
     val id: Int,
     val time: String,
@@ -169,6 +171,7 @@ data class TeamBoxScore(
     val name: String
 )
 
+@Serializable
 data class TeamGameSummary(
     val name: String,
     val logo: String
@@ -273,12 +276,16 @@ fun List<GameDetailsBoxScore>.toScoreEvents(teamLogo: String): List<ScoreEvent> 
         val teamName = boxScore.team ?: ""
         val corScore = boxScore.corScore ?: 0
         val oppScore = boxScore.oppScore ?: 0
-
+        val teamSummary = if (teamName == "COR") {
+            TeamGameSummary(teamName, logo = R.drawable.cornell_logo.toString())
+        } else {
+            TeamGameSummary(teamName, logo = teamLogo)
+        }
         ScoreEvent(
             id = index,
             time = boxScore.time ?: "",
             quarter = boxScore.period ?: "",
-            team = TeamGameSummary(teamName, logo = teamLogo),
+            team = teamSummary,
             eventType = "Score", // TODO: Change to what ios has and not figma
             score = "$corScore - $oppScore",
             description = boxScore.description

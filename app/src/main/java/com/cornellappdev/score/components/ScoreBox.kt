@@ -39,8 +39,7 @@ import com.cornellappdev.score.util.mediumGameData
 fun BoxScore(gameData: GameData) {
     val maxPeriods = maxOf(
         gameData.teamScores.first.scoresByPeriod.size,
-        gameData.teamScores.second.scoresByPeriod.size,
-        4
+        gameData.teamScores.second.scoresByPeriod.size
     )
     val rowTextStyle = if (maxPeriods > 4) labelsNormal else bodyNormal
     Column(
@@ -83,6 +82,7 @@ fun BoxScore(gameData: GameData) {
         TeamScoreRow(
             teamScore = gameData.teamScores.first,
             totalTextColor = saturatedGreen,
+            maxPeriods,
             rowTextStyle
         )
         HorizontalDivider(thickness = 1.dp, color = CrimsonPrimary)
@@ -90,6 +90,7 @@ fun BoxScore(gameData: GameData) {
         TeamScoreRow(
             teamScore = gameData.teamScores.second,
             totalTextColor = GrayMedium,
+            maxPeriods,
             rowTextStyle
         )
 
@@ -97,7 +98,12 @@ fun BoxScore(gameData: GameData) {
 }
 
 @Composable
-fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color, rowTextStyle: TextStyle) {
+fun TeamScoreRow(
+    teamScore: TeamScore,
+    totalTextColor: Color,
+    maxPeriods: Int,
+    rowTextStyle: TextStyle
+) {
     val showEmpty = teamScore.scoresByPeriod.isEmpty()
 
     Row(
@@ -127,7 +133,7 @@ fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color, rowTextStyle: Text
             )
         }
 
-        repeat(4 - teamScore.scoresByPeriod.size) {
+        repeat(maxPeriods - teamScore.scoresByPeriod.size) {
             Text(
                 text = "-",
                 modifier = Modifier.weight(1f),
@@ -177,5 +183,5 @@ private fun PreviewBoxScoreEmpty() = ScorePreview {
 @Preview
 @Composable
 private fun PreviewTeamScoreRow() = ScorePreview {
-    TeamScoreRow(gameData.teamScores.first, GrayMedium, bodyNormal)
+    TeamScoreRow(gameData.teamScores.first, GrayMedium, 4, bodyNormal)
 }
