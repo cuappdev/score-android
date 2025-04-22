@@ -82,6 +82,7 @@ fun BoxScore(gameData: GameData) {
         TeamScoreRow(
             teamScore = gameData.teamScores.first,
             totalTextColor = saturatedGreen,
+            maxPeriods,
             rowTextStyle
         )
         HorizontalDivider(thickness = 1.dp, color = CrimsonPrimary)
@@ -89,6 +90,7 @@ fun BoxScore(gameData: GameData) {
         TeamScoreRow(
             teamScore = gameData.teamScores.second,
             totalTextColor = GrayMedium,
+            maxPeriods,
             rowTextStyle
         )
 
@@ -96,7 +98,12 @@ fun BoxScore(gameData: GameData) {
 }
 
 @Composable
-fun TeamScoreRow(teamScore: TeamScore, totalTextColor: Color, maxPeriods: Int, rowTextStyle: TextStyle) {
+fun TeamScoreRow(
+    teamScore: TeamScore,
+    totalTextColor: Color,
+    maxPeriods: Int,
+    rowTextStyle: TextStyle
+) {
     val showEmpty = teamScore.scoresByPeriod.isEmpty()
 
     Row(
@@ -176,5 +183,5 @@ private fun PreviewBoxScoreEmpty() = ScorePreview {
 @Preview
 @Composable
 private fun PreviewTeamScoreRow() = ScorePreview {
-    TeamScoreRow(gameData.teamScores.first, GrayMedium, bodyNormal)
+    TeamScoreRow(gameData.teamScores.first, GrayMedium, 4, bodyNormal)
 }
