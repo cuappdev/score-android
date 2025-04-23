@@ -18,7 +18,7 @@ android {
         applicationId = "com.cornellappdev.score"
         minSdk = 26
         targetSdk = 34
-        versionCode = 2
+        versionCode = 3
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -38,7 +38,7 @@ android {
             buildConfigField(
                 "String",
                 "BASE_URL",
-                "\"https://score-dev.cornellappdev.com/graphql\""
+                "\"https://score-backend.cornellappdev.com/graphql\""
             )
             isMinifyEnabled = false
             proguardFiles(
