@@ -1,5 +1,6 @@
 package com.cornellappdev.score.model
 
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.cornellappdev.score.R
 import com.cornellappdev.score.util.convertScores
@@ -130,6 +131,12 @@ data class DetailsCardData(
 )
 
 // Scoring information for a specific team, used in the box score
+data class ScoresByPeriod(
+    val header: Int,
+    val teamOneScore: String,
+    val teamTwoScore: String
+)
+
 data class TeamScore(
     val team: TeamBoxScore,
     val scoresByPeriod: List<Int>,
@@ -290,5 +297,22 @@ fun List<GameDetailsBoxScore>.toScoreEvents(teamLogo: String): List<ScoreEvent> 
             score = "$corScore - $oppScore",
             description = boxScore.description
         )
+    }
+}
+
+fun mapToPeriodScores(gameData: GameData): List<ScoresByPeriod>{
+    val teamOneScores = gameData.teamScores.first.scoresByPeriod
+    val teamTwoScores = gameData.teamScores.second.scoresByPeriod
+
+    val maxPeriods = maxOf(teamOneScores.size, teamTwoScores.size)
+
+    return (0 until maxPeriods).map { i ->
+        ScoresByPeriod(
+            header = i + 1,
+            teamOneScore = teamOneScores.getOrNull(i)?.toString() ?: "-",
+            teamTwoScore = teamTwoScores.getOrNull(i)?.toString() ?: "-"
+
+        )
+
     }
 }

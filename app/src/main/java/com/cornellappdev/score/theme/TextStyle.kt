@@ -196,6 +196,12 @@ object Style {
         fontWeight = FontWeight(500)
     )
 
+    val metricSmallNormal = TextStyle(
+        fontSize = 14.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(400)
+    )
+
     val metricNormal = TextStyle(
         fontSize = 18.sp,
         fontFamily = poppinsFamily,
