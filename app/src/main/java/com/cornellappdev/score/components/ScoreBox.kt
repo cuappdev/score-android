@@ -107,8 +107,10 @@ private fun TeamNameColumn(
 ) {
     Column(
         modifier = if (maxPeriods > 4) {
+            //set to approximation of minimum width for "Cornell"
             modifier.widthIn(max = 70.dp)
         } else {
+            //can take up as much space as is available
             modifier.width(IntrinsicSize.Max)
         }
     ) {
@@ -356,16 +358,19 @@ private fun TotalsColumn(
             )
         }
 
+        val totalOne = teamOneScores.totalScore
+        val totalTwo = teamTwoScores.totalScore
+
         TotalScoreCell(
             teamScore = teamOneScores,
-            totalTextColor = saturatedGreen,
+            totalTextColor = if (totalOne > totalTwo){saturatedGreen}else{GrayMedium},
             rowTextStyle = rowTextStyle,
             modifier = Modifier.weight(1f)
         )
         HorizontalDivider(thickness = 1.dp, color = CrimsonPrimary)
         TotalScoreCell(
             teamScore = teamTwoScores,
-            totalTextColor = GrayMedium,
+            totalTextColor = if (totalTwo > totalOne){saturatedGreen}else{GrayMedium},
             rowTextStyle = rowTextStyle,
             modifier = Modifier.weight(1f)
         )

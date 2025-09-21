@@ -130,13 +130,14 @@ data class DetailsCardData(
     val oppScore: Int
 )
 
-// Scoring information for a specific team, used in the box score
+// Scoring information by round of a game, used in the box score
 data class ScoresByPeriod(
     val header: Int,
     val teamOneScore: String,
     val teamTwoScore: String
 )
 
+// Scoring information for a specific team, used in the box score
 data class TeamScore(
     val team: TeamBoxScore,
     val scoresByPeriod: List<Int>,
