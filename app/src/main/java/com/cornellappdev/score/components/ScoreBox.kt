@@ -363,14 +363,22 @@ private fun TotalsColumn(
 
         TotalScoreCell(
             teamScore = teamOneScores,
-            totalTextColor = if (totalOne > totalTwo){saturatedGreen}else{GrayMedium},
+            totalTextColor = if (totalOne > totalTwo) {
+                saturatedGreen
+            } else {
+                GrayMedium
+            },
             rowTextStyle = rowTextStyle,
             modifier = Modifier.weight(1f)
         )
         HorizontalDivider(thickness = 1.dp, color = CrimsonPrimary)
         TotalScoreCell(
             teamScore = teamTwoScores,
-            totalTextColor = if (totalTwo > totalOne){saturatedGreen}else{GrayMedium},
+            totalTextColor = if (totalTwo > totalOne) {
+                saturatedGreen
+            } else {
+                GrayMedium
+            },
             rowTextStyle = rowTextStyle,
             modifier = Modifier.weight(1f)
         )

@@ -1,6 +1,5 @@
 package com.cornellappdev.score.model
 
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.cornellappdev.score.R
 import com.cornellappdev.score.util.convertScores
@@ -301,7 +300,7 @@ fun List<GameDetailsBoxScore>.toScoreEvents(teamLogo: String): List<ScoreEvent> 
     }
 }
 
-fun mapToPeriodScores(gameData: GameData): List<ScoresByPeriod>{
+fun mapToPeriodScores(gameData: GameData): List<ScoresByPeriod> {
     val teamOneScores = gameData.teamScores.first.scoresByPeriod
     val teamTwoScores = gameData.teamScores.second.scoresByPeriod
 
