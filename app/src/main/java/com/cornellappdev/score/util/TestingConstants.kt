@@ -82,13 +82,13 @@ val shortGameTeamScore2 = TeamScore(
 
 val mediumGameTeamScore1 = TeamScore(
     team = team1,
-    scoresByPeriod = listOf(13, 14, 6, 14, 13, 2),
-    totalScore = 62
-)
-val mediumGameTeamScore2 = TeamScore(
-    team = team1,
     scoresByPeriod = listOf(7, 7, 9, 0, 7, 7),
     totalScore = 37
+)
+val mediumGameTeamScore2 = TeamScore(
+    team = team2,
+    scoresByPeriod = listOf(13, 14, 6, 14, 13, 2),
+    totalScore = 62
 )
 
 val longGameTeamScore1 = TeamScore(
