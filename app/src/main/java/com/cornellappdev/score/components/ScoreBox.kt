@@ -3,16 +3,21 @@ package com.cornellappdev.score.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonGroupDefaults.HorizontalArrangement
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,10 +41,13 @@ import com.cornellappdev.score.theme.Style.metricNormal
 import com.cornellappdev.score.theme.Style.metricSmallNormal
 import com.cornellappdev.score.theme.saturatedGreen
 import com.cornellappdev.score.util.emptyGameData
+import com.cornellappdev.score.util.extraLongGameData
 import com.cornellappdev.score.util.gameData
 import com.cornellappdev.score.util.longGameData
 import com.cornellappdev.score.util.mediumGameData
 import com.cornellappdev.score.util.shortGameData
+
+private val HEADER_HEIGHT = 35.dp
 
 @Composable
 fun BoxScore(
@@ -54,6 +62,8 @@ fun BoxScore(
 
     Surface(
         modifier = modifier
+            //.height(IntrinsicSize.Min)
+            .height(160.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
         border = (BorderStroke(width = 1.dp, color = CrimsonPrimary)),
@@ -62,18 +72,26 @@ fun BoxScore(
     ) {
         Row(
             modifier = Modifier
-                .height(IntrinsicSize.Max)
                 .fillMaxWidth()
         ) {
             TeamNameColumn(
                 gameData.teamScores.first.team.name,
                 gameData.teamScores.second.team.name,
-                rowTextStyle
+                rowTextStyle,
+                maxPeriods
             )
-            CompleteTableData(
-                gameData = gameData,
-                rowTextStyle = rowTextStyle
-            )
+            if (maxPeriods > 10){
+                CompleteLazyTableData(
+                    gameData = gameData,
+                    rowTextStyle = rowTextStyle
+                )
+            }else{
+                CompleteTableData(
+                    gameData = gameData,
+                    rowTextStyle = rowTextStyle,
+                    maxPeriods = maxPeriods
+                )
+            }
         }
     }
 }
@@ -83,24 +101,30 @@ private fun TeamNameColumn(
     teamOneName: String,
     teamTwoName: String,
     rowTextStyle: TextStyle,
+    maxPeriods: Int,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.width(60.dp)
-        //.width(IntrinsicSize.Max)
+        modifier = if (maxPeriods > 4) {
+            modifier.widthIn(max = 70.dp)
+        } else {
+            modifier.width(IntrinsicSize.Max)
+        }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = CrimsonPrimary)
-                .weight(1F)
-                .padding(top = 6.dp, bottom = 4.dp)
+                .height(HEADER_HEIGHT)
+                .padding(top = 6.dp, bottom = 4.dp),
         ) {}
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1F)
-                .padding(top = 8.dp, bottom = 8.dp)
+                .weight(1f)
+                .padding(top = 8.dp, bottom = 8.dp),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = teamOneName,
@@ -119,7 +143,9 @@ private fun TeamNameColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(top = 8.dp, bottom = 8.dp)
+                .padding(top = 8.dp, bottom = 8.dp),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = teamTwoName,
@@ -139,20 +165,19 @@ private fun TeamNameColumn(
 @Composable
 private fun TableDataColumn(
     header: Int,
-    team1Score: String,
-    team2Score: String,
+    teamOneScore: String,
+    teamTwoScore: String,
     rowTextStyle: TextStyle,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
-            .fillMaxHeight()
+        modifier = modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = CrimsonPrimary)
-                .weight(1f),
+                .height(HEADER_HEIGHT),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -171,7 +196,7 @@ private fun TableDataColumn(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = team1Score,
+                text = teamOneScore,
                 style = rowTextStyle,
                 textAlign = TextAlign.Center
             )
@@ -185,7 +210,7 @@ private fun TableDataColumn(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = team2Score,
+                text = teamTwoScore,
                 style = rowTextStyle,
                 textAlign = TextAlign.Center
             )
@@ -194,23 +219,66 @@ private fun TableDataColumn(
 }
 
 @Composable
-private fun CompleteTableData(
+private fun CompleteLazyTableData(
     gameData: GameData,
     rowTextStyle: TextStyle,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        val periodScores = mapToPeriodScores(gameData)
+    //todo: lazy row for maxPeriods > 10
+    val periodScores = mapToPeriodScores(gameData)
 
+    if (periodScores.isNotEmpty()) {
+        Row{
+//            Box(
+//                modifier = Modifier//.weight(1f)
+//                    .fillMaxWidth()
+//            ){
+                LazyRow(
+                    modifier = Modifier.weight(1f),
+                    //horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(periodScores) { periodScore ->
+                        TableDataColumn(
+                            header = periodScore.header,
+                            teamOneScore = periodScore.teamOneScore,
+                            teamTwoScore = periodScore.teamTwoScore,
+                            rowTextStyle = rowTextStyle,
+                            modifier = Modifier.width(35.dp)
+                        )
+                    }
+                }
+            //}
+            TotalsColumn(
+                teamOneScores = gameData.teamScores.first,
+                teamTwoScores = gameData.teamScores.second,
+//                modifier = Modifier
+//                    .width(IntrinsicSize.Max),
+                //.weight(1f),
+                rowTextStyle = rowTextStyle
+            )
+        }
+    }
+
+}
+
+@Composable
+private fun CompleteTableData(
+    gameData: GameData,
+    rowTextStyle: TextStyle,
+    maxPeriods: Int,
+    modifier: Modifier = Modifier
+) {
+    val periodScores = mapToPeriodScores(gameData)
+
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ){
         if (periodScores.isNotEmpty()) {
             mapToPeriodScores(gameData).map { periodScore ->
                 TableDataColumn(
                     header = periodScore.header,
-                    team1Score = periodScore.teamOneScore,
-                    team2Score = periodScore.teamTwoScore,
+                    teamOneScore = periodScore.teamOneScore,
+                    teamTwoScore = periodScore.teamTwoScore,
                     rowTextStyle = rowTextStyle,
                     modifier = Modifier.weight(1f)
                 )
@@ -219,22 +287,23 @@ private fun CompleteTableData(
             for (i in 1..4) {
                 TableDataColumn(
                     header = i,
-                    team1Score = "-",
-                    team2Score = "-",
+                    teamOneScore = "-",
+                    teamTwoScore = "-",
                     rowTextStyle = rowTextStyle,
                     modifier = Modifier.weight(1f)
                 )
             }
         }
-
         TotalsColumn(
-            teamOneScores = gameData.teamScores.first,
-            teamTwoScores = gameData.teamScores.second,
-            modifier = Modifier.width(IntrinsicSize.Min),
-            //.weight(1f),
-            rowTextStyle = rowTextStyle
-        )
+                teamOneScores = gameData.teamScores.first,
+                teamTwoScores = gameData.teamScores.second,
+                modifier = Modifier
+                    //.width(IntrinsicSize.Min)
+                    .weight(1f, fill = true),
+                rowTextStyle = rowTextStyle
+            )
     }
+
 }
 
 @Composable
@@ -247,7 +316,7 @@ private fun TotalScoreCell(
     val showEmpty = teamScore.scoresByPeriod.isEmpty()
     Row(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(top = 8.dp, bottom = 8.dp, end = 8.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
@@ -271,14 +340,16 @@ private fun TotalsColumn(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize()
+            //.wrapContentHeight()
+            .width(IntrinsicSize.Min)
+            //.widthIn(min = 50.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = CrimsonPrimary)
                 .padding(end = 8.dp)
-                .weight(1f),
+                .height(HEADER_HEIGHT),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -329,6 +400,12 @@ private fun PreviewBoxScoreForMedGame() = ScorePreview {
 @Composable
 private fun PreviewBoxScoreForShortGame() = ScorePreview {
     BoxScore(shortGameData)
+}
+
+@Preview
+@Composable
+private fun PreviewBoxScoreExtraLongGame() = ScorePreview {
+    BoxScore(gameData = extraLongGameData)
 }
 
 @Preview

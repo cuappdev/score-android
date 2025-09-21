@@ -100,7 +100,18 @@ val longGameTeamScore2 = TeamScore(
     team = team1,
     scoresByPeriod = listOf(7, 7, 9, 0, 7, 7, 9, 0, 7, 2),
     totalScore = 47
+
+val extraLongGameTeamScore1 = TeamScore(
+    team = team1,
+    scoresByPeriod = listOf(13, 14, 6, 14, 13, 2, 4, 6, 2, 2, 3, 4),
+    totalScore = 54
 )
+val extraLongGameTeamScore2 = TeamScore(
+    team = team1,
+    scoresByPeriod = listOf(7, 7, 9, 0, 7, 7, 9, 0, 7, 2, 1, 1),
+    totalScore = 49
+)
+
 val gameData = GameData(teamScores = Pair(teamScore1, teamScore2))
 
 val shortGameData = GameData(teamScores = shortGameTeamScore1 to shortGameTeamScore2)
@@ -108,6 +119,8 @@ val shortGameData = GameData(teamScores = shortGameTeamScore1 to shortGameTeamSc
 val mediumGameData = GameData(teamScores = mediumGameTeamScore1 to mediumGameTeamScore2)
 
 val longGameData = GameData(teamScores = longGameTeamScore1 to longGameTeamScore2)
+
+val extraLongGameData = GameData(teamScores = extraLongGameTeamScore1 to extraLongGameTeamScore2)
 
 val team3 = TeamGameSummary(
     name = "Cornell",
