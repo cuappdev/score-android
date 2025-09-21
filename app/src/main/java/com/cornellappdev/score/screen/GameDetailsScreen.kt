@@ -3,6 +3,7 @@ package com.cornellappdev.score.screen
 import ScoringSummary
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -106,6 +107,7 @@ fun GameDetailsContent(
     gameCard: DetailsCardData,
     navigateToGameScoreSummary: (List<ScoreEvent>) -> Unit
 ) {
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .background(White)
@@ -132,7 +134,10 @@ fun GameDetailsContent(
             )
             Text(
                 text = gameCard.title,
-                style = heading1.copy(color = GrayPrimary)
+                style = heading1.copy(color = GrayPrimary),
+                maxLines = 1,
+                modifier = Modifier
+                    .horizontalScroll(scrollState)
             )
             Spacer(modifier = Modifier.height(13.5.dp))
 

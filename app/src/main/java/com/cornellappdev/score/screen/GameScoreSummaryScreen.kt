@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,7 +44,7 @@ fun GameScoreSummaryScreenDetail(scoreEvents: List<ScoreEvent>, onBackArrow: () 
         ) {
             items(scoreEvents.size) { event ->
                 ScoreEventItemDetailed(event = scoreEvents[event])
-                Divider(color = Color.LightGray, thickness = 0.5.dp)
+                HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
             }
         }
     }
