@@ -110,8 +110,7 @@ private fun TeamNameColumn(
             //set to approximation of minimum width for "Cornell"
             modifier.widthIn(max = 70.dp)
         } else {
-            //can take up as much space as is available
-            modifier.width(IntrinsicSize.Max)
+            modifier.widthIn(max = 100.dp)
         }
     ) {
         Row(
@@ -294,7 +293,7 @@ private fun CompleteTableData(
             teamTwoScores = gameData.teamScores.second,
             //if maxPeriods > 8, "Totals" header will wrap to two lines. In this case, don't weight so that space is allocated to TotalsColumn first
             //otherwise, TotalsColumn will fit without wrapping and can be allocated equal width as the data columns
-            modifier = if (maxPeriods < 8) {
+            modifier = if (maxPeriods < 4) {
                 Modifier.weight(1f, fill = true)
             } else {
                 Modifier
@@ -386,38 +385,39 @@ private fun TotalsColumn(
 }
 
 
+//Padding added to previews to simulate the padding around the ScoreBox when it's displayed on the screen
 @Preview
 @Composable
 private fun PreviewBoxScore() = ScorePreview {
-    BoxScore(gameData = gameData)
+    BoxScore(gameData = gameData, Modifier.padding(start = 20.dp, end = 20.dp))
 }
 
 @Preview
 @Composable
 private fun PreviewBoxScoreForLongGame() = ScorePreview {
-    BoxScore(longGameData)
+    BoxScore(longGameData, Modifier.padding(start = 20.dp, end = 20.dp))
 }
 
 @Preview
 @Composable
 private fun PreviewBoxScoreForMedGame() = ScorePreview {
-    BoxScore(mediumGameData)
+    BoxScore(mediumGameData, Modifier.padding(start = 20.dp, end = 20.dp))
 }
 
 @Preview
 @Composable
 private fun PreviewBoxScoreForShortGame() = ScorePreview {
-    BoxScore(shortGameData)
+    BoxScore(shortGameData, Modifier.padding(start = 20.dp, end = 20.dp))
 }
 
 @Preview
 @Composable
 private fun PreviewBoxScoreExtraLongGame() = ScorePreview {
-    BoxScore(gameData = extraLongGameData)
+    BoxScore(gameData = extraLongGameData, Modifier.padding(start = 20.dp, end = 20.dp))
 }
 
 @Preview
 @Composable
 private fun PreviewBoxScoreEmpty() = ScorePreview {
-    BoxScore(gameData = emptyGameData())
+    BoxScore(gameData = emptyGameData(), Modifier.padding(start = 20.dp, end = 20.dp))
 }

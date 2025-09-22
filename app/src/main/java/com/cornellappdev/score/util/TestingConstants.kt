@@ -55,7 +55,7 @@ val gameList = listOf(
 )
 
 val team1 = TeamBoxScore(name = "Cornell")
-val team2 = TeamBoxScore(name = "Yale")
+val team2 = TeamBoxScore(name = "Yale University")
 
 val teamScore1 = TeamScore(
     team = team1,
@@ -129,7 +129,7 @@ val team3 = TeamGameSummary(
     "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max"
 )
 val team4 = TeamGameSummary(
-    name = "Yale",
+    name = "Yale University",
     "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max"
 )
 val scoreEvents1 = listOf(
