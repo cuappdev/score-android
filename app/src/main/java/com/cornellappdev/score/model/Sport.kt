@@ -87,8 +87,8 @@ enum class Sport(
     LACROSSE(
         displayName = "Lacrosse",
         gender = GenderDivision.ALL,
-        emptyIcon = R.drawable.ic_squash,
-        filledIcon = R.drawable.ic_squash_filled
+        emptyIcon = R.drawable.ic_lacrosse,
+        filledIcon = R.drawable.ic_lacrosse_filled
     ),
     ROWING_HEAVYWEIGHT(
         displayName = "Heavyweight Rowing",
