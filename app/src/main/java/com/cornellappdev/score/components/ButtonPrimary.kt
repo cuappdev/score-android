@@ -18,9 +18,16 @@ import com.cornellappdev.score.theme.Style.bodyMedium
 import com.cornellappdev.score.theme.White
 
 @Composable
-fun ButtonPrimary(text: String, icon: Painter?, onClick: () -> Unit = {}) {
-    Button(onClick = onClick,
+fun ButtonPrimary(
+    text: String,
+    icon: Painter?,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
+    Button(
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = CrimsonPrimary),
+        modifier = modifier,
         contentPadding = PaddingValues(12.dp)
     ) {
         if (icon != null) {
