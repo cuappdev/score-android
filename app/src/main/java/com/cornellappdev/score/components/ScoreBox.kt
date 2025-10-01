@@ -47,8 +47,8 @@ import com.cornellappdev.score.util.mediumGameData
 import com.cornellappdev.score.util.shortGameData
 
 private val HEADER_HEIGHT = 35.dp
-private val SMALL_BOX_SIZE = 4
-private val LARGE_BOX_SIZE = 10
+private const val SMALL_BOX_SIZE = 4
+private const val LARGE_BOX_SIZE = 10
 
 @Composable
 fun BoxScore(
