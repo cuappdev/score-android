@@ -55,7 +55,7 @@ val gameList = listOf(
 )
 
 val team1 = TeamBoxScore(name = "Cornell")
-val team2 = TeamBoxScore(name = "Yale")
+val team2 = TeamBoxScore(name = "Yale University")
 
 val teamScore1 = TeamScore(
     team = team1,
@@ -68,15 +68,27 @@ val teamScore2 = TeamScore(
     totalScore = 23
 )
 
-val mediumGameTeamScore1 = TeamScore(
+val shortGameTeamScore1 = TeamScore(
     team = team1,
-    scoresByPeriod = listOf(13, 14, 6, 14, 13, 2),
-    totalScore = 62
+    scoresByPeriod = listOf(13, 14),
+    totalScore = 27
 )
-val mediumGameTeamScore2 = TeamScore(
+
+val shortGameTeamScore2 = TeamScore(
+    team = team2,
+    scoresByPeriod = listOf(7, 7),
+    totalScore = 14
+)
+
+val mediumGameTeamScore1 = TeamScore(
     team = team1,
     scoresByPeriod = listOf(7, 7, 9, 0, 7, 7),
     totalScore = 37
+)
+val mediumGameTeamScore2 = TeamScore(
+    team = team2,
+    scoresByPeriod = listOf(13, 14, 6, 14, 13, 2),
+    totalScore = 62
 )
 
 val longGameTeamScore1 = TeamScore(
@@ -89,18 +101,35 @@ val longGameTeamScore2 = TeamScore(
     scoresByPeriod = listOf(7, 7, 9, 0, 7, 7, 9, 0, 7, 2),
     totalScore = 47
 )
+
+val extraLongGameTeamScore1 = TeamScore(
+    team = team1,
+    scoresByPeriod = listOf(13, 14, 6, 14, 13, 2, 4, 6, 2, 2, 3, 4),
+    totalScore = 54
+)
+
+val extraLongGameTeamScore2 = TeamScore(
+    team = team1,
+    scoresByPeriod = listOf(7, 7, 9, 0, 7, 7, 9, 0, 7, 2, 1, 1),
+    totalScore = 49
+)
+
 val gameData = GameData(teamScores = Pair(teamScore1, teamScore2))
+
+val shortGameData = GameData(teamScores = shortGameTeamScore1 to shortGameTeamScore2)
 
 val mediumGameData = GameData(teamScores = mediumGameTeamScore1 to mediumGameTeamScore2)
 
 val longGameData = GameData(teamScores = longGameTeamScore1 to longGameTeamScore2)
+
+val extraLongGameData = GameData(teamScores = extraLongGameTeamScore1 to extraLongGameTeamScore2)
 
 val team3 = TeamGameSummary(
     name = "Cornell",
     "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max"
 )
 val team4 = TeamGameSummary(
-    name = "Yale",
+    name = "Yale University",
     "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max"
 )
 val scoreEvents1 = listOf(
