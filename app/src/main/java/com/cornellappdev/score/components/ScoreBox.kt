@@ -27,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.model.GameData
 import com.cornellappdev.score.model.ScoresByPeriod
@@ -78,10 +80,18 @@ fun BoxScore(
                 rowTextStyle,
                 gameData.maxPeriods
             )
-            CompleteTableData(
-                gameData = gameData,
-                rowTextStyle = rowTextStyle
-            )
+            if (gameData.maxPeriods > LARGE_BOX_SIZE) {
+                CompleteLazyTableData(
+                    gameData = gameData,
+                    rowTextStyle = rowTextStyle
+                )
+            } else {
+                CompleteTableData(
+                    gameData = gameData,
+                    rowTextStyle = rowTextStyle,
+                    maxPeriods = gameData.maxPeriods
+                )
+            }
         }
     }
 }
@@ -210,35 +220,53 @@ private fun TableDataColumn(
 }
 
 @Composable
-private fun LazyDataRow(
-    periodScores: List<ScoresByPeriod>,
+private fun CompleteLazyTableData(
+    gameData: GameData,
     rowTextStyle: TextStyle,
     modifier: Modifier = Modifier
 ) {
-    LazyRow(
-        modifier = modifier
-    ) {
-        items(periodScores) { periodScore ->
-            TableDataColumn(
-                header = periodScore.header,
-                teamOneScore = periodScore.teamOneScore,
-                teamTwoScore = periodScore.teamTwoScore,
-                rowTextStyle = rowTextStyle,
-                modifier = Modifier.width(35.dp)
+    val periodScores = gameData.mapToPeriodScores()
+
+    if (periodScores.isNotEmpty()) {
+        Row(
+            modifier = modifier
+        ) {
+            LazyRow(
+                modifier = Modifier.weight(1f)
+            ) {
+                items(periodScores) { periodScore ->
+                    TableDataColumn(
+                        header = periodScore.header,
+                        teamOneScore = periodScore.teamOneScore,
+                        teamTwoScore = periodScore.teamTwoScore,
+                        rowTextStyle = rowTextStyle,
+                        modifier = Modifier.width(35.dp)
+                    )
+                }
+            }
+            TotalsColumn(
+                teamOneScores = gameData.teamScores.first,
+                teamTwoScores = gameData.teamScores.second,
+                rowTextStyle = rowTextStyle
             )
         }
     }
 }
 
 @Composable
-private fun DataRow(
-    periodScores: List<ScoresByPeriod>,
+private fun CompleteTableData(
+    gameData: GameData,
     rowTextStyle: TextStyle,
+    maxPeriods: Int,
     modifier: Modifier = Modifier
 ) {
+    val periodScores = gameData.mapToPeriodScores()
+
     Row(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceEvenly
     ) {
+
         if (periodScores.isNotEmpty()) {
             periodScores.map { periodScore ->
                 TableDataColumn(
@@ -260,45 +288,17 @@ private fun DataRow(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun CompleteTableData(
-    gameData: GameData,
-    rowTextStyle: TextStyle,
-    modifier: Modifier = Modifier
-) {
-    val periodScores = gameData.mapToPeriodScores()
-
-    Row(
-        modifier = modifier
-    ) {
-        if (gameData.maxPeriods > LARGE_BOX_SIZE) {
-            LazyDataRow(
-                periodScores,
-                rowTextStyle,
-                Modifier.weight(1f)
-            )
-        } else {
-            DataRow(
-                periodScores,
-                rowTextStyle,
-                Modifier.weight(1f)
-            )
-        }
-
         TotalsColumn(
             teamOneScores = gameData.teamScores.first,
             teamTwoScores = gameData.teamScores.second,
-            rowTextStyle = rowTextStyle,
             //if maxPeriods > 8, "Totals" header will wrap to two lines. In this case, don't weight so that space is allocated to TotalsColumn first
-            //otherwise, TotalsColumn will fit without wrapping and can be allocated equal width as the data columns
-            modifier = if (gameData.maxPeriods < 4) {
+//otherwise, TotalsColumn will fit without wrapping and can be allocated equal width as the data columns
+            modifier = if (maxPeriods < 4) {
                 Modifier.weight(1f, fill = true)
             } else {
                 Modifier
-            }
+            },
+            rowTextStyle = rowTextStyle
         )
     }
 }
@@ -384,40 +384,26 @@ private fun TotalsColumn(
     }
 }
 
-
-//Padding added to previews to simulate the padding around the ScoreBox when it's displayed on the screen
-@Preview
-@Composable
-private fun PreviewBoxScore() = ScorePreview {
-    BoxScore(gameData = gameData, Modifier.padding(start = 20.dp, end = 20.dp))
+class GameDataPreviewProvider : PreviewParameterProvider<GameData> {
+    override val values: Sequence<GameData> = sequenceOf(
+        gameData,
+        longGameData,
+        mediumGameData,
+        shortGameData,
+        extraLongGameData,
+        emptyGameData()
+    )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-private fun PreviewBoxScoreForLongGame() = ScorePreview {
-    BoxScore(longGameData, Modifier.padding(start = 20.dp, end = 20.dp))
-}
-
-@Preview
-@Composable
-private fun PreviewBoxScoreForMedGame() = ScorePreview {
-    BoxScore(mediumGameData, Modifier.padding(start = 20.dp, end = 20.dp))
-}
-
-@Preview
-@Composable
-private fun PreviewBoxScoreForShortGame() = ScorePreview {
-    BoxScore(shortGameData, Modifier.padding(start = 20.dp, end = 20.dp))
-}
-
-@Preview
-@Composable
-private fun PreviewBoxScoreExtraLongGame() = ScorePreview {
-    BoxScore(gameData = extraLongGameData, Modifier.padding(start = 20.dp, end = 20.dp))
-}
-
-@Preview
-@Composable
-private fun PreviewBoxScoreEmpty() = ScorePreview {
-    BoxScore(gameData = emptyGameData(), Modifier.padding(start = 20.dp, end = 20.dp))
+private fun BoxScoreParameterizedPreview(
+    @PreviewParameter(GameDataPreviewProvider::class) sample: GameData
+) {
+    ScorePreview {
+        BoxScore(
+            gameData = sample,
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+        )
+    }
 }
