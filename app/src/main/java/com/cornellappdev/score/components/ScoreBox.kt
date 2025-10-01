@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,8 +29,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.model.GameData
+import com.cornellappdev.score.model.ScoresByPeriod
 import com.cornellappdev.score.model.TeamScore
-import com.cornellappdev.score.model.mapToPeriodScores
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.GrayPrimary
@@ -44,23 +45,14 @@ import com.cornellappdev.score.util.mediumGameData
 import com.cornellappdev.score.util.shortGameData
 
 private val HEADER_HEIGHT = 35.dp
+private val SMALL_BOX_SIZE = 4
+private val LARGE_BOX_SIZE = 10
 
 @Composable
 fun BoxScore(
     gameData: GameData,
     modifier: Modifier = Modifier
 ) {
-    val maxPeriods = maxOf(
-        gameData.teamScores.first.scoresByPeriod.size,
-        gameData.teamScores.second.scoresByPeriod.size
-    )
-
-    val rowTextStyle = if (maxPeriods > 4) {
-        metricSmallNormal
-    } else {
-        metricNormal
-    }
-
     Surface(
         modifier = modifier
             //set height required for CompleteLazyTableData case
@@ -75,24 +67,21 @@ fun BoxScore(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
+            val rowTextStyle = if (gameData.maxPeriods > SMALL_BOX_SIZE) {
+                metricSmallNormal
+            } else {
+                metricNormal
+            }
             TeamNameColumn(
                 gameData.teamScores.first.team.name,
                 gameData.teamScores.second.team.name,
                 rowTextStyle,
-                maxPeriods
+                gameData.maxPeriods
             )
-            if (maxPeriods > 10) {
-                CompleteLazyTableData(
-                    gameData = gameData,
-                    rowTextStyle = rowTextStyle
-                )
-            } else {
-                CompleteTableData(
-                    gameData = gameData,
-                    rowTextStyle = rowTextStyle,
-                    maxPeriods = maxPeriods
-                )
-            }
+            CompleteTableData(
+                gameData = gameData,
+                rowTextStyle = rowTextStyle
+            )
         }
     }
 }
@@ -113,13 +102,13 @@ private fun TeamNameColumn(
             modifier.widthIn(max = 100.dp)
         }
     ) {
-        Row(
+        Spacer(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = CrimsonPrimary)
                 .height(HEADER_HEIGHT)
                 .padding(top = 6.dp, bottom = 4.dp),
-        ) {}
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -221,54 +210,37 @@ private fun TableDataColumn(
 }
 
 @Composable
-private fun CompleteLazyTableData(
-    gameData: GameData,
+private fun LazyDataRow(
+    periodScores: List<ScoresByPeriod>,
     rowTextStyle: TextStyle,
     modifier: Modifier = Modifier
 ) {
-    val periodScores = mapToPeriodScores(gameData)
-
-    if (periodScores.isNotEmpty()) {
-        Row(
-            modifier = modifier
-        ) {
-            LazyRow(
-                modifier = Modifier.weight(1f)
-            ) {
-                items(periodScores) { periodScore ->
-                    TableDataColumn(
-                        header = periodScore.header,
-                        teamOneScore = periodScore.teamOneScore,
-                        teamTwoScore = periodScore.teamTwoScore,
-                        rowTextStyle = rowTextStyle,
-                        modifier = Modifier.width(35.dp)
-                    )
-                }
-            }
-            TotalsColumn(
-                teamOneScores = gameData.teamScores.first,
-                teamTwoScores = gameData.teamScores.second,
-                rowTextStyle = rowTextStyle
+    LazyRow(
+        modifier = modifier
+    ) {
+        items(periodScores) { periodScore ->
+            TableDataColumn(
+                header = periodScore.header,
+                teamOneScore = periodScore.teamOneScore,
+                teamTwoScore = periodScore.teamTwoScore,
+                rowTextStyle = rowTextStyle,
+                modifier = Modifier.width(35.dp)
             )
         }
     }
 }
 
 @Composable
-private fun CompleteTableData(
-    gameData: GameData,
+private fun DataRow(
+    periodScores: List<ScoresByPeriod>,
     rowTextStyle: TextStyle,
-    maxPeriods: Int,
     modifier: Modifier = Modifier
 ) {
-    val periodScores = mapToPeriodScores(gameData)
-
     Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceEvenly
+        modifier = modifier.fillMaxWidth()
     ) {
         if (periodScores.isNotEmpty()) {
-            mapToPeriodScores(gameData).map { periodScore ->
+            periodScores.map { periodScore ->
                 TableDataColumn(
                     header = periodScore.header,
                     teamOneScore = periodScore.teamOneScore,
@@ -288,20 +260,47 @@ private fun CompleteTableData(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun CompleteTableData(
+    gameData: GameData,
+    rowTextStyle: TextStyle,
+    modifier: Modifier = Modifier
+) {
+    val periodScores = gameData.mapToPeriodScores()
+
+    Row(
+        modifier = modifier
+    ) {
+        if (gameData.maxPeriods > LARGE_BOX_SIZE) {
+            LazyDataRow(
+                periodScores,
+                rowTextStyle,
+                Modifier.weight(1f)
+            )
+        } else {
+            DataRow(
+                periodScores,
+                rowTextStyle,
+                Modifier.weight(1f)
+            )
+        }
+
         TotalsColumn(
             teamOneScores = gameData.teamScores.first,
             teamTwoScores = gameData.teamScores.second,
+            rowTextStyle = rowTextStyle,
             //if maxPeriods > 8, "Totals" header will wrap to two lines. In this case, don't weight so that space is allocated to TotalsColumn first
             //otherwise, TotalsColumn will fit without wrapping and can be allocated equal width as the data columns
-            modifier = if (maxPeriods < 4) {
+            modifier = if (gameData.maxPeriods < 4) {
                 Modifier.weight(1f, fill = true)
             } else {
                 Modifier
-            },
-            rowTextStyle = rowTextStyle
+            }
         )
     }
-
 }
 
 @Composable
@@ -324,7 +323,8 @@ private fun TotalScoreCell(
             style = rowTextStyle,
             color = if (showEmpty) Color.Gray else totalTextColor,
             fontWeight = if (showEmpty) FontWeight.Normal else FontWeight.Bold,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
@@ -351,9 +351,9 @@ private fun TotalsColumn(
         ) {
             Text(
                 text = "Total",
-                color = Color.White,
                 style = rowTextStyle,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = Color.White
             )
         }
 
