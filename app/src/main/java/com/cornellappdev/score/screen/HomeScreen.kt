@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.components.ButtonPrimary
 import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
+import com.cornellappdev.score.components.ExpandableSection
 import com.cornellappdev.score.components.GameCard
 import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.components.LoadingScreen
@@ -94,48 +96,68 @@ fun HomeScreen(
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState
             ) {
-                Column(
+                LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 12.dp),
+                        .padding(horizontal = 16.dp),
+                    contentPadding = PaddingValues(
+                        top = 32.dp,
+                        bottom = 24.dp
+                    ),
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    ExpandableSection(
-                        title = "Price",
-                        options = listOf("Unticketed", "Under $20", "Under $50", "Over $50")
-                    )
-                    ExpandableSection(
-                        title = "Location",
-                        options = listOf("On Campus", "1-2 Hours", "2-4 Hours", "Over 4 Hours")
-                    )
-                    ExpandableSection(
-                        title = "Date of Game",
-                        options = listOf("Today", "Within 7 Days", "Within a Month", "Over a Month")
-                    )
-                    ButtonPrimary(
-                        text = "Apply",
-                        icon = null,
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            // TODO: Apply filter logic via ViewModel
-                            showBottomSheet = false
-                        }
-                    )
-                    Text(
-                        "Reset",
-                        fontSize = 14.sp,
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .clickable {
-                                // TODO: Reset filter logic
+                    item {
+                        ExpandableSection(
+                            title = "Price",
+                            options = listOf("Unticketed", "Under $20", "Under $50", "Over $50")
+                        )
+                    }
+                    item {
+                        ExpandableSection(
+                            title = "Location",
+                            options = listOf("On Campus", "1-2 Hours", "2-4 Hours", "Over 4 Hours")
+                        )
+                    }
+                    item {
+                        ExpandableSection(
+                            title = "Date of Game",
+                            options = listOf(
+                                "Today",
+                                "Within 7 Days",
+                                "Within a Month",
+                                "Over a Month"
+                            )
+                        )
+                    }
+                    item {
+                        ButtonPrimary(
+                            text = "Apply",
+                            icon = null,
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                // TODO: Apply filter logic via ViewModel
                                 showBottomSheet = false
                             }
-                    )
+                        )
+                    }
+                    item {
+                        Text(
+                            "Reset", fontSize = 14.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    // TODO: Reset filter logic
+                                    showBottomSheet = false
+                                },
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }
     }
 }
+
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
