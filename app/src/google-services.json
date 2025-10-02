@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1041954613554",
+    "project_id": "score-2bbd4",
+    "storage_bucket": "score-2bbd4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041954613554:android:afdaffd5c956622603cf2b",
+        "android_client_info": {
+          "package_name": "com.cornellappdev.score"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjJpkMnpwSVu270_k6_3UmaHXb_NiCc0I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
