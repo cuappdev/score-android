@@ -2,6 +2,7 @@ package com.cornellappdev.score.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +37,7 @@ import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.HighlightCard
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.CrimsonPrimary
+import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.Style.bodySemibold
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.labelsNormal
@@ -46,10 +49,9 @@ fun VideoHighlightCardHeader(
 ) {
     Box(
         modifier = Modifier
-            .width(241.dp)
+            .fillMaxWidth()
             .height(117.dp)
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            .background(color = Color.Blue)
     ) {
         AsyncImage(
             model = image,
@@ -59,7 +61,6 @@ fun VideoHighlightCardHeader(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = Color.Black.copy(alpha = 0.4f))
-
         )
     }
 }
@@ -67,18 +68,24 @@ fun VideoHighlightCardHeader(
 @Composable
 fun VideoHighlightCard(
     videoHighlight: HighlightCard,
+    wide: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
+        modifier = if (wide) modifier.fillMaxWidth() else modifier.width(241.dp)
     ) {
         VideoHighlightCardHeader(videoHighlight.image)
 
         Column(
             modifier = Modifier
-                .width(241.dp)
                 .height(75.dp)
+                .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp))
                 .background(color = Color.White)
+                .border(
+                    width = 1.dp,
+                    color = GrayStroke,
+                    shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
+                )
                 .padding(horizontal = 16.dp, vertical = 8.dp),
         ) {
             Row(
@@ -87,8 +94,11 @@ fun VideoHighlightCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
+                    modifier = Modifier.weight(1f),
                     style = heading2,
-                    text = videoHighlight.title
+                    text = videoHighlight.title,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -119,7 +129,7 @@ fun VideoHighlightCard(
                         text = buildAnnotatedString {
                             withLink(
                                 LinkAnnotation.Url(
-                                    "https://developer.android.com/jetpack/compose",
+                                    videoHighlight.url,
                                     TextLinkStyles(
                                         style = SpanStyle(
                                             textDecoration = TextDecoration.Underline,
@@ -149,14 +159,15 @@ fun VideoHighlightCard(
 @Composable
 fun ArticleHighlightCard(
     articleHighlight: HighlightCard,
+    wide: Boolean,
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier
-            .width(241.dp)
+        modifier = modifier.then(
+            if (wide) Modifier.fillMaxWidth() else Modifier.width(241.dp)
+        )
             .height(192.dp)
             .clip(shape = RoundedCornerShape(12.dp))
-            .background(color = Color.Blue)
     ) {
         AsyncImage(
             model = articleHighlight.image,
@@ -177,7 +188,9 @@ fun ArticleHighlightCard(
             Text(
                 style = heading2,
                 color = Color.White,
-                text = articleHighlight.title
+                text = articleHighlight.title,
+                maxLines = 4,
+                overflow = TextOverflow.Ellipsis
             )
 
             Row(
@@ -193,7 +206,7 @@ fun ArticleHighlightCard(
                         text = buildAnnotatedString {
                             withLink(
                                 LinkAnnotation.Url(
-                                    "https://developer.android.com/jetpack/compose",
+                                    articleHighlight.url,
                                     TextLinkStyles(
                                         style = SpanStyle(
                                             textDecoration = TextDecoration.Underline,
@@ -232,15 +245,23 @@ private fun ArticleHighlightCardPreview() {
             "11/9",
             Sport.BASEBALL,
             GenderDivision.MALE
-        )
+        ),
+        false
     )
 }
-
 @Preview
 @Composable
-private fun VideoHighlightCardHeaderPreview() {
-    VideoHighlightCardHeader(
-        "image_placeholder"
+private fun WideArticleHighlightCardPreview() {
+    ArticleHighlightCard(
+        HighlightCard(
+            "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
+            "maxresdefault.jpg",
+            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+            "11/9",
+            Sport.BASEBALL,
+            GenderDivision.MALE
+        ),
+        true
     )
 }
 
@@ -255,6 +276,55 @@ private fun VideoHighlightCardPreview() {
             "11/9",
             Sport.BASEBALL,
             GenderDivision.MALE
-        )
+        ),
+        false
+    )
+}
+
+@Preview
+@Composable
+private fun WideVideoHighlightCardPreview() {
+    VideoHighlightCard(
+        HighlightCard(
+            "vs Columbia",
+            "maxresdefault.jpg",
+            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+            "11/9",
+            Sport.BASEBALL,
+            GenderDivision.MALE
+        ),
+        true
+    )
+}
+
+@Preview
+@Composable
+private fun OverflowVideoHighlightCardPreview() {
+    VideoHighlightCard(
+        HighlightCard(
+            "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
+            "maxresdefault.jpg",
+            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+            "11/9",
+            Sport.BASEBALL,
+            GenderDivision.MALE
+        ),
+        false
+    )
+}
+
+@Preview
+@Composable
+private fun WideOverflowVideoHighlightCardPreview() {
+    VideoHighlightCard(
+        HighlightCard(
+            "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
+            "maxresdefault.jpg",
+            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+            "11/9",
+            Sport.BASEBALL,
+            GenderDivision.MALE
+        ),
+        true
     )
 }
