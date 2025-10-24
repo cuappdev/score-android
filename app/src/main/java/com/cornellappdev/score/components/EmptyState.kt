@@ -24,6 +24,7 @@ import com.cornellappdev.score.theme.Style.heading2
 @Composable
 fun EmptyState(
     modifier: Modifier = Modifier,
+    icon: Int = R.drawable.ic_speaker_gray,
     title: String = "No games yet.",
     subtitle: String = "Check back here later!"
 ) {
@@ -33,7 +34,7 @@ fun EmptyState(
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(R.drawable.ic_speaker_gray),
+            painter = painterResource(icon),
             contentDescription = "score speaker icon"
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -53,6 +54,7 @@ fun EmptyState(
 fun EmptyStateBox(
     modifier: Modifier = Modifier,
     height: Dp = 550.dp,
+    icon: Int = R.drawable.ic_speaker_gray,
     title: String = "No games yet.",
     subtitle: String = "Check back here later!"
 ) {
@@ -61,7 +63,7 @@ fun EmptyStateBox(
             .height(height)
             .fillMaxWidth(), contentAlignment = Alignment.Center
     ) {
-        EmptyState(title = title, subtitle = subtitle)
+        EmptyState(icon = icon, title = title, subtitle = subtitle)
     }
 }
 
