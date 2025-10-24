@@ -33,8 +33,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.cornellappdev.score.R
+import com.cornellappdev.score.model.ArticleHighlightData
 import com.cornellappdev.score.model.GenderDivision
-import com.cornellappdev.score.model.HighlightCard
+import com.cornellappdev.score.model.VideoHighlightData
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayStroke
@@ -67,7 +68,7 @@ fun VideoHighlightCardHeader(
 
 @Composable
 fun VideoHighlightCard(
-    videoHighlight: HighlightCard,
+    videoHighlight: VideoHighlightData,
     wide: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -158,7 +159,7 @@ fun VideoHighlightCard(
 
 @Composable
 fun ArticleHighlightCard(
-    articleHighlight: HighlightCard,
+    articleHighlight: ArticleHighlightData,
     wide: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -238,13 +239,11 @@ fun ArticleHighlightCard(
 @Composable
 private fun ArticleHighlightCardPreview() {
     ArticleHighlightCard(
-        HighlightCard(
+        ArticleHighlightData(
             "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
             "maxresdefault.jpg",
             "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-            "11/9",
-            Sport.BASEBALL,
-            GenderDivision.MALE
+            "11/9"
         ),
         false
     )
@@ -253,13 +252,11 @@ private fun ArticleHighlightCardPreview() {
 @Composable
 private fun WideArticleHighlightCardPreview() {
     ArticleHighlightCard(
-        HighlightCard(
+        ArticleHighlightData(
             "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
             "maxresdefault.jpg",
             "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-            "11/9",
-            Sport.BASEBALL,
-            GenderDivision.MALE
+            "11/9"
         ),
         true
     )
@@ -269,7 +266,7 @@ private fun WideArticleHighlightCardPreview() {
 @Composable
 private fun VideoHighlightCardPreview() {
     VideoHighlightCard(
-        HighlightCard(
+        VideoHighlightData(
             "vs Columbia",
             "maxresdefault.jpg",
             "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
@@ -285,7 +282,7 @@ private fun VideoHighlightCardPreview() {
 @Composable
 private fun WideVideoHighlightCardPreview() {
     VideoHighlightCard(
-        HighlightCard(
+        VideoHighlightData(
             "vs Columbia",
             "maxresdefault.jpg",
             "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
@@ -301,7 +298,7 @@ private fun WideVideoHighlightCardPreview() {
 @Composable
 private fun OverflowVideoHighlightCardPreview() {
     VideoHighlightCard(
-        HighlightCard(
+        VideoHighlightData(
             "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
             "maxresdefault.jpg",
             "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
@@ -317,7 +314,7 @@ private fun OverflowVideoHighlightCardPreview() {
 @Composable
 private fun WideOverflowVideoHighlightCardPreview() {
     VideoHighlightCard(
-        HighlightCard(
+        VideoHighlightData(
             "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
             "maxresdefault.jpg",
             "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",

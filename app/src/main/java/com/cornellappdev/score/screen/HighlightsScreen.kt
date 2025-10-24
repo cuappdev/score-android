@@ -28,10 +28,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.ArticleHighlightCard
-import com.cornellappdev.score.components.HighlightsFilterButton
+import com.cornellappdev.score.components.EmptyStateBox
+import com.cornellappdev.score.components.HighlightsFilterRow
 import com.cornellappdev.score.components.VideoHighlightCard
-import com.cornellappdev.score.model.HighlightCard
+import com.cornellappdev.score.model.ArticleHighlightData
 import com.cornellappdev.score.model.Sport
+import com.cornellappdev.score.model.VideoHighlightData
 import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.Style.bodyNormal
@@ -41,17 +43,10 @@ import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.sportList
 
 @Composable
-fun HighlightsScreen(
-    todayHighlightsList: List<HighlightCard>,
-    pastThreeHighlightsList: List<HighlightCard>,
-    filtersList: List<Sport>
+fun HighlightsScreenHeader(
+    onSearch: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.White)
-    ) {
-        Spacer(modifier = Modifier.height(24.dp))
+    Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier.padding(start = 24.dp),
             style = heading1,
@@ -65,7 +60,7 @@ fun HighlightsScreen(
                 .background(color = Color.White, shape = RoundedCornerShape(100.dp))
                 .fillMaxWidth()
                 .clip(shape = RoundedCornerShape(100.dp))
-                .clickable {/*todo navigate to search screen*/ },
+                .clickable { onSearch },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
@@ -84,19 +79,17 @@ fun HighlightsScreen(
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            items(filtersList.size) { i ->
-                HighlightsFilterButton(filtersList[i], {/*todo filter functionality*/ })
-                Spacer(Modifier.width(12.dp))
-            }
-        }
-        Spacer(modifier = Modifier.height(24.dp))
+        HighlightsFilterRow({/*todo on filter selected*/})
+    }
+}
+
+@Composable
+fun HighlightsCardRow(
+    highlightsList: List<Any>
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Row(
             modifier = Modifier
                 .padding(horizontal = 24.dp)
@@ -113,7 +106,7 @@ fun HighlightsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "${todayHighlightsList.size} Results",
+                    text = "${highlightsList.size} Results",
                     style = bodyNormal
                 )
                 Image(
@@ -127,58 +120,74 @@ fun HighlightsScreen(
         LazyRow(
             modifier = Modifier.padding(start = 24.dp)
         ) {
-            items(todayHighlightsList.size) { i ->
-                VideoHighlightCard(
-                    todayHighlightsList[i],
-                    false
-                )
+            items(highlightsList.size) { i ->
+                if (highlightsList[i] is VideoHighlightData) {
+                    VideoHighlightCard(
+                        highlightsList[i] as VideoHighlightData,
+                        false
+                    )
+                } else if (highlightsList[i] is ArticleHighlightData) {
+                    ArticleHighlightCard(
+                        highlightsList[i] as ArticleHighlightData,
+                        false
+                    )
+                }
+
                 Spacer(modifier = Modifier.width(16.dp))
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Past 3 days",
-                style = heading2
+    }
+}
+
+@Composable
+fun HighlightsScreen(
+    todayHighlightsList: List<Any>,
+    pastThreeHighlightsList: List<Any>
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+    ) {
+        Spacer(modifier = Modifier.height(24.dp))
+        HighlightsScreenHeader({})
+        Spacer(modifier = Modifier.height(24.dp))
+        if (todayHighlightsList.isEmpty() and pastThreeHighlightsList.isEmpty()) {
+            EmptyStateBox(
+                icon = R.drawable.kid_star,
+                title = "No results yet."
             )
-            Row(
-                modifier = Modifier.clickable {/*todo navigation to Past3Days screen*/ },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "${pastThreeHighlightsList.size} Results",
-                    style = bodyNormal
-                )
-                Image(
-                    painter = painterResource(R.drawable.ic_right_chevron),
-                    contentDescription = "right chevron",
-                    colorFilter = ColorFilter.tint(GrayMedium, blendMode = BlendMode.SrcIn)
-                )
-            }
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        LazyRow(
-            modifier = Modifier.padding(start = 24.dp)
-        ) {
-            items(pastThreeHighlightsList.size) { i ->
-                ArticleHighlightCard(
-                    todayHighlightsList[i],
-                    false
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-            }
+        if (todayHighlightsList.isNotEmpty()) {
+            HighlightsCardRow(todayHighlightsList)
+        }
+        if (pastThreeHighlightsList.isNotEmpty()) {
+            HighlightsCardRow(pastThreeHighlightsList)
         }
     }
 }
 
 @Composable
 @Preview
+private fun HighlightsScreenHeaderPreview() {
+    HighlightsScreenHeader({})
+}
+
+@Composable
+@Preview
 private fun HighlightsScreenPreview() {
-    HighlightsScreen(highlightsList, highlightsList, sportList)
+    HighlightsScreen(highlightsList, highlightsList)
+}
+
+@Composable
+@Preview
+private fun EmptyHighlightsScreenPreview() {
+    HighlightsScreen(emptyList(), emptyList())
+}
+
+@Composable
+@Preview
+private fun PartialHighlightsScreenPreview() {
+    HighlightsScreen(emptyList(), highlightsList)
 }
