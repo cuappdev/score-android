@@ -1,5 +1,6 @@
 package com.cornellappdev.score.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,59 +23,44 @@ import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading2
 
 @Composable
-fun EmptyState(
-    modifier: Modifier = Modifier,
-    icon: Int = R.drawable.ic_speaker_gray,
-    title: String = "No games yet.",
-    subtitle: String = "Check back here later!"
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Image(
-            painter = painterResource(icon),
-            contentDescription = "score speaker icon"
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = title,
-            style = heading2.copy(color = GrayPrimary)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = subtitle,
-            style = bodyNormal.copy(color = GrayMedium)
-        )
-    }
-}
-
-@Composable
 fun EmptyStateBox(
+    @DrawableRes icon: Int,
+    title: String,
     modifier: Modifier = Modifier,
-    height: Dp = 550.dp,
-    icon: Int = R.drawable.ic_speaker_gray,
-    title: String = "No games yet.",
-    subtitle: String = "Check back here later!"
+    subtitle: String = "Check back here later!",
+    height: Dp = 550.dp //(appx height when full-screen error)
 ) {
     Box(
         modifier = modifier
             .height(height)
             .fillMaxWidth(), contentAlignment = Alignment.Center
     ) {
-        EmptyState(icon = icon, title = title, subtitle = subtitle)
+        Column(
+            modifier = Modifier,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(icon),
+                contentDescription = "empty state icon"
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = title,
+                style = heading2.copy(color = GrayPrimary)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = subtitle,
+                style = bodyNormal.copy(color = GrayMedium)
+            )
+        }
     }
 }
 
-@Preview
-@Composable
-private fun EmptyStatePreview() = ScorePreview {
-    EmptyState()
-}
 
 @Preview
 @Composable
 private fun EmptyStateBoxPreview() = ScorePreview {
-    EmptyStateBox()
+    EmptyStateBox(R.drawable.ic_speaker_gray, "No games yet.")
 }

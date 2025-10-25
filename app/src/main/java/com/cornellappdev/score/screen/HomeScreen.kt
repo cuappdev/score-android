@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.cornellappdev.score.R
 import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GameCard
@@ -175,7 +176,7 @@ private fun HomeLazyColumn(
             }
         } else {
             item {
-                EmptyStateBox()
+                EmptyStateBox(icon = R.drawable.ic_speaker_gray, title = "No games yet.")
             }
         }
     }
