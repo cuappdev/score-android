@@ -2,10 +2,12 @@ package com.cornellappdev.score.model
 
 import android.util.Log
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.exception.ApolloException
 import com.cornellappdev.score.util.isValidSport
 import com.cornellappdev.score.util.parseColor
 import com.example.score.GameByIdQuery
 import com.example.score.GamesQuery
+import com.example.score.PagedGamesQuery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,11 +38,17 @@ class ScoreRepository @Inject constructor(
         MutableStateFlow<ApiResponse<GameDetailsGame>>(ApiResponse.Loading)
     val currentGamesFlow = _currentGameFlow.asStateFlow()
 
+    companion object {
+        private const val PAGE_LIMIT = 100
+        private const val MAX_RETRIES = 3
+        private const val PAGE_TIMEOUT_MILLIS = 3000L
+    }
+
     /**
      * Asynchronously fetches the list of games from the API. Once finished, will send down
      * `upcomingGamesFlow` to be observed.
      */
-    fun fetchGames() = appScope.launch {
+    fun fetchGamesPrev() = appScope.launch {
         _upcomingGamesFlow.value = ApiResponse.Loading
         try {
             val result =
@@ -92,6 +100,79 @@ class ScoreRepository @Inject constructor(
         }
     }
 
+    fun fetchGames() = appScope.launch {
+        _upcomingGamesFlow.value = ApiResponse.Loading
+        val allGames = mutableListOf<Game>()
+        var offset = 0
+        var retries = 0
+
+        try {
+            while (true) {
+                val pageResult: List<PagedGamesQuery.Game?>? = try {
+                    withTimeout(PAGE_TIMEOUT_MILLIS) {
+                        apolloClient.query(PagedGamesQuery(limit = PAGE_LIMIT, offset = offset))
+                            .execute()
+                            .data
+                            ?.games
+                    }
+                } catch (e: Exception) {
+                    null
+                }
+
+                if (pageResult == null) {
+                    if (retries < MAX_RETRIES) {
+                        retries++
+                        continue
+                    } else {
+                        break
+                    }
+                }
+
+                if (pageResult.isEmpty()) {
+                    break
+                }
+
+                retries = 0
+
+                val pageGames: List<Game> = pageResult
+                    .filterNotNull()
+                    .filter { gql -> isValidSport(gql.sport ?: "") }
+                    .mapNotNull { gql ->
+                        val scores = gql.result?.split(",")?.getOrNull(1)?.split("-")
+                        val cornellScore = scores?.getOrNull(0)?.toNumberOrNull()
+                        val otherScore = scores?.getOrNull(1)?.toNumberOrNull()
+                        gql.team?.image?.let { imageUrl ->
+                            Game(
+                                id = gql.id ?: "",
+                                teamLogo = imageUrl,
+                                teamName = gql.team.name,
+                                teamColor = parseColor(gql.team.color).copy(alpha = 0.4f * 255),
+                                gender = if (gql.gender == "Mens") "Men's" else "Women's",
+                                sport = gql.sport,
+                                date = gql.date,
+                                city = gql.city,
+                                cornellScore = cornellScore,
+                                otherScore = otherScore
+                            )
+                        }
+                    }
+
+                allGames.addAll(pageGames)
+
+                if (pageResult.size < PAGE_LIMIT) break
+                offset += PAGE_LIMIT
+            }
+
+            _upcomingGamesFlow.value =
+                if (allGames.isNotEmpty()) ApiResponse.Success(allGames)
+                else ApiResponse.Error
+
+        } catch (e: Exception) {
+            Log.e("ScoreRepository", "Error fetching upcoming games", e)
+            _upcomingGamesFlow.value = ApiResponse.Error
+        }
+    }
+
     /**
      * Asynchronously fetches game details for a particular game. Once finished, will update
      * `currentGamesFlow` to be observed.
@@ -99,17 +180,26 @@ class ScoreRepository @Inject constructor(
     fun getGameById(id: String) = appScope.launch {
         _currentGameFlow.value = ApiResponse.Loading
         try {
-            val result =
+            val response =
                 withTimeout(TIMEOUT_TIME_MILLIS) {
-                    apolloClient.query(GameByIdQuery(id)).execute().toResult()
+                    apolloClient.query(GameByIdQuery(id)).execute()
                 }
 
+            if (response.hasErrors()) {
+                Log.e("ScoreRepository", "Error fetching game with id: $id: ${response.errors}")
+                _currentGameFlow.value = ApiResponse.Error
+                return@launch
+            }
 
-            result.getOrNull()?.game?.let {
+            response.data?.game?.let {
                 _currentGameFlow.value = ApiResponse.Success(it.toGameDetails())
             } ?: _currentGameFlow.update { ApiResponse.Error }
+
+        } catch (e: ApolloException) {
+            Log.e("ScoreRepository", "Error fetching game with id: $id: ", e)
+            _currentGameFlow.value = ApiResponse.Error
         } catch (e: Exception) {
-            Log.e("ScoreRepository", "Error fetching game with id: ${id}: ", e)
+            Log.e("ScoreRepository", "A timeout or other error occurred for game id: $id", e)
             _currentGameFlow.value = ApiResponse.Error
         }
     }
@@ -117,8 +207,6 @@ class ScoreRepository @Inject constructor(
 }
 
 fun String.toNumberOrNull(): Number? {
-    return when {
-        this.contains(".") -> this.toFloatOrNull()  // Try converting to Float if there's a decimal
-        else -> this.toIntOrNull()  // Otherwise, try converting to Int
-    }
+    return this.trim().toFloatOrNull() ?: this.trim().toIntOrNull()
 }
+

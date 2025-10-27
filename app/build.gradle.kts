@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid) version "1.9.10"
-    alias(libs.plugins.apollo)
+    id("com.apollographql.apollo") version "4.0.0"
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // this version matches your Kotlin version
@@ -88,9 +88,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation(libs.apollo.runtime)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
-    implementation(libs.apollo.runtime)
+    implementation("com.apollographql.apollo:apollo-runtime:4.0.0")
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
     lintChecks(libs.compose.lint.checks)
