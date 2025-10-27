@@ -129,6 +129,13 @@ data class DetailsCardData(
     val oppScore: Int
 )
 
+// Scoring information by round of a game, used in the box score
+data class ScoresByPeriod(
+    val header: Int,
+    val teamOneScore: String,
+    val teamTwoScore: String
+)
+
 // Scoring information for a specific team, used in the box score
 data class TeamScore(
     val team: TeamBoxScore,
@@ -139,7 +146,31 @@ data class TeamScore(
 // Aggregated game data showing scores for both teams
 data class GameData(
     val teamScores: Pair<TeamScore, TeamScore>
-)
+){
+    val maxPeriods: Int
+        get() =
+            maxOf(
+                teamScores.first.scoresByPeriod.size,
+                teamScores.second.scoresByPeriod.size
+            )
+
+    fun mapToPeriodScores(): List<ScoresByPeriod> {
+        val teamOneScores = this.teamScores.first.scoresByPeriod
+        val teamTwoScores = this.teamScores.second.scoresByPeriod
+
+        val maxPeriods = maxOf(teamOneScores.size, teamTwoScores.size)
+
+        return (0 until maxPeriods).map { i ->
+            ScoresByPeriod(
+                header = i + 1,
+                teamOneScore = teamOneScores.getOrNull(i)?.toString() ?: "-",
+                teamTwoScore = teamTwoScores.getOrNull(i)?.toString() ?: "-"
+
+            )
+
+        }
+    }
+}
 
 /**
  * Represents a scoring event in a game.
