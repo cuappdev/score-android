@@ -1,4 +1,4 @@
-package com.cornellappdev.score.components
+package com.cornellappdev.score.components.highlights
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

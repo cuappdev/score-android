@@ -27,12 +27,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
-import com.cornellappdev.score.components.ArticleHighlightCard
+import com.cornellappdev.score.components.highlights.ArticleHighlightCard
 import com.cornellappdev.score.components.EmptyStateBox
-import com.cornellappdev.score.components.HighlightsFilterRow
-import com.cornellappdev.score.components.VideoHighlightCard
+import com.cornellappdev.score.components.highlights.HighlightsFilterRow
+import com.cornellappdev.score.components.highlights.VideoHighlightCard
 import com.cornellappdev.score.model.ArticleHighlightData
-import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.VideoHighlightData
 import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayMedium
@@ -40,7 +39,6 @@ import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.util.highlightsList
-import com.cornellappdev.score.util.sportList
 
 @Composable
 fun HighlightsScreenHeader(
