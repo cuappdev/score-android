@@ -1,6 +1,5 @@
 package com.cornellappdev.score.components.highlights
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -16,12 +15,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -54,9 +55,11 @@ private fun VideoHighlightCardHeader(
             .fillMaxWidth()
             .height(117.dp)
     ) {
+        //todo: empty state if image doesn't load
         AsyncImage(
             model = imageUrl,
-            contentDescription = "Highlight article image"
+            contentDescription = "Highlight article image",
+            contentScale = ContentScale.Crop
         )
         Box(
             modifier = Modifier
@@ -67,98 +70,105 @@ private fun VideoHighlightCardHeader(
 }
 
 @Composable
-fun VideoHighlightCard(
-    videoHighlight: VideoHighlightData,
-    wide: Boolean,
-    modifier: Modifier = Modifier
+fun VideoHighlightCardBody(
+    videoHighlight: VideoHighlightData
 ) {
     Column(
-        modifier = if (wide) modifier.fillMaxWidth() else modifier
-            .width(241.dp)
-            .clip(RoundedCornerShape(16.dp))
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(75.dp)
+            .background(color = Color.White)
+            .border(
+                width = 1.dp,
+                color = GrayStroke,
+                shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
+            )
+            .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
-        VideoHighlightCardHeader(videoHighlight.image)
-
-        Column(
-            modifier = Modifier
-                .height(75.dp)
-                .background(color = Color.White)
-                .border(
-                    width = 1.dp,
-                    color = GrayStroke,
-                    shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
-                )
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                style = heading2,
+                text = videoHighlight.title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    modifier = Modifier.weight(1f),
-                    style = heading2,
-                    text = videoHighlight.title,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                Icon(
+                    painter = painterResource(videoHighlight.sport.emptyIcon),
+                    contentDescription = "Sport icon",
+                    modifier = Modifier.size(24.dp)
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(videoHighlight.sport.emptyIcon),
-                        contentDescription = "Sport icon",
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Image(
-                        painter = painterResource(if (videoHighlight.gender == GenderDivision.FEMALE) R.drawable.ic_gender_women else R.drawable.ic_gender_men),
-                        contentDescription = "Gender icon"
-                    )
-                }
-            }
-            Spacer(Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    BasicText(
-                        text = buildAnnotatedString {
-                            withLink(
-                                LinkAnnotation.Url(
-                                    videoHighlight.url,
-                                    TextLinkStyles(
-                                        style = SpanStyle(
-                                            textDecoration = TextDecoration.Underline,
-                                            color = CrimsonPrimary
-                                        )
-                                    ),
-                                )
-                            ) {
-                                append("YouTube")
-                            }
-                        }
-                    )
-                    Image(
-                        painter = painterResource(R.drawable.arrow_outward_red),
-                        contentDescription = "external link arrow"
-                    )
-                }
-                Text(
-                    style = labelsNormal,
-                    text = videoHighlight.date
+                Icon(
+                    painter = painterResource(if (videoHighlight.gender == GenderDivision.FEMALE) R.drawable.ic_gender_women else R.drawable.ic_gender_men),
+                    contentDescription = "Gender icon"
                 )
             }
         }
+        Spacer(Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BasicText(
+                    text = buildAnnotatedString {
+                        withLink(
+                            LinkAnnotation.Url(
+                                videoHighlight.videoUrl,
+                                TextLinkStyles(
+                                    style = SpanStyle(
+                                        textDecoration = TextDecoration.Underline,
+                                        color = CrimsonPrimary
+                                    )
+                                ),
+                            )
+                        ) {
+                            append("YouTube")
+                        }
+                    }
+                )
+                Icon(
+                    painter = painterResource(R.drawable.arrow_outward_red),
+                    contentDescription = "external link arrow"
+                )
+            }
+            Text(
+                style = labelsNormal,
+                text = videoHighlight.date
+            )
+        }
+    }
+}
+
+@Composable
+fun VideoHighlightCard(
+    videoHighlight: VideoHighlightData,
+    modifier: Modifier = Modifier   //for wide cards, specify Modifier.fillMaxWidth()
+) {
+    Column(
+        modifier = modifier
+            .width(241.dp)
+            .clip(RoundedCornerShape(16.dp))
+    ) {
+        VideoHighlightCardHeader(videoHighlight.thumbnailImageUrl)
+
+        VideoHighlightCardBody(videoHighlight)
     }
 }
 
 data class VideoHighlightPreviewData(
     val videoHighlight: VideoHighlightData,
-    val wide: Boolean
+    val modifier: Modifier
 )
 
 class VideoHighlightsPreviewProvider : PreviewParameterProvider<VideoHighlightPreviewData> {
@@ -182,8 +192,8 @@ class VideoHighlightsPreviewProvider : PreviewParameterProvider<VideoHighlightPr
             )
         )
         for (sample in samples) {
-            yield(VideoHighlightPreviewData(sample, wide = true))
-            yield(VideoHighlightPreviewData(sample, wide = false))
+            yield(VideoHighlightPreviewData(sample, Modifier.fillMaxWidth()))
+            yield(VideoHighlightPreviewData(sample, Modifier))
         }
     }
 }
@@ -196,7 +206,7 @@ private fun VideoHighlightCardPreview(
     ScorePreview {
         VideoHighlightCard(
             videoHighlight = previewData.videoHighlight,
-            wide = previewData.wide
+            modifier = previewData.modifier
         )
     }
 }

@@ -1,6 +1,5 @@
 package com.cornellappdev.score.components.highlights
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,12 +12,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -40,20 +41,19 @@ import com.cornellappdev.score.theme.White
 @Composable
 fun ArticleHighlightCard(
     articleHighlight: ArticleHighlightData,
-    wide: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier   //for wide cards, specify Modifier.fillMaxWidth()
 ) {
     Box(
         modifier = modifier
-            .then(
-                if (wide) Modifier.fillMaxWidth() else Modifier.width(241.dp)
-            )
+            .width(241.dp)
             .height(192.dp)
             .clip(shape = RoundedCornerShape(12.dp))
     ) {
+        //todo: empty state if image doesn't load
         AsyncImage(
-            model = articleHighlight.image,
-            contentDescription = "highlight image"
+            model = articleHighlight.imageUrl,
+            contentDescription = "highlight image",
+            contentScale = ContentScale.Crop
         )
         Box(
             modifier = Modifier
@@ -87,7 +87,7 @@ fun ArticleHighlightCard(
                         text = buildAnnotatedString {
                             withLink(
                                 LinkAnnotation.Url(
-                                    articleHighlight.url,
+                                    articleHighlight.articleUrl,
                                     TextLinkStyles(
                                         style = SpanStyle(
                                             textDecoration = TextDecoration.Underline,
@@ -100,7 +100,7 @@ fun ArticleHighlightCard(
                             }
                         }
                     )
-                    Image(
+                    Icon(
                         painter = painterResource(R.drawable.arrow_outward_white),
                         contentDescription = "external link arrow"
                     )
@@ -124,8 +124,7 @@ private fun ArticleHighlightCardPreview() {
             "maxresdefault.jpg",
             "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
             "11/9"
-        ),
-        false
+        )
     )
 }
 
@@ -139,6 +138,6 @@ private fun WideArticleHighlightCardPreview() {
             "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
             "11/9"
         ),
-        true
+        Modifier.fillMaxWidth()
     )
 }
