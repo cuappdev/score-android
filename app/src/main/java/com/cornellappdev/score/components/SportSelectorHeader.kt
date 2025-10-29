@@ -78,7 +78,11 @@ fun SportSelectorHeader(
             }
         }
         Spacer(Modifier.height(24.dp))
-        LazyRow(Modifier.fillMaxWidth()) {
+        LazyRow(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            item { Spacer(Modifier.width(4.dp)) }
             items(sports) { selection ->
                 when (selection) {
                     SportSelection.All -> {
@@ -108,9 +112,6 @@ fun SportSelectorHeader(
                         }
                     }
                 }
-
-
-                Spacer(modifier = Modifier.width(20.dp))
             }
             item { Spacer(modifier = Modifier.width(4.dp)) }
         }
