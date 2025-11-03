@@ -103,11 +103,13 @@ fun VideoHighlightCardBody(
                 Icon(
                     painter = painterResource(videoHighlight.sport.emptyIcon),
                     contentDescription = "Sport icon",
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
+                    tint = Color.Unspecified
                 )
                 Icon(
                     painter = painterResource(if (videoHighlight.gender == GenderDivision.FEMALE) R.drawable.ic_gender_women else R.drawable.ic_gender_men),
-                    contentDescription = "Gender icon"
+                    contentDescription = "Gender icon",
+                    tint = Color.Unspecified
                 )
             }
         }
@@ -139,7 +141,8 @@ fun VideoHighlightCardBody(
                 )
                 Icon(
                     painter = painterResource(R.drawable.arrow_outward_red),
-                    contentDescription = "external link arrow"
+                    contentDescription = "external link arrow",
+                    tint = Color.Unspecified
                 )
             }
             Text(
@@ -158,7 +161,7 @@ fun VideoHighlightCard(
     Column(
         modifier = modifier
             .width(241.dp)
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(12.dp))
     ) {
         VideoHighlightCardHeader(videoHighlight.thumbnailImageUrl)
 

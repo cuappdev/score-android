@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.ArticleHighlightData
+import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.Style.bodySemibold
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.labelsNormal
@@ -102,7 +103,8 @@ fun ArticleHighlightCard(
                     )
                     Icon(
                         painter = painterResource(R.drawable.arrow_outward_white),
-                        contentDescription = "external link arrow"
+                        contentDescription = "external link arrow",
+                        tint = Color.Unspecified
                     )
                 }
                 Text(
@@ -123,7 +125,8 @@ private fun ArticleHighlightCardPreview() {
             "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
             "maxresdefault.jpg",
             "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-            "11/9"
+            "11/9",
+            Sport.ICE_HOCKEY
         )
     )
 }
@@ -136,7 +139,8 @@ private fun WideArticleHighlightCardPreview() {
             "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
             "maxresdefault.jpg",
             "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-            "11/9"
+            "11/9",
+            Sport.ICE_HOCKEY
         ),
         Modifier.fillMaxWidth()
     )
