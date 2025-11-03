@@ -82,7 +82,6 @@ fun SportSelectorHeader(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            item { Spacer(Modifier.width(4.dp)) }
             items(sports) { selection ->
                 when (selection) {
                     SportSelection.All -> {
@@ -113,7 +112,6 @@ fun SportSelectorHeader(
                     }
                 }
             }
-            item { Spacer(modifier = Modifier.width(4.dp)) }
         }
     }
 }
