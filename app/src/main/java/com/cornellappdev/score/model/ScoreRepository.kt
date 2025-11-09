@@ -18,6 +18,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val TIMEOUT_TIME_MILLIS = 5000L
+private const val PAGE_LIMIT = 100
+private const val MAX_RETRIES = 3
+private const val PAGE_TIMEOUT_MILLIS = 3000L
 
 /**
  * This is a singleton responsible for fetching and caching all data for Score.
@@ -37,12 +40,6 @@ class ScoreRepository @Inject constructor(
     private val _currentGameFlow =
         MutableStateFlow<ApiResponse<GameDetailsGame>>(ApiResponse.Loading)
     val currentGamesFlow = _currentGameFlow.asStateFlow()
-
-    companion object {
-        private const val PAGE_LIMIT = 100
-        private const val MAX_RETRIES = 3
-        private const val PAGE_TIMEOUT_MILLIS = 3000L
-    }
 
     /**
      * Asynchronously fetches the list of games from the API. Once finished, will send down

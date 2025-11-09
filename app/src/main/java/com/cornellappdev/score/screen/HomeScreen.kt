@@ -34,13 +34,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.cornellappdev.score.R
 import com.cornellappdev.score.components.ButtonPrimary
+import com.cornellappdev.score.components.DateFilter
 import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.ExpandableSection
 import com.cornellappdev.score.components.GameCard
 import com.cornellappdev.score.components.GamesCarousel
+import com.cornellappdev.score.components.IconButton
 import com.cornellappdev.score.components.LoadingScreen
+import com.cornellappdev.score.components.LocationFilter
+import com.cornellappdev.score.components.PriceFilter
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.SportSelectorHeader
@@ -87,11 +92,14 @@ fun HomeScreen(
                     onSportSelected = { homeViewModel.onSportSelected(it) },
                     navigateToGameDetails = navigateToGameDetails,
                     onRefresh = { homeViewModel.onRefresh() },
-                    onAdvFilterClick = { showBottomSheet = true }
+                    onAdvancedFilterClick = { showBottomSheet = true }
                 )
             }
         }
         if (showBottomSheet) {
+            var selectedPrice by remember { mutableStateOf<PriceFilter?>(null) }
+            var selectedLocation by remember { mutableStateOf<LocationFilter?>(null) }
+            var selectedDate by remember { mutableStateOf<DateFilter?>(null) }
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState
@@ -109,24 +117,27 @@ fun HomeScreen(
                     item {
                         ExpandableSection(
                             title = "Price",
-                            options = listOf("Unticketed", "Under $20", "Under $50", "Over $50")
+                            options = PriceFilter.entries,
+                            selectedOption = selectedPrice,
+                            onOptionSelected = { selectedPrice = it }
                         )
                     }
+
                     item {
                         ExpandableSection(
                             title = "Location",
-                            options = listOf("On Campus", "1-2 Hours", "2-4 Hours", "Over 4 Hours")
+                            options = LocationFilter.entries,
+                            selectedOption = selectedLocation,
+                            onOptionSelected = { selectedLocation = it }
                         )
                     }
+
                     item {
                         ExpandableSection(
                             title = "Date of Game",
-                            options = listOf(
-                                "Today",
-                                "Within 7 Days",
-                                "Within a Month",
-                                "Over a Month"
-                            )
+                            options = DateFilter.entries,
+                            selectedOption = selectedDate,
+                            onOptionSelected = { selectedDate = it }
                         )
                     }
                     item {
@@ -167,7 +178,7 @@ private fun HomeContent(
     onSportSelected: (SportSelection) -> Unit,
     onRefresh: () -> Unit,
     navigateToGameDetails: (String) -> Unit = {},
-    onAdvFilterClick: () -> Unit
+    onAdvancedFilterClick: () -> Unit
 ) {
     ScorePullToRefreshBox(isRefreshing = uiState.loadedState == ApiResponse.Loading, onRefresh) {
         HomeLazyColumn(
@@ -175,7 +186,7 @@ private fun HomeContent(
             onGenderSelected,
             onSportSelected,
             navigateToGameDetails,
-            onAdvFilterClick
+            onAdvancedFilterClick
         )
     }
 }
@@ -187,7 +198,7 @@ private fun HomeLazyColumn(
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
     navigateToGameDetails: (String) -> Unit,
-    onAdvFilterClick: () -> Unit
+    onAdvancedFilterClick: () -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
         if (uiState.filteredGames.isNotEmpty()) {
@@ -226,12 +237,11 @@ private fun HomeLazyColumn(
                         text = "Game Schedule",
                         style = title,
                     )
-                    ButtonPrimary(
-                        "",
-                        painterResource(id = com.cornellappdev.score.R.drawable.advanced_filter)
-                    ) {
-                        onAdvFilterClick()
-                    }
+                    IconButton(
+                        icon = painterResource(id = R.drawable.advanced_filter),
+                        contentDescription = "Advanced filter",
+                        onClick = onAdvancedFilterClick
+                    )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 SportSelectorHeader(
@@ -297,7 +307,7 @@ private fun HomeScreenPreview() = ScorePreview {
             onGenderSelected = {},
             onSportSelected = {},
             onRefresh = {},
-            onAdvFilterClick = {}
+            onAdvancedFilterClick = {}
         )
     }
 }
@@ -315,7 +325,7 @@ private fun HomeScreenEmptyStatePreview() = ScorePreview {
         onGenderSelected = {},
         onSportSelected = {},
         onRefresh = {},
-        onAdvFilterClick = {}
+        onAdvancedFilterClick = {}
     )
 }
 
