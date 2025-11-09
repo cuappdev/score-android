@@ -2,7 +2,6 @@ package com.cornellappdev.score.model
 
 import android.util.Log
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.exception.ApolloException
 import com.cornellappdev.score.util.isValidSport
 import com.cornellappdev.score.util.parseColor
 import com.example.score.GameByIdQuery
@@ -177,33 +176,26 @@ class ScoreRepository @Inject constructor(
     fun getGameById(id: String) = appScope.launch {
         _currentGameFlow.value = ApiResponse.Loading
         try {
-            val response =
+            val result =
                 withTimeout(TIMEOUT_TIME_MILLIS) {
-                    apolloClient.query(GameByIdQuery(id)).execute()
+                    apolloClient.query(GameByIdQuery(id)).execute().toResult()
                 }
 
-            if (response.hasErrors()) {
-                Log.e("ScoreRepository", "Error fetching game with id: $id: ${response.errors}")
-                _currentGameFlow.value = ApiResponse.Error
-                return@launch
-            }
 
-            response.data?.game?.let {
+            result.getOrNull()?.game?.let {
                 _currentGameFlow.value = ApiResponse.Success(it.toGameDetails())
             } ?: _currentGameFlow.update { ApiResponse.Error }
-
-        } catch (e: ApolloException) {
-            Log.e("ScoreRepository", "Error fetching game with id: $id: ", e)
-            _currentGameFlow.value = ApiResponse.Error
         } catch (e: Exception) {
-            Log.e("ScoreRepository", "A timeout or other error occurred for game id: $id", e)
+            Log.e("ScoreRepository", "Error fetching game with id: ${id}: ", e)
             _currentGameFlow.value = ApiResponse.Error
         }
     }
-
 }
 
 fun String.toNumberOrNull(): Number? {
-    return this.trim().toFloatOrNull() ?: this.trim().toIntOrNull()
+    return when {
+        this.contains(".") -> this.toFloatOrNull()  // Try converting to Float if there's a decimal
+        else -> this.toIntOrNull()  // Otherwise, try converting to Int
+    }
 }
 
