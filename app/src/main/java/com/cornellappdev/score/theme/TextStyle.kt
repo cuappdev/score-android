@@ -8,7 +8,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 object Style {
@@ -25,11 +24,11 @@ object Style {
         fontWeight = FontWeight(700),
         fontStyle = FontStyle.Italic,
         color = Color.White,
-                shadow = Shadow(
-                color = Color(0f, 0f, 0f, 0.4f),
-        offset = Offset(0f, 0f),
-        blurRadius = 4f
-    )
+        shadow = Shadow(
+            color = Color(0f, 0f, 0f, 0.4f),
+            offset = Offset(0f, 0f),
+            blurRadius = 4f
+        )
     )
 
     val universityText = TextStyle(
@@ -152,6 +151,13 @@ object Style {
         fontSize = 14.sp,
         fontFamily = poppinsFamily,
         fontWeight = FontWeight(400)
+    )
+
+    val bodyNormalGray = TextStyle(
+        fontSize = 14.sp,
+        fontFamily = poppinsFamily,
+        fontWeight = FontWeight(400),
+        color = GrayMedium
     )
 
     val spanBodyNormal = SpanStyle(
