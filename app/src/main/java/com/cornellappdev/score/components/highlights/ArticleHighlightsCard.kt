@@ -42,11 +42,11 @@ import com.cornellappdev.score.theme.White
 @Composable
 fun ArticleHighlightCard(
     articleHighlight: ArticleHighlightData,
-    modifier: Modifier = Modifier   //for wide cards, specify Modifier.fillMaxWidth()
+    isWideFormat: Boolean
 ) {
     Box(
-        modifier = modifier
-            .width(241.dp)
+        modifier = Modifier
+            .then(if (isWideFormat) Modifier.fillMaxWidth() else Modifier.width(241.dp))
             .height(192.dp)
             .clip(shape = RoundedCornerShape(12.dp))
     ) {
@@ -83,28 +83,13 @@ fun ArticleHighlightCard(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    BasicText(
-                        style = bodySemibold,
-                        text = buildAnnotatedString {
-                            withLink(
-                                LinkAnnotation.Url(
-                                    articleHighlight.articleUrl,
-                                    TextLinkStyles(
-                                        style = SpanStyle(
-                                            textDecoration = TextDecoration.Underline,
-                                            color = White
-                                        )
-                                    ),
-                                )
-                            ) {
-                                append("Cornell Daily Sun")
-                            }
-                        }
-                    )
-                    Icon(
-                        painter = painterResource(R.drawable.arrow_outward_white),
-                        contentDescription = "external link arrow",
-                        tint = Color.Unspecified
+                    if (isWideFormat) {
+                        Text("Read at ", color = White)
+                    }
+                    ExternalLink(
+                        articleHighlight.articleUrl,
+                        urlLabel = "Cornell Daily Sun",
+                        linkColor = White
                     )
                 }
                 Text(
@@ -127,7 +112,8 @@ private fun ArticleHighlightCardPreview() {
             "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
             "11/9",
             Sport.ICE_HOCKEY
-        )
+        ),
+        false
     )
 }
 
@@ -142,6 +128,6 @@ private fun WideArticleHighlightCardPreview() {
             "11/9",
             Sport.ICE_HOCKEY
         ),
-        Modifier.fillMaxWidth()
+        true
     )
 }

@@ -68,8 +68,8 @@ fun HighlightsCardRow(
             item { Spacer(Modifier.width(8.dp)) }
             items(highlightsList) { item ->
                 when (item) {
-                    is HighlightData.Video -> VideoHighlightCard(item.data)
-                    is HighlightData.Article -> ArticleHighlightCard(item.data)
+                    is HighlightData.Video -> VideoHighlightCard(item.data, false)
+                    is HighlightData.Article -> ArticleHighlightCard(item.data, false)
                 }
             }
             item { Spacer(Modifier.width(8.dp)) }

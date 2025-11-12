@@ -38,7 +38,7 @@ fun HighlightsSearchBar(
     val interactionSource = remember { MutableInteractionSource() }
     var searchQuery by remember { mutableStateOf("") }
 
-    Box(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White, RoundedCornerShape(100.dp))
@@ -48,38 +48,36 @@ fun HighlightsSearchBar(
                 interactionSource = interactionSource,
                 indication = null
             ) { onSearchClick() }
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically) {
 
-            Icon(
-                painter = painterResource(R.drawable.search),
-                contentDescription = "search icon",
-                tint = Color.Unspecified
-            )
+        Icon(
+            painter = painterResource(R.drawable.search),
+            contentDescription = "search icon",
+            tint = Color.Unspecified
+        )
 
-            Spacer(Modifier.width(8.dp))
+        Spacer(Modifier.width(8.dp))
 
-            Box(modifier = Modifier.weight(1f)) {
-                if (searchQuery.isEmpty()) {
-                    Text(
-                        text = "Search keywords",
-                        style = bodyNormal.copy(color = Color.Gray)
-                    )
-                }
-
-                BasicTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    singleLine = true,
-                    textStyle = bodyNormal,
-                    visualTransformation = VisualTransformation.None,
-                    interactionSource = interactionSource,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Transparent)
+        Box(modifier = Modifier.weight(1f)) {
+            if (searchQuery.isEmpty()) {
+                Text(
+                    text = "Search keywords",
+                    style = bodyNormal.copy(color = Color.Gray)
                 )
             }
+
+            BasicTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                singleLine = true,
+                textStyle = bodyNormal,
+                visualTransformation = VisualTransformation.None,
+                interactionSource = interactionSource,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Transparent)
+            )
         }
     }
 }

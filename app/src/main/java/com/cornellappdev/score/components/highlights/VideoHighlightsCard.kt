@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,13 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.LinkAnnotation
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextLinkStyles
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -71,7 +64,8 @@ private fun VideoHighlightCardHeader(
 
 @Composable
 fun VideoHighlightCardBody(
-    videoHighlight: VideoHighlightData
+    videoHighlight: VideoHighlightData,
+    isWideFormat: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -122,28 +116,10 @@ fun VideoHighlightCardBody(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                BasicText(
-                    text = buildAnnotatedString {
-                        withLink(
-                            LinkAnnotation.Url(
-                                videoHighlight.videoUrl,
-                                TextLinkStyles(
-                                    style = SpanStyle(
-                                        textDecoration = TextDecoration.Underline,
-                                        color = CrimsonPrimary
-                                    )
-                                ),
-                            )
-                        ) {
-                            append("YouTube")
-                        }
-                    }
-                )
-                Icon(
-                    painter = painterResource(R.drawable.arrow_outward_red),
-                    contentDescription = "external link arrow",
-                    tint = Color.Unspecified
-                )
+                if (isWideFormat) {
+                    Text("Watch on ")
+                }
+                ExternalLink(videoHighlight.videoUrl, "Youtube", CrimsonPrimary)
             }
             Text(
                 style = labelsNormal,
@@ -156,22 +132,22 @@ fun VideoHighlightCardBody(
 @Composable
 fun VideoHighlightCard(
     videoHighlight: VideoHighlightData,
-    modifier: Modifier = Modifier   //for wide cards, specify Modifier.fillMaxWidth()
+    isWideFormat: Boolean,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
-            .width(241.dp)
+            .then(if (isWideFormat) Modifier.fillMaxWidth() else Modifier.width(241.dp))
             .clip(RoundedCornerShape(12.dp))
     ) {
         VideoHighlightCardHeader(videoHighlight.thumbnailImageUrl)
-
-        VideoHighlightCardBody(videoHighlight)
+        VideoHighlightCardBody(videoHighlight, isWideFormat)
     }
 }
 
 data class VideoHighlightPreviewData(
     val videoHighlight: VideoHighlightData,
-    val modifier: Modifier
+    val isWideFormat: Boolean
 )
 
 class VideoHighlightsPreviewProvider : PreviewParameterProvider<VideoHighlightPreviewData> {
@@ -195,8 +171,8 @@ class VideoHighlightsPreviewProvider : PreviewParameterProvider<VideoHighlightPr
             )
         )
         for (sample in samples) {
-            yield(VideoHighlightPreviewData(sample, Modifier.fillMaxWidth()))
-            yield(VideoHighlightPreviewData(sample, Modifier))
+            yield(VideoHighlightPreviewData(sample, true))
+            yield(VideoHighlightPreviewData(sample, false))
         }
     }
 }
@@ -209,7 +185,7 @@ private fun VideoHighlightCardPreview(
     ScorePreview {
         VideoHighlightCard(
             videoHighlight = previewData.videoHighlight,
-            modifier = previewData.modifier
+            isWideFormat = previewData.isWideFormat
         )
     }
 }
