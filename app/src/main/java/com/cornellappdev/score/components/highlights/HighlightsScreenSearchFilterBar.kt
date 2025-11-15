@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.components.ScorePreview
@@ -25,6 +26,7 @@ import com.cornellappdev.score.util.sportList
 fun HighlightsScreenSearchFilterBar(
     sportList: List<Sport>,
     isActive: Boolean,
+    focusRequester: FocusRequester? = null
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -35,7 +37,12 @@ fun HighlightsScreenSearchFilterBar(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            HighlightsSearchBar({}, isActive, Modifier.weight(1f))
+            HighlightsSearchBar(
+                onSearchClick = {},
+                isActive = isActive,
+                focusRequester = focusRequester,
+                modifier = Modifier.weight(1f)
+            )
             if (isActive) {
                 Text("Cancel", style = bodyMedium)
             }
@@ -49,7 +56,7 @@ fun HighlightsScreenSearchFilterBar(
 @Composable
 private fun HighlightsScreenSearchFilterBarActivePreview() {
     ScorePreview {
-        HighlightsScreenSearchFilterBar(sportList, true)
+        HighlightsScreenSearchFilterBar(sportList, true, focusRequester = FocusRequester())
     }
 }
 
@@ -57,6 +64,6 @@ private fun HighlightsScreenSearchFilterBarActivePreview() {
 @Composable
 private fun HighlightsScreenSearchFilterBarInactivePreview() {
     ScorePreview {
-        HighlightsScreenSearchFilterBar(sportList, false)
+        HighlightsScreenSearchFilterBar(sportList, false, focusRequester = FocusRequester())
     }
 }

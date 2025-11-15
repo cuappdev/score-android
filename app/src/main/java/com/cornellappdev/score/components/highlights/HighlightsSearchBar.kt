@@ -22,6 +22,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.VisualTransformation
@@ -35,6 +37,7 @@ import com.cornellappdev.score.theme.Style.bodyNormal
 fun HighlightsSearchBar(
     onSearchClick: () -> Unit,
     isActive: Boolean,
+    focusRequester: FocusRequester? = null,
     modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -76,6 +79,9 @@ fun HighlightsSearchBar(
                 visualTransformation = VisualTransformation.None,
                 interactionSource = interactionSource,
                 modifier = Modifier
+                    .then(
+                        focusRequester?.let { Modifier.focusRequester(it) } ?: Modifier
+                    )
                     .fillMaxWidth()
                     .background(Color.Transparent)
             )
