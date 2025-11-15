@@ -33,20 +33,20 @@ import com.cornellappdev.score.theme.Style.bodyNormal
 
 @Composable
 fun HighlightsSearchBar(
-    onSearchClick: () -> Unit
+    onSearchClick: () -> Unit,
+    isActive: Boolean,
+    modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     var searchQuery by remember { mutableStateOf("") }
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
+            //.fillMaxWidth()
             .background(Color.White, RoundedCornerShape(100.dp))
             .border(1.dp, GrayLight, RoundedCornerShape(100.dp))
             .clip(RoundedCornerShape(100.dp))
             .clickable(
-                interactionSource = interactionSource,
-                indication = null
             ) { onSearchClick() }
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically) {
@@ -72,6 +72,7 @@ fun HighlightsSearchBar(
                 onValueChange = { searchQuery = it },
                 singleLine = true,
                 textStyle = bodyNormal,
+                readOnly = !isActive,
                 visualTransformation = VisualTransformation.None,
                 interactionSource = interactionSource,
                 modifier = Modifier
@@ -79,11 +80,55 @@ fun HighlightsSearchBar(
                     .background(Color.Transparent)
             )
         }
+        if (searchQuery.isNotEmpty()) {
+            Icon(
+                painter = painterResource(R.drawable.ic_close),
+                contentDescription = "clear field",
+                modifier = Modifier.clickable(
+                    onClick = { searchQuery = "" }
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun HighlightsSearchBarUI(
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White, RoundedCornerShape(100.dp))
+            .border(1.dp, GrayLight, RoundedCornerShape(100.dp))
+            .clip(RoundedCornerShape(100.dp))
+            .clickable(
+            ) { onClick() }
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically) {
+
+        Icon(
+            painter = painterResource(R.drawable.search),
+            contentDescription = "search icon",
+            tint = Color.Unspecified
+        )
+
+        Spacer(Modifier.width(8.dp))
+        Text(
+            text = "Search keywords",
+            style = bodyNormal.copy(color = Color.Gray)
+        )
     }
 }
 
 @Preview
 @Composable
+private fun HighlightsSearchBarUIPreview() {
+    HighlightsSearchBarUI({})
+}
+
+@Preview
+@Composable
 private fun HighlightsSearchBarPreview() {
-    HighlightsSearchBar({})
+    HighlightsSearchBar({}, true)
 }
