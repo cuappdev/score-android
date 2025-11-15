@@ -67,7 +67,6 @@ fun RootNavigation(
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             CompositionLocalProvider(LocalInfiniteLoading provides animatedValue) {
-
                 ScoreNavHost(navController)
             }
         }
@@ -88,6 +87,12 @@ sealed class ScoreScreens {
 
     @Serializable
     data class GameScoreSummaryPage(val scoreEvents: String) : ScoreScreens()
+
+    @Serializable
+    data object HighlightsScreen : ScoreScreens()
+
+    @Serializable
+    data object HighlightsSearchScreen : ScoreScreens()
 }
 
 fun NavBackStackEntry.toScreen(): ScoreScreens? =
@@ -96,6 +101,8 @@ fun NavBackStackEntry.toScreen(): ScoreScreens? =
         "GameDetailsPage" -> toRoute<ScoreScreens.GameDetailsPage>()
         "ScoresScreen" -> toRoute<ScoreScreens.ScoresScreen>()
         "GameScoreSummaryPage" -> toRoute<ScoreScreens.GameScoreSummaryPage>()
+        "HighlightsScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
+        "HighlightsSearchScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
         else -> throw IllegalArgumentException("Invalid screen")
     }
 
@@ -112,6 +119,12 @@ val tabs = listOf(
         unselectedIcon = R.drawable.ic_schedule,
         selectedIcon = R.drawable.ic_schedule_filled,
         screen = ScoreScreens.Home,
+    ),
+    NavItem(
+        label = "Highlights",
+        unselectedIcon = R.drawable.ic_nav_star,
+        selectedIcon = R.drawable.ic_nav_star_filled,
+        screen = ScoreScreens.HighlightsScreen,
     ),
     NavItem(
         label = "Scores",

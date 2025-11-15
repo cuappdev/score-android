@@ -12,6 +12,8 @@ import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.nav.root.ScoreScreens
 import com.cornellappdev.score.nav.root.ScoreScreens.Home
 import com.cornellappdev.score.screen.GameDetailsScreen
+import com.cornellappdev.score.screen.HighlightsScreen
+import com.cornellappdev.score.screen.HighlightsSearchScreen
 import com.cornellappdev.score.screen.HomeScreen
 import com.cornellappdev.score.screen.PastGamesScreen
 import kotlinx.serialization.builtins.ListSerializer
@@ -63,7 +65,23 @@ fun ScoreNavHost(navController: NavHostController) {
             })
         }
 
+        composable<ScoreScreens.HighlightsScreen> { backStackEntry ->
+            CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
+                HighlightsScreen(toSearchScreen = { navController.navigate(ScoreScreens.HighlightsSearchScreen) })
+            }
+        }
 
+        composable<ScoreScreens.HighlightsSearchScreen> { backStackEntry ->
+            CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
+                HighlightsSearchScreen(
+                    sportList = emptyList(),
+                    recentSearchList = emptyList(),
+                    highlightsList = emptyList(),
+                    query = "",
+                    header = ""
+                )
+            }
+        }
     }
 }
 
