@@ -134,7 +134,7 @@ private fun HighlightsSubScreenPreview() {
             "Late goal lifts No.6 men’s hockey"
         ),
         highlightsList = highlightsList,
-        query = "hockey",
+        query = "s",
         header = "Past 3 Days"
     )
 }

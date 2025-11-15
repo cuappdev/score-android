@@ -1,7 +1,6 @@
 package com.cornellappdev.score.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +19,6 @@ import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.highlights.HighlightsCardRow
 import com.cornellappdev.score.components.highlights.HighlightsFilterRow
-import com.cornellappdev.score.components.highlights.HighlightsScreenSearchFilterBar
 import com.cornellappdev.score.components.highlights.HighlightsSearchBarUI
 import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.model.Sport
@@ -43,8 +41,8 @@ fun HighlightsScreen(
     ) {
         Spacer(modifier = Modifier.height(24.dp))
         Column(
-            modifier = Modifier.padding(start =24.dp)
-        ){
+            modifier = Modifier.padding(horizontal = 24.dp)
+        ) {
             Text("Highlights", style = heading1)
             Spacer(modifier = Modifier.height(12.dp))
             HighlightsSearchBarUI(toSearchScreen)

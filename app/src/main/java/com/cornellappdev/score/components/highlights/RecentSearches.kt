@@ -34,7 +34,7 @@ fun RecentSearchItem(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.clickable(onClick = {/*search the query*/})
+            modifier = Modifier.clickable(onClick = {/*search the query*/ })
         ) {
             Icon(
                 painter = painterResource(R.drawable.search),
@@ -49,7 +49,7 @@ fun RecentSearchItem(
             painter = painterResource(R.drawable.ic_close),
             contentDescription = "close icon",
             tint = Color.Unspecified,
-            modifier = Modifier.clickable(onClick = {/*delete this search from the recent searches list*/})
+            modifier = Modifier.clickable(onClick = {/*delete this search from the recent searches list*/ })
         )
 
     }

@@ -42,7 +42,7 @@ fun HighlightsSearchBar(
 
     Row(
         modifier = modifier
-            //.fillMaxWidth()
+            .fillMaxWidth()
             .background(Color.White, RoundedCornerShape(100.dp))
             .border(1.dp, GrayLight, RoundedCornerShape(100.dp))
             .clip(RoundedCornerShape(100.dp))
