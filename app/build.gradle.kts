@@ -48,7 +48,7 @@ android {
         }
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = "1.7.0"
     }
 
     compileOptions {
@@ -62,9 +62,9 @@ android {
 
 dependencies {
     // Jetpack Compose dependencies
-    implementation(platform("androidx.compose:compose-bom:2024.01.00"))
-    implementation("androidx.compose.ui:ui:1.4.0")
-    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation(platform("androidx.compose:compose-bom:2024.09.00"))
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui:1.9.4")
     implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
     implementation("androidx.activity:activity-compose")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
@@ -100,8 +100,9 @@ apollo {
     service("service") {
         packageName.set("com.example.score")
         introspection {
-            endpointUrl.set("https://score.cornellappdev.com/graphql")
+            endpointUrl.set("https://score-dev.cornellappdev.com/graphql")
             schemaFile.set(file("src/main/graphql/schema.graphqls"))
         }
     }
 }
+
