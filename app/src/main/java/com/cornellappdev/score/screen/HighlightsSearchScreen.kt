@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.highlights.ArticleHighlightCard
+import com.cornellappdev.score.components.highlights.HighlightsCardLazyColumn
 import com.cornellappdev.score.components.highlights.HighlightsScreenSearchFilterBar
 import com.cornellappdev.score.components.highlights.RecentSearches
 import com.cornellappdev.score.components.highlights.VideoHighlightCard
@@ -69,21 +70,8 @@ fun HighlightsSearchScreen(
                     )
                 } else {
                     Text("${filteredList.size} Results", style = bodyNormal)
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        item { Spacer(Modifier.width(8.dp)) }
-                        items(filteredList) { item ->
-                            when (item) {
-                                is HighlightData.Video -> VideoHighlightCard(item.data, true)
-                                is HighlightData.Article -> ArticleHighlightCard(item.data, true)
-                            }
-                        }
-                        item { Spacer(Modifier.width(8.dp)) }
-                    }
-                    Spacer(modifier = Modifier.height(24.dp))
+                    HighlightsCardLazyColumn(filteredList)
                 }
-
             }
         }
     }

@@ -1,8 +1,8 @@
 package com.cornellappdev.score.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,10 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,13 +27,11 @@ import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ScorePreview
-import com.cornellappdev.score.components.highlights.ArticleHighlightCard
+import com.cornellappdev.score.components.highlights.HighlightsCardLazyColumn
 import com.cornellappdev.score.components.highlights.HighlightsScreenSearchFilterBar
 import com.cornellappdev.score.components.highlights.RecentSearches
-import com.cornellappdev.score.components.highlights.VideoHighlightCard
 import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.model.Sport
-import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.highlightsList
@@ -44,7 +39,8 @@ import com.cornellappdev.score.util.sportList
 
 @Composable
 fun HighlightsSubScreenHeader(
-    header: String
+    header: String,
+    navigateBack: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -54,7 +50,8 @@ fun HighlightsSubScreenHeader(
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_left_arrowhead),
-            contentDescription = "back arrow"
+            contentDescription = "back arrow",
+            modifier = Modifier.clickable(onClick = { navigateBack() })
         )
         Text(header, style = heading2)
     }
@@ -64,7 +61,7 @@ fun HighlightsSubScreenHeader(
 @Composable
 private fun HighlightsSubScreenHeader() {
     ScorePreview {
-        HighlightsSubScreenHeader("Past 3 Days")
+        HighlightsSubScreenHeader("Past 3 Days", {})
     }
 }
 
@@ -83,17 +80,19 @@ fun HighlightsSubScreen(
             .padding(top = 24.dp)
     ) {
         Surface(
-            modifier = Modifier.wrapContentSize().dropShadow(
-                shape = RectangleShape,
-                shadow = Shadow(
-                    radius = 2.dp,
-                    color = Color.Black.copy(alpha = 0.05f),
-                    offset = DpOffset(0.dp, (2).dp)
-                )
-            ),
+            modifier = Modifier
+                .wrapContentSize()
+                .dropShadow(
+                    shape = RectangleShape,
+                    shadow = Shadow(
+                        radius = 2.dp,
+                        color = Color.Black.copy(alpha = 0.05f),
+                        offset = DpOffset(0.dp, (2).dp)
+                    )
+                ),
             color = White
         ) {
-            HighlightsSubScreenHeader(header)
+            HighlightsSubScreenHeader(header, {})
         }
         Spacer(modifier = Modifier.height(16.dp))
         HighlightsScreenSearchFilterBar(
@@ -101,7 +100,7 @@ fun HighlightsSubScreen(
 
             false
         ) //need viewmodel to handle comms between composables
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Column(
             modifier = Modifier.padding(horizontal = 24.dp)
         ) {
@@ -117,22 +116,8 @@ fun HighlightsSubScreen(
                         title = "No results yet.",
                     )
                 } else {
-                    Text("${filteredList.size} Results", style = bodyNormal)
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        item { Spacer(Modifier.width(8.dp)) }
-                        items(filteredList) { item ->
-                            when (item) {
-                                is HighlightData.Video -> VideoHighlightCard(item.data, true)
-                                is HighlightData.Article -> ArticleHighlightCard(item.data, true)
-                            }
-                        }
-                        item { Spacer(Modifier.width(8.dp)) }
-                    }
-                    Spacer(modifier = Modifier.height(24.dp))
+                    HighlightsCardLazyColumn(filteredList)
                 }
-
             }
         }
     }
