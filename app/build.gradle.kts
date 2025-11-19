@@ -48,7 +48,7 @@ android {
         }
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = "1.7.0"
     }
 
     compileOptions {
@@ -101,8 +101,9 @@ apollo {
     service("service") {
         packageName.set("com.example.score")
         introspection {
-            endpointUrl.set("https://score.cornellappdev.com/graphql")
+            endpointUrl.set("https://score-dev.cornellappdev.com/graphql")
             schemaFile.set(file("src/main/graphql/schema.graphqls"))
         }
     }
 }
+

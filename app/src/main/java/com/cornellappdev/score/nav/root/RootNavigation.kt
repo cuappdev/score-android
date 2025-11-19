@@ -6,12 +6,20 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -20,13 +28,13 @@ import androidx.navigation.toRoute
 import com.cornellappdev.score.R
 import com.cornellappdev.score.nav.ScoreNavHost
 import com.cornellappdev.score.nav.ScoreNavigationBar
-import com.cornellappdev.score.nav.root.ScoreScreens.GameDetailsPage
 import com.cornellappdev.score.theme.LocalInfiniteLoading
 import com.cornellappdev.score.theme.White
 import kotlinx.serialization.Serializable
 
 @Composable
 fun RootNavigation(
+    modifier: Modifier = Modifier,
     rootNavigationViewModel: RootNavigationViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
@@ -55,13 +63,27 @@ fun RootNavigation(
         }
     }
 
-
     Scaffold(
-        modifier = Modifier.fillMaxSize(), bottomBar = {
-            if (navBackStackEntry?.toScreen() is GameDetailsPage) {
+        modifier = modifier.fillMaxSize(), bottomBar = {
+            if (navBackStackEntry?.toScreen() is ScoreScreens.GameDetailsPage) {
                 return@Scaffold
             }
-            ScoreNavigationBar({ navController.navigate(it) }, navBackStackEntry)
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .dropShadow(
+                        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
+                        shadow = Shadow(
+                            radius = 6.dp,
+                            color = Color.Black.copy(alpha = 0.07f),
+                            offset = DpOffset(0.dp, (-5).dp)
+                        )
+                    ),
+                color = Color.White,
+                shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
+            ) {
+                ScoreNavigationBar({ navController.navigate(it) }, navBackStackEntry)
+            }
         },
         containerColor = White
     ) { innerPadding ->
