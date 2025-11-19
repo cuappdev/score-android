@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.VisualTransformation
@@ -36,12 +37,11 @@ import com.cornellappdev.score.theme.Style.bodyNormal
 @Composable
 fun HighlightsSearchBar(
     onSearchClick: () -> Unit,
-    isActive: Boolean,
-    focusRequester: FocusRequester? = null,
+    focusRequester: FocusRequester,
     modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    var searchQuery by remember { mutableStateOf("") }
+    var searchQuery by remember { mutableStateOf("") } //todo: to be handled by viewmodel
 
     Row(
         modifier = modifier
@@ -49,8 +49,7 @@ fun HighlightsSearchBar(
             .background(Color.White, RoundedCornerShape(100.dp))
             .border(1.dp, GrayLight, RoundedCornerShape(100.dp))
             .clip(RoundedCornerShape(100.dp))
-            .clickable(
-            ) { onSearchClick() }
+            .clickable { onSearchClick() }
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically) {
 
@@ -75,12 +74,11 @@ fun HighlightsSearchBar(
                 onValueChange = { searchQuery = it },
                 singleLine = true,
                 textStyle = bodyNormal,
-                readOnly = !isActive,
                 visualTransformation = VisualTransformation.None,
                 interactionSource = interactionSource,
                 modifier = Modifier
                     .then(
-                        focusRequester?.let { Modifier.focusRequester(it) } ?: Modifier
+                        focusRequester.let { Modifier.focusRequester(it) }
                     )
                     .fillMaxWidth()
                     .background(Color.Transparent)
@@ -136,5 +134,5 @@ private fun HighlightsSearchBarUIPreview() {
 @Preview
 @Composable
 private fun HighlightsSearchBarPreview() {
-    HighlightsSearchBar({}, true)
+    HighlightsSearchBar({}, FocusRequester() )
 }

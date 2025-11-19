@@ -15,8 +15,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.shadow.Shadow
@@ -95,11 +97,12 @@ fun HighlightsSubScreen(
             HighlightsSubScreenHeader(header, {})
         }
         Spacer(modifier = Modifier.height(16.dp))
+
+        val focusRequester = remember { FocusRequester() }
         HighlightsScreenSearchFilterBar(
             sportList,
-
-            false
-        ) //need viewmodel to handle comms between composables
+            focusRequester
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Column(
             modifier = Modifier.padding(horizontal = 24.dp)

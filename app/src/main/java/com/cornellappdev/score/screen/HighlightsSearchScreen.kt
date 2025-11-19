@@ -54,16 +54,15 @@ fun HighlightsSearchScreen(
         Spacer(modifier = Modifier.height(16.dp))
         HighlightsScreenSearchFilterBar(
             sportList,
-            true,
             focusRequester = focusRequester
-        ) //need viewmodel to handle comms between composables
+        )
         Spacer(modifier = Modifier.height(24.dp))
         Column(
             modifier = Modifier.padding(horizontal = 24.dp)
         ) {
             if (recentSearchList.isNotEmpty() && query.isEmpty()) { //start state: no search attempted yet
                 RecentSearches(recentSearchList)
-            } else if (query.isNotEmpty()) { //filtering - will pull this out to the viewmodel when i do that, just here for sanity check rn
+            } else if (query.isNotEmpty()) { //todo: will pull this out to the viewmodel, just here for sanity check rn
                 val filteredList = highlightsList.filter {
                     it.title.contains(query, ignoreCase = true)
                 }

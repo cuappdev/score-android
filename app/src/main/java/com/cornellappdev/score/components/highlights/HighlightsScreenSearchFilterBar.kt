@@ -2,6 +2,7 @@ package com.cornellappdev.score.components.highlights
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,10 +12,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.components.ScorePreview
@@ -25,9 +32,10 @@ import com.cornellappdev.score.util.sportList
 @Composable
 fun HighlightsScreenSearchFilterBar(
     sportList: List<Sport>,
-    isActive: Boolean,
-    focusRequester: FocusRequester? = null
+    focusRequester: FocusRequester
 ) {
+    val focusManager = LocalFocusManager.current
+    var isActive by remember { mutableStateOf(true) }
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
@@ -38,13 +46,31 @@ fun HighlightsScreenSearchFilterBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             HighlightsSearchBar(
-                onSearchClick = {},
-                isActive = isActive,
+                onSearchClick = {
+                    isActive = true
+                    focusRequester.requestFocus()
+                },
                 focusRequester = focusRequester,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
+                    .onFocusChanged { state ->
+                        // When the search bar loses focus, hide cancel
+                        if (!state.isFocused) {
+                            isActive = !isActive
+                        }
+                    }
             )
+
             if (isActive) {
-                Text("Cancel", style = bodyMedium)
+                Box(
+                    modifier = Modifier.clickable {
+                        isActive = true;
+                        focusManager.clearFocus(force = true)
+                        /*todo: clear the text in the search bar*/
+                    }
+                ) {
+                    Text("Cancel", style = bodyMedium)
+                }
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -56,7 +82,7 @@ fun HighlightsScreenSearchFilterBar(
 @Composable
 private fun HighlightsScreenSearchFilterBarActivePreview() {
     ScorePreview {
-        HighlightsScreenSearchFilterBar(sportList, true, focusRequester = FocusRequester())
+        HighlightsScreenSearchFilterBar(sportList, FocusRequester())
     }
 }
 
@@ -64,6 +90,6 @@ private fun HighlightsScreenSearchFilterBarActivePreview() {
 @Composable
 private fun HighlightsScreenSearchFilterBarInactivePreview() {
     ScorePreview {
-        HighlightsScreenSearchFilterBar(sportList, false, focusRequester = FocusRequester())
+        HighlightsScreenSearchFilterBar(sportList, FocusRequester())
     }
 }

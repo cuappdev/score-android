@@ -26,10 +26,9 @@ import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.sportList
 
-/*todo: needs a UIState */
 @Composable
 fun HighlightsScreen(
-    sportList: List<Sport> = emptyList(),
+    sportList: List<Sport> = emptyList(), //note - emptyLists are placeholders for nav to work, will replace will viewModel
     todayHighlightsList: List<HighlightData> = emptyList(),
     pastThreeHighlightsList: List<HighlightData> = emptyList(),
     toSearchScreen: () -> Unit
@@ -48,7 +47,7 @@ fun HighlightsScreen(
             HighlightsSearchBarUI(toSearchScreen)
         }
         Spacer(modifier = Modifier.height(16.dp))
-        HighlightsFilterRow(sportList, { /*handle with viewmodel*/ })
+        HighlightsFilterRow(sportList, { /*todo: handle with viewmodel*/ })
         Spacer(modifier = Modifier.height(24.dp))
         if (todayHighlightsList.isEmpty() && pastThreeHighlightsList.isEmpty()) {
             EmptyStateBox(
