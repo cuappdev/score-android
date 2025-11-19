@@ -1,6 +1,5 @@
 package com.cornellappdev.score.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.theme.Style.bodyNormal
@@ -80,7 +81,7 @@ fun <T : DisplayableFilter> ExpandableSection(
                 .fillMaxWidth()
                 .animateContentSize()
         ) {
-            AnimatedVisibility(visible = expanded) {
+            if (expanded) {
                 Column {
                     options.forEach { option ->
                         Row(
@@ -90,9 +91,12 @@ fun <T : DisplayableFilter> ExpandableSection(
                                 .clickable { onOptionSelected(option) }
                                 .padding(start = 16.dp, top = 4.dp, bottom = 4.dp)
                         ) {
-                            CustomRadioButton(
+                            ScoreRadioButton(
                                 selected = (selectedOption == option),
-                                onClick = { onOptionSelected(option) }
+                                onClick = { onOptionSelected(option) },
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .padding(end = 8.dp)
                             )
                             Text(option.displayName, style = bodyNormal)
                         }
@@ -100,5 +104,20 @@ fun <T : DisplayableFilter> ExpandableSection(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ExpandableSectionPreview() = ScorePreview {
+    var selected by remember { mutableStateOf<PriceFilter?>(null) }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        ExpandableSection(
+            title = "Price",
+            options = PriceFilter.entries,
+            selectedOption = selected,
+            onOptionSelected = { selected = it }
+        )
     }
 }

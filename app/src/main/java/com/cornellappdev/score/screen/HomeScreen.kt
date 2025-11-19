@@ -104,65 +104,55 @@ fun HomeScreen(
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState
             ) {
-                LazyColumn(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    contentPadding = PaddingValues(
-                        top = 32.dp,
-                        bottom = 24.dp
-                    ),
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 32.dp, bottom = 24.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    item {
-                        ExpandableSection(
-                            title = "Price",
-                            options = PriceFilter.entries,
-                            selectedOption = selectedPrice,
-                            onOptionSelected = { selectedPrice = it }
-                        )
-                    }
+                    ExpandableSection(
+                        title = "Price",
+                        options = PriceFilter.entries,
+                        selectedOption = selectedPrice,
+                        onOptionSelected = { selectedPrice = it }
+                    )
 
-                    item {
-                        ExpandableSection(
-                            title = "Location",
-                            options = LocationFilter.entries,
-                            selectedOption = selectedLocation,
-                            onOptionSelected = { selectedLocation = it }
-                        )
-                    }
+                    ExpandableSection(
+                        title = "Location",
+                        options = LocationFilter.entries,
+                        selectedOption = selectedLocation,
+                        onOptionSelected = { selectedLocation = it }
+                    )
 
-                    item {
-                        ExpandableSection(
-                            title = "Date of Game",
-                            options = DateFilter.entries,
-                            selectedOption = selectedDate,
-                            onOptionSelected = { selectedDate = it }
-                        )
-                    }
-                    item {
-                        ButtonPrimary(
-                            text = "Apply",
-                            icon = null,
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                // TODO: Apply filter logic via ViewModel
+                    ExpandableSection(
+                        title = "Date of Game",
+                        options = DateFilter.entries,
+                        selectedOption = selectedDate,
+                        onOptionSelected = { selectedDate = it }
+                    )
+
+                    ButtonPrimary(
+                        text = "Apply",
+                        icon = null,
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            // TODO: Apply filter logic via ViewModel
+                            showBottomSheet = false
+                        }
+                    )
+
+                    Text(
+                        "Reset",
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                // TODO: Reset filter logic
                                 showBottomSheet = false
-                            }
-                        )
-                    }
-                    item {
-                        Text(
-                            "Reset", fontSize = 14.sp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    // TODO: Reset filter logic
-                                    showBottomSheet = false
-                                },
-                            textAlign = TextAlign.Center
-                        )
-                    }
+                            },
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
         }

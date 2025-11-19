@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid) version "1.9.10"
-    id("com.apollographql.apollo") version "4.0.0"
+    alias(libs.plugins.apollo)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // this version matches your Kotlin version
@@ -73,6 +73,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.51.1")
     implementation(libs.androidx.material3)
     implementation(libs.androidx.foundation)
+    implementation(libs.androidx.compose.material3.material3)
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("com.google.accompanist:accompanist-pager:0.24.0-alpha")
@@ -90,7 +91,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
-    implementation("com.apollographql.apollo:apollo-runtime:4.0.0")
+    implementation(libs.apollo.runtime)
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
     lintChecks(libs.compose.lint.checks)

@@ -104,16 +104,13 @@ class ScoreRepository @Inject constructor(
 
         try {
             while (true) {
-                val pageResult: List<PagedGamesQuery.Game?>? = try {
+                val pageResult = runCatching {
                     withTimeout(PAGE_TIMEOUT_MILLIS) {
-                        apolloClient.query(PagedGamesQuery(limit = PAGE_LIMIT, offset = offset))
-                            .execute()
-                            .data
-                            ?.games
+                        apolloClient.query(
+                            PagedGamesQuery(limit = PAGE_LIMIT, offset = offset)
+                        ).execute().data?.games
                     }
-                } catch (e: Exception) {
-                    null
-                }
+                }.getOrNull()
 
                 if (pageResult == null) {
                     if (retries < MAX_RETRIES) {
@@ -133,20 +130,20 @@ class ScoreRepository @Inject constructor(
                 val pageGames: List<Game> = pageResult
                     .filterNotNull()
                     .filter { gql -> isValidSport(gql.sport ?: "") }
-                    .mapNotNull { gql ->
-                        val scores = gql.result?.split(",")?.getOrNull(1)?.split("-")
+                    .mapNotNull { graphqlGame ->
+                        val scores = graphqlGame.result?.split(",")?.getOrNull(1)?.split("-")
                         val cornellScore = scores?.getOrNull(0)?.toNumberOrNull()
                         val otherScore = scores?.getOrNull(1)?.toNumberOrNull()
-                        gql.team?.image?.let { imageUrl ->
+                        graphqlGame.team?.image?.let { imageUrl ->
                             Game(
-                                id = gql.id ?: "",
+                                id = graphqlGame.id ?: "",
                                 teamLogo = imageUrl,
-                                teamName = gql.team.name,
-                                teamColor = parseColor(gql.team.color).copy(alpha = 0.4f * 255),
-                                gender = if (gql.gender == "Mens") "Men's" else "Women's",
-                                sport = gql.sport,
-                                date = gql.date,
-                                city = gql.city,
+                                teamName = graphqlGame.team.name,
+                                teamColor = parseColor(graphqlGame.team.color).copy(alpha = 0.4f * 255),
+                                gender = if (graphqlGame.gender == "Mens") "Men's" else "Women's",
+                                sport = graphqlGame.sport,
+                                date = graphqlGame.date,
+                                city = graphqlGame.city,
                                 cornellScore = cornellScore,
                                 otherScore = otherScore
                             )
