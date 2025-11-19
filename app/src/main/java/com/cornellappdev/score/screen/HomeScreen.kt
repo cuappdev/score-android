@@ -273,7 +273,7 @@ private fun HomeLazyColumn(
             }
         } else {
             item {
-                EmptyStateBox()
+                EmptyStateBox(icon = R.drawable.ic_speaker_gray, title = "No games yet.")
             }
         }
     }
