@@ -4,10 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,18 +22,19 @@ import com.cornellappdev.score.theme.Style.metricSmallNormal
 
 
 @Composable
-fun RecentSearchItem(
+private fun RecentSearchItem(
     query: String
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = {/*search the query*/ })
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.clickable(onClick = {/*search the query*/ })
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Icon(
                 painter = painterResource(R.drawable.search),
@@ -44,14 +44,15 @@ fun RecentSearchItem(
             Text(query, style = metricSmallNormal)
         }
 
-        //this icon doesn't preview correctly since its too small, works when actually running though
-        Icon(
-            painter = painterResource(R.drawable.ic_close),
-            contentDescription = "close icon",
-            tint = Color.Unspecified,
-            modifier = Modifier.clickable(onClick = {/*delete this search from the recent searches list*/ })
-        )
-
+        IconButton(
+            onClick = {/*delete this search from the recent searches list*/ }
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_close),
+                contentDescription = "close icon",
+                tint = Color.Unspecified,
+            )
+        }
     }
 }
 
@@ -61,11 +62,11 @@ fun RecentSearches(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text("Recent searches", style = bodyMedium)
-        recentQueriesList.map { query ->
-            Spacer(Modifier.height(16.dp))
+        recentQueriesList.forEach { query ->
             RecentSearchItem(query)
         }
     }
