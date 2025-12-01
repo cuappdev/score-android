@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -45,12 +46,13 @@ private fun RecentSearchItem(
         }
 
         IconButton(
-            onClick = {/*delete this search from the recent searches list*/ }
+            onClick = {/*delete this search from the recent searches list*/ },
+            modifier = Modifier.size(24.dp)
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_close),
                 contentDescription = "close icon",
-                tint = Color.Unspecified,
+                tint = Color.Unspecified
             )
         }
     }
@@ -75,6 +77,14 @@ fun RecentSearches(
 @Preview
 @Composable
 private fun RecentSearchItemPreview() {
+    ScorePreview() {
+        RecentSearchItem("hello")
+    }
+}
+
+@Preview
+@Composable
+private fun RecentSearchPreview() {
     ScorePreview {
         RecentSearches(listOf("Columbia", "Men's ice hockey", "Late goal lifts No.6 men’s hockey"))
     }
