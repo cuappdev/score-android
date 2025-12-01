@@ -15,15 +15,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import com.cornellappdev.score.R
-import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.highlights.HighlightsCardLazyColumn
+import com.cornellappdev.score.components.highlights.HighlightsCardLazyColumnNumResultsHeader
 import com.cornellappdev.score.components.highlights.HighlightsScreenSearchFilterBar
-import com.cornellappdev.score.components.highlights.RecentSearches
 import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.model.Sport
-import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.recentSearchList
@@ -51,26 +48,11 @@ fun HighlightsSearchScreen(
             sportList
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Column(
-            modifier = Modifier.padding(horizontal = 24.dp)
-        ) {
-            if (recentSearchList.isNotEmpty() && query.isEmpty()) { //start state: no search attempted yet
-                RecentSearches(recentSearchList)
-            } else if (query.isNotEmpty()) { //todo: will pull this out to the viewmodel, just here for sanity check rn
-                val filteredList = highlightsList.filter {
-                    it.title.contains(query, ignoreCase = true)
-                }
-                if (filteredList.isEmpty()) {
-                    EmptyStateBox(
-                        icon = R.drawable.ic_kid_star,
-                        title = "No results yet.",
-                    )
-                } else {
-                    Text("${filteredList.size} Results", style = bodyNormal)
-                    HighlightsCardLazyColumn(filteredList)
-                }
-            }
-        }
+        HighlightsCardLazyColumn(
+            recentSearchList,
+            query,
+            highlightsList,
+            { HighlightsCardLazyColumnNumResultsHeader(highlightsList.size) })
     }
 }
 
@@ -80,7 +62,8 @@ data class HighlightsSearchScreenPreviewData(
     val query: String
 )
 
-class HighlightsSearchScreenPreviewProvider : PreviewParameterProvider<HighlightsSearchScreenPreviewData> {
+class HighlightsSearchScreenPreviewProvider :
+    PreviewParameterProvider<HighlightsSearchScreenPreviewData> {
     override val values: Sequence<HighlightsSearchScreenPreviewData> = sequence {
         yield(HighlightsSearchScreenPreviewData(sportList, recentSearchList, ""))
         yield(HighlightsSearchScreenPreviewData(sportList, recentSearchList, "Sports"))

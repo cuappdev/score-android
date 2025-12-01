@@ -40,7 +40,7 @@ import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.sportList
 
 @Composable
-fun HighlightsSubScreenHeader(
+private fun HighlightsSubScreenHeader(
     header: String,
     navigateBack: () -> Unit
 ) {
@@ -97,31 +97,15 @@ fun HighlightsSubScreen(
             HighlightsSubScreenHeader(header, {})
         }
         Spacer(modifier = Modifier.height(16.dp))
-
-        val focusRequester = remember { FocusRequester() }
         HighlightsScreenSearchFilterBar(
             sportList
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        Column(
-            modifier = Modifier.padding(horizontal = 24.dp)
-        ) {
-            if (recentSearchList.isNotEmpty() && query.isEmpty()) { //start state: no search attempted yet
-                RecentSearches(recentSearchList)
-            } else if (query.isNotEmpty()) { //filtering - will pull this out to the viewmodel when i do that, just here for sanity check rn
-                val filteredList = highlightsList.filter {
-                    it.title.contains(query, ignoreCase = true)
-                }
-                if (filteredList.isEmpty()) {
-                    EmptyStateBox(
-                        icon = R.drawable.ic_kid_star,
-                        title = "No results yet.",
-                    )
-                } else {
-                    HighlightsCardLazyColumn(filteredList)
-                }
-            }
-        }
+        Spacer(modifier = Modifier.height(24.dp))
+        HighlightsCardLazyColumn(
+            recentSearchList,
+            query,
+            highlightsList
+        )
     }
 }
 
