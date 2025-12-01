@@ -47,7 +47,7 @@ private fun RecentSearchItem(
 
         IconButton(
             onClick = {/*delete this search from the recent searches list*/ },
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(10.dp)
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_close),
