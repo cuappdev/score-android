@@ -12,9 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.EmptyStateBox
+import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.highlights.HighlightsCardLazyColumn
 import com.cornellappdev.score.components.highlights.HighlightsScreenSearchFilterBar
 import com.cornellappdev.score.components.highlights.RecentSearches
@@ -23,6 +26,7 @@ import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.util.highlightsList
+import com.cornellappdev.score.util.recentSearchList
 import com.cornellappdev.score.util.sportList
 
 @Composable
@@ -70,38 +74,32 @@ fun HighlightsSearchScreen(
     }
 }
 
-@Preview
-@Composable
-private fun HighlightsSearchScreenStartStatePreview() {
-    HighlightsSearchScreen(
-        sportList,
-        listOf("Columbia", "Men's ice hockey", "Late goal lifts No.6 men’s hockey"),
-        highlightsList,
-        "",
-        "Search All Highlights"
-    )
+data class HighlightsSearchScreenPreviewData(
+    val sportList: List<Sport>,
+    val recentSearchList: List<String>,
+    val query: String
+)
+
+class HighlightsSearchScreenPreviewProvider : PreviewParameterProvider<HighlightsSearchScreenPreviewData> {
+    override val values: Sequence<HighlightsSearchScreenPreviewData> = sequence {
+        yield(HighlightsSearchScreenPreviewData(sportList, recentSearchList, ""))
+        yield(HighlightsSearchScreenPreviewData(sportList, recentSearchList, "Sports"))
+        yield(HighlightsSearchScreenPreviewData(sportList, recentSearchList, "Hockey"))
+    }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-private fun HighlightsSearchScreenQueryMissPreview() {
-    HighlightsSearchScreen(
-        sportList,
-        listOf("Columbia", "Men's ice hockey", "Late goal lifts No.6 men’s hockey"),
-        highlightsList,
-        "Sports",
-        "Search All Highlights"
-    )
-}
-
-@Preview
-@Composable
-private fun HighlightsSearchScreenQueryHitPreview() {
-    HighlightsSearchScreen(
-        sportList,
-        listOf("Columbia", "Men's ice hockey", "Late goal lifts No.6 men’s hockey"),
-        highlightsList,
-        "Hockey",
-        "Search All Highlights"
-    )
+private fun HighlightScreenPreview(
+    @PreviewParameter(HighlightsSearchScreenPreviewProvider::class) previewData: HighlightsSearchScreenPreviewData
+) {
+    ScorePreview {
+        HighlightsSearchScreen(
+            sportList = previewData.sportList,
+            recentSearchList = previewData.recentSearchList,
+            highlightsList = highlightsList,
+            query = previewData.query,
+            header = "Search All Highlights"
+        )
+    }
 }

@@ -225,6 +225,8 @@ val sportSelectionList = listOf(
     SportSelection.SportSelect(Sport.FIELD_HOCKEY)
 )
 
+val recentSearchList = listOf("Columbia", "Men's ice hockey", "Late goal lifts No.6 men’s hockey")
+
 //Mixed type
 val highlightsList = listOf(
     HighlightData.Video
