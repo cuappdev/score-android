@@ -84,7 +84,7 @@ fun HighlightsSearchBar(
 
             BasicTextField(
                 value = searchQuery,
-                onValueChange = { searchQuery = it /*todo viewmodel load results*/},
+                onValueChange = { searchQuery = it /*todo viewmodel load results*/ },
                 singleLine = true,
                 textStyle = bodyNormal,
                 visualTransformation = VisualTransformation.None,
@@ -104,20 +104,18 @@ fun HighlightsSearchBar(
             )
         }
 
-        if (searchQuery.isNotEmpty()) {
-            AnimatedVisibility(
-                visible = searchQuery.isNotEmpty(),
-                enter = fadeIn() + scaleIn(),
-                exit = fadeOut() + scaleOut()
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_close),
-                    contentDescription = "clear field",
-                    modifier = Modifier.clickable(
-                        onClick = { searchQuery = "" }
-                    )
+        AnimatedVisibility(
+            visible = searchQuery.isNotEmpty(),
+            enter = fadeIn() + scaleIn(),
+            exit = fadeOut() + scaleOut()
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_close),
+                contentDescription = "clear field",
+                modifier = Modifier.clickable(
+                    onClick = { searchQuery = "" }
                 )
-            }
+            )
         }
     }
 }
