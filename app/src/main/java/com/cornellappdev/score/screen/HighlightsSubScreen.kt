@@ -100,8 +100,7 @@ fun HighlightsSubScreen(
 
         val focusRequester = remember { FocusRequester() }
         HighlightsScreenSearchFilterBar(
-            sportList,
-            focusRequester
+            sportList
         )
         Spacer(modifier = Modifier.height(8.dp))
         Column(

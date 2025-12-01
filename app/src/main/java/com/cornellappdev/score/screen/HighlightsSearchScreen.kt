@@ -9,10 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,19 +39,12 @@ fun HighlightsSearchScreen(
             .background(color = Color.White)
             .padding(top = 24.dp)
     ) {
-        val focusRequester = remember { FocusRequester() }
-
-        LaunchedEffect(Unit) {
-            focusRequester.requestFocus()
-        }
-
         Row(modifier = Modifier.padding(horizontal = 24.dp)) {
             Text(text = header, style = heading2)
         }
         Spacer(modifier = Modifier.height(16.dp))
         HighlightsScreenSearchFilterBar(
-            sportList,
-            focusRequester = focusRequester
+            sportList
         )
         Spacer(modifier = Modifier.height(24.dp))
         Column(
