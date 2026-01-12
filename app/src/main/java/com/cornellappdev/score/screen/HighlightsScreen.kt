@@ -19,7 +19,7 @@ import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.highlights.HighlightsCardRow
 import com.cornellappdev.score.components.highlights.HighlightsFilterRow
-import com.cornellappdev.score.components.highlights.HighlightsSearchBarUI
+import com.cornellappdev.score.components.highlights.HighlightsSearchEntryPointRow
 import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.Style.heading1
@@ -44,7 +44,7 @@ fun HighlightsScreen(
         ) {
             Text("Highlights", style = heading1)
             Spacer(modifier = Modifier.height(12.dp))
-            HighlightsSearchBarUI(toSearchScreen)
+            HighlightsSearchEntryPointRow(toSearchScreen)
         }
         Spacer(modifier = Modifier.height(16.dp))
         HighlightsFilterRow(sportList, { /*todo: handle with viewmodel*/ })

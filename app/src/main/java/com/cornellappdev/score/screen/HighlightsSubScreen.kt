@@ -15,10 +15,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.shadow.Shadow
@@ -27,16 +25,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
-import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.highlights.HighlightsCardLazyColumn
 import com.cornellappdev.score.components.highlights.HighlightsScreenSearchFilterBar
-import com.cornellappdev.score.components.highlights.RecentSearches
 import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.highlightsList
+import com.cornellappdev.score.util.recentSearchList
 import com.cornellappdev.score.util.sportList
 
 @Composable
@@ -44,24 +41,38 @@ private fun HighlightsSubScreenHeader(
     header: String,
     navigateBack: () -> Unit
 ) {
-    Row(
+    Surface(
         modifier = Modifier
-            .padding(horizontal = 24.dp, vertical = 12.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(96.dp)
+            .wrapContentSize()
+            .dropShadow(
+                shape = RectangleShape,
+                shadow = Shadow(
+                    radius = 2.dp,
+                    color = Color.Black.copy(alpha = 0.05f),
+                    offset = DpOffset(0.dp, (2).dp)
+                )
+            ),
+        color = White
     ) {
-        Icon(
-            painter = painterResource(R.drawable.ic_left_arrowhead),
-            contentDescription = "back arrow",
-            modifier = Modifier.clickable(onClick = { navigateBack() })
-        )
-        Text(header, style = heading2)
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 24.dp, vertical = 12.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(96.dp)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_left_arrowhead),
+                contentDescription = "back arrow",
+                modifier = Modifier.clickable(onClick = { navigateBack() })
+            )
+            Text(header, style = heading2)
+        }
     }
 }
 
 @Preview
 @Composable
-private fun HighlightsSubScreenHeader() {
+private fun HighlightsSubScreenHeaderPreview() {
     ScorePreview {
         HighlightsSubScreenHeader("Past 3 Days", {})
     }
@@ -73,7 +84,9 @@ fun HighlightsSubScreen(
     recentSearchList: List<String>,
     highlightsList: List<HighlightData>,
     query: String,
-    header: String
+    header: String,
+    onItemClick: () -> Unit,
+    onCloseClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -81,21 +94,7 @@ fun HighlightsSubScreen(
             .background(color = Color.White)
             .padding(top = 24.dp)
     ) {
-        Surface(
-            modifier = Modifier
-                .wrapContentSize()
-                .dropShadow(
-                    shape = RectangleShape,
-                    shadow = Shadow(
-                        radius = 2.dp,
-                        color = Color.Black.copy(alpha = 0.05f),
-                        offset = DpOffset(0.dp, (2).dp)
-                    )
-                ),
-            color = White
-        ) {
-            HighlightsSubScreenHeader(header, {})
-        }
+        HighlightsSubScreenHeader(header, {})
         Spacer(modifier = Modifier.height(16.dp))
         HighlightsScreenSearchFilterBar(
             sportList
@@ -104,7 +103,9 @@ fun HighlightsSubScreen(
         HighlightsCardLazyColumn(
             recentSearchList,
             query,
-            highlightsList
+            highlightsList,
+            onItemClick,
+            onCloseClick
         )
     }
 }
@@ -114,13 +115,10 @@ fun HighlightsSubScreen(
 private fun HighlightsSubScreenPreview() {
     HighlightsSubScreen(
         sportList = sportList,
-        recentSearchList = listOf(
-            "Columbia",
-            "Men's ice hockey",
-            "Late goal lifts No.6 men’s hockey"
-        ),
+        recentSearchList = recentSearchList,
         highlightsList = highlightsList,
         query = "s",
-        header = "Past 3 Days"
+        header = "Past 3 Days",
+        {}, {}
     )
 }
