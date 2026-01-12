@@ -24,14 +24,16 @@ import com.cornellappdev.score.theme.Style.metricSmallNormal
 
 @Composable
 private fun RecentSearchItem(
-    query: String
+    query: String,
+    onItemClick: () -> Unit,
+    onCloseClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = {/*search the query*/ })
+            .clickable(onClick = { onItemClick() /*search the query*/ })
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -46,7 +48,7 @@ private fun RecentSearchItem(
         }
 
         IconButton(
-            onClick = {/*delete this search from the recent searches list*/ },
+            onClick = { onCloseClick() /*delete this search from the recent searches list*/ },
             modifier = Modifier.size(10.dp)
         ) {
             Icon(
@@ -60,7 +62,9 @@ private fun RecentSearchItem(
 
 @Composable
 fun RecentSearches(
-    recentQueriesList: List<String>
+    recentQueriesList: List<String>,
+    onItemClick: () -> Unit,
+    onCloseClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -69,7 +73,7 @@ fun RecentSearches(
     ) {
         Text("Recent searches", style = bodyMedium)
         recentQueriesList.forEach { query ->
-            RecentSearchItem(query)
+            RecentSearchItem(query, onItemClick, onCloseClick)
         }
     }
 }
@@ -78,7 +82,7 @@ fun RecentSearches(
 @Composable
 private fun RecentSearchItemPreview() {
     ScorePreview() {
-        RecentSearchItem("hello")
+        RecentSearchItem("hello", {}, {})
     }
 }
 
@@ -86,6 +90,8 @@ private fun RecentSearchItemPreview() {
 @Composable
 private fun RecentSearchPreview() {
     ScorePreview {
-        RecentSearches(listOf("Columbia", "Men's ice hockey", "Late goal lifts No.6 men’s hockey"))
+        RecentSearches(
+            listOf("Columbia", "Men's ice hockey", "Late goal lifts No.6 men’s hockey"),
+            {}, {})
     }
 }

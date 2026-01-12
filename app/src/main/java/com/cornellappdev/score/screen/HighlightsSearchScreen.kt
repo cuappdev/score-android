@@ -2,13 +2,16 @@ package com.cornellappdev.score.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,7 +20,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.highlights.HighlightsCardLazyColumn
-import com.cornellappdev.score.components.highlights.HighlightsCardLazyColumnNumResultsHeader
+import com.cornellappdev.score.components.highlights.HighlightsCardLazyColumnResultsHeader
 import com.cornellappdev.score.components.highlights.HighlightsScreenSearchFilterBar
 import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.model.Sport
@@ -32,7 +35,9 @@ fun HighlightsSearchScreen(
     recentSearchList: List<String>,
     highlightsList: List<HighlightData>,
     query: String,
-    header: String
+    header: String,
+    onItemClick: () -> Unit,
+    onCloseClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -40,9 +45,8 @@ fun HighlightsSearchScreen(
             .background(color = Color.White)
             .padding(top = 24.dp)
     ) {
-        Row(modifier = Modifier.padding(horizontal = 24.dp)) {
-            Text(text = header, style = heading2)
-        }
+        Text(text = header, style = heading2, modifier = Modifier.padding(horizontal = 24.dp))
+
         Spacer(modifier = Modifier.height(16.dp))
         HighlightsScreenSearchFilterBar(
             sportList
@@ -51,8 +55,8 @@ fun HighlightsSearchScreen(
         HighlightsCardLazyColumn(
             recentSearchList,
             query,
-            highlightsList,
-            { HighlightsCardLazyColumnNumResultsHeader(highlightsList.size) })
+            highlightsList, onItemClick, onCloseClick,
+            { HighlightsCardLazyColumnResultsHeader(highlightsList.size) })
     }
 }
 
@@ -82,7 +86,9 @@ private fun HighlightScreenPreview(
             recentSearchList = previewData.recentSearchList,
             highlightsList = highlightsList,
             query = previewData.query,
-            header = "Search All Highlights"
+            header = "Search All Highlights",
+            onItemClick = {},
+            onCloseClick = {}
         )
     }
 }
