@@ -33,22 +33,32 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.theme.GrayLight
+import com.cornellappdev.score.theme.Style.bodyMedium
 import com.cornellappdev.score.theme.Style.bodyNormal
+
+private fun Modifier.highlightsSearchRowModifier(): Modifier = this
+    .fillMaxWidth()
+    .background(Color.White, RoundedCornerShape(100.dp))
+    .border(1.dp, GrayLight, RoundedCornerShape(100.dp))
+    .clip(RoundedCornerShape(100.dp))
+    .padding(horizontal = 16.dp, vertical = 8.dp)
 
 @Composable
 fun HighlightsSearchBar(
-    onSearchClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     var searchQuery by remember { mutableStateOf("") } //todo: to be handled by viewmodel
+    var isFocused by remember { mutableStateOf(true) }
 
+    val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
@@ -56,83 +66,101 @@ fun HighlightsSearchBar(
     }
 
     Row(
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(100.dp))
-            .border(1.dp, GrayLight, RoundedCornerShape(100.dp))
-            .clip(RoundedCornerShape(100.dp))
-            .clickable { onSearchClick() }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically) {
-
-        Icon(
-            painter = painterResource(R.drawable.search),
-            contentDescription = "search icon",
-            tint = Color.Unspecified
-        )
-
-        Spacer(Modifier.width(8.dp))
-
-        var isFocused by remember { mutableStateOf(false) }
-        Box(modifier = Modifier.weight(1f)) {
-            if (searchQuery.isEmpty()) {
-                Text(
-                    text = "Search keywords",
-                    style = bodyNormal.copy(color = Color.Gray)
-                )
-            }
-
-            BasicTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it /*todo viewmodel load results*/ },
-                singleLine = true,
-                textStyle = bodyNormal,
-                visualTransformation = VisualTransformation.None,
-                interactionSource = interactionSource,
-                modifier = Modifier
-                    .focusRequester(focusRequester)
-                    .fillMaxWidth()
-                    .background(Color.Transparent)
-                    .onFocusChanged { focusState ->
-                        if (focusState.isFocused && !isFocused) {
-                            /*todo call viewmodel -> clear highlight rows, load recent search history*/
-                            isFocused = true
-                        } else if (!focusState.isFocused) {
-                            isFocused = false
+    ) {
+        BasicTextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it /*todo viewmodel load results*/ },
+            singleLine = true,
+            textStyle = bodyNormal,
+            visualTransformation = VisualTransformation.None,
+            interactionSource = interactionSource,
+            enabled = true,
+            modifier = Modifier
+                .focusRequester(focusRequester)
+                .weight(1f)
+                .background(Color.Transparent)
+                .onFocusChanged { focusState ->
+                    isFocused = focusState.isFocused /* todo - consider making this an onFocus function in VM */
+                },
+            decorationBox = { innerTextField ->
+                Row(
+                    modifier =
+                        Modifier
+                            .highlightsSearchRowModifier()
+                            .padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.search),
+                            contentDescription = "search icon",
+                            tint = Color.Unspecified
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Box {
+                            innerTextField()
+                            if (searchQuery.isEmpty()) {
+                                Text(
+                                    text = "Search keywords",
+                                    style = bodyNormal.copy(color = Color.Gray)
+                                )
+                            }
                         }
                     }
-            )
-        }
+
+                    AnimatedVisibility(
+                        visible = searchQuery.isNotEmpty(),
+                        enter = fadeIn() + scaleIn(),
+                        exit = fadeOut() + scaleOut()
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_close),
+                            contentDescription = "clear field",
+                            modifier = Modifier.clickable(
+                                onClick = { searchQuery = "" }
+                            )
+                        )
+                    }
+                }
+            }
+        )
 
         AnimatedVisibility(
-            visible = searchQuery.isNotEmpty(),
-            enter = fadeIn() + scaleIn(),
-            exit = fadeOut() + scaleOut()
+            isFocused
         ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_close),
-                contentDescription = "clear field",
-                modifier = Modifier.clickable(
-                    onClick = { searchQuery = "" }
-                )
+            Text(
+                "Cancel",
+                style = bodyMedium,
+                modifier = Modifier.clickable {
+                    isFocused = false;
+                    focusManager.clearFocus(force = true);
+                    searchQuery = ""
+                    /*todo: clear the text in the search bar*/
+                }
             )
         }
     }
 }
 
-/*HighlightsSearchBarUI is the non-functional version of the HighlightsSearchBar, it's a dummy component that's clickable in HighlightsScreen and will navigate to HighlightsSearchScreen */
+/*HighlightsSearchEntryPointRow is the non-functional version of the HighlightsSearchBar, it's a dummy component that's clickable in HighlightsScreen and will navigate to HighlightsSearchScreen */
 @Composable
-fun HighlightsSearchBarUI(
+fun HighlightsSearchEntryPointRow(
     onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(100.dp))
-            .border(1.dp, GrayLight, RoundedCornerShape(100.dp))
-            .clip(RoundedCornerShape(100.dp))
-            .clickable(onClick = { onClick() })
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier =
+            Modifier
+                .highlightsSearchRowModifier()
+                .clickable { onClick() }
+                .then(modifier),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -151,12 +179,12 @@ fun HighlightsSearchBarUI(
 
 @Preview
 @Composable
-private fun HighlightsSearchBarUIPreview() {
-    HighlightsSearchBarUI({})
+private fun HighlightsSearchEntryPointRowPreview() {
+    HighlightsSearchEntryPointRow({})
 }
 
 @Preview
 @Composable
 private fun HighlightsSearchBarPreview() {
-    HighlightsSearchBar({})
+    HighlightsSearchBar()
 }
