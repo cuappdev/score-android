@@ -233,7 +233,7 @@ private fun HomeLazyColumn(
                         onClick = onAdvancedFilterClick
                     )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 SportSelectorHeader(
                     sports = uiState.selectionList,
                     selectedGender = uiState.selectedGender,
