@@ -12,8 +12,6 @@ activity = "1.8.0"
 constraintlayout = "2.1.4"
 runtimeAndroid = "1.7.2"
 apollo = "4.1.1"
-media3CommonKtx = "1.5.1"
-compose = "1.9.4"
 
 # Using alpha due to pull-to-refresh bug in stable
 # See https://stackoverflow.com/a/79126321
@@ -36,12 +34,7 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
 apollo-runtime = { module = "com.apollographql.apollo:apollo-runtime", version.ref = "apollo" }
-androidx-media3-common-ktx = { group = "androidx.media3", name = "media3-common-ktx", version.ref = "media3CommonKtx" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3Version" }
-androidx-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
-androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 
 
 [plugins]
