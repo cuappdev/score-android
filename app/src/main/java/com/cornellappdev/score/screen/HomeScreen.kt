@@ -102,57 +102,67 @@ fun HomeScreen(
             var selectedDate by remember { mutableStateOf<DateFilter?>(null) }
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
-                sheetState = sheetState
+                sheetState = sheetState,
+                containerColor = Color.White
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .padding(top = 32.dp, bottom = 24.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                    verticalArrangement = Arrangement.spacedBy(32.dp)
                 ) {
-                    ExpandableSection(
-                        title = "Price",
-                        options = PriceFilter.entries,
-                        selectedOption = selectedPrice,
-                        onOptionSelected = { selectedPrice = it }
-                    )
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(20.dp),
+                        modifier = Modifier.padding(end = 12.dp)
+                    ) {
+                        ExpandableSection(
+                            title = "Price",
+                            options = PriceFilter.entries,
+                            selectedOption = selectedPrice,
+                            onOptionSelected = { selectedPrice = it }
+                        )
 
-                    ExpandableSection(
-                        title = "Location",
-                        options = LocationFilter.entries,
-                        selectedOption = selectedLocation,
-                        onOptionSelected = { selectedLocation = it }
-                    )
+                        ExpandableSection(
+                            title = "Location",
+                            options = LocationFilter.entries,
+                            selectedOption = selectedLocation,
+                            onOptionSelected = { selectedLocation = it }
+                        )
 
-                    ExpandableSection(
-                        title = "Date of Game",
-                        options = DateFilter.entries,
-                        selectedOption = selectedDate,
-                        onOptionSelected = { selectedDate = it }
-                    )
+                        ExpandableSection(
+                            title = "Date of Game",
+                            options = DateFilter.entries,
+                            selectedOption = selectedDate,
+                            onOptionSelected = { selectedDate = it }
+                        )
+                    }
 
-                    ButtonPrimary(
-                        text = "Apply",
-                        icon = null,
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            // TODO: Apply filter logic via ViewModel
-                            showBottomSheet = false
-                        }
-                    )
-
-                    Text(
-                        "Reset",
-                        fontSize = 14.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                // TODO: Reset filter logic
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        ButtonPrimary(
+                            text = "Apply",
+                            icon = null,
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                // TODO: Apply filter logic via ViewModel
                                 showBottomSheet = false
-                            },
-                        textAlign = TextAlign.Center
-                    )
+                            }
+                        )
+
+                        Text(
+                            "Reset",
+                            fontSize = 14.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    // TODO: Reset filter logic
+                                    showBottomSheet = false
+                                },
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }

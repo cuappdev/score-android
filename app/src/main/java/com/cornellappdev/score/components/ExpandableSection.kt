@@ -82,21 +82,23 @@ fun <T : DisplayableFilter> ExpandableSection(
                 .animateContentSize()
         ) {
             if (expanded) {
-                Column {
+                Column(
+                    modifier = Modifier.padding(top = 20.dp, start = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
                     options.forEach { option ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { onOptionSelected(option) }
-                                .padding(start = 16.dp, top = 4.dp, bottom = 4.dp)
+                                .clickable { onOptionSelected(option) },
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             ScoreRadioButton(
                                 selected = (selectedOption == option),
                                 onClick = { onOptionSelected(option) },
                                 modifier = Modifier
                                     .size(20.dp)
-                                    .padding(end = 8.dp)
                             )
                             Text(option.displayName, style = bodyNormal)
                         }
