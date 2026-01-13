@@ -62,10 +62,9 @@ android {
 
 dependencies {
     // Jetpack Compose dependencies
-    implementation(platform("androidx.compose:compose-bom:2024.09.00"))
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.ui:ui:1.9.4")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
+    implementation(platform("androidx.compose:compose-bom:2025.11.01"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.activity:activity-compose")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
     implementation("androidx.navigation:navigation-compose:2.8.2")
@@ -82,7 +81,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation("io.coil-kt:coil-compose:2.0.0")
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.runtime.android)

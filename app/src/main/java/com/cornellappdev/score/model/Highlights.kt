@@ -18,6 +18,13 @@ data class ArticleHighlightData(
 )
 
 sealed class HighlightData {
-    data class Video(val data: VideoHighlightData) : HighlightData()
-    data class Article(val data: ArticleHighlightData) : HighlightData()
+    abstract val title: String
+
+    data class Video(val data: VideoHighlightData) : HighlightData() {
+        override val title = data.title
+    }
+
+    data class Article(val data: ArticleHighlightData) : HighlightData() {
+        override val title = data.title
+    }
 }
