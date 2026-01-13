@@ -2,7 +2,6 @@ package com.cornellappdev.score.screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -29,23 +27,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.R
-import com.cornellappdev.score.components.ButtonPrimary
-import com.cornellappdev.score.components.DateFilter
+import com.cornellappdev.score.components.AdvancedFilterBottomSheet
 import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
-import com.cornellappdev.score.components.ExpandableSection
 import com.cornellappdev.score.components.GameCard
 import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.components.IconButton
 import com.cornellappdev.score.components.LoadingScreen
-import com.cornellappdev.score.components.LocationFilter
-import com.cornellappdev.score.components.PriceFilter
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.SportSelectorHeader
@@ -97,74 +89,16 @@ fun HomeScreen(
             }
         }
         if (showBottomSheet) {
-            var selectedPrice by remember { mutableStateOf<PriceFilter?>(null) }
-            var selectedLocation by remember { mutableStateOf<LocationFilter?>(null) }
-            var selectedDate by remember { mutableStateOf<DateFilter?>(null) }
-            ModalBottomSheet(
-                onDismissRequest = { showBottomSheet = false },
+            AdvancedFilterBottomSheet(
                 sheetState = sheetState,
-                containerColor = Color.White
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 32.dp, bottom = 24.dp),
-                    verticalArrangement = Arrangement.spacedBy(32.dp)
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(20.dp),
-                        modifier = Modifier.padding(end = 12.dp)
-                    ) {
-                        ExpandableSection(
-                            title = "Price",
-                            options = PriceFilter.entries,
-                            selectedOption = selectedPrice,
-                            onOptionSelected = { selectedPrice = it }
-                        )
-
-                        ExpandableSection(
-                            title = "Location",
-                            options = LocationFilter.entries,
-                            selectedOption = selectedLocation,
-                            onOptionSelected = { selectedLocation = it }
-                        )
-
-                        ExpandableSection(
-                            title = "Date of Game",
-                            options = DateFilter.entries,
-                            selectedOption = selectedDate,
-                            onOptionSelected = { selectedDate = it }
-                        )
-                    }
-
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        ButtonPrimary(
-                            text = "Apply",
-                            icon = null,
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                // TODO: Apply filter logic via ViewModel
-                                showBottomSheet = false
-                            }
-                        )
-
-                        Text(
-                            "Reset",
-                            fontSize = 14.sp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    // TODO: Reset filter logic
-                                    showBottomSheet = false
-                                },
-                            textAlign = TextAlign.Center
-                        )
-                    }
+                onDismiss = { showBottomSheet = false },
+                onApply = { price, location, date ->
+                    // TODO: forward to ViewModel
+                },
+                onReset = {
+                    // TODO: reset filters in ViewModel
                 }
-            }
+            )
         }
     }
 }
