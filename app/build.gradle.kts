@@ -6,7 +6,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // this version matches your Kotlin version
     id("org.jetbrains.kotlin.plugin.serialization")
-
+    id("com.google.gms.google-services")
 }
 
 
@@ -70,7 +70,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.2")
     implementation(libs.material3)
     implementation("com.google.dagger:hilt-android:2.51.1")
-    implementation(libs.androidx.foundation.layout)
+    implementation(libs.androidx.foundation)
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("com.google.accompanist:accompanist-pager:0.24.0-alpha")
@@ -91,6 +91,8 @@ dependencies {
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
     lintChecks(libs.compose.lint.checks)
+    implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
+    implementation("com.google.firebase:firebase-analytics")
 }
 
 apollo {

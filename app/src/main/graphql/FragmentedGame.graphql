@@ -1,0 +1,33 @@
+query PagedGames($limit: Int!, $offset: Int!) {
+    games(limit: $limit, offset: $offset) {
+        id
+        city
+        date
+        gender
+        location
+        opponentId
+        result
+        sport
+        state
+        time
+        scoreBreakdown
+        utcDate
+        team {
+            id
+            color
+            image
+            name
+        }
+        boxScore {
+            team
+            period
+            time
+            description
+            scorer
+            assist
+            scoreBy
+            corScore
+            oppScore
+        }
+    }
+}
