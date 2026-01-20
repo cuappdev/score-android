@@ -124,7 +124,7 @@ fun NavBackStackEntry.toScreen(): ScoreScreens? =
         "ScoresScreen" -> toRoute<ScoreScreens.ScoresScreen>()
         "GameScoreSummaryPage" -> toRoute<ScoreScreens.GameScoreSummaryPage>()
         "HighlightsScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
-        "HighlightsSearchScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
+        "HighlightsSearchScreen" -> toRoute<ScoreScreens.HighlightsSearchScreen>()
         else -> throw IllegalArgumentException("Invalid screen")
     }
 
