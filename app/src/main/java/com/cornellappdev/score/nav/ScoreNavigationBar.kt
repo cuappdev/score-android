@@ -17,7 +17,6 @@ import com.cornellappdev.score.nav.root.toScreen
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.bodyMedium
-import com.cornellappdev.score.theme.White
 
 @Composable
 fun ScoreNavigationBar(
@@ -25,7 +24,10 @@ fun ScoreNavigationBar(
     navBackStackEntry: NavBackStackEntry?,
     modifier: Modifier = Modifier,
 ) {
-    NavigationBar(modifier = modifier, containerColor = White) {
+    NavigationBar(
+        modifier = modifier,
+        containerColor = Color.Transparent
+    ) {
         tabs.map { item ->
             val isSelected = item.screen == navBackStackEntry?.toScreen()
 

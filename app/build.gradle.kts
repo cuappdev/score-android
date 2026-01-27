@@ -48,7 +48,7 @@ android {
         }
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = "1.7.0"
     }
 
     compileOptions {
@@ -62,16 +62,15 @@ android {
 
 dependencies {
     // Jetpack Compose dependencies
-    implementation(platform("androidx.compose:compose-bom:2024.01.00"))
-    implementation("androidx.compose.ui:ui:1.4.0")
+    implementation(platform("androidx.compose:compose-bom:2025.11.01"))
+    implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
     implementation("androidx.activity:activity-compose")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
     implementation("androidx.navigation:navigation-compose:2.8.2")
     implementation(libs.material3)
     implementation("com.google.dagger:hilt-android:2.51.1")
-    implementation(libs.androidx.material3)
+    implementation(libs.androidx.foundation)
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("com.google.accompanist:accompanist-pager:0.24.0-alpha")
@@ -80,7 +79,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation("io.coil-kt:coil-compose:2.0.0")
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.runtime.android)
@@ -101,8 +99,9 @@ apollo {
     service("service") {
         packageName.set("com.example.score")
         introspection {
-            endpointUrl.set("https://score.cornellappdev.com/graphql")
+            endpointUrl.set("https://score-dev.cornellappdev.com/graphql")
             schemaFile.set(file("src/main/graphql/schema.graphqls"))
         }
     }
 }
+

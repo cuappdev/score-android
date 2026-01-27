@@ -198,7 +198,11 @@ fun GameDetailsContent(
                     Spacer(modifier = Modifier.height(16.dp))
                     ScoringSummary(gameCard.scoreEvent)
                 } else {
-                    EmptyStateBox(height = 200.dp, title = "No scores yet.")
+                    EmptyStateBox(
+                        icon = R.drawable.ic_speaker_gray,
+                        title = "No scores yet.",
+                        height = 200.dp
+                    )
                 }
             } else {
                 val context = LocalContext.current
@@ -328,6 +332,57 @@ private fun GameDetailsPreview() {
             hoursUntilGame = 144,
             homeScore = 78,
             oppScore = 75
+        ), navigateToGameScoreSummary = {}
+    )
+}
+
+@Preview
+@Composable
+private fun EmptyGameDetailsPreview() {
+    GameDetailsContent(
+        DetailsCardData(
+            title = "Championship Game",
+            opponentLogo = "https://example.com/logo.png",
+            opponent = "Wildcats",
+            opponentColor = Color(0xFF123456),
+            date = LocalDate.of(2025, 4, 20),
+            time = "7:30 PM",
+            dateString = "April 20, 2025",
+            isPastStartTime = true,
+            location = "Main Stadium",
+            locationString = "Main Stadium, Cityville",
+            gender = "Men's",
+            genderIcon = 123, // Dummy resource ID
+            sport = "Basketball",
+            sportIcon = 456, // Dummy resource ID
+            boxScore = emptyList(),
+            scoreBreakdown = listOf(
+                emptyList(),
+                emptyList()
+            ),
+            gameData = GameData(
+                Pair(
+                    TeamScore(
+                        team = TeamBoxScore(
+                            name = "Tigers",
+                        ),
+                        scoresByPeriod = emptyList(),
+                        totalScore = 0
+                    ),
+                    TeamScore(
+                        team = TeamBoxScore(
+                            name = "Wildcats",
+                        ),
+                        scoresByPeriod = emptyList(),
+                        totalScore = 0
+                    )
+                )
+            ),
+            scoreEvent = emptyList(),
+            daysUntilGame = 0,
+            hoursUntilGame = 0,
+            homeScore = 0,
+            oppScore = 0
         ), navigateToGameScoreSummary = {}
     )
 }

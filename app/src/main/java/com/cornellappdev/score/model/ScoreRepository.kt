@@ -2,7 +2,6 @@ package com.cornellappdev.score.model
 
 import android.util.Log
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.exception.ApolloException
 import com.cornellappdev.score.util.isValidSport
 import com.cornellappdev.score.util.parseColor
 import com.example.score.GameByIdQuery
@@ -18,6 +17,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val TIMEOUT_TIME_MILLIS = 5000L
+private const val PAGE_LIMIT = 100
+private const val MAX_RETRIES = 3
+private const val PAGE_TIMEOUT_MILLIS = 3000L
 
 /**
  * This is a singleton responsible for fetching and caching all data for Score.
@@ -37,12 +39,6 @@ class ScoreRepository @Inject constructor(
     private val _currentGameFlow =
         MutableStateFlow<ApiResponse<GameDetailsGame>>(ApiResponse.Loading)
     val currentGamesFlow = _currentGameFlow.asStateFlow()
-
-    companion object {
-        private const val PAGE_LIMIT = 100
-        private const val MAX_RETRIES = 3
-        private const val PAGE_TIMEOUT_MILLIS = 3000L
-    }
 
     /**
      * Asynchronously fetches the list of games from the API. Once finished, will send down
@@ -108,16 +104,13 @@ class ScoreRepository @Inject constructor(
 
         try {
             while (true) {
-                val pageResult: List<PagedGamesQuery.Game?>? = try {
+                val pageResult = runCatching {
                     withTimeout(PAGE_TIMEOUT_MILLIS) {
-                        apolloClient.query(PagedGamesQuery(limit = PAGE_LIMIT, offset = offset))
-                            .execute()
-                            .data
-                            ?.games
+                        apolloClient.query(
+                            PagedGamesQuery(limit = PAGE_LIMIT, offset = offset)
+                        ).execute().data?.games
                     }
-                } catch (e: Exception) {
-                    null
-                }
+                }.getOrNull()
 
                 if (pageResult == null) {
                     if (retries < MAX_RETRIES) {
@@ -137,20 +130,20 @@ class ScoreRepository @Inject constructor(
                 val pageGames: List<Game> = pageResult
                     .filterNotNull()
                     .filter { gql -> isValidSport(gql.sport ?: "") }
-                    .mapNotNull { gql ->
-                        val scores = gql.result?.split(",")?.getOrNull(1)?.split("-")
+                    .mapNotNull { graphqlGame ->
+                        val scores = graphqlGame.result?.split(",")?.getOrNull(1)?.split("-")
                         val cornellScore = scores?.getOrNull(0)?.toNumberOrNull()
                         val otherScore = scores?.getOrNull(1)?.toNumberOrNull()
-                        gql.team?.image?.let { imageUrl ->
+                        graphqlGame.team?.image?.let { imageUrl ->
                             Game(
-                                id = gql.id ?: "",
+                                id = graphqlGame.id ?: "",
                                 teamLogo = imageUrl,
-                                teamName = gql.team.name,
-                                teamColor = parseColor(gql.team.color).copy(alpha = 0.4f * 255),
-                                gender = if (gql.gender == "Mens") "Men's" else "Women's",
-                                sport = gql.sport,
-                                date = gql.date,
-                                city = gql.city,
+                                teamName = graphqlGame.team.name,
+                                teamColor = parseColor(graphqlGame.team.color).copy(alpha = 0.4f * 255),
+                                gender = if (graphqlGame.gender == "Mens") "Men's" else "Women's",
+                                sport = graphqlGame.sport,
+                                date = graphqlGame.date,
+                                city = graphqlGame.city,
                                 cornellScore = cornellScore,
                                 otherScore = otherScore
                             )
@@ -180,33 +173,26 @@ class ScoreRepository @Inject constructor(
     fun getGameById(id: String) = appScope.launch {
         _currentGameFlow.value = ApiResponse.Loading
         try {
-            val response =
+            val result =
                 withTimeout(TIMEOUT_TIME_MILLIS) {
-                    apolloClient.query(GameByIdQuery(id)).execute()
+                    apolloClient.query(GameByIdQuery(id)).execute().toResult()
                 }
 
-            if (response.hasErrors()) {
-                Log.e("ScoreRepository", "Error fetching game with id: $id: ${response.errors}")
-                _currentGameFlow.value = ApiResponse.Error
-                return@launch
-            }
 
-            response.data?.game?.let {
+            result.getOrNull()?.game?.let {
                 _currentGameFlow.value = ApiResponse.Success(it.toGameDetails())
             } ?: _currentGameFlow.update { ApiResponse.Error }
-
-        } catch (e: ApolloException) {
-            Log.e("ScoreRepository", "Error fetching game with id: $id: ", e)
-            _currentGameFlow.value = ApiResponse.Error
         } catch (e: Exception) {
-            Log.e("ScoreRepository", "A timeout or other error occurred for game id: $id", e)
+            Log.e("ScoreRepository", "Error fetching game with id: ${id}: ", e)
             _currentGameFlow.value = ApiResponse.Error
         }
     }
-
 }
 
 fun String.toNumberOrNull(): Number? {
-    return this.trim().toFloatOrNull() ?: this.trim().toIntOrNull()
+    return when {
+        this.contains(".") -> this.toFloatOrNull()  // Try converting to Float if there's a decimal
+        else -> this.toIntOrNull()  // Otherwise, try converting to Int
+    }
 }
 
