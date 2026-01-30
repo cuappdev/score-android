@@ -1,13 +1,15 @@
 type Query {
+  articles(sportsType: String): [ArticleType]
+
   youtubeVideos: [YoutubeVideoType]
 
   youtubeVideo(id: String!): YoutubeVideoType
 
-  games: [GameType]
+  games("Number of games to return" limit: Int = 100, "Number of games to skip" offset: Int = 0): [GameType]
 
   game(id: String!): GameType
 
-  gameByData(city: String!, date: String!, gender: String!, location: String, opponentId: String!, sport: String!, state: String!, time: String!): GameType
+  gameByData(city: String!, date: String!, gender: String!, location: String, opponentId: String!, sport: String!, state: String!, time: String!, ticketLink: String): GameType
 
   gamesBySport(sport: String!): [GameType]
 
@@ -20,6 +22,30 @@ type Query {
   team(id: String!): TeamType
 
   teamByName(name: String!): TeamType
+}
+
+"""
+A GraphQL type representing a news article.
+
+Attributes:
+    - title: The title of the article
+    - image: The filename of the article's main image
+    - sports_type: The specific sport category
+    - published_at: The publication date
+    - url: The URL to the full article
+"""
+type ArticleType {
+  id: String
+
+  title: String!
+
+  image: String
+
+  sportsType: String!
+
+  publishedAt: String!
+
+  url: String!
 }
 
 """
@@ -42,6 +68,8 @@ type YoutubeVideoType {
 
   thumbnail: String!
 
+  b64Thumbnail: String!
+
   url: String!
 
   publishedAt: String!
@@ -63,6 +91,7 @@ Attributes:
     - `time`: The time of the game. (optional)
     - `box_score`: The box score of the game.
     - `score_breakdown`: The score breakdown of the game.
+    - `ticket_link`: The ticket link of the game. (optional)
 """
 type GameType {
   id: String
@@ -90,6 +119,10 @@ type GameType {
   scoreBreakdown: [[String]]
 
   team: TeamType
+
+  utcDate: String
+
+  ticketLink: String
 }
 
 """
@@ -133,6 +166,7 @@ Attributes:
     - `id`: The ID of the team (optional).
     - `color`: The color of the team.
     - `image`: The image of the team (optional).
+    - `b64_image`: The base64 encoded image of the team (optional).
     - `name`: The name of the team.
 """
 type TeamType {
@@ -142,6 +176,8 @@ type TeamType {
 
   image: String
 
+  b64Image: String
+
   name: String!
 }
 
@@ -149,17 +185,22 @@ type Mutation {
   """
   Creates a new game.
   """
-  createGame(boxScore: String, city: String!, date: String!, gender: String!, location: String, opponentId: String!, result: String, scoreBreakdown: String, sport: String!, state: String!, time: String!): CreateGame
+  createGame(boxScore: String, city: String!, date: String!, gender: String!, location: String, opponentId: String!, result: String, scoreBreakdown: String, sport: String!, state: String!, ticketLink: String, time: String!, utcDate: String): CreateGame
 
   """
   Creates a new team.
   """
-  createTeam(color: String!, image: String, name: String!): CreateTeam
+  createTeam(b64Image: String, color: String!, image: String, name: String!): CreateTeam
 
   """
   Creates a new youtube video.
   """
-  createYoutubeVideo(description: String!, id: String!, publishedAt: String!, thumbnail: String!, title: String!, url: String!): CreateYoutubeVideo
+  createYoutubeVideo(b64Thumbnail: String!, description: String!, id: String!, publishedAt: String!, thumbnail: String!, title: String!, url: String!): CreateYoutubeVideo
+
+  """
+  Creates a new article.
+  """
+  createArticle(image: String, publishedAt: String!, slug: String!, sportsType: String!, title: String!, url: String!): CreateArticle
 }
 
 type CreateGame {
@@ -172,6 +213,10 @@ type CreateTeam {
 
 type CreateYoutubeVideo {
   youtubeVideo: YoutubeVideoType
+}
+
+type CreateArticle {
+  article: ArticleType
 }
 
 """
