@@ -74,7 +74,7 @@ fun HomeScreen(
             }
 
             is ApiResponse.Error -> {
-                ErrorState({ homeViewModel.onRefresh() }, "Oops! Schedules failed to load.")
+                ErrorState({homeViewModel.onRefresh() }, "Oops! Schedules failed to load.")
             }
 
             is ApiResponse.Success -> {

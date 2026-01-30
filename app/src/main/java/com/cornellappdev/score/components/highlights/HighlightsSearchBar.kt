@@ -48,7 +48,7 @@ private fun Modifier.highlightsSearchRowModifier(): Modifier = this
     .background(Color.White, RoundedCornerShape(100.dp))
     .border(1.dp, GrayLight, RoundedCornerShape(100.dp))
     .clip(RoundedCornerShape(100.dp))
-    .padding(horizontal = 16.dp, vertical = 8.dp)
+    .padding(horizontal = 8.dp, vertical = 8.dp)
 
 @Composable
 fun HighlightsSearchBar(
@@ -89,8 +89,7 @@ fun HighlightsSearchBar(
                 Row(
                     modifier =
                         Modifier
-                            .highlightsSearchRowModifier()
-                            .padding(horizontal = 8.dp),
+                            .highlightsSearchRowModifier(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -103,7 +102,7 @@ fun HighlightsSearchBar(
                             contentDescription = "search icon",
                             tint = Color.Unspecified
                         )
-                        Spacer(Modifier.width(8.dp))
+                        Spacer(Modifier.width(4.dp))
                         Box {
                             innerTextField()
                             if (searchQuery.isEmpty()) {
@@ -162,7 +161,7 @@ fun HighlightsSearchEntryPointRow(
                 .clickable { onClick() }
                 .then(modifier),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Icon(
             painter = painterResource(R.drawable.search),

@@ -30,11 +30,13 @@ import com.cornellappdev.score.components.highlights.HighlightsCardLazyColumn
 import com.cornellappdev.score.components.highlights.HighlightsScreenSearchFilterBar
 import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.model.Sport
+import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.recentSearchList
 import com.cornellappdev.score.util.sportList
+import com.cornellappdev.score.util.sportSelectionList
 
 @Composable
 private fun HighlightsSubScreenHeader(
@@ -80,7 +82,7 @@ private fun HighlightsSubScreenHeaderPreview() {
 
 @Composable
 fun HighlightsSubScreen(
-    sportList: List<Sport>,
+    sportList: List<SportSelection>,
     recentSearchList: List<String>,
     highlightsList: List<HighlightData>,
     query: String,
@@ -114,7 +116,7 @@ fun HighlightsSubScreen(
 @Composable
 private fun HighlightsSubScreenPreview() {
     HighlightsSubScreen(
-        sportList = sportList,
+        sportList = sportSelectionList,
         recentSearchList = recentSearchList,
         highlightsList = highlightsList,
         query = "s",

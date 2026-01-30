@@ -11,11 +11,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.model.Sport
+import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.util.sportList
+import com.cornellappdev.score.util.sportSelectionList
 
 @Composable
 fun HighlightsScreenSearchFilterBar(
-    sportList: List<Sport>
+    sportList: List<SportSelection>
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         HighlightsSearchBar(modifier = Modifier.padding(horizontal = 24.dp))
@@ -28,6 +30,6 @@ fun HighlightsScreenSearchFilterBar(
 @Composable
 private fun HighlightsScreenSearchFilterBarPreview() {
     ScorePreview {
-        HighlightsScreenSearchFilterBar(sportList)
+        HighlightsScreenSearchFilterBar(sportSelectionList)
     }
 }

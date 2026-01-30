@@ -27,24 +27,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.model.Sport
+import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Stroke
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.sportList
+import com.cornellappdev.score.util.sportSelectionList
 
 @Composable
 private fun HighlightsFilterButton(
     sport: Sport,
-    onFilterSelected: (Sport) -> Unit,
+    onFilterSelected: (SportSelection) -> Unit,
     isSelected: Boolean = false,
 ) {
     OutlinedButton(
         modifier = Modifier
             .height(32.dp),
         border = BorderStroke(width = 1.dp, color = Stroke),
-        onClick = { onFilterSelected(sport) },
+        onClick = { onFilterSelected(SportSelection.SportSelect(sport)) },
         shape = RoundedCornerShape(100.dp),
         colors = outlinedButtonColors(
             containerColor = if (isSelected) GrayLight else White,
@@ -67,21 +69,26 @@ private fun HighlightsFilterButton(
 
 @Composable
 fun HighlightsFilterRow(
-    sportList: List<Sport>,
-    onFilterSelected: (Sport) -> Unit,
+    sportList: List<SportSelection>,
+    onFilterSelected: (SportSelection) -> Unit,
 ) {
     LazyRow(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(start = 24.dp, end = 24.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        item { Spacer(Modifier.width(12.dp)) }
-        items(sportList) { item ->
-            HighlightsFilterButton(item, onFilterSelected)
+        items(
+            items = sportList.filterIsInstance<SportSelection.SportSelect>(),
+            key = { it.sport }
+        ) { selection ->
+            HighlightsFilterButton(
+                sport = selection.sport,
+                onFilterSelected = onFilterSelected
+            )
         }
-        item { Spacer(Modifier.width(12.dp)) }
     }
+
 }
 
 @Preview
@@ -94,5 +101,5 @@ private fun HighlightsFilterButtonPreview() {
 @Preview
 @Composable
 private fun HighlightsFilterRowPreview() {
-    HighlightsFilterRow(sportList, {})
+    HighlightsFilterRow(sportSelectionList, {})
 }

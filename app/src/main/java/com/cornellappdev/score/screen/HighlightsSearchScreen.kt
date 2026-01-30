@@ -24,14 +24,16 @@ import com.cornellappdev.score.components.highlights.HighlightsCardLazyColumnRes
 import com.cornellappdev.score.components.highlights.HighlightsScreenSearchFilterBar
 import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.model.Sport
+import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.recentSearchList
 import com.cornellappdev.score.util.sportList
+import com.cornellappdev.score.util.sportSelectionList
 
 @Composable
 fun HighlightsSearchScreen(
-    sportList: List<Sport>,
+    sportList: List<SportSelection>,
     recentSearchList: List<String>,
     highlightsList: List<HighlightData>,
     query: String,
@@ -61,7 +63,7 @@ fun HighlightsSearchScreen(
 }
 
 data class HighlightsSearchScreenPreviewData(
-    val sportList: List<Sport>,
+    val sportList: List<SportSelection>,
     val recentSearchList: List<String>,
     val query: String
 )
@@ -69,9 +71,9 @@ data class HighlightsSearchScreenPreviewData(
 class HighlightsSearchScreenPreviewProvider :
     PreviewParameterProvider<HighlightsSearchScreenPreviewData> {
     override val values: Sequence<HighlightsSearchScreenPreviewData> = sequence {
-        yield(HighlightsSearchScreenPreviewData(sportList, recentSearchList, ""))
-        yield(HighlightsSearchScreenPreviewData(sportList, recentSearchList, "Sports"))
-        yield(HighlightsSearchScreenPreviewData(sportList, recentSearchList, "Hockey"))
+        yield(HighlightsSearchScreenPreviewData(sportSelectionList, recentSearchList, ""))
+        yield(HighlightsSearchScreenPreviewData(sportSelectionList, recentSearchList, "Sports"))
+        yield(HighlightsSearchScreenPreviewData(sportSelectionList, recentSearchList, "Hockey"))
     }
 }
 

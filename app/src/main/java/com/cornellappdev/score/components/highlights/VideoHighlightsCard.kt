@@ -94,17 +94,21 @@ fun VideoHighlightCardBody(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(videoHighlight.sport.emptyIcon),
-                    contentDescription = "Sport icon",
-                    modifier = Modifier.size(24.dp),
-                    tint = Color.Unspecified
-                )
-                Icon(
-                    painter = painterResource(if (videoHighlight.gender == GenderDivision.FEMALE) R.drawable.ic_gender_women else R.drawable.ic_gender_men),
-                    contentDescription = "Gender icon",
-                    tint = Color.Unspecified
-                )
+                if (videoHighlight.sport != null) {
+                    Icon(
+                        painter = painterResource(videoHighlight.sport.emptyIcon),
+                        contentDescription = "Sport icon",
+                        modifier = Modifier.size(24.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+                if (videoHighlight.gender != null) {
+                    Icon(
+                        painter = painterResource(if (videoHighlight.gender == GenderDivision.FEMALE) R.drawable.ic_gender_women else R.drawable.ic_gender_men),
+                        contentDescription = "Gender icon",
+                        tint = Color.Unspecified
+                    )
+                }
             }
         }
         Spacer(Modifier.height(8.dp))
