@@ -2,8 +2,10 @@ package com.cornellappdev.score.util
 
 import android.util.Log
 import java.time.Duration
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -66,6 +68,21 @@ fun parseDateTimeOrNull(date: String, time: String): LocalDateTime? {
     }
 }
 
+/**
+ * Parses an ISO-8601 timestamp: yyyy-MM-dd'T'HH:mm:ss'Z' into a LocalDateTime object.
+ *
+ * @param strDate the date string to parse, in the format "yyyy-MM-dd'T'HH:mm:ss'Z'"
+ * @return a LocalDateTime object if parsing succeeds, or null if the format is invalid
+ */
+fun parseIsoDateToLocalDateOrNull(strDate: String): LocalDate? {
+    return try {
+        Instant.parse(strDate)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate()
+    } catch (e: Exception) {
+        null
+    }
+}
 
 /**
  * Formats a date and time string into a user-friendly display string.
