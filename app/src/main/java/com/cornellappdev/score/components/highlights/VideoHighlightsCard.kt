@@ -135,7 +135,7 @@ fun VideoHighlightCardBody(
             }
             Text(
                 style = labelsNormal,
-                text = videoHighlight.date
+                text = videoHighlight.dateString
             )
         }
     }
@@ -169,7 +169,8 @@ class VideoHighlightsPreviewProvider : PreviewParameterProvider<VideoHighlightPr
                 "vs Columbia",
                 "maxresdefault.jpg",
                 "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-                "11/9",
+                null,
+                "11/9/25",
                 Sport.BASEBALL,
                 GenderDivision.MALE,
                 "0:44"
@@ -178,7 +179,8 @@ class VideoHighlightsPreviewProvider : PreviewParameterProvider<VideoHighlightPr
                 "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
                 "maxresdefault.jpg",
                 "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-                "11/9",
+                null,
+                "11/9/25",
                 Sport.BASEBALL,
                 GenderDivision.MALE,
                 "0:44"

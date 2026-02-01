@@ -95,7 +95,7 @@ fun ArticleHighlightCard(
                 Text(
                     color = Color.White,
                     style = labelsNormal,
-                    text = articleHighlight.date
+                    text = articleHighlight.dateString
                 )
             }
         }
@@ -110,6 +110,7 @@ private fun ArticleHighlightCardPreview() {
             "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
             "maxresdefault.jpg",
             "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+            null,
             "11/9",
             Sport.ICE_HOCKEY
         ),
@@ -125,6 +126,7 @@ private fun WideArticleHighlightCardPreview() {
             "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
             "maxresdefault.jpg",
             "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+            null,
             "11/9",
             Sport.ICE_HOCKEY
         ),
