@@ -52,7 +52,9 @@ private fun VideoHighlightCardHeader(
         AsyncImage(
             model = imageUrl,
             contentDescription = "Highlight article image",
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
         )
         Box(
             modifier = Modifier
@@ -163,7 +165,8 @@ class VideoHighlightsPreviewProvider : PreviewParameterProvider<VideoHighlightPr
                 "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
                 "11/9",
                 Sport.BASEBALL,
-                GenderDivision.MALE
+                GenderDivision.MALE,
+                "0:44"
             ),
             VideoHighlightData(
                 "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
@@ -171,7 +174,8 @@ class VideoHighlightsPreviewProvider : PreviewParameterProvider<VideoHighlightPr
                 "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
                 "11/9",
                 Sport.BASEBALL,
-                GenderDivision.MALE
+                GenderDivision.MALE,
+                "0:44"
             )
         )
         for (sample in samples) {

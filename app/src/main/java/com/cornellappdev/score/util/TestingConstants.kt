@@ -236,7 +236,8 @@ val highlightsList = listOf(
         "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
         "11/09",
         Sport.BASEBALL,
-        GenderDivision.MALE
+        GenderDivision.MALE,
+        "0:44"
     )),
     HighlightData.Article
     (ArticleHighlightData(
@@ -253,7 +254,8 @@ val highlightsList = listOf(
         "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
         "11/9",
         Sport.BASEBALL,
-        GenderDivision.MALE
+        GenderDivision.MALE,
+        "0:44"
     )),
     HighlightData.Article
     (ArticleHighlightData(
@@ -270,6 +272,7 @@ val highlightsList = listOf(
         "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
         "11/9",
         Sport.BASEBALL,
-        GenderDivision.MALE
+        GenderDivision.MALE,
+        "0:44"
     ))
 )

@@ -19,6 +19,7 @@ import com.cornellappdev.score.screen.PastGamesScreen
 import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.recentSearchList
 import com.cornellappdev.score.util.sportList
+import com.cornellappdev.score.util.sportSelectionList
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
@@ -77,7 +78,7 @@ fun ScoreNavHost(navController: NavHostController) {
         composable<ScoreScreens.HighlightsSearchScreen> { backStackEntry ->
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
                 HighlightsSearchScreen(
-                    sportList = sportList,
+                    sportList = sportSelectionList,
                     recentSearchList = recentSearchList,
                     highlightsList = highlightsList,
                     query = "",
