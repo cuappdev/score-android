@@ -95,14 +95,13 @@ fun HighlightsSearchBar(
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.search),
                             contentDescription = "search icon",
                             tint = Color.Unspecified
                         )
-                        Spacer(Modifier.width(4.dp))
                         Box {
                             innerTextField()
                             if (searchQuery.isEmpty()) {

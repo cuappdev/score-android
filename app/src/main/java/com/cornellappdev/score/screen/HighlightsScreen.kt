@@ -47,7 +47,8 @@ fun HighlightsScreen(
     ) {
         when (uiState.loadedState) {
             is ApiResponse.Loading -> {
-                LoadingScreen("Loading Upcoming...", "Loading Schedules...")
+                //todo make highlights loading screen, this one's for the home page
+                LoadingScreen("Loading Highlights...", "Loading Schedules...")
             }
 
             is ApiResponse.Error -> {

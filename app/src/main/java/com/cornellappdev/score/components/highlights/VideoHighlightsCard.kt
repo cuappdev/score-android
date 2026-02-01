@@ -96,17 +96,23 @@ fun VideoHighlightCardBody(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (videoHighlight.sport != null) {
+                videoHighlight.sport?.let { sport ->
                     Icon(
-                        painter = painterResource(videoHighlight.sport.emptyIcon),
+                        painter = painterResource(sport.emptyIcon),
                         contentDescription = "Sport icon",
                         modifier = Modifier.size(24.dp),
                         tint = Color.Unspecified
                     )
                 }
-                if (videoHighlight.gender != null) {
+
+                videoHighlight.gender?.let { gender ->
+                    val iconRes = when (gender) {
+                        GenderDivision.FEMALE -> R.drawable.ic_gender_women
+                        else -> R.drawable.ic_gender_men
+                    }
+
                     Icon(
-                        painter = painterResource(if (videoHighlight.gender == GenderDivision.FEMALE) R.drawable.ic_gender_women else R.drawable.ic_gender_men),
+                        painter = painterResource(iconRes),
                         contentDescription = "Gender icon",
                         tint = Color.Unspecified
                     )

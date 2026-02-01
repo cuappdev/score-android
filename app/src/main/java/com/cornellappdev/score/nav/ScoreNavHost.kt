@@ -78,6 +78,7 @@ fun ScoreNavHost(navController: NavHostController) {
         composable<ScoreScreens.HighlightsSearchScreen> { backStackEntry ->
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
                 HighlightsSearchScreen(
+                    //todo - will un-hardcode this when i do the networking
                     sportList = sportSelectionList,
                     recentSearchList = recentSearchList,
                     highlightsList = highlightsList,

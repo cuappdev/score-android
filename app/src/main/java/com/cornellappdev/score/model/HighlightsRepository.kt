@@ -2,7 +2,6 @@ package com.cornellappdev.score.model
 
 import android.util.Log
 import com.apollographql.apollo.ApolloClient
-import com.cornellappdev.score.util.isValidSport
 import com.example.score.HighlightsQuery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,9 +12,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val TIMEOUT_TIME_MILLIS = 5000L
-private const val PAGE_LIMIT = 100
-private const val MAX_RETRIES = 3
-private const val PAGE_TIMEOUT_MILLIS = 3000L
 
 @Singleton
 class HighlightsRepository @Inject constructor(
