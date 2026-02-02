@@ -67,26 +67,26 @@ fun ScoreNavHost(navController: NavHostController) {
                 navController.navigateUp()
             })
         }
-
-        composable<ScoreScreens.HighlightsScreen> { backStackEntry ->
-            CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
-                HighlightsScreen(toSearchScreen = { navController.navigate(ScoreScreens.HighlightsSearchScreen) })
-            }
-        }
-
-        composable<ScoreScreens.HighlightsSearchScreen> { backStackEntry ->
-            CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
-                HighlightsSearchScreen(
-                    sportList = sportList,
-                    recentSearchList = recentSearchList,
-                    highlightsList = highlightsList,
-                    query = "",
-                    header = "Search all highlights",
-                    {},
-                    {}
-                )
-            }
-        }
+//// removed for 2/2026 release
+//        composable<ScoreScreens.HighlightsScreen> { backStackEntry ->
+//            CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
+//                HighlightsScreen(toSearchScreen = { navController.navigate(ScoreScreens.HighlightsSearchScreen) })
+//            }
+//        }
+//
+//        composable<ScoreScreens.HighlightsSearchScreen> { backStackEntry ->
+//            CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
+//                HighlightsSearchScreen(
+//                    sportList = sportList,
+//                    recentSearchList = recentSearchList,
+//                    highlightsList = highlightsList,
+//                    query = "",
+//                    header = "Search all highlights",
+//                    {},
+//                    {}
+//                )
+//            }
+//        }
     }
 }
 
