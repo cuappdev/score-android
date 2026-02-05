@@ -1,3 +1,13 @@
+import java.io.FileInputStream
+import java.util.Properties
+
+val secretsPropertiesFile = rootProject.file("secrets.properties")
+val secrets = Properties()
+
+if (secretsPropertiesFile.exists()) {
+    secrets.load(FileInputStream(secretsPropertiesFile))
+}
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid) version "1.9.10"
@@ -31,14 +41,14 @@ android {
             buildConfigField(
                 "String",
                 "BASE_URL",
-                "\"https://score-dev.cornellappdev.com/graphql\""
+                "\"${secrets.getProperty("API_URL_DEV")}\""
             )
         }
         release {
             buildConfigField(
                 "String",
                 "BASE_URL",
-                "\"https://score-backend.cornellappdev.com/graphql\""
+                "\"${secrets.getProperty("API_URL_PROD")}\""
             )
             isMinifyEnabled = false
             proguardFiles(
@@ -99,7 +109,7 @@ apollo {
     service("service") {
         packageName.set("com.example.score")
         introspection {
-            endpointUrl.set("https://score-dev.cornellappdev.com/graphql")
+            endpointUrl.set("\"${secrets.getProperty("API_URL_DEV")}\"")
             schemaFile.set(file("src/main/graphql/schema.graphqls"))
         }
     }
