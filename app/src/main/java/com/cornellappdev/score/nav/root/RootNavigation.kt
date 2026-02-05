@@ -110,11 +110,12 @@ sealed class ScoreScreens {
     @Serializable
     data class GameScoreSummaryPage(val scoreEvents: String) : ScoreScreens()
 
-    @Serializable
-    data object HighlightsScreen : ScoreScreens()
-
-    @Serializable
-    data object HighlightsSearchScreen : ScoreScreens()
+////removed for 2/2026 release
+//    @Serializable
+//    data object HighlightsScreen : ScoreScreens()
+//
+//    @Serializable
+//    data object HighlightsSearchScreen : ScoreScreens()
 }
 
 fun NavBackStackEntry.toScreen(): ScoreScreens? =
@@ -123,8 +124,9 @@ fun NavBackStackEntry.toScreen(): ScoreScreens? =
         "GameDetailsPage" -> toRoute<ScoreScreens.GameDetailsPage>()
         "ScoresScreen" -> toRoute<ScoreScreens.ScoresScreen>()
         "GameScoreSummaryPage" -> toRoute<ScoreScreens.GameScoreSummaryPage>()
-        "HighlightsScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
-        "HighlightsSearchScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
+        //removed for 2/2026 release
+//        "HighlightsScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
+//        "HighlightsSearchScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
         else -> throw IllegalArgumentException("Invalid screen")
     }
 
@@ -142,12 +144,13 @@ val tabs = listOf(
         selectedIcon = R.drawable.ic_schedule_filled,
         screen = ScoreScreens.Home,
     ),
-    NavItem(
-        label = "Highlights",
-        unselectedIcon = R.drawable.ic_nav_star,
-        selectedIcon = R.drawable.ic_nav_star_filled,
-        screen = ScoreScreens.HighlightsScreen,
-    ),
+    //removed for 2/2026 review
+//    NavItem(
+//        label = "Highlights",
+//        unselectedIcon = R.drawable.ic_nav_star,
+//        selectedIcon = R.drawable.ic_nav_star_filled,
+//        screen = ScoreScreens.HighlightsScreen,
+//    ),
     NavItem(
         label = "Scores",
         unselectedIcon = R.drawable.ic_scores,
