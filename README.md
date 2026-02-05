@@ -9,5 +9,6 @@ Score is Cornell’s all-in-one sports discovery hub that makes Cornell sports e
 2. Download the following two files (AppDev members can find it pinned in `#score-android` in the Slack)
     - `score-keystore`
     - `google-services.json`
-4. Add those two files to the project root in Android Studio
+    - `secrets.properties`
+4. Add those three files to the project root in Android Studio
 5. Build and run!
