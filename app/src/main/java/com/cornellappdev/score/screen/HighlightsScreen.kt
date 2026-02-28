@@ -31,11 +31,13 @@ import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.HighlightsViewModel
+import kotlinx.serialization.Serializable
 
 @Composable
 fun HighlightsScreen(
     highlightsViewModel: HighlightsViewModel = hiltViewModel(),
-    toSearchScreen: () -> Unit
+    toSearchScreen: () -> Unit,
+    toSubScreen: (HighlightsSubScreenType) -> Unit
 ) {
     val uiState = highlightsViewModel.collectUiStateValue()
 
@@ -65,7 +67,8 @@ fun HighlightsScreen(
                         onSportSelected = { highlightsViewModel.onSportSelected(it) },
                         todayHighlightsList = uiState.todayHighlights,
                         pastThreeHighlightsList = uiState.pastThreeDaysHighlights,
-                        toSearchScreen = toSearchScreen
+                        toSearchScreen = toSearchScreen,
+                        toSubScreen = toSubScreen
                     )
                 }
             }
@@ -73,13 +76,19 @@ fun HighlightsScreen(
     }
 }
 
+@Serializable
+enum class HighlightsSubScreenType{
+    TODAY, PAST3DAYS, ALL
+}
+
 @Composable
 private fun HighlightsScreenContent(
-    sportList: List<SportSelection> = emptyList(),
     onSportSelected: (SportSelection) -> Unit,
+    sportList: List<SportSelection> = emptyList(),
     todayHighlightsList: List<HighlightData> = emptyList(),
     pastThreeHighlightsList: List<HighlightData> = emptyList(),
-    toSearchScreen: () -> Unit
+    toSearchScreen: () -> Unit,
+    toSubScreen: (HighlightsSubScreenType) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -101,10 +110,10 @@ private fun HighlightsScreenContent(
             )
         }
         if (todayHighlightsList.isNotEmpty()) {
-            HighlightsCardRow(todayHighlightsList, "Today")
+            HighlightsCardRow(todayHighlightsList, "Today", toSubScreen )
         }
         if (pastThreeHighlightsList.isNotEmpty()) {
-            HighlightsCardRow(pastThreeHighlightsList, "Past 3 days")
+            HighlightsCardRow(pastThreeHighlightsList, "Past 3 days", toSubScreen)
         }
     }
 }
@@ -135,7 +144,8 @@ private fun HighlightScreenPreview(
             todayHighlightsList = previewData.todayHighlightList,
             pastThreeHighlightsList = previewData.pastHighlightList,
             toSearchScreen = {},
-            onSportSelected = {}
+            onSportSelected = {},
+            toSubScreen = {}
         )
     }
 }

@@ -28,6 +28,7 @@ import androidx.navigation.toRoute
 import com.cornellappdev.score.R
 import com.cornellappdev.score.nav.ScoreNavHost
 import com.cornellappdev.score.nav.ScoreNavigationBar
+import com.cornellappdev.score.screen.HighlightsSubScreenType
 import com.cornellappdev.score.theme.LocalInfiniteLoading
 import com.cornellappdev.score.theme.White
 import kotlinx.serialization.Serializable
@@ -114,7 +115,14 @@ sealed class ScoreScreens {
     data object HighlightsScreen : ScoreScreens()
 
     @Serializable
-    data object HighlightsSearchScreen : ScoreScreens()
+    data class HighlightsSubScreen(
+        val subScreenType: HighlightsSubScreenType
+    ) : ScoreScreens()
+
+    @Serializable
+    data class HighlightsSearchScreen(
+        val subScreenType: HighlightsSubScreenType
+    ) : ScoreScreens()
 }
 
 fun NavBackStackEntry.toScreen(): ScoreScreens? =
@@ -125,6 +133,7 @@ fun NavBackStackEntry.toScreen(): ScoreScreens? =
         "GameScoreSummaryPage" -> toRoute<ScoreScreens.GameScoreSummaryPage>()
         "HighlightsScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
         "HighlightsSearchScreen" -> toRoute<ScoreScreens.HighlightsSearchScreen>()
+        "HighlightsSubScreen" -> toRoute<ScoreScreens.HighlightsSubScreen>()
         else -> throw IllegalArgumentException("Invalid screen")
     }
 

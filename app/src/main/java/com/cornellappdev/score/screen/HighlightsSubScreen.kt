@@ -3,18 +3,21 @@ package com.cornellappdev.score.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
@@ -24,19 +27,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.R
+import com.cornellappdev.score.components.ErrorState
+import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.ScorePreview
-import com.cornellappdev.score.components.highlights.HighlightsCardLazyColumn
-import com.cornellappdev.score.components.highlights.HighlightsScreenSearchFilterBar
+import com.cornellappdev.score.components.ScorePullToRefreshBox
+import com.cornellappdev.score.components.highlights.ArticleHighlightCard
+import com.cornellappdev.score.components.highlights.HighlightsFilterRow
+import com.cornellappdev.score.components.highlights.HighlightsSearchEntryPointRow
+import com.cornellappdev.score.components.highlights.VideoHighlightCard
+import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.HighlightData
-import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.highlightsList
-import com.cornellappdev.score.util.recentSearchList
-import com.cornellappdev.score.util.sportList
 import com.cornellappdev.score.util.sportSelectionList
+import com.cornellappdev.score.viewmodel.HighlightsViewModel
 
 @Composable
 private fun HighlightsSubScreenHeader(
@@ -56,18 +64,19 @@ private fun HighlightsSubScreenHeader(
             ),
         color = White
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .padding(horizontal = 24.dp, vertical = 12.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(96.dp)
+                .fillMaxWidth()
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_left_arrowhead),
                 contentDescription = "back arrow",
-                modifier = Modifier.clickable(onClick = { navigateBack() })
+                modifier = Modifier
+                    .clickable(onClick = { navigateBack() })
+                    .align(Alignment.CenterStart)
             )
-            Text(header, style = heading2)
+            Text(header, style = heading2, modifier = Modifier.align(Alignment.Center))
         }
     }
 }
@@ -82,13 +91,66 @@ private fun HighlightsSubScreenHeaderPreview() {
 
 @Composable
 fun HighlightsSubScreen(
+    highlightsViewModel: HighlightsViewModel = hiltViewModel(),
+    navigateBack: () -> Unit,
+    toSearchScreen: () -> Unit,
+    subScreenType: HighlightsSubScreenType
+) {
+    val uiState = highlightsViewModel.collectUiStateValue()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+    ) {
+        when (uiState.loadedState) {
+            is ApiResponse.Loading -> {
+                //todo make highlights loading screen, this one's for the home page
+                LoadingScreen("Loading Highlights...", "Loading Schedules...")
+            }
+
+            is ApiResponse.Error -> {
+                ErrorState({ highlightsViewModel.onRefresh() }, "Oops! Highlights failed to load.")
+            }
+
+            is ApiResponse.Success -> {
+                ScorePullToRefreshBox(
+                    isRefreshing = uiState.loadedState == ApiResponse.Loading,
+                    { highlightsViewModel.onRefresh() }
+                ) {
+                    val (highlightsList, header) = when (subScreenType) {
+                        HighlightsSubScreenType.TODAY ->
+                            uiState.todayHighlights to "Today"
+
+                        HighlightsSubScreenType.PAST3DAYS ->
+                            uiState.pastThreeDaysHighlights to "Past 3 Days"
+
+                        HighlightsSubScreenType.ALL ->
+                            uiState.filteredHighlights to "All highlights"
+                    }
+
+                    HighlightsSubScreenContent(
+                        sportList = uiState.sportSelectionList,
+                        onFilterSelected = { highlightsViewModel.onSportSelected(it) },
+                        highlightsList = highlightsList,
+                        header = header,
+                        navigateBack = navigateBack,
+                        toSearchScreen = toSearchScreen
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun HighlightsSubScreenContent(
     sportList: List<SportSelection>,
-    recentSearchList: List<String>,
+    onFilterSelected: (SportSelection) -> Unit,
     highlightsList: List<HighlightData>,
-    query: String,
     header: String,
-    onItemClick: () -> Unit,
-    onCloseClick: () -> Unit
+    navigateBack: () -> Unit,
+    toSearchScreen: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -96,30 +158,42 @@ fun HighlightsSubScreen(
             .background(color = Color.White)
             .padding(top = 24.dp)
     ) {
-        HighlightsSubScreenHeader(header, {})
-        Spacer(modifier = Modifier.height(16.dp))
-        HighlightsScreenSearchFilterBar(
-            sportList
-        )
+        HighlightsSubScreenHeader(header, navigateBack)
         Spacer(modifier = Modifier.height(24.dp))
-        HighlightsCardLazyColumn(
-            recentSearchList,
-            query,
-            highlightsList,
-            onItemClick,
-            onCloseClick
-        )
+        Column(
+            modifier = Modifier.padding(horizontal = 24.dp)
+        ) {
+            HighlightsSearchEntryPointRow({ toSearchScreen() })
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        HighlightsFilterRow(sportList, onFilterSelected = onFilterSelected)
+
+
+        Spacer(modifier = Modifier.height(24.dp))
+        LazyColumn(
+            Modifier.padding(horizontal = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(highlightsList) { item ->
+                when (item) {
+                    is HighlightData.Video ->
+                        VideoHighlightCard(item.data, true)
+
+                    is HighlightData.Article ->
+                        ArticleHighlightCard(item.data, true)
+                }
+            }
+        }
     }
 }
 
 @Preview
 @Composable
 private fun HighlightsSubScreenPreview() {
-    HighlightsSubScreen(
+    HighlightsSubScreenContent(
         sportList = sportSelectionList,
-        recentSearchList = recentSearchList,
+        onFilterSelected = {},
         highlightsList = highlightsList,
-        query = "s",
         header = "Past 3 Days",
         {}, {}
     )
