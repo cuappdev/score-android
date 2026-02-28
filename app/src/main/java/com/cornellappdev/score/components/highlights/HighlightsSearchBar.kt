@@ -12,10 +12,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
@@ -53,6 +51,7 @@ private fun Modifier.highlightsSearchRowModifier(): Modifier = this
 @Composable
 fun HighlightsSearchBar(
     modifier: Modifier = Modifier,
+    navigateBack: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     var searchQuery by remember { mutableStateOf("") } //todo: to be handled by viewmodel
@@ -83,7 +82,8 @@ fun HighlightsSearchBar(
                 .weight(1f)
                 .background(Color.Transparent)
                 .onFocusChanged { focusState ->
-                    isFocused = focusState.isFocused /* todo - consider making this an onFocus function in VM */
+                    isFocused =
+                        focusState.isFocused /* todo - consider making this an onFocus function in VM */
                 },
             decorationBox = { innerTextField ->
                 Row(
@@ -136,12 +136,14 @@ fun HighlightsSearchBar(
             Text(
                 "Cancel",
                 style = bodyMedium,
-                modifier = Modifier.clickable {
-                    isFocused = false;
-                    focusManager.clearFocus(force = true);
-                    searchQuery = ""
-                    /*todo: clear the text in the search bar*/
-                }
+                modifier = Modifier.clickable(
+                    onClick = {
+                        isFocused = false
+                        focusManager.clearFocus(force = true)
+                        searchQuery = ""
+                        navigateBack()
+                    }
+                )
             )
         }
     }
@@ -184,5 +186,7 @@ private fun HighlightsSearchEntryPointRowPreview() {
 @Preview
 @Composable
 private fun HighlightsSearchBarPreview() {
-    HighlightsSearchBar()
+    HighlightsSearchBar(
+        navigateBack = {}
+    )
 }

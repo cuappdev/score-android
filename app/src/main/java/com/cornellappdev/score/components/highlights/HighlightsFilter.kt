@@ -33,7 +33,6 @@ import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Stroke
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.White
-import com.cornellappdev.score.util.sportList
 import com.cornellappdev.score.util.sportSelectionList
 
 @Composable
@@ -95,7 +94,7 @@ fun HighlightsFilterRow(
 @Composable
 private fun HighlightsFilterButtonPreview() {
     var isSelected by remember { mutableStateOf(false) }
-    HighlightsFilterButton(Sport.BASEBALL, { isSelected = !isSelected }, isSelected = isSelected)
+    HighlightsFilterButton(Sport.BASEBALL, { !isSelected }, isSelected = isSelected)
 }
 
 @Preview
