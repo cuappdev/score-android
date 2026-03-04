@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavBackStackEntry
@@ -38,11 +39,20 @@ fun ScoreNavigationBar(
                     selectedIndicatorColor = Color.Transparent
                 ),
                 icon = {
-                    Icon(
-                        painter = painterResource(id = if (isSelected) item.selectedIcon else item.unselectedIcon),
-                        contentDescription = null,
-                        tint = Color.Unspecified
-                    )
+                    val icon = if (isSelected) item.selectedIcon else item.unselectedIcon
+                    if (icon is Int) {
+                        Icon(
+                            painter = painterResource(id = icon),
+                            contentDescription = null,
+                            tint = Color.Unspecified
+                        )
+                    } else if (icon is ImageVector) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = if (isSelected) CrimsonPrimary else GrayPrimary
+                        )
+                    }
                 },
                 label = {
                     Text(

@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -18,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -65,7 +70,8 @@ fun RootNavigation(
 
     Scaffold(
         modifier = modifier.fillMaxSize(), bottomBar = {
-            if (navBackStackEntry?.toScreen() is ScoreScreens.GameDetailsPage) {
+            val currentScreen = navBackStackEntry?.toScreen()
+            if (currentScreen is ScoreScreens.GameDetailsPage || currentScreen is ScoreScreens.EditProfile) {
                 return@Scaffold
             }
             Surface(
@@ -110,6 +116,12 @@ sealed class ScoreScreens {
     @Serializable
     data class GameScoreSummaryPage(val scoreEvents: String) : ScoreScreens()
 
+    @Serializable
+    data object Profile : ScoreScreens()
+
+    @Serializable
+    data object EditProfile : ScoreScreens()
+
 ////removed for 2/2026 release
 //    @Serializable
 //    data object HighlightsScreen : ScoreScreens()
@@ -124,17 +136,19 @@ fun NavBackStackEntry.toScreen(): ScoreScreens? =
         "GameDetailsPage" -> toRoute<ScoreScreens.GameDetailsPage>()
         "ScoresScreen" -> toRoute<ScoreScreens.ScoresScreen>()
         "GameScoreSummaryPage" -> toRoute<ScoreScreens.GameScoreSummaryPage>()
+        "Profile" -> toRoute<ScoreScreens.Profile>()
+        "EditProfile" -> toRoute<ScoreScreens.EditProfile>()
         //removed for 2/2026 release
 //        "HighlightsScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
 //        "HighlightsSearchScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
-        else -> throw IllegalArgumentException("Invalid screen")
+        else -> null
     }
 
 data class NavItem(
     val screen: ScoreScreens,
     val label: String,
-    val unselectedIcon: Int,
-    val selectedIcon: Int
+    val unselectedIcon: Any,
+    val selectedIcon: Any
 )
 
 val tabs = listOf(
@@ -156,5 +170,11 @@ val tabs = listOf(
         unselectedIcon = R.drawable.ic_scores,
         selectedIcon = R.drawable.ic_scores_filled,
         screen = ScoreScreens.ScoresScreen,
+    ),
+    NavItem(
+        label = "Profile",
+        unselectedIcon = Icons.Outlined.Person,
+        selectedIcon = Icons.Filled.Person,
+        screen = ScoreScreens.Profile,
     ),
 )

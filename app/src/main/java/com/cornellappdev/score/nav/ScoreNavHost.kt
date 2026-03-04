@@ -11,11 +11,13 @@ import androidx.navigation.toRoute
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.nav.root.ScoreScreens
 import com.cornellappdev.score.nav.root.ScoreScreens.Home
+import com.cornellappdev.score.screen.EditProfileScreen
 import com.cornellappdev.score.screen.GameDetailsScreen
 import com.cornellappdev.score.screen.HighlightsScreen
 import com.cornellappdev.score.screen.HighlightsSearchScreen
 import com.cornellappdev.score.screen.HomeScreen
 import com.cornellappdev.score.screen.PastGamesScreen
+import com.cornellappdev.score.screen.ProfileScreen
 import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.recentSearchList
 import com.cornellappdev.score.util.sportList
@@ -46,6 +48,20 @@ fun ScoreNavHost(navController: NavHostController) {
                     navController.navigate(ScoreScreens.GameDetailsPage(it))
                 })
             }
+        }
+        composable<ScoreScreens.Profile> {
+            ProfileScreen(
+                navigateToEditProfile = {
+                    navController.navigate(ScoreScreens.EditProfile)
+                }
+            )
+        }
+        composable<ScoreScreens.EditProfile> {
+            EditProfileScreen(
+                onBackClick = {
+                    navController.navigateUp()
+                }
+            )
         }
         composable<ScoreScreens.GameDetailsPage> {
             GameDetailsScreen(
@@ -89,4 +105,3 @@ fun ScoreNavHost(navController: NavHostController) {
 //        }
     }
 }
-
