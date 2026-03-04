@@ -28,5 +28,6 @@ query GameById($id: String!) {
             corScore
             oppScore
         }
+        ticketLink
     }
 }

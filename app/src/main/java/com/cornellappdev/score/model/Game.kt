@@ -67,7 +67,8 @@ data class GameDetailsGame(
     val time: String?,
     val scoreBreakdown: List<List<String?>?>?,
     val team: GameDetailsTeam?,
-    val boxScore: List<GameDetailsBoxScore>?
+    val boxScore: List<GameDetailsBoxScore>?,
+    val ticketUrl: String?
 )
 
 
@@ -126,7 +127,8 @@ data class DetailsCardData(
     val daysUntilGame: Int?,
     val hoursUntilGame: Int?,
     val homeScore: Int,
-    val oppScore: Int
+    val oppScore: Int,
+    val ticketUrl: String?
 )
 
 // Scoring information by round of a game, used in the box score
@@ -146,7 +148,7 @@ data class TeamScore(
 // Aggregated game data showing scores for both teams
 data class GameData(
     val teamScores: Pair<TeamScore, TeamScore>
-){
+) {
     val maxPeriods: Int
         get() =
             maxOf(
@@ -298,7 +300,8 @@ fun GameDetailsGame.toGameCardData(): DetailsCardData {
         homeScore = convertScores(scoreBreakdown?.getOrNull(0), sport).second
             ?: parsedScores?.first ?: 0,
         oppScore = convertScores(scoreBreakdown?.getOrNull(1), sport).second
-            ?: parsedScores?.second ?: 0
+            ?: parsedScores?.second ?: 0,
+        ticketUrl = ticketUrl ?: ""
     )
 }
 

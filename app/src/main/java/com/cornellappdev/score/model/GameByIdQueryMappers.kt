@@ -17,13 +17,15 @@ fun GameByIdQuery.Game.toGameDetails(): GameDetailsGame {
         time = this.time,
         scoreBreakdown = this.scoreBreakdown,
         team = this.team?.toGameDetailsTeam(),
-        boxScore = this.boxScore?.mapNotNull { it?.toGameDetailsBoxScore() }
+        boxScore = this.boxScore?.mapNotNull { it?.toGameDetailsBoxScore() },
+        ticketUrl = ticketLink
     )
 }
+
 fun GameByIdQuery.Team.toGameDetailsTeam(): GameDetailsTeam {
     return GameDetailsTeam(
         id = this.id,
-        color = parseColor(this.color).copy(alpha = 0.4f*255),
+        color = parseColor(this.color).copy(alpha = 0.4f * 255),
         image = this.image,
         name = this.name
     )
