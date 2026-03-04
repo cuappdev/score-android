@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.CalendarContract
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -416,9 +417,10 @@ fun addGameToCalendar(context: Context, gameCard: DetailsCardData) {
 
     val startDateTime = try {
         val formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH)
-        val localTime = LocalTime.parse(time.trim().uppercase(), formatter)
+        val localTime = LocalTime.parse(time.trim().uppercase().replace(".", ""), formatter)
         date.atTime(localTime)
     } catch (e: Exception) {
+        Log.e("Calendar", "Failed to parse time: '$time'", e)
         date.atStartOfDay()
     }
 
