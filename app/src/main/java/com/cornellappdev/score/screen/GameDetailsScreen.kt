@@ -1,6 +1,11 @@
 package com.cornellappdev.score.screen
 
 import ScoringSummary
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.CalendarContract
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -31,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.BoxScore
+import com.cornellappdev.score.components.ButtonPrimary
 import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GameDetailsLoadingScreen
@@ -55,6 +61,10 @@ import com.cornellappdev.score.theme.Style.heading3
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.viewmodel.GameDetailsViewModel
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun GameDetailsScreen(
@@ -220,16 +230,26 @@ fun GameDetailsContent(
                     }
 
                     Spacer(modifier = Modifier.weight(1f))
-
-//                    ButtonPrimary(
-//                        "Add to Calendar",
-//                        painterResource(R.drawable.ic_calendar),
-//                        onClick = {
-//                            gameCard.toCalendarEvent()?.let { event ->
-//                                addToCalendar(context = context, event)
-//                            }
-//                        }
-//                    )
+                    Row() {
+                        ButtonPrimary(
+                            "Buy Tickets",
+                            painterResource(R.drawable.ticket),
+                            onClick = {
+                                gameCard.ticketUrl?.let { url ->
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                    context.startActivity(intent)
+                                }
+                            }
+                        )
+                        Spacer(Modifier.size(16.dp))
+                        ButtonPrimary(
+                            "Add to Calendar",
+                            painterResource(R.drawable.ic_calendar),
+                            onClick = {
+                                addGameToCalendar(context, gameCard)
+                            }
+                        )
+                    }
                 }
 
             }
@@ -331,7 +351,8 @@ private fun GameDetailsPreview() {
             daysUntilGame = 6,
             hoursUntilGame = 144,
             homeScore = 78,
-            oppScore = 75
+            oppScore = 75,
+            ticketUrl = ""
         ), navigateToGameScoreSummary = {}
     )
 }
@@ -382,7 +403,37 @@ private fun EmptyGameDetailsPreview() {
             daysUntilGame = 0,
             hoursUntilGame = 0,
             homeScore = 0,
-            oppScore = 0
-        ), navigateToGameScoreSummary = {}
+            oppScore = 0,
+            ticketUrl = ""
+        ),
+        navigateToGameScoreSummary = {},
     )
+}
+
+// helper
+fun addGameToCalendar(context: Context, gameCard: DetailsCardData) {
+    val date = gameCard.date ?: return
+    val time = gameCard.time
+
+    val startDateTime = try {
+        val formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH)
+        val localTime = LocalTime.parse(time.trim().uppercase().replace(".", ""), formatter)
+        date.atTime(localTime)
+    } catch (e: Exception) {
+        Log.e("Calendar", "Failed to parse time: '$time'", e)
+        date.atStartOfDay()
+    }
+
+    val zoneId = ZoneId.systemDefault()
+    val startMillis = startDateTime.atZone(zoneId).toInstant().toEpochMilli()
+    val endMillis = startDateTime.plusHours(2).atZone(zoneId).toInstant().toEpochMilli()
+
+    val intent = Intent(Intent.ACTION_INSERT, CalendarContract.Events.CONTENT_URI).apply {
+        putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startMillis)
+        putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endMillis)
+        putExtra(CalendarContract.Events.TITLE, gameCard.title)
+        putExtra(CalendarContract.Events.EVENT_LOCATION, gameCard.locationString)
+        putExtra(CalendarContract.Events.DESCRIPTION, "${gameCard.sport} - ${gameCard.gender}")
+    }
+    context.startActivity(intent)
 }
