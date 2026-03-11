@@ -30,11 +30,12 @@ fun AdvancedFilterBottomSheet(
         location: LocationFilter?,
         date: DateFilter?
     ) -> Unit,
-    onReset: () -> Unit
+    onReset: () -> Unit,
+    initialDate: DateFilter? = null
 ) {
     var selectedPrice by remember { mutableStateOf<PriceFilter?>(null) }
     var selectedLocation by remember { mutableStateOf<LocationFilter?>(null) }
-    var selectedDate by remember { mutableStateOf<DateFilter?>(null) }
+    var selectedDate by remember { mutableStateOf(initialDate) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,

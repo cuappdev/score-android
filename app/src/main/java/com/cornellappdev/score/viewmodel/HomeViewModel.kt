@@ -1,5 +1,6 @@
 package com.cornellappdev.score.viewmodel
 
+import com.cornellappdev.score.components.DateFilter
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.model.GenderDivision
@@ -16,15 +17,24 @@ data class HomeUiState(
     val selectedGender: GenderDivision,
     val sportSelect: SportSelection,
     val selectionList: List<SportSelection>,
-    val loadedState: ApiResponse<List<GameCardData>>
+    val loadedState: ApiResponse<List<GameCardData>>,
+    val selectedDateFilter: DateFilter? = null
 ) {
     //TODO: refactor filters to use flows - not best practice to expose original games list to the view
     val filteredGames: List<GameCardData>
         get() = when (loadedState) {
             is ApiResponse.Success -> loadedState.data.filter { game ->
-                (selectedGender == GenderDivision.ALL || game.gender == selectedGender.displayName) &&
-                        (sportSelect is SportSelection.All ||
-                                (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName))
+                val genderMatch = selectedGender == GenderDivision.ALL || game.gender == selectedGender.displayName
+                val sportMatch = sportSelect is SportSelection.All ||
+                        (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName)
+                val dateMatch = when (selectedDateFilter) {
+                    DateFilter.TODAY -> game.date == LocalDate.now()
+                    DateFilter.WITHIN_7_DAYS -> game.date != null && !game.date.isAfter(LocalDate.now().plusDays(7))
+                    DateFilter.WITHIN_A_MONTH -> game.date != null && !game.date.isAfter(LocalDate.now().plusDays(30))
+                    DateFilter.OVER_A_MONTH -> game.date != null && game.date.isAfter(LocalDate.now().plusDays(30))
+                    null -> true
+                }
+                genderMatch && sportMatch && dateMatch
             }
 
             ApiResponse.Loading -> emptyList()
@@ -90,5 +100,13 @@ class HomeViewModel @Inject constructor(
                 sportSelect = sport
             )
         }
+    }
+
+    fun onDateFilterApplied(date: DateFilter?) {
+        applyMutation { copy(selectedDateFilter = date) }
+    }
+
+    fun onFiltersReset() {
+        applyMutation { copy(selectedDateFilter = null) }
     }
 }
