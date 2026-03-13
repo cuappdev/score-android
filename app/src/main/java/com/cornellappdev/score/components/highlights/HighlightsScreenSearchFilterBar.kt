@@ -16,13 +16,21 @@ import com.cornellappdev.score.util.sportSelectionList
 @Composable
 fun HighlightsScreenSearchFilterBar(
     sportList: List<SportSelection>,
+    query: String,
+    selectedSport: SportSelection,
+    onQueryChange: (String) -> Unit,
     onFilterSelected: (SportSelection) -> Unit,
     navigateBack: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        HighlightsSearchBar(modifier = Modifier.padding(horizontal = 24.dp), navigateBack)
+        HighlightsSearchBar(
+            modifier = Modifier.padding(horizontal = 24.dp),
+            query = query,
+            onQueryChange = onQueryChange,
+            navigateBack
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        HighlightsFilterRow(sportList, onFilterSelected)
+        HighlightsFilterRow(sportList, selectedSport, onFilterSelected)
     }
 }
 
@@ -30,6 +38,6 @@ fun HighlightsScreenSearchFilterBar(
 @Composable
 private fun HighlightsScreenSearchFilterBarPreview() {
     ScorePreview {
-        HighlightsScreenSearchFilterBar(sportSelectionList, {}, navigateBack = {})
+        HighlightsScreenSearchFilterBar(sportSelectionList, "", SportSelection.All, {}, onFilterSelected = {}, navigateBack = {})
     }
 }

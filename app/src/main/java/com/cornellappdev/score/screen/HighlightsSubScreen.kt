@@ -45,6 +45,7 @@ import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.HighlightsViewModel
+import kotlinx.coroutines.selects.select
 
 @Composable
 private fun HighlightsSubScreenHeader(
@@ -130,6 +131,7 @@ fun HighlightsSubScreen(
                     }
 
                     HighlightsSubScreenContent(
+                        selectedSport = uiState.sportSelect,
                         sportList = uiState.sportSelectionList,
                         onFilterSelected = { highlightsViewModel.onSportSelected(it) },
                         highlightsList = highlightsList,
@@ -145,6 +147,7 @@ fun HighlightsSubScreen(
 
 @Composable
 fun HighlightsSubScreenContent(
+    selectedSport: SportSelection,
     sportList: List<SportSelection>,
     onFilterSelected: (SportSelection) -> Unit,
     highlightsList: List<HighlightData>,
@@ -166,7 +169,11 @@ fun HighlightsSubScreenContent(
             HighlightsSearchEntryPointRow({ toSearchScreen() })
         }
         Spacer(modifier = Modifier.height(16.dp))
-        HighlightsFilterRow(sportList, onFilterSelected = onFilterSelected)
+        HighlightsFilterRow(
+            sportList,
+            selectedSport = selectedSport,
+            onFilterSelected = onFilterSelected
+        )
 
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -191,6 +198,7 @@ fun HighlightsSubScreenContent(
 @Composable
 private fun HighlightsSubScreenPreview() {
     HighlightsSubScreenContent(
+        selectedSport = SportSelection.All,
         sportList = sportSelectionList,
         onFilterSelected = {},
         highlightsList = highlightsList,

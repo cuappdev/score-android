@@ -26,6 +26,7 @@ import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.recentSearchList
 import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.HighlightsViewModel
+import kotlinx.coroutines.selects.select
 
 
 @Composable
@@ -52,7 +53,9 @@ fun HighlightsSearchScreen(
         onFilterSelected = { highlightsViewModel.onSportSelected(it) },
         recentSearchList = emptyList(), /*todo implement in VM*/
         highlightsList = highlightsList,
-        query = "",
+        query = uiState.query,
+        selectedFilter = uiState.sportSelect,
+        onQueryChange = { highlightsViewModel.onQueryChange(it) },
         header = header,
         onItemClick = {},
         onCloseClick = {},
@@ -67,12 +70,13 @@ fun HighlightsSearchScreenContent(
     recentSearchList: List<String>,
     highlightsList: List<HighlightData>,
     query: String,
+    selectedFilter: SportSelection,
+    onQueryChange: (String) -> Unit,
     header: String,
     onItemClick: () -> Unit,
     onCloseClick: () -> Unit,
     navigateBack: () -> Unit
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -84,6 +88,9 @@ fun HighlightsSearchScreenContent(
         Spacer(modifier = Modifier.height(16.dp))
         HighlightsScreenSearchFilterBar(
             sportList,
+            query,
+            selectedFilter,
+            onQueryChange,
             onFilterSelected,
             navigateBack
         )
@@ -123,6 +130,8 @@ private fun HighlightScreenPreview(
             recentSearchList = previewData.recentSearchList,
             highlightsList = highlightsList,
             query = previewData.query,
+            selectedFilter = SportSelection.All,
+            onQueryChange = {},
             header = "Search All Highlights",
             onItemClick = {},
             onCloseClick = {},

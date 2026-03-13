@@ -31,6 +31,7 @@ import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.HighlightsViewModel
+import kotlinx.coroutines.selects.select
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -63,6 +64,7 @@ fun HighlightsScreen(
                     { highlightsViewModel.onRefresh() }
                 ) {
                     HighlightsScreenContent(
+                        selectedSport = uiState.sportSelect,
                         sportList = uiState.sportSelectionList,
                         onSportSelected = { highlightsViewModel.onSportSelected(it) },
                         todayHighlightsList = uiState.todayHighlights,
@@ -83,6 +85,7 @@ enum class HighlightsSubScreenType{
 
 @Composable
 private fun HighlightsScreenContent(
+    selectedSport: SportSelection,
     onSportSelected: (SportSelection) -> Unit,
     sportList: List<SportSelection> = emptyList(),
     todayHighlightsList: List<HighlightData> = emptyList(),
@@ -101,7 +104,7 @@ private fun HighlightsScreenContent(
             HighlightsSearchEntryPointRow(toSearchScreen)
         }
         Spacer(modifier = Modifier.height(16.dp))
-        HighlightsFilterRow(sportList, onSportSelected)
+        HighlightsFilterRow(sportList, selectedSport, onSportSelected)
         Spacer(modifier = Modifier.height(24.dp))
         if (todayHighlightsList.isEmpty() && pastThreeHighlightsList.isEmpty()) {
             EmptyStateBox(
@@ -140,6 +143,7 @@ private fun HighlightScreenPreview(
 ) {
     ScorePreview {
         HighlightsScreenContent(
+            selectedSport = SportSelection.All,
             sportList = previewData.sportList,
             todayHighlightsList = previewData.todayHighlightList,
             pastThreeHighlightsList = previewData.pastHighlightList,

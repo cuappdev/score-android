@@ -51,10 +51,12 @@ private fun Modifier.highlightsSearchRowModifier(): Modifier = this
 @Composable
 fun HighlightsSearchBar(
     modifier: Modifier = Modifier,
-    navigateBack: () -> Unit
+    query: String,
+    onQueryChange: (String) -> Unit,
+    navigateBack: () -> Unit,
+
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    var searchQuery by remember { mutableStateOf("") } //todo: to be handled by viewmodel
     var isFocused by remember { mutableStateOf(true) }
 
     val focusManager = LocalFocusManager.current
@@ -70,8 +72,8 @@ fun HighlightsSearchBar(
         modifier = modifier
     ) {
         BasicTextField(
-            value = searchQuery,
-            onValueChange = { searchQuery = it /*todo viewmodel load results*/ },
+            value = query,
+            onValueChange = onQueryChange,
             singleLine = true,
             textStyle = bodyNormal,
             visualTransformation = VisualTransformation.None,
@@ -104,7 +106,7 @@ fun HighlightsSearchBar(
                         )
                         Box {
                             innerTextField()
-                            if (searchQuery.isEmpty()) {
+                            if (query.isEmpty()) {
                                 Text(
                                     text = "Search keywords",
                                     style = bodyNormal.copy(color = Color.Gray)
@@ -114,7 +116,7 @@ fun HighlightsSearchBar(
                     }
 
                     AnimatedVisibility(
-                        visible = searchQuery.isNotEmpty(),
+                        visible = query.isNotEmpty(),
                         enter = fadeIn() + scaleIn(),
                         exit = fadeOut() + scaleOut()
                     ) {
@@ -122,7 +124,7 @@ fun HighlightsSearchBar(
                             painter = painterResource(R.drawable.ic_close),
                             contentDescription = "clear field",
                             modifier = Modifier.clickable(
-                                onClick = { searchQuery = "" }
+                                onClick = { onQueryChange("") }
                             )
                         )
                     }
@@ -140,7 +142,7 @@ fun HighlightsSearchBar(
                     onClick = {
                         isFocused = false
                         focusManager.clearFocus(force = true)
-                        searchQuery = ""
+                        onQueryChange("")
                         navigateBack()
                     }
                 )
@@ -187,6 +189,8 @@ private fun HighlightsSearchEntryPointRowPreview() {
 @Composable
 private fun HighlightsSearchBarPreview() {
     HighlightsSearchBar(
+        query = "",
+        onQueryChange = {},
         navigateBack = {}
     )
 }
