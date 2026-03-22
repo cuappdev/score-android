@@ -43,12 +43,22 @@ android {
                 "BASE_URL",
                 "\"${secrets.getProperty("API_URL_DEV")}\""
             )
+            buildConfigField(
+                "String",
+                "SOCKET_URL",
+                "\"${secrets.getProperty("SOCKET_URL_DEV")}\""
+            )
         }
         release {
             buildConfigField(
                 "String",
                 "BASE_URL",
                 "\"${secrets.getProperty("API_URL_PROD")}\""
+            )
+            buildConfigField(
+                "String",
+                "SOCKET_URL",
+                "\"${secrets.getProperty("SOCKET_URL_PROD")}\""
             )
             isMinifyEnabled = false
             proguardFiles(
@@ -97,6 +107,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+    implementation("io.socket:socket.io-client:2.1.1") {
+        exclude(group = "org.json", module = "json")
+    }
     implementation(libs.apollo.runtime)
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")

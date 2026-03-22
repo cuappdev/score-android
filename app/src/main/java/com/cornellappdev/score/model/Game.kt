@@ -302,6 +302,38 @@ fun GameDetailsGame.toGameCardData(): DetailsCardData {
     )
 }
 
+/**
+ * Merges a live socket update into the current DetailsCardData.
+ * Null fields in [update] leave existing values unchanged.
+ */
+fun DetailsCardData.applySocketUpdate(update: SocketGameUpdateData): DetailsCardData {
+    val newScoreBreakdown = update.scoreBreakdown ?: scoreBreakdown
+    val newGameData = if (update.scoreBreakdown != null) {
+        toGameData(
+            scoreBreakdown = newScoreBreakdown,
+            team1 = TeamBoxScore("Cornell"),
+            team2 = TeamBoxScore(opponent),
+            sport = sport
+        )
+    } else gameData
+
+    val newBoxScore: List<GameDetailsBoxScore?> = update.boxScore
+        ?.map { it?.toGameDetailsBoxScore() }
+        ?: boxScore
+    val newScoreEvents = if (update.boxScore != null) {
+        newBoxScore.filterNotNull().toScoreEvents(opponentLogo)
+    } else scoreEvent
+
+    return copy(
+        homeScore = update.homeScore ?: homeScore,
+        oppScore = update.oppScore ?: oppScore,
+        scoreBreakdown = newScoreBreakdown,
+        gameData = newGameData,
+        boxScore = newBoxScore,
+        scoreEvent = newScoreEvents
+    )
+}
+
 fun List<GameDetailsBoxScore>.toScoreEvents(teamLogo: String): List<ScoreEvent> {
     return this.mapIndexed { index, boxScore ->
         val teamName = boxScore.team ?: ""
