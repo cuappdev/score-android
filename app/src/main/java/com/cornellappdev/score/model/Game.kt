@@ -20,6 +20,7 @@ data class Game(
     val id: String,
     val teamName: String,
     val teamLogo: String,
+    val time: String?,
     val teamColor: Color,
     val gender: String,
     val sport: String,
@@ -146,7 +147,7 @@ data class TeamScore(
 // Aggregated game data showing scores for both teams
 data class GameData(
     val teamScores: Pair<TeamScore, TeamScore>
-){
+) {
     val maxPeriods: Int
         get() =
             maxOf(
@@ -250,7 +251,11 @@ fun Game.toGameCardData(): GameCardData {
         date = parseDateOrNull(date),
         dateString = parseDateOrNull(date)?.format(outputFormatter)
             ?: date,
-        isLive = (LocalDate.now() == parseDateOrNull(date)),
+        isLive = parseDateTimeOrNull(date, time ?: "")?.let { startTime ->
+            val now = LocalDateTime.now()
+            val endTime = startTime.plusHours(2)
+            now.isAfter(startTime) && now.isBefore(endTime)
+        } ?: false,
         isPast = isPast,
         location = city,
         gender = gender,
@@ -290,14 +295,15 @@ fun GameDetailsGame.toGameCardData(): DetailsCardData {
             scoreBreakdown = scoreBreakdown,
             team1 = TeamBoxScore("Cornell"),
             team2 = TeamBoxScore(team?.name ?: ""),
-            sport = sport
+            sport = sport,
+            result = result ?: ""
         ),
         scoreEvent = boxScore?.toScoreEvents(team?.image ?: "") ?: emptyList(),
         daysUntilGame = daysUntil,
         hoursUntilGame = hoursUntil,
-        homeScore = convertScores(scoreBreakdown?.getOrNull(0), sport).second
+        homeScore = convertScores(scoreBreakdown?.getOrNull(0), sport, result ?: "").second
             ?: parsedScores?.first ?: 0,
-        oppScore = convertScores(scoreBreakdown?.getOrNull(1), sport).second
+        oppScore = convertScores(scoreBreakdown?.getOrNull(1), sport, result ?: "").second
             ?: parsedScores?.second ?: 0
     )
 }

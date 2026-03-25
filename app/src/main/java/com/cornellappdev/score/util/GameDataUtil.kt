@@ -1,5 +1,6 @@
 package com.cornellappdev.score.util
 
+import android.util.Log
 import com.cornellappdev.score.model.GameData
 import com.cornellappdev.score.model.TeamBoxScore
 import com.cornellappdev.score.model.TeamScore
@@ -17,7 +18,7 @@ import com.cornellappdev.score.model.TeamScore
  * @return a pair where the first value is a list of parsed period scores and the second is the total score (or null if invalid)
  */
 // TODO: ASK ABOUT OT. Other sports might be added.
-fun convertScores(scoreList: List<String?>?, sport: String): Pair<List<Int>, Int?> {
+fun convertScores(scoreList: List<String?>?, sport: String, result: String): Pair<List<Int>, Int?> {
     if (scoreList == null || scoreList.size < 2) return Pair(emptyList(), null)
 
     var scoresByPeriod = scoreList
@@ -31,7 +32,12 @@ fun convertScores(scoreList: List<String?>?, sport: String): Pair<List<Int>, Int
         }
 
     if (sport.lowercase() == "baseball") {
-        scoresByPeriod = scoresByPeriod.take(9)
+        val scoreParsed = result.split("(")
+        scoresByPeriod = if (scoreParsed.size > 1) {
+            scoresByPeriod.take(6)
+        } else {
+            scoresByPeriod.take(9)
+        }
         val totalScore = scoresByPeriod.sum()
         return Pair(scoresByPeriod, totalScore)
     }
@@ -56,14 +62,15 @@ fun toGameData(
     scoreBreakdown: List<List<String?>?>?,
     team1: TeamBoxScore,
     team2: TeamBoxScore,
-    sport: String
+    sport: String,
+    result: String,
 ): GameData {
     val (team1Scores, team1Total) = scoreBreakdown?.getOrNull(0)?.let {
-        convertScores(it, sport)
+        convertScores(it, sport, result)
     } ?: (emptyList<Int>() to null)
 
     val (team2Scores, team2Total) = scoreBreakdown?.getOrNull(1)?.let {
-        convertScores(it, sport)
+        convertScores(it, sport, result)
     } ?: (emptyList<Int>() to null)
 
     val team1Score =
@@ -90,11 +97,12 @@ fun parseResultScore(result: String?): Pair<Int, Int>? {
     if (parts.size != 2) return null
 
     val scorePart = parts[1].split("-")
+    val secondScorePartEdge = scorePart[1].split("(")
     if (scorePart.size != 2) return null
 
     val homeScore = scorePart[0].toIntOrNull()
-    val oppScore = scorePart[1].toIntOrNull()
-
+    val oppScore = secondScorePartEdge[0].toIntOrNull()
+    Log.d("HIHI", oppScore.toString())
     if (homeScore != null && oppScore != null) {
         return Pair(homeScore, oppScore)
     } else {
