@@ -93,11 +93,12 @@ fun HomeScreen(
                 sheetState = sheetState,
                 onDismiss = { showBottomSheet = false },
                 onApply = { price, location, date ->
-                    // TODO: forward to ViewModel
+                    homeViewModel.onDateFilterApplied(date)
                 },
                 onReset = {
-                    // TODO: reset filters in ViewModel
-                }
+                    homeViewModel.onFiltersReset()
+                },
+                initialDate = uiState.selectedDateFilter
             )
         }
     }
@@ -171,12 +172,11 @@ private fun HomeLazyColumn(
                         text = "Game Schedule",
                         style = title,
                     )
-                    //removed for 2/2026 release
-//                    IconButton(
-//                        icon = painterResource(id = R.drawable.advanced_filter),
-//                        contentDescription = "Advanced filter",
-//                        onClick = onAdvancedFilterClick
-//                    )
+                    IconButton(
+                        icon = painterResource(id = R.drawable.advanced_filter),
+                        contentDescription = "Advanced filter",
+                        onClick = onAdvancedFilterClick
+                    )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 SportSelectorHeader(
