@@ -4,6 +4,7 @@ import android.util.Log
 import com.apollographql.apollo.ApolloClient
 import com.cornellappdev.score.util.isValidSport
 import com.cornellappdev.score.util.parseColor
+import com.cornellappdev.score.util.parseResultScore
 import com.example.score.GameByIdQuery
 import com.example.score.GamesQuery
 import com.example.score.PagedGamesQuery
@@ -75,6 +76,7 @@ class ScoreRepository @Inject constructor(
                                     id = game.id ?: "", // Should never be null
                                     teamLogo = it,
                                     teamName = game.team.name,
+                                    time = game.time,
                                     teamColor = parseColor(game.team.color).copy(alpha = 0.4f * 255),
                                     gender = if (game.gender == "Mens") "Men's" else "Women's",
                                     sport = game.sport,
@@ -133,11 +135,15 @@ class ScoreRepository @Inject constructor(
                     .mapNotNull { graphqlGame ->
                         val scores = graphqlGame.result?.split(",")?.getOrNull(1)?.split("-")
                         val cornellScore = scores?.getOrNull(0)?.toNumberOrNull()
-                        val otherScore = scores?.getOrNull(1)?.toNumberOrNull()
+                            ?: parseResultScore(graphqlGame.result)?.first
+                        val otherScore = scores?.getOrNull(1)?.toNumberOrNull() ?: parseResultScore(
+                            graphqlGame.result
+                        )?.second
                         graphqlGame.team?.image?.let { imageUrl ->
                             Game(
                                 id = graphqlGame.id ?: "",
                                 teamLogo = imageUrl,
+                                time = graphqlGame.time,
                                 teamName = graphqlGame.team.name,
                                 teamColor = parseColor(graphqlGame.team.color).copy(alpha = 0.4f * 255),
                                 gender = if (graphqlGame.gender == "Mens") "Men's" else "Women's",
@@ -171,6 +177,7 @@ class ScoreRepository @Inject constructor(
      * `currentGamesFlow` to be observed.
      */
     fun getGameById(id: String) = appScope.launch {
+        Log.d("ScoreRepository", "Fetching game with id: $id")
         _currentGameFlow.value = ApiResponse.Loading
         try {
             val result =
@@ -181,6 +188,7 @@ class ScoreRepository @Inject constructor(
 
             result.getOrNull()?.game?.let {
                 _currentGameFlow.value = ApiResponse.Success(it.toGameDetails())
+
             } ?: _currentGameFlow.update { ApiResponse.Error }
         } catch (e: Exception) {
             Log.e("ScoreRepository", "Error fetching game with id: ${id}: ", e)
