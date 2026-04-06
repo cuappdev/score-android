@@ -19,6 +19,7 @@ fun HighlightsScreenSearchFilterBar(
     query: String,
     selectedSport: SportSelection,
     onQueryChange: (String) -> Unit,
+    onSearch: (String) -> Unit,
     onFilterSelected: (SportSelection) -> Unit,
     navigateBack: () -> Unit
 ) {
@@ -27,7 +28,8 @@ fun HighlightsScreenSearchFilterBar(
             modifier = Modifier.padding(horizontal = 24.dp),
             query = query,
             onQueryChange = onQueryChange,
-            navigateBack
+            onSearch = onSearch,
+            navigateBack = navigateBack
         )
         Spacer(modifier = Modifier.height(16.dp))
         HighlightsFilterRow(sportList, selectedSport, onFilterSelected)
@@ -38,6 +40,13 @@ fun HighlightsScreenSearchFilterBar(
 @Composable
 private fun HighlightsScreenSearchFilterBarPreview() {
     ScorePreview {
-        HighlightsScreenSearchFilterBar(sportSelectionList, "", SportSelection.All, {}, onFilterSelected = {}, navigateBack = {})
+        HighlightsScreenSearchFilterBar(
+            sportSelectionList,
+            "",
+            SportSelection.All,
+            {},
+            {},
+            onFilterSelected = {},
+            navigateBack = {})
     }
 }

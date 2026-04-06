@@ -25,15 +25,15 @@ import com.cornellappdev.score.theme.Style.metricSmallNormal
 @Composable
 private fun RecentSearchItem(
     query: String,
-    onItemClick: () -> Unit,
-    onCloseClick: () -> Unit
+    onItemClick: (String) -> Unit,
+    onCloseClick: (String) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = { onItemClick() /*search the query*/ })
+            .clickable(onClick = { onItemClick(query) /*search the query*/ })
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -48,7 +48,7 @@ private fun RecentSearchItem(
         }
 
         IconButton(
-            onClick = { onCloseClick() /*delete this search from the recent searches list*/ },
+            onClick = { onCloseClick(query) /*delete this search from the recent searches list*/ },
             modifier = Modifier.size(10.dp)
         ) {
             Icon(
@@ -63,8 +63,8 @@ private fun RecentSearchItem(
 @Composable
 fun RecentSearches(
     recentQueriesList: List<String>,
-    onItemClick: () -> Unit,
-    onCloseClick: () -> Unit
+    onItemClick: (String) -> Unit,
+    onCloseClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier

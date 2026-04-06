@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +34,9 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,21 +45,23 @@ import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.Style.bodyMedium
 import com.cornellappdev.score.theme.Style.bodyNormal
 
-private fun Modifier.highlightsSearchRowModifier(): Modifier = this
-    .fillMaxWidth()
-    .background(Color.White, RoundedCornerShape(100.dp))
-    .border(1.dp, GrayLight, RoundedCornerShape(100.dp))
-    .clip(RoundedCornerShape(100.dp))
-    .padding(horizontal = 8.dp, vertical = 8.dp)
+private fun Modifier.highlightsSearchRowModifier(): Modifier =
+    this
+        .fillMaxWidth()
+        .background(Color.White, RoundedCornerShape(100.dp))
+        .border(1.dp, GrayLight, RoundedCornerShape(100.dp))
+        .clip(RoundedCornerShape(100.dp))
+        .padding(horizontal = 8.dp, vertical = 8.dp)
 
 @Composable
 fun HighlightsSearchBar(
-    modifier: Modifier = Modifier,
     query: String,
     onQueryChange: (String) -> Unit,
-    navigateBack: () -> Unit,
-
+    onSearch: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    navigateBack: () -> Unit
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     val interactionSource = remember { MutableInteractionSource() }
     var isFocused by remember { mutableStateOf(true) }
 
@@ -79,6 +85,15 @@ fun HighlightsSearchBar(
             visualTransformation = VisualTransformation.None,
             interactionSource = interactionSource,
             enabled = true,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    onSearch(query)
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                }),
             modifier = Modifier
                 .focusRequester(focusRequester)
                 .weight(1f)
@@ -89,9 +104,7 @@ fun HighlightsSearchBar(
                 },
             decorationBox = { innerTextField ->
                 Row(
-                    modifier =
-                        Modifier
-                            .highlightsSearchRowModifier(),
+                    modifier = Modifier.highlightsSearchRowModifier(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -124,29 +137,22 @@ fun HighlightsSearchBar(
                             painter = painterResource(R.drawable.ic_close),
                             contentDescription = "clear field",
                             modifier = Modifier.clickable(
-                                onClick = { onQueryChange("") }
-                            )
-                        )
+                                onClick = { onQueryChange("") }))
                     }
                 }
-            }
-        )
+            })
 
         AnimatedVisibility(
             isFocused
         ) {
             Text(
-                "Cancel",
-                style = bodyMedium,
-                modifier = Modifier.clickable(
-                    onClick = {
-                        isFocused = false
-                        focusManager.clearFocus(force = true)
-                        onQueryChange("")
-                        navigateBack()
-                    }
-                )
-            )
+                "Cancel", style = bodyMedium, modifier = Modifier.clickable(
+                onClick = {
+                    isFocused = false
+                    focusManager.clearFocus(force = true)
+                    onQueryChange("")
+                    navigateBack()
+                }))
         }
     }
 }
@@ -154,18 +160,14 @@ fun HighlightsSearchBar(
 /*HighlightsSearchEntryPointRow is the non-functional version of the HighlightsSearchBar, it's a dummy component that's clickable in HighlightsScreen and will navigate to HighlightsSearchScreen */
 @Composable
 fun HighlightsSearchEntryPointRow(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onClick: () -> Unit, modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier =
-            Modifier
-                .highlightsSearchRowModifier()
-                .clickable { onClick() }
-                .then(modifier),
+    Row(modifier = Modifier
+        .highlightsSearchRowModifier()
+        .clickable { onClick() }
+        .then(modifier),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
+        horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         Icon(
             painter = painterResource(R.drawable.search),
             contentDescription = "search icon",
@@ -173,8 +175,7 @@ fun HighlightsSearchEntryPointRow(
         )
 
         Text(
-            text = "Search keywords",
-            style = bodyNormal.copy(color = Color.Gray)
+            text = "Search keywords", style = bodyNormal.copy(color = Color.Gray)
         )
     }
 }
@@ -188,9 +189,5 @@ private fun HighlightsSearchEntryPointRowPreview() {
 @Preview
 @Composable
 private fun HighlightsSearchBarPreview() {
-    HighlightsSearchBar(
-        query = "",
-        onQueryChange = {},
-        navigateBack = {}
-    )
+    HighlightsSearchBar(query = "", onQueryChange = {}, onSearch = {}, navigateBack = {})
 }

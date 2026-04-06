@@ -31,7 +31,6 @@ import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.HighlightsViewModel
-import kotlinx.coroutines.selects.select
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -61,8 +60,7 @@ fun HighlightsScreen(
             is ApiResponse.Success -> {
                 ScorePullToRefreshBox(
                     isRefreshing = uiState.loadedState == ApiResponse.Loading,
-                    { highlightsViewModel.onRefresh() }
-                ) {
+                    { highlightsViewModel.onRefresh() }) {
                     HighlightsScreenContent(
                         selectedSport = uiState.sportSelect,
                         sportList = uiState.sportSelectionList,
@@ -79,7 +77,7 @@ fun HighlightsScreen(
 }
 
 @Serializable
-enum class HighlightsSubScreenType{
+enum class HighlightsSubScreenType {
     TODAY, PAST3DAYS, ALL
 }
 
@@ -87,9 +85,9 @@ enum class HighlightsSubScreenType{
 private fun HighlightsScreenContent(
     selectedSport: SportSelection,
     onSportSelected: (SportSelection) -> Unit,
-    sportList: List<SportSelection> = emptyList(),
-    todayHighlightsList: List<HighlightData> = emptyList(),
-    pastThreeHighlightsList: List<HighlightData> = emptyList(),
+    sportList: List<SportSelection>,
+    todayHighlightsList: List<HighlightData>,
+    pastThreeHighlightsList: List<HighlightData>,
     toSearchScreen: () -> Unit,
     toSubScreen: (HighlightsSubScreenType) -> Unit
 ) {
@@ -113,7 +111,7 @@ private fun HighlightsScreenContent(
             )
         }
         if (todayHighlightsList.isNotEmpty()) {
-            HighlightsCardRow(todayHighlightsList, "Today", toSubScreen )
+            HighlightsCardRow(todayHighlightsList, "Today", toSubScreen)
         }
         if (pastThreeHighlightsList.isNotEmpty()) {
             HighlightsCardRow(pastThreeHighlightsList, "Past 3 days", toSubScreen)
@@ -149,7 +147,6 @@ private fun HighlightScreenPreview(
             pastThreeHighlightsList = previewData.pastHighlightList,
             toSearchScreen = {},
             onSportSelected = {},
-            toSubScreen = {}
-        )
+            toSubScreen = {})
     }
 }
