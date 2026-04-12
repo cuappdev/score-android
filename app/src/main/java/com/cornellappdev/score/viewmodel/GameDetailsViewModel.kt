@@ -24,7 +24,7 @@ class GameDetailsViewModel @Inject constructor(
         loadedState = ApiResponse.Loading
     )
 ) {
-    private val gameId: String = checkNotNull(savedStateHandle["gameId"])
+    private val gameId: String = savedStateHandle.toRoute<ScoreScreens.GameDetailsPage>().gameId
 
     init {
         asyncCollect(scoreRepository.currentGamesFlow) { response ->

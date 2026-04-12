@@ -1,31 +1,54 @@
 package com.cornellappdev.score.screen
+
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material3.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cornellappdev.score.components.GamesCarousel
+import com.cornellappdev.score.R
+import com.cornellappdev.score.components.ProfileGameCarousel
+import com.cornellappdev.score.theme.GrayLight
+import com.cornellappdev.score.theme.GrayPrimary
+import com.cornellappdev.score.theme.Style
+import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.gameList
 
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    navigateToEditProfile: () -> Unit = {}
+    navigateToEditProfile: () -> Unit = {},
+    navigateToGameDetails: (String) -> Unit = {}
 ) {
     val bookmarkedGames = gameList.take(4)
     val recommendedGames = gameList.takeLast(4)
@@ -33,7 +56,7 @@ fun ProfileScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(White)
     ) {
         ProfileTopBar(
             modifier = Modifier.padding(horizontal = 20.dp)
@@ -48,75 +71,16 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Bookmarks",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "${bookmarkedGames.size} Results",
-                    fontSize = 14.sp,
-                    color = Color.Gray
-                )
-                Icon(
-                    imageVector = Icons.Outlined.ChevronRight,
-                    contentDescription = null,
-                    tint = Color.Gray,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        GamesCarousel(
+        ProfileGameCarousel(
+            title = "Bookmarks",
             games = bookmarkedGames,
-            onClick = { gameId -> /* handle navigation */ }
+            onClick = { gameId -> navigateToGameDetails(gameId) }
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Games You Might Like",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "${recommendedGames.size} Results",
-                    fontSize = 14.sp,
-                    color = Color.Gray
-                )
-                Icon(
-                    imageVector = Icons.Outlined.ChevronRight,
-                    contentDescription = null,
-                    tint = Color.Gray,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        GamesCarousel(
+        ProfileGameCarousel(
+            title = "Games You Might Like",
             games = recommendedGames,
-            onClick = { gameId -> /* handle navigation */ }
+            onClick = { gameId -> navigateToGameDetails(gameId) }
         )
     }
 }
@@ -132,9 +96,10 @@ fun ProfileTopBar(modifier: Modifier = Modifier) {
     ) {
         Text(
             text = "Profile",
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
+            style = Style.title.copy(
+                fontSize = 26.sp,
+                color = GrayPrimary
+            )
         )
 
         Row(
@@ -144,14 +109,14 @@ fun ProfileTopBar(modifier: Modifier = Modifier) {
             Icon(
                 imageVector = Icons.Outlined.Notifications,
                 contentDescription = "Notifications",
-                tint = Color.Black,
+                tint = GrayPrimary,
                 modifier = Modifier.size(24.dp)
             )
 
             Icon(
                 imageVector = Icons.Outlined.Menu,
                 contentDescription = "Menu",
-                tint = Color.Black,
+                tint = GrayPrimary,
                 modifier = Modifier.size(24.dp)
             )
         }
@@ -167,43 +132,24 @@ fun ProfileRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.fillMaxWidth()
     ) {
-        Box(
-            modifier = Modifier
-                .size(120.dp)
-                .border(
-                    width = 0.81.dp,
-                    color = Color(0xFF1D353E),
-                    shape = CircleShape
-                )
-                .clip(CircleShape)
-                .background(Color(0xFF7EDAFF)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "🏓",
-                fontSize = 72.sp,
-                lineHeight = 72.sp
-            )
-        }
-
+        Image(
+            painter = painterResource(id = R.drawable.pingpong_profile),
+            contentDescription = "Profile image",
+            modifier = Modifier.size(100.dp),
+            contentScale = ContentScale.Crop
+        )
         Spacer(modifier = Modifier.width(24.dp))
 
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(
                 text = "Audrey Wu",
-                color = Color(0xFF333333),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.W600,
-                lineHeight = 18.sp,
-                letterSpacing = 0.sp
+                style = Style.heading6
             )
             Text(
                 text = "@audreywuu",
-                color = Color(0xFF333333),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.W500,
-                lineHeight = 18.sp,
-                letterSpacing = 0.sp
+                style = Style.heading5.copy(
+                    color = GrayPrimary
+                )
             )
             Spacer(modifier = Modifier.height(6.dp))
             EditProfileButton(onClick = onEditClick)
@@ -220,10 +166,10 @@ fun EditProfileButton(
         onClick = onClick,
         shape = RoundedCornerShape(100.dp),
         colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = Color.White,
-            contentColor = Color(0xFF333333)
+            containerColor = White,
+            contentColor = GrayPrimary
         ),
-        border = BorderStroke(1.dp, Color(0xFFD1D1D1)),
+        border = BorderStroke(1.dp, GrayLight),
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
         modifier = modifier
             .width(97.dp)
@@ -231,9 +177,9 @@ fun EditProfileButton(
     ) {
         Text(
             text = "Edit profile",
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-            letterSpacing = 0.sp
+            style = Style.labelsMedium.copy(
+                color = GrayPrimary
+            )
         )
     }
 }

@@ -40,19 +40,12 @@ fun ScoreNavigationBar(
                 ),
                 icon = {
                     val icon = if (isSelected) item.selectedIcon else item.unselectedIcon
-                    if (icon is Int) {
-                        Icon(
-                            painter = painterResource(id = icon),
-                            contentDescription = null,
-                            tint = Color.Unspecified
-                        )
-                    } else if (icon is ImageVector) {
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = null,
-                            tint = if (isSelected) CrimsonPrimary else GrayPrimary
-                        )
-                    }
+
+                    Icon(
+                        painter = painterResource(id = icon),
+                        contentDescription = null,
+                        tint = Color.Unspecified
+                    )
                 },
                 label = {
                     Text(

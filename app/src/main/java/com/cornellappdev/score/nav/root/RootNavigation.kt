@@ -147,8 +147,8 @@ fun NavBackStackEntry.toScreen(): ScoreScreens? =
 data class NavItem(
     val screen: ScoreScreens,
     val label: String,
-    val unselectedIcon: Any,
-    val selectedIcon: Any
+    val unselectedIcon: Int,
+    val selectedIcon: Int
 )
 
 val tabs = listOf(
@@ -173,8 +173,8 @@ val tabs = listOf(
     ),
     NavItem(
         label = "Profile",
-        unselectedIcon = Icons.Outlined.Person,
-        selectedIcon = Icons.Filled.Person,
+        unselectedIcon = R.drawable.ic_profile,
+        selectedIcon = R.drawable.ic_profile_filled,
         screen = ScoreScreens.Profile,
     ),
 )

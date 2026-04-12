@@ -67,6 +67,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = freeCompilerArgs + listOf(
+            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api"
+        )
     }
 }
 
@@ -81,7 +84,6 @@ dependencies {
     implementation(libs.material3)
     implementation("com.google.dagger:hilt-android:2.51.1")
     implementation(libs.androidx.foundation)
-    implementation(libs.foundation)
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("com.google.accompanist:accompanist-pager:0.24.0-alpha")
@@ -104,7 +106,7 @@ dependencies {
     lintChecks(libs.compose.lint.checks)
     implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
     implementation("com.google.firebase:firebase-analytics")
-    implementation("androidx.compose.material:material-icons-extended:1.6.0")
+    implementation("androidx.compose.material:material-icons-extended")
 }
 
 apollo {
@@ -116,4 +118,3 @@ apollo {
         }
     }
 }
-

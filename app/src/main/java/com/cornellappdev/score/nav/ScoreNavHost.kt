@@ -39,7 +39,8 @@ fun ScoreNavHost(navController: NavHostController) {
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
                 HomeScreen(navigateToGameDetails = {
                     navController.navigate(ScoreScreens.GameDetailsPage(it))
-                })
+                }
+                )
             }
         }
         composable<ScoreScreens.ScoresScreen> {
@@ -53,6 +54,9 @@ fun ScoreNavHost(navController: NavHostController) {
             ProfileScreen(
                 navigateToEditProfile = {
                     navController.navigate(ScoreScreens.EditProfile)
+                },
+                navigateToGameDetails = { gameId ->
+                    navController.navigate(ScoreScreens.GameDetailsPage(gameId))
                 }
             )
         }
@@ -63,8 +67,10 @@ fun ScoreNavHost(navController: NavHostController) {
                 }
             )
         }
-        composable<ScoreScreens.GameDetailsPage> {
+        composable<ScoreScreens.GameDetailsPage> { backStackEntry ->
+            val route = backStackEntry.toRoute<ScoreScreens.GameDetailsPage>()
             GameDetailsScreen(
+                gameId = route.gameId,
                 onBackArrow = {
                     navController.navigateUp()
                 },
