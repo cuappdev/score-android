@@ -57,7 +57,7 @@ fun HighlightsScreen(
 
             is ApiResponse.Success -> {
                 ScorePullToRefreshBox(
-                    isRefreshing = uiState.loadedState == ApiResponse.Loading,
+                    isRefreshing = uiState.isRefreshing,
                     { highlightsViewModel.onRefresh() }
                 ) {
                     HighlightsScreenContent(
