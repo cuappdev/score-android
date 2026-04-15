@@ -24,7 +24,7 @@ class HighlightsRepository @Inject constructor(
 
 
     /**
-     * Asynchronously fetches the list of games from the API. Once finished, will send down
+     * Asynchronously fetches the list of highlights from the API. Once finished, will send down
      * `upcomingGamesFlow` to be observed.
      */
     fun fetchHighlights() = appScope.launch {
