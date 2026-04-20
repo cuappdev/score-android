@@ -260,6 +260,7 @@ fun AvatarPickerBottomSheet(
     var selectedAvatar by remember { mutableStateOf<AvatarOption?>(null) }
 
     val avatars = listOf(
+        AvatarOption(R.drawable.upload),
         AvatarOption(R.drawable.pingpong_profile),
         AvatarOption(R.drawable.soccer_profile),
         AvatarOption(R.drawable.tennis_profile),
@@ -270,8 +271,7 @@ fun AvatarPickerBottomSheet(
         AvatarOption(R.drawable.volleyball_profile),
         AvatarOption(R.drawable.golf_profile),
         AvatarOption(R.drawable.weightlifting_profile),
-        AvatarOption(R.drawable.baseball_profile),
-        AvatarOption(R.drawable.football_profile)
+        AvatarOption(R.drawable.baseball_profile)
     )
 
     ModalBottomSheet(
@@ -395,11 +395,10 @@ fun AvatarIconGrid(
         }
     }
 }
-
+// TODO: support uploaded profile photos later
 data class AvatarOption(
     val imageRes: Int
 )
-
 @Preview(showBackground = true)
 @Composable
 private fun EditProfileScreenPreview() {
