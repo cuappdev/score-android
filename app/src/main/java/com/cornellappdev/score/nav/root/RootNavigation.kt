@@ -171,10 +171,4 @@ val tabs = listOf(
         selectedIcon = R.drawable.ic_scores_filled,
         screen = ScoreScreens.ScoresScreen,
     ),
-    NavItem(
-        label = "Profile",
-        unselectedIcon = R.drawable.ic_profile,
-        selectedIcon = R.drawable.ic_profile_filled,
-        screen = ScoreScreens.Profile,
-    ),
 )
