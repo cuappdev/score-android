@@ -58,6 +58,7 @@ import java.time.LocalDate
 
 @Composable
 fun GameDetailsScreen(
+    gameId: String,
     gameDetailsViewModel: GameDetailsViewModel = hiltViewModel(),
     onBackArrow: () -> Unit = {},
     navigateToGameScoreSummary: (List<ScoreEvent>) -> Unit

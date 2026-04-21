@@ -18,6 +18,7 @@ val DarkBlue = Color(0x011f5b)
 val saturatedGreen = Color(0xFF55B63C)
 val SpotColor = Color(0x12000000)
 val AmbientColor = Color(0x12000000)
+val BorderDark = Color(0xFF1D353E)
 
 //placeholders, will be replaced once we get backend data
 val CornellRed = Color(0x66B31B1B)

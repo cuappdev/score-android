@@ -53,12 +53,19 @@ import com.cornellappdev.score.util.gameList
 import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.HomeUiState
 import com.cornellappdev.score.viewmodel.HomeViewModel
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    navigateToGameDetails: (String) -> Unit = {}
+    navigateToGameDetails: (String) -> Unit = {},
+    navigateToProfile: () -> Unit = {}
 ) {
     val uiState = homeViewModel.collectUiStateValue()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -83,8 +90,9 @@ fun HomeScreen(
                     onGenderSelected = { homeViewModel.onGenderSelected(it) },
                     onSportSelected = { homeViewModel.onSportSelected(it) },
                     navigateToGameDetails = navigateToGameDetails,
+                    navigateToProfile = navigateToProfile,
                     onRefresh = { homeViewModel.onRefresh() },
-                    onAdvancedFilterClick = { showBottomSheet = true }
+                    onAdvancedFilterClick = { showBottomSheet = true },
                 )
             }
         }
@@ -112,6 +120,7 @@ private fun HomeContent(
     onSportSelected: (SportSelection) -> Unit,
     onRefresh: () -> Unit,
     navigateToGameDetails: (String) -> Unit = {},
+    navigateToProfile: () -> Unit = {},
     onAdvancedFilterClick: () -> Unit
 ) {
     ScorePullToRefreshBox(isRefreshing = uiState.loadedState == ApiResponse.Loading, onRefresh) {
@@ -120,6 +129,7 @@ private fun HomeContent(
             onGenderSelected,
             onSportSelected,
             navigateToGameDetails,
+            navigateToProfile,
             onAdvancedFilterClick
         )
     }
@@ -132,23 +142,37 @@ private fun HomeLazyColumn(
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
     navigateToGameDetails: (String) -> Unit,
+    navigateToProfile: () -> Unit,
     onAdvancedFilterClick: () -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
-        if (uiState.filteredGames.isNotEmpty()) {
-            item {
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = "Upcoming",
                     style = heading1,
-                    color = GrayPrimary,
+                    color = GrayPrimary
+                )
+
+                Image(
+                    painter = painterResource(id = R.drawable.profile_ic),
+                    contentDescription = "Profile",
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 24.dp)
+                        .size(28.dp)
+                        .clip(CircleShape)
+                        .clickable { navigateToProfile() }
                 )
             }
-            item {
-                Spacer(Modifier.height(16.dp))
-            }
+        }
+
+        item {
+            Spacer(Modifier.height(16.dp))
         }
         if (uiState.filteredGames.isNotEmpty()) {
             item {
@@ -242,6 +266,7 @@ private fun HomeScreenPreview() = ScorePreview {
             onGenderSelected = {},
             onSportSelected = {},
             onRefresh = {},
+            navigateToProfile = {},
             onAdvancedFilterClick = {}
         )
     }
@@ -260,6 +285,7 @@ private fun HomeScreenEmptyStatePreview() = ScorePreview {
         onGenderSelected = {},
         onSportSelected = {},
         onRefresh = {},
+        navigateToProfile = {},
         onAdvancedFilterClick = {}
     )
 }

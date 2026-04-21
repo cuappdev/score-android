@@ -18,7 +18,8 @@ apollo = "4.1.1"
 material3 = "1.4.0-alpha11"
 runtime = "1.9.4"
 ui = "1.9.4"
-foundation = "1.9.4"
+foundationVersion = "1.10.3"
+material3Version = "1.4.0"
 
 
 [libraries]
@@ -34,7 +35,8 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
 apollo-runtime = { module = "com.apollographql.apollo:apollo-runtime", version.ref = "apollo" }
-androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
+androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundationVersion" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3Version" }
 
 
 [plugins]
