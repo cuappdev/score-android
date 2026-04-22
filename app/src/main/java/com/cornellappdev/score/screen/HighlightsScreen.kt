@@ -18,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
+import com.cornellappdev.score.components.highlights.HighlightsLoadingScreen
 import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.ScorePullToRefreshBox
@@ -49,8 +50,7 @@ fun HighlightsScreen(
     ) {
         when (uiState.loadedState) {
             is ApiResponse.Loading -> {
-                //todo make highlights loading screen, this one's for the home page
-                LoadingScreen("Loading Highlights...", "Loading Schedules...")
+                HighlightsLoadingScreen("Loading Highlights...")
             }
 
             is ApiResponse.Error -> {

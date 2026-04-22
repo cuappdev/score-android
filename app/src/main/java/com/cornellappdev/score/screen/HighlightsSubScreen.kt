@@ -30,12 +30,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.ErrorState
-import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.highlights.ArticleHighlightCard
 import com.cornellappdev.score.components.highlights.HighlightsFilterRow
 import com.cornellappdev.score.components.highlights.HighlightsSearchEntryPointRow
+import com.cornellappdev.score.components.highlights.SubHighlightsLoadingScreen
 import com.cornellappdev.score.components.highlights.VideoHighlightCard
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.HighlightData
@@ -45,10 +45,9 @@ import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.HighlightsViewModel
-import kotlinx.coroutines.selects.select
 
 @Composable
-private fun HighlightsSubScreenHeader(
+fun HighlightsSubScreenHeader(
     header: String,
     navigateBack: () -> Unit
 ) {
@@ -104,10 +103,20 @@ fun HighlightsSubScreen(
             .fillMaxSize()
             .background(color = Color.White)
     ) {
+        val (highlightsList, header) = when (subScreenType) {
+            HighlightsSubScreenType.TODAY ->
+                uiState.todayHighlights to "Today"
+
+            HighlightsSubScreenType.PAST3DAYS ->
+                uiState.pastThreeDaysHighlights to "Past 3 Days"
+
+            HighlightsSubScreenType.ALL ->
+                uiState.filteredHighlights to "All highlights"
+        }
+
         when (uiState.loadedState) {
             is ApiResponse.Loading -> {
-                //todo make highlights loading screen, this one's for the home page
-                LoadingScreen("Loading Highlights...", "Loading Schedules...")
+                SubHighlightsLoadingScreen(header)
             }
 
             is ApiResponse.Error -> {
@@ -119,17 +128,6 @@ fun HighlightsSubScreen(
                     isRefreshing = uiState.loadedState == ApiResponse.Loading,
                     { highlightsViewModel.onRefresh() }
                 ) {
-                    val (highlightsList, header) = when (subScreenType) {
-                        HighlightsSubScreenType.TODAY ->
-                            uiState.todayHighlights to "Today"
-
-                        HighlightsSubScreenType.PAST3DAYS ->
-                            uiState.pastThreeDaysHighlights to "Past 3 Days"
-
-                        HighlightsSubScreenType.ALL ->
-                            uiState.filteredHighlights to "All highlights"
-                    }
-
                     HighlightsSubScreenContent(
                         selectedSport = uiState.sportSelect,
                         sportList = uiState.sportSelectionList,
@@ -159,7 +157,7 @@ fun HighlightsSubScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.White)
-            .padding(top = 24.dp)
+            //.padding(top = 24.dp)
     ) {
         HighlightsSubScreenHeader(header, navigateBack)
         Spacer(modifier = Modifier.height(24.dp))
