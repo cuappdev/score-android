@@ -20,10 +20,12 @@ private const val TAG = "SocketManager"
 @Singleton
 class SocketManager @Inject constructor(private val appScope: CoroutineScope) {
 
-    private val _gameUpdateFlow = MutableSharedFlow<SocketGameUpdateEnvelope>(extraBufferCapacity = 16)
+    private val _gameUpdateFlow =
+        MutableSharedFlow<SocketGameUpdateEnvelope>(extraBufferCapacity = 16)
     val gameUpdateFlow: SharedFlow<SocketGameUpdateEnvelope> = _gameUpdateFlow.asSharedFlow()
 
-    private val activeSubscriptions: MutableSet<String> = Collections.synchronizedSet(mutableSetOf())
+    private val activeSubscriptions: MutableSet<String> =
+        Collections.synchronizedSet(mutableSetOf())
 
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
 
@@ -32,13 +34,19 @@ class SocketManager @Inject constructor(private val appScope: CoroutineScope) {
             .setTransports(arrayOf("websocket"))
             .build()
         IO.socket(BuildConfig.SOCKET_URL, opts).also { s ->
+            // "on" is a listener
             s.on(Socket.EVENT_CONNECT) {
                 Log.d(TAG, "Connected")
                 activeSubscriptions.forEach { id ->
                     s.emit("subscribe", JSONObject().put("gameId", id))
                 }
             }
-            s.on(Socket.EVENT_DISCONNECT) { args -> Log.d(TAG, "Disconnected: ${args.firstOrNull()}") }
+            s.on(Socket.EVENT_DISCONNECT) { args ->
+                Log.d(
+                    TAG,
+                    "Disconnected: ${args.firstOrNull()}"
+                )
+            }
             s.on(Socket.EVENT_CONNECT_ERROR) { args -> Log.e(TAG, "Error: ${args.firstOrNull()}") }
             s.on("game_update") { args ->
                 val raw = args.firstOrNull() as? JSONObject ?: return@on
