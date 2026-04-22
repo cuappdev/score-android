@@ -100,6 +100,9 @@ class HighlightsViewModel @Inject constructor(
                     is ApiResponse.Success -> {
                         val sorted = response.data.sortedByDescending { it.date }
 
+                        val (filtered, today, pastThreeDays) =
+                            buildDerivedLists(sorted, sportSelect, query)
+
                         copy(
                             loadedState = ApiResponse.Success(sorted),
                             isRefreshing = false,
