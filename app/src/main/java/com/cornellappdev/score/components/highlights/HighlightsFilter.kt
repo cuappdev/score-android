@@ -33,7 +33,6 @@ import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Stroke
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.White
-import com.cornellappdev.score.util.sportList
 import com.cornellappdev.score.util.sportSelectionList
 
 @Composable
@@ -50,7 +49,8 @@ private fun HighlightsFilterButton(
         shape = RoundedCornerShape(100.dp),
         colors = outlinedButtonColors(
             containerColor = if (isSelected) GrayLight else White,
-            contentColor = GrayPrimary
+            contentColor = GrayPrimary,
+            disabledContainerColor = GrayLight
         ),
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
     ) {
@@ -70,6 +70,7 @@ private fun HighlightsFilterButton(
 @Composable
 fun HighlightsFilterRow(
     sportList: List<SportSelection>,
+    selectedSport: SportSelection,
     onFilterSelected: (SportSelection) -> Unit,
 ) {
     LazyRow(
@@ -82,24 +83,27 @@ fun HighlightsFilterRow(
             items = sportList.filterIsInstance<SportSelection.SportSelect>(),
             key = { it.sport }
         ) { selection ->
+
+            val isSelected = selectedSport == selection
+
             HighlightsFilterButton(
                 sport = selection.sport,
-                onFilterSelected = onFilterSelected
+                onFilterSelected = onFilterSelected,
+                isSelected = isSelected
             )
         }
     }
-
 }
 
 @Preview
 @Composable
 private fun HighlightsFilterButtonPreview() {
     var isSelected by remember { mutableStateOf(false) }
-    HighlightsFilterButton(Sport.BASEBALL, { isSelected = !isSelected }, isSelected = isSelected)
+    HighlightsFilterButton(Sport.BASEBALL, { !isSelected }, isSelected = isSelected)
 }
 
 @Preview
 @Composable
 private fun HighlightsFilterRowPreview() {
-    HighlightsFilterRow(sportSelectionList, {})
+    HighlightsFilterRow(sportSelectionList, SportSelection.All, {})
 }

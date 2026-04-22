@@ -10,19 +10,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.components.ScorePreview
-import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
-import com.cornellappdev.score.util.sportList
 import com.cornellappdev.score.util.sportSelectionList
 
 @Composable
 fun HighlightsScreenSearchFilterBar(
-    sportList: List<SportSelection>
+    sportList: List<SportSelection>,
+    query: String,
+    selectedSport: SportSelection,
+    onQueryChange: (String) -> Unit,
+    onSearch: (String) -> Unit,
+    onFilterSelected: (SportSelection) -> Unit,
+    navigateBack: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        HighlightsSearchBar(modifier = Modifier.padding(horizontal = 24.dp))
+        HighlightsSearchBar(
+            modifier = Modifier.padding(horizontal = 24.dp),
+            query = query,
+            onQueryChange = onQueryChange,
+            onSearch = onSearch,
+            navigateBack = navigateBack
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        HighlightsFilterRow(sportList, {/*todo on filter selected*/ })
+        HighlightsFilterRow(sportList, selectedSport, onFilterSelected)
     }
 }
 
@@ -30,6 +40,13 @@ fun HighlightsScreenSearchFilterBar(
 @Composable
 private fun HighlightsScreenSearchFilterBarPreview() {
     ScorePreview {
-        HighlightsScreenSearchFilterBar(sportSelectionList)
+        HighlightsScreenSearchFilterBar(
+            sportSelectionList,
+            "",
+            SportSelection.All,
+            {},
+            {},
+            onFilterSelected = {},
+            navigateBack = {})
     }
 }

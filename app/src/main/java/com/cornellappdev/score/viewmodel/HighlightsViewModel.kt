@@ -7,6 +7,10 @@ import com.cornellappdev.score.model.HighlightsRepository
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -17,37 +21,59 @@ data class HighlightsUiState(
     val sportSelectionList: List<SportSelection>,
     val filteredHighlights: List<HighlightData>,
     val todayHighlights: List<HighlightData>,
-    val pastThreeDaysHighlights: List<HighlightData>
+    val pastThreeDaysHighlights: List<HighlightData>,
+    val query: String,
+    val recentSearches: List<String>
 )
 
 private fun buildDerivedLists(
     highlights: List<HighlightData>,
-    sportSelect: SportSelection
+    sportSelect: SportSelection,
+    query: String
 ): Triple<List<HighlightData>, List<HighlightData>, List<HighlightData>> {
-
     val today = LocalDate.now()
     val threeDaysAgo = today.minusDays(3)
 
-    // Keep only highlights with a date and matching the sport filter
-    val validHighlights = highlights
+    val filteredBySport = highlights
         .filter { it.date != null }
-        .filter { highlight ->
+        .filter { h ->
             when (sportSelect) {
                 is SportSelection.All -> true
-                is SportSelection.SportSelect ->
-                    highlight.sport == sportSelect.sport
+                is SportSelection.SportSelect -> h.sport == sportSelect.sport
             }
         }
 
-    val filtered = validHighlights.sortedBy { it.date }
+    val filteredByQuery =
+        if (query.isBlank()) filteredBySport
+        else filteredBySport.filter {
+            it.title.contains(query, ignoreCase = true) ||
+                    (it.sport?.displayName?.contains(query, ignoreCase = true) == true)
+        }
 
-    val todayHighlights = validHighlights.filter { it.date == today }
+    val sorted = filteredByQuery.sortedByDescending { it.date }
 
-    val pastThreeDaysHighlights = validHighlights
-        .filter { it.date!! >= threeDaysAgo } // null dates filtered out in line 32
-        .sortedBy { it.date }
+    val todayHighlights = sorted.filter { it.date == today }
 
-    return Triple(filtered, todayHighlights, pastThreeDaysHighlights)
+    val pastThreeDays = sorted.filter { date ->
+        date.date?.let {
+            it < today && it >= threeDaysAgo
+        } ?: false
+    }
+
+    return Triple(sorted, todayHighlights, pastThreeDays)
+}
+
+private fun recompute(highlights: List<HighlightData>, state: HighlightsUiState)
+        : HighlightsUiState {
+
+    val (filtered, today, pastThreeDays) =
+        buildDerivedLists(highlights, state.sportSelect, state.query)
+
+    return state.copy(
+        filteredHighlights = filtered,
+        todayHighlights = today,
+        pastThreeDaysHighlights = pastThreeDays
+    )
 }
 
 @HiltViewModel
@@ -61,7 +87,9 @@ class HighlightsViewModel @Inject constructor(
         sportSelectionList = Sport.getSportSelectionList(GenderDivision.ALL),
         filteredHighlights = emptyList(),
         todayHighlights = emptyList(),
-        pastThreeDaysHighlights = emptyList()
+        pastThreeDaysHighlights = emptyList(),
+        query = "",
+        recentSearches = emptyList()
     )
 ) {
     init {
@@ -70,11 +98,7 @@ class HighlightsViewModel @Inject constructor(
             applyMutation {
                 when (response) {
                     is ApiResponse.Success -> {
-                        val sorted =
-                            response.data.sortedByDescending { it.date }
-
-                        val (filtered, today, pastThreeDays) =
-                            buildDerivedLists(sorted, sportSelect)
+                        val sorted = response.data.sortedByDescending { it.date }
 
                         copy(
                             loadedState = ApiResponse.Success(sorted),
@@ -118,6 +142,17 @@ class HighlightsViewModel @Inject constructor(
         }
     }
 
+    fun onQueryChange(newQuery: String) {
+        applyMutation {
+            val highlights = (loadedState as? ApiResponse.Success)?.data.orEmpty()
+
+            recompute(
+                highlights,
+                copy(query = newQuery)
+            )
+        }
+    }
+
     fun onRefresh() {
         applyMutation {
             copy(isRefreshing = true)
@@ -127,20 +162,55 @@ class HighlightsViewModel @Inject constructor(
 
     fun onSportSelected(sport: SportSelection) {
         applyMutation {
-            val highlights = when (val state = loadedState) {
-                is ApiResponse.Success -> state.data
-                else -> emptyList()
-            }
+            val highlights =
+                (loadedState as? ApiResponse.Success)?.data.orEmpty()
 
-            val (filtered, today, pastThreeDays) =
-                buildDerivedLists(highlights, sport)
+            val newSelection =
+                if (sportSelect == sport) {
+                    SportSelection.All
+                } else {
+                    sport
+                }
 
-            copy(
-                sportSelect = sport,
-                filteredHighlights = filtered,
-                todayHighlights = today,
-                pastThreeDaysHighlights = pastThreeDays
+            recompute(
+                highlights,
+                copy(sportSelect = newSelection)
             )
         }
+    }
+
+    fun onSearch(query: String) {
+        if (query.isBlank()) return
+
+        applyMutation {
+            val highlights =
+                (loadedState as? ApiResponse.Success)?.data.orEmpty()
+
+            val updatedSearches =
+                (listOf(query) + recentSearches)
+                    .distinct()
+                    .take(3)
+
+            recompute(
+                highlights,
+                copy(
+                    query = query,
+                    recentSearches = updatedSearches
+                )
+            )
+        }
+    }
+
+    //Removes an item from the recent searches list
+    fun onRemoveRecent(recent: String) {
+        applyMutation {
+            val updated = recentSearches.filterNot { it == recent }
+            copy(recentSearches = updated)
+        }
+    }
+
+    //Searches an item from the recent searches list
+    fun onSearchRecent(recent: String) {
+        onSearch(recent)
     }
 }

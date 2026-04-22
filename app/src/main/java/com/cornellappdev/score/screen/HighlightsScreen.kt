@@ -20,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
+import com.cornellappdev.score.components.highlights.HighlightsLoadingScreen
 import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.ScorePullToRefreshBox
@@ -33,11 +34,13 @@ import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.HighlightsViewModel
+import kotlinx.serialization.Serializable
 
 @Composable
 fun HighlightsScreen(
     highlightsViewModel: HighlightsViewModel = hiltViewModel(),
-    toSearchScreen: () -> Unit
+    toSearchScreen: () -> Unit,
+    toSubScreen: (HighlightsSubScreenType) -> Unit
 ) {
     val uiState = highlightsViewModel.collectUiStateValue()
 
@@ -49,8 +52,7 @@ fun HighlightsScreen(
     ) {
         when (uiState.loadedState) {
             is ApiResponse.Loading -> {
-                //todo make highlights loading screen, this one's for the home page
-                LoadingScreen("Loading Highlights...", "Loading Schedules...")
+                HighlightsLoadingScreen("Loading Highlights...")
             }
 
             is ApiResponse.Error -> {
@@ -63,11 +65,13 @@ fun HighlightsScreen(
                     { highlightsViewModel.onRefresh() }
                 ) {
                     HighlightsScreenContent(
+                        selectedSport = uiState.sportSelect,
                         sportList = uiState.sportSelectionList,
                         onSportSelected = { highlightsViewModel.onSportSelected(it) },
                         todayHighlightsList = uiState.todayHighlights,
                         pastThreeHighlightsList = uiState.pastThreeDaysHighlights,
-                        toSearchScreen = toSearchScreen
+                        toSearchScreen = toSearchScreen,
+                        toSubScreen = toSubScreen
                     )
                 }
             }
@@ -75,13 +79,20 @@ fun HighlightsScreen(
     }
 }
 
+@Serializable
+enum class HighlightsSubScreenType {
+    TODAY, PAST3DAYS, ALL
+}
+
 @Composable
 private fun HighlightsScreenContent(
-    sportList: List<SportSelection> = emptyList(),
+    selectedSport: SportSelection,
     onSportSelected: (SportSelection) -> Unit,
-    todayHighlightsList: List<HighlightData> = emptyList(),
-    pastThreeHighlightsList: List<HighlightData> = emptyList(),
-    toSearchScreen: () -> Unit
+    sportList: List<SportSelection>,
+    todayHighlightsList: List<HighlightData>,
+    pastThreeHighlightsList: List<HighlightData>,
+    toSearchScreen: () -> Unit,
+    toSubScreen: (HighlightsSubScreenType) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -95,7 +106,7 @@ private fun HighlightsScreenContent(
             HighlightsSearchEntryPointRow(toSearchScreen)
         }
         Spacer(modifier = Modifier.height(16.dp))
-        HighlightsFilterRow(sportList, onSportSelected)
+        HighlightsFilterRow(sportList, selectedSport, onSportSelected)
         Spacer(modifier = Modifier.height(24.dp))
         if (todayHighlightsList.isEmpty() && pastThreeHighlightsList.isEmpty()) {
             EmptyStateBox(
@@ -104,10 +115,10 @@ private fun HighlightsScreenContent(
             )
         }
         if (todayHighlightsList.isNotEmpty()) {
-            HighlightsCardRow(todayHighlightsList, "Today")
+            HighlightsCardRow(todayHighlightsList, "Today", toSubScreen)
         }
         if (pastThreeHighlightsList.isNotEmpty()) {
-            HighlightsCardRow(pastThreeHighlightsList, "Past 3 days")
+            HighlightsCardRow(pastThreeHighlightsList, "Past 3 days", toSubScreen)
         }
     }
 }
@@ -134,11 +145,12 @@ private fun HighlightScreenPreview(
 ) {
     ScorePreview {
         HighlightsScreenContent(
+            selectedSport = SportSelection.All,
             sportList = previewData.sportList,
             todayHighlightsList = previewData.todayHighlightList,
             pastThreeHighlightsList = previewData.pastHighlightList,
             toSearchScreen = {},
-            onSportSelected = {}
-        )
+            onSportSelected = {},
+            toSubScreen = {})
     }
 }

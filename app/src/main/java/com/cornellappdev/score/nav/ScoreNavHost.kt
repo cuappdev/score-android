@@ -14,12 +14,10 @@ import com.cornellappdev.score.nav.root.ScoreScreens.Home
 import com.cornellappdev.score.screen.GameDetailsScreen
 import com.cornellappdev.score.screen.HighlightsScreen
 import com.cornellappdev.score.screen.HighlightsSearchScreen
+import com.cornellappdev.score.screen.HighlightsSubScreen
+import com.cornellappdev.score.screen.HighlightsSubScreenType
 import com.cornellappdev.score.screen.HomeScreen
 import com.cornellappdev.score.screen.PastGamesScreen
-import com.cornellappdev.score.util.highlightsList
-import com.cornellappdev.score.util.recentSearchList
-import com.cornellappdev.score.util.sportList
-import com.cornellappdev.score.util.sportSelectionList
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
@@ -69,23 +67,48 @@ fun ScoreNavHost(navController: NavHostController) {
             })
         }
 
-        composable<ScoreScreens.HighlightsScreen> { backStackEntry ->
+        composable<ScoreScreens.HighlightsScreen> {
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
-                HighlightsScreen(toSearchScreen = { navController.navigate(ScoreScreens.HighlightsSearchScreen) })
+                HighlightsScreen(
+                    toSearchScreen = {
+                        navController.navigate(
+                            ScoreScreens.HighlightsSearchScreen(
+                                HighlightsSubScreenType.ALL
+                            )
+                        )
+                    },
+                    toSubScreen = { subScreenType ->
+                        navController.navigate(ScoreScreens.HighlightsSubScreen(subScreenType))
+                    })
             }
+        }
+
+        composable<ScoreScreens.HighlightsSubScreen> { backStackEntry ->
+            val route = backStackEntry.toRoute<ScoreScreens.HighlightsSubScreen>()
+            val subScreenType = route.subScreenType
+
+            HighlightsSubScreen(
+                toSearchScreen = {
+                    navController.navigate(
+                        ScoreScreens.HighlightsSearchScreen(subScreenType)
+                    )
+                },
+                navigateBack = { navController.popBackStack() },
+                subScreenType = subScreenType
+            )
         }
 
         composable<ScoreScreens.HighlightsSearchScreen> { backStackEntry ->
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
+
+                val route =
+                    backStackEntry.toRoute<ScoreScreens.HighlightsSearchScreen>()
+
+                val searchScreenType = route.subScreenType
+
                 HighlightsSearchScreen(
-                    //todo - will un-hardcode this when i do the networking
-                    sportList = sportSelectionList,
-                    recentSearchList = recentSearchList,
-                    highlightsList = highlightsList,
-                    query = "",
-                    header = "Search all highlights",
-                    {},
-                    {}
+                    searchScreenType = searchScreenType,
+                    navigateBack = { navController.popBackStack() }
                 )
             }
         }
