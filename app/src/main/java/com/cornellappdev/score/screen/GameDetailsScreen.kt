@@ -1,11 +1,8 @@
 package com.cornellappdev.score.screen
 
 import ScoringSummary
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.provider.CalendarContract
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -61,10 +58,6 @@ import com.cornellappdev.score.theme.Style.heading3
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.viewmodel.GameDetailsViewModel
 import java.time.LocalDate
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @Composable
 fun GameDetailsScreen(
@@ -102,9 +95,16 @@ fun GameDetailsScreen(
                 }
 
                 is ApiResponse.Success -> {
+                    val context = LocalContext.current
                     GameDetailsContent(
                         gameCard = state.data,
-                        navigateToGameScoreSummary = navigateToGameScoreSummary
+                        navigateToGameScoreSummary = navigateToGameScoreSummary,
+                        onAddToCalendar = {
+                            gameDetailsViewModel.addGameToCalendar(
+                                context,
+                                state.data
+                            )
+                        }
                     )
                 }
             }
@@ -115,7 +115,8 @@ fun GameDetailsScreen(
 @Composable
 fun GameDetailsContent(
     gameCard: DetailsCardData,
-    navigateToGameScoreSummary: (List<ScoreEvent>) -> Unit
+    navigateToGameScoreSummary: (List<ScoreEvent>) -> Unit,
+    onAddToCalendar: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -221,7 +222,6 @@ fun GameDetailsContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(40.dp))
-
                     if (gameCard.daysUntilGame != null && gameCard.hoursUntilGame != null) {
                         TimeUntilStartCard(
                             gameCard.daysUntilGame,
@@ -229,7 +229,6 @@ fun GameDetailsContent(
                         )
                     }
 
-                    Spacer(modifier = Modifier.weight(1f))
                     Row() {
                         ButtonPrimary(
                             "Buy Tickets",
@@ -245,9 +244,7 @@ fun GameDetailsContent(
                         ButtonPrimary(
                             "Add to Calendar",
                             painterResource(R.drawable.ic_calendar),
-                            onClick = {
-                                addGameToCalendar(context, gameCard)
-                            }
+                            onClick = onAddToCalendar
                         )
                     }
                 }
@@ -410,30 +407,3 @@ private fun EmptyGameDetailsPreview() {
     )
 }
 
-// helper
-fun addGameToCalendar(context: Context, gameCard: DetailsCardData) {
-    val date = gameCard.date ?: return
-    val time = gameCard.time
-
-    val startDateTime = try {
-        val formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH)
-        val localTime = LocalTime.parse(time.trim().uppercase().replace(".", ""), formatter)
-        date.atTime(localTime)
-    } catch (e: Exception) {
-        Log.e("Calendar", "Failed to parse time: '$time'", e)
-        date.atStartOfDay()
-    }
-
-    val zoneId = ZoneId.systemDefault()
-    val startMillis = startDateTime.atZone(zoneId).toInstant().toEpochMilli()
-    val endMillis = startDateTime.plusHours(2).atZone(zoneId).toInstant().toEpochMilli()
-
-    val intent = Intent(Intent.ACTION_INSERT, CalendarContract.Events.CONTENT_URI).apply {
-        putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startMillis)
-        putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endMillis)
-        putExtra(CalendarContract.Events.TITLE, gameCard.title)
-        putExtra(CalendarContract.Events.EVENT_LOCATION, gameCard.locationString)
-        putExtra(CalendarContract.Events.DESCRIPTION, "${gameCard.sport} - ${gameCard.gender}")
-    }
-    context.startActivity(intent)
-}
