@@ -228,7 +228,7 @@ fun GameDetailsContent(
                             gameCard.hoursUntilGame
                         )
                     }
-
+                    Spacer(modifier = Modifier.height(100.dp))
                     Row() {
                         ButtonPrimary(
                             "Buy Tickets",
