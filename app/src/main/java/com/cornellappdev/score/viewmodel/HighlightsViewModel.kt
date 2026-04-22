@@ -17,6 +17,7 @@ import javax.inject.Inject
 data class HighlightsUiState(
     val sportSelect: SportSelection,
     val loadedState: ApiResponse<List<HighlightData>>,
+    val isRefreshing: Boolean,
     val sportSelectionList: List<SportSelection>,
     val filteredHighlights: List<HighlightData>,
     val todayHighlights: List<HighlightData>,
@@ -82,6 +83,7 @@ class HighlightsViewModel @Inject constructor(
     HighlightsUiState(
         sportSelect = SportSelection.All,
         loadedState = ApiResponse.Loading,
+        isRefreshing = true,
         sportSelectionList = Sport.getSportSelectionList(GenderDivision.ALL),
         filteredHighlights = emptyList(),
         todayHighlights = emptyList(),
@@ -98,29 +100,43 @@ class HighlightsViewModel @Inject constructor(
                     is ApiResponse.Success -> {
                         val sorted = response.data.sortedByDescending { it.date }
 
-                        recompute(
-                            sorted,
-                            copy(
-                                loadedState = ApiResponse.Success(sorted)
-                            )
+                        copy(
+                            loadedState = ApiResponse.Success(sorted),
+                            isRefreshing = false,
+                            filteredHighlights = filtered,
+                            todayHighlights = today,
+                            pastThreeDaysHighlights = pastThreeDays
                         )
                     }
 
                     ApiResponse.Loading ->
-                        copy(
-                            loadedState = ApiResponse.Loading,
-                            filteredHighlights = emptyList(),
-                            todayHighlights = emptyList(),
-                            pastThreeDaysHighlights = emptyList()
-                        )
+                        if (loadedState is ApiResponse.Success) {
+                            copy(
+                                isRefreshing = true
+                            )
+                        } else {
+                            copy(isRefreshing = true,
+                                loadedState = ApiResponse.Loading,
+                                filteredHighlights = emptyList(),
+                                todayHighlights = emptyList(),
+                                pastThreeDaysHighlights = emptyList()
+                            )
+                        }
 
                     ApiResponse.Error ->
-                        copy(
-                            loadedState = ApiResponse.Error,
-                            filteredHighlights = emptyList(),
-                            todayHighlights = emptyList(),
-                            pastThreeDaysHighlights = emptyList()
-                        )
+                        if (loadedState is ApiResponse.Success) {
+                            copy(
+                                isRefreshing = false
+                            )
+                        } else {
+                            copy(
+                                loadedState = ApiResponse.Error,
+                                isRefreshing = false,
+                                filteredHighlights = emptyList(),
+                                todayHighlights = emptyList(),
+                                pastThreeDaysHighlights = emptyList()
+                            )
+                        }
                 }
             }
         }
@@ -139,7 +155,7 @@ class HighlightsViewModel @Inject constructor(
 
     fun onRefresh() {
         applyMutation {
-            copy(loadedState = ApiResponse.Loading)
+            copy(isRefreshing = true)
         }
         highlightsRepository.fetchHighlights()
     }
