@@ -127,7 +127,8 @@ data class DetailsCardData(
     val daysUntilGame: Int?,
     val hoursUntilGame: Int?,
     val homeScore: Int,
-    val oppScore: Int
+    val oppScore: Int,
+    val result: String = ""
 )
 
 // Scoring information by round of a game, used in the box score
@@ -304,7 +305,8 @@ fun GameDetailsGame.toGameCardData(): DetailsCardData {
         homeScore = convertScores(scoreBreakdown?.getOrNull(0), sport, result ?: "").second
             ?: parsedScores?.first ?: 0,
         oppScore = convertScores(scoreBreakdown?.getOrNull(1), sport, result ?: "").second
-            ?: parsedScores?.second ?: 0
+            ?: parsedScores?.second ?: 0,
+        result = result ?: ""
     )
 }
 
@@ -319,7 +321,8 @@ fun DetailsCardData.applySocketUpdate(update: SocketGameUpdateData): DetailsCard
             scoreBreakdown = newScoreBreakdown,
             team1 = TeamBoxScore("Cornell"),
             team2 = TeamBoxScore(opponent),
-            sport = sport
+            sport = sport,
+            result = result
         )
     } else gameData
 
