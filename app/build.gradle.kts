@@ -109,9 +109,8 @@ apollo {
     service("service") {
         packageName.set("com.example.score")
         introspection {
-            endpointUrl.set("\"${secrets.getProperty("API_URL_DEV")}\"")
+            endpointUrl.set(secrets.getProperty("API_URL_DEV"))
             schemaFile.set(file("src/main/graphql/schema.graphqls"))
         }
     }
 }
-

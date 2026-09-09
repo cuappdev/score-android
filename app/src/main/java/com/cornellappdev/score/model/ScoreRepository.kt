@@ -6,13 +6,18 @@ import com.cornellappdev.score.util.isValidSport
 import com.cornellappdev.score.util.parseColor
 import com.cornellappdev.score.util.parseResultScore
 import com.example.score.GameByIdQuery
+import com.example.score.InitialGamesQuery
 import com.example.score.GamesQuery
 import com.example.score.PagedGamesQuery
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.sync.Mutex
+import java.time.LocalDate
 import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -24,15 +29,15 @@ private const val PAGE_TIMEOUT_MILLIS = 3000L
 
 /**
  * This is a singleton responsible for fetching and caching all data for Score.
- * Right now, it makes a network request for all possible games. In the future,
- * we should limit this to games only in a certain time range, to prevent the
- * app from slowing down and improve load times.
+ * Publishes a small date window first, then loads the full game history.
  */
 @Singleton
 class ScoreRepository @Inject constructor(
     private val apolloClient: ApolloClient,
     private val appScope: CoroutineScope,
 ) {
+    private val gamesFetchMutex = Mutex()
+
     private val _upcomingGamesFlow =
         MutableStateFlow<ApiResponse<List<Game>>>(ApiResponse.Loading)
     val upcomingGamesFlow = _upcomingGamesFlow.asStateFlow()
@@ -99,20 +104,44 @@ class ScoreRepository @Inject constructor(
     }
 
     fun fetchGames() = appScope.launch {
+        if (!gamesFetchMutex.tryLock()) return@launch
         _upcomingGamesFlow.value = ApiResponse.Loading
         val allGames = mutableListOf<Game>()
         var offset = 0
         var retries = 0
+        var initialWindow = true
 
         try {
             while (true) {
-                val pageResult = runCatching {
-                    withTimeout(PAGE_TIMEOUT_MILLIS) {
-                        apolloClient.query(
-                            PagedGamesQuery(limit = PAGE_LIMIT, offset = offset)
-                        ).execute().data?.games
+                val pageResult = try {
+                    withTimeoutOrNull(PAGE_TIMEOUT_MILLIS) {
+                        if (initialWindow) {
+                            val today = LocalDate.now()
+                            apolloClient.query(
+                                InitialGamesQuery(
+                                    today.atStartOfDay().toString(),
+                                    today.plusDays(30).atStartOfDay().toString()
+                                )
+                            ).execute().toResult().getOrNull()?.gamesByDate
+                                ?.map { it?.gameListItem }
+                        } else {
+                            apolloClient.query(
+                                PagedGamesQuery(limit = PAGE_LIMIT, offset = offset)
+                            ).execute().toResult().getOrNull()?.games
+                                ?.map { it?.gameListItem }
+                        }
                     }
-                }.getOrNull()
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    null
+                }
+
+                // A failed or empty date window falls back to the full fetch.
+                if (initialWindow && pageResult.isNullOrEmpty()) {
+                    initialWindow = false
+                    continue
+                }
 
                 if (pageResult == null) {
                     if (retries < MAX_RETRIES) {
@@ -158,17 +187,32 @@ class ScoreRepository @Inject constructor(
 
                 allGames.addAll(pageGames)
 
+                if (initialWindow) {
+                    if (allGames.isNotEmpty()) {
+                        _upcomingGamesFlow.value = ApiResponse.Success(allGames.toList())
+                    }
+                    initialWindow = false
+                    continue
+                }
+
                 if (pageResult.size < PAGE_LIMIT) break
                 offset += PAGE_LIMIT
             }
 
             _upcomingGamesFlow.value =
-                if (allGames.isNotEmpty()) ApiResponse.Success(allGames)
+                if (allGames.isNotEmpty()) ApiResponse.Success(allGames.asReversed().distinctBy { it.id }.asReversed())
+                else if (_upcomingGamesFlow.value is ApiResponse.Success) _upcomingGamesFlow.value
                 else ApiResponse.Error
 
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e("ScoreRepository", "Error fetching upcoming games", e)
-            _upcomingGamesFlow.value = ApiResponse.Error
+            if (_upcomingGamesFlow.value !is ApiResponse.Success) {
+                _upcomingGamesFlow.value = ApiResponse.Error
+            }
+        } finally {
+            gamesFetchMutex.unlock()
         }
     }
 
