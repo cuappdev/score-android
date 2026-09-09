@@ -127,7 +127,8 @@ data class DetailsCardData(
     val daysUntilGame: Int?,
     val hoursUntilGame: Int?,
     val homeScore: Int,
-    val oppScore: Int
+    val oppScore: Int,
+    val result: String = ""
 )
 
 // Scoring information by round of a game, used in the box score
@@ -304,7 +305,41 @@ fun GameDetailsGame.toGameCardData(): DetailsCardData {
         homeScore = convertScores(scoreBreakdown?.getOrNull(0), sport, result ?: "").second
             ?: parsedScores?.first ?: 0,
         oppScore = convertScores(scoreBreakdown?.getOrNull(1), sport, result ?: "").second
-            ?: parsedScores?.second ?: 0
+            ?: parsedScores?.second ?: 0,
+        result = result ?: ""
+    )
+}
+
+/**
+ * Merges a live socket update into the current DetailsCardData.
+ * Null fields in [update] leave existing values unchanged.
+ */
+fun DetailsCardData.applySocketUpdate(update: SocketGameUpdateData): DetailsCardData {
+    val newScoreBreakdown = update.scoreBreakdown ?: scoreBreakdown
+    val newGameData = if (update.scoreBreakdown != null) {
+        toGameData(
+            scoreBreakdown = newScoreBreakdown,
+            team1 = TeamBoxScore("Cornell"),
+            team2 = TeamBoxScore(opponent),
+            sport = sport,
+            result = result
+        )
+    } else gameData
+
+    val newBoxScore: List<GameDetailsBoxScore?> = update.boxScore
+        ?.map { it?.toGameDetailsBoxScore() }
+        ?: boxScore
+    val newScoreEvents = if (update.boxScore != null) {
+        newBoxScore.filterNotNull().toScoreEvents(opponentLogo)
+    } else scoreEvent
+
+    return copy(
+        homeScore = update.homeScore ?: homeScore,
+        oppScore = update.oppScore ?: oppScore,
+        scoreBreakdown = newScoreBreakdown,
+        gameData = newGameData,
+        boxScore = newBoxScore,
+        scoreEvent = newScoreEvents
     )
 }
 
