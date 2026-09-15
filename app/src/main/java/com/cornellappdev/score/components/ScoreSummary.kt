@@ -1,3 +1,5 @@
+package com.cornellappdev.score.components
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.cornellappdev.score.R
-import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.bodyMedium
@@ -30,7 +31,7 @@ import com.cornellappdev.score.util.scoreEvents1
 @Composable
 fun ScoringSummary(scoreEvents: List<ScoreEvent>, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
-        scoreEvents.take(3).map {
+        scoreEvents.take(3).forEach {
             ScoreEventItem(it)
             HorizontalDivider(color = Color.LightGray, thickness = 0.5.dp)
         }
@@ -38,9 +39,12 @@ fun ScoringSummary(scoreEvents: List<ScoreEvent>, modifier: Modifier = Modifier)
 }
 
 @Composable
-fun ScoreEventItem(event: ScoreEvent) {
+fun ScoreEventItem(
+    event: ScoreEvent,
+    modifier: Modifier = Modifier
+) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -95,7 +99,7 @@ fun ScoreEventItem(event: ScoreEvent) {
                 color = GrayPrimary,
                 textAlign = TextAlign.Center
             )
-            val (homeScore, awayScore) = event.score.split(" - ").map { it.toInt() }
+            val (homeScore, awayScore) = event.score.split("-").map { it.trim().toInt() }
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
