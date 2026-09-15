@@ -2,7 +2,9 @@ package com.cornellappdev.score.screen
 
 import ScoringSummary
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,14 +37,18 @@ import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GameDetailsLoadingScreen
 import com.cornellappdev.score.components.GameScoreHeader
+import com.cornellappdev.score.components.Leaderboard
 import com.cornellappdev.score.components.NavigationHeader
 import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.TimeUntilStartCard
+import com.cornellappdev.score.components.highlights.ArticleHighlightCard
 import com.cornellappdev.score.model.ApiResponse
+import com.cornellappdev.score.model.ArticleHighlightData
 import com.cornellappdev.score.model.DetailsCardData
 import com.cornellappdev.score.model.GameData
 import com.cornellappdev.score.model.GameDetailsBoxScore
 import com.cornellappdev.score.model.ScoreEvent
+import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.TeamBoxScore
 import com.cornellappdev.score.model.TeamGameSummary
 import com.cornellappdev.score.model.TeamScore
@@ -53,6 +59,8 @@ import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.heading3
 import com.cornellappdev.score.theme.White
+import com.cornellappdev.score.util.highlightsList
+import com.cornellappdev.score.util.sampleIvyLeaderboardData
 import com.cornellappdev.score.viewmodel.GameDetailsViewModel
 import java.time.LocalDate
 
@@ -128,81 +136,70 @@ fun GameDetailsContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         Column(Modifier.padding(horizontal = 24.dp)) {
-            Text(
-                text = gameCard.sport,
-                style = heading3.copy(color = GrayPrimary)
+            GameDetailsInformation(
+                gameCard,
+                scrollState
             )
-            Text(
-                text = gameCard.title,
-                style = heading1.copy(color = GrayPrimary),
-                maxLines = 1,
-                modifier = Modifier
-                    .horizontalScroll(scrollState)
-            )
-            Spacer(modifier = Modifier.height(13.5.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_location),
-                    contentDescription = "Location Icon",
-                    modifier = Modifier
-                        .width(24.dp)
-                        .height(24.dp),
-                    colorFilter = ColorFilter.tint(GrayMedium)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(text = gameCard.locationString, style = bodyNormal.copy(color = GrayPrimary))
-                Spacer(modifier = Modifier.width(12.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_time),
-                    contentDescription = "Time Icon",
-                    modifier = Modifier
-                        .size(24.dp),
-                    tint = GrayMedium
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(text = gameCard.dateString, style = bodyNormal.copy(color = GrayPrimary))
-            }
 
             // render the below if the game is in the future
             // TODO: MESSY, is it every the case when there is a boxscore but no scoring summary
             if (gameCard.isPastStartTime) {
-                //if (gameCard.scoreBreakdown?.isNotEmpty() == true) {
                 Spacer(modifier = Modifier.height(24.dp))
-                BoxScore(gameCard.gameData)
-                Spacer(modifier = Modifier.height(24.dp))
-                // }
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        "Scoring Summary", fontSize = 18.sp,
-                        style = heading2,
+                //TODO switch to matching for cleaner code
+                if (gameCard.sport == "Swim and Dive") {
+                    Leaderboard(sampleIvyLeaderboardData)
+                } else if (gameCard.sport == "Equestrian") {
+                    //todo extract this into another component
+                    Text("Highlights", style = heading2)
+                    Spacer(modifier = Modifier.height(13.dp))
+                    ArticleHighlightCard(
+                        ArticleHighlightData(
+                            "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
+                            "maxresdefault.jpg",
+                            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+                            "11/09",
+                            Sport.ICE_HOCKEY
+                        ),
+                        isWideFormat = false
                     )
-                    if (gameCard.boxScore.isNotEmpty()) {
-                        Spacer(modifier = Modifier.weight(1f))
-                        IconButton(onClick = { navigateToGameScoreSummary(gameCard.scoreEvent) }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_right_chevron),
-                                contentDescription = "Back button",
-                                modifier = Modifier
-                                    .width(24.dp)
-                                    .height(24.dp),
-                            )
+                } else {
+                    //if (gameCard.scoreBreakdown?.isNotEmpty() == true) {
+                    BoxScore(gameCard.gameData)
+                    Spacer(modifier = Modifier.height(24.dp))
+                    // }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            "Scoring Summary", fontSize = 18.sp,
+                            style = heading2,
+                        )
+                        if (gameCard.boxScore.isNotEmpty()) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            IconButton(onClick = { navigateToGameScoreSummary(gameCard.scoreEvent) }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_right_chevron),
+                                    contentDescription = "Back button",
+                                    modifier = Modifier
+                                        .width(24.dp)
+                                        .height(24.dp),
+                                )
+                            }
                         }
                     }
-                }
-                if (gameCard.boxScore.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    ScoringSummary(gameCard.scoreEvent)
-                } else {
-                    EmptyStateBox(
-                        icon = R.drawable.ic_speaker_gray,
-                        title = "No scores yet.",
-                        height = 200.dp
-                    )
+                    if (gameCard.boxScore.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        ScoringSummary(gameCard.scoreEvent)
+                    } else {
+                        EmptyStateBox(
+                            icon = R.drawable.ic_speaker_gray,
+                            title = "No scores yet.",
+                            height = 200.dp
+                        )
+                    }
                 }
             } else {
                 val context = LocalContext.current
@@ -230,9 +227,55 @@ fun GameDetailsContent(
 //                            }
 //                        }
 //                    )
-                }
 
+                }
             }
+        }
+    }
+}
+
+@Composable
+private fun GameDetailsInformation(
+    gameCard: DetailsCardData,
+    scrollState: ScrollState
+){
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ){
+        Text(
+            text = gameCard.sport,
+            style = heading3.copy(color = GrayPrimary)
+        )
+        Text(
+            text = gameCard.title,
+            style = heading1.copy(color = GrayPrimary),
+            maxLines = 1,
+            modifier = Modifier
+                .horizontalScroll(scrollState)
+        )
+        Spacer(modifier = Modifier.height(13.5.dp))
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_location),
+                contentDescription = "Location Icon",
+                modifier = Modifier
+                    .width(24.dp)
+                    .height(24.dp),
+                colorFilter = ColorFilter.tint(GrayMedium)
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(text = gameCard.locationString, style = bodyNormal.copy(color = GrayPrimary))
+            Spacer(modifier = Modifier.width(12.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.ic_time),
+                contentDescription = "Time Icon",
+                modifier = Modifier
+                    .size(24.dp),
+                tint = GrayMedium
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(text = gameCard.dateString, style = bodyNormal.copy(color = GrayPrimary))
         }
     }
 }
@@ -354,6 +397,108 @@ private fun EmptyGameDetailsPreview() {
             gender = "Men's",
             genderIcon = 123, // Dummy resource ID
             sport = "Basketball",
+            sportIcon = 456, // Dummy resource ID
+            boxScore = emptyList(),
+            scoreBreakdown = listOf(
+                emptyList(),
+                emptyList()
+            ),
+            gameData = GameData(
+                Pair(
+                    TeamScore(
+                        team = TeamBoxScore(
+                            name = "Tigers",
+                        ),
+                        scoresByPeriod = emptyList(),
+                        totalScore = 0
+                    ),
+                    TeamScore(
+                        team = TeamBoxScore(
+                            name = "Wildcats",
+                        ),
+                        scoresByPeriod = emptyList(),
+                        totalScore = 0
+                    )
+                )
+            ),
+            scoreEvent = emptyList(),
+            daysUntilGame = 0,
+            hoursUntilGame = 0,
+            homeScore = 0,
+            oppScore = 0
+        ), navigateToGameScoreSummary = {}
+    )
+}
+
+@Preview
+@Composable
+private fun EmptyGameDetailsLeaderboardPreview() {
+    GameDetailsContent(
+        DetailsCardData(
+            title = "Championship Game",
+            opponentLogo = "https://example.com/logo.png",
+            opponent = "Wildcats",
+            opponentColor = Color(0xFF123456),
+            date = LocalDate.of(2025, 4, 20),
+            time = "7:30 PM",
+            dateString = "April 20, 2025",
+            isPastStartTime = true,
+            location = "Main Stadium",
+            locationString = "Main Stadium, Cityville",
+            gender = "Men's",
+            genderIcon = 123, // Dummy resource ID
+            sport = "Swim and Dive",
+            sportIcon = 456, // Dummy resource ID
+            boxScore = emptyList(),
+            scoreBreakdown = listOf(
+                emptyList(),
+                emptyList()
+            ),
+            gameData = GameData(
+                Pair(
+                    TeamScore(
+                        team = TeamBoxScore(
+                            name = "Tigers",
+                        ),
+                        scoresByPeriod = emptyList(),
+                        totalScore = 0
+                    ),
+                    TeamScore(
+                        team = TeamBoxScore(
+                            name = "Wildcats",
+                        ),
+                        scoresByPeriod = emptyList(),
+                        totalScore = 0
+                    )
+                )
+            ),
+            scoreEvent = emptyList(),
+            daysUntilGame = 0,
+            hoursUntilGame = 0,
+            homeScore = 0,
+            oppScore = 0
+        ), navigateToGameScoreSummary = {}
+    )
+}
+
+@Preview
+@Composable
+private fun EmptyGameDetailsHighlightPreview() {
+    GameDetailsContent(
+        DetailsCardData(
+            title = "Championship Game",
+            opponentLogo = "https://example.com/logo.png",
+            opponent = "Wildcats",
+            opponentColor = Color(0xFF123456),
+            date = LocalDate.of(2025, 4, 20),
+            time = "7:30 PM",
+            dateString = "April 20, 2025",
+            isPastStartTime = true,
+            location = "Main Stadium",
+            locationString = "Main Stadium, Cityville",
+            gender = "Men's",
+            genderIcon = 123, // Dummy resource ID
+            sport = "Equestrian",
             sportIcon = 456, // Dummy resource ID
             boxScore = emptyList(),
             scoreBreakdown = listOf(
