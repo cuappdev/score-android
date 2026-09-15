@@ -1,7 +1,9 @@
 package com.cornellappdev.score.util
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import com.cornellappdev.score.R
+import com.cornellappdev.score.components.LeaderboardData
 import com.cornellappdev.score.model.ArticleHighlightData
 import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.model.GameData
@@ -272,4 +274,49 @@ val highlightsList = listOf(
         Sport.BASEBALL,
         GenderDivision.MALE
     ))
+)
+
+val sampleIvyLeaderboardData = listOf(
+    LeaderboardData(
+        rank = 1,
+        icon = R.drawable.cornell_logo,
+        school = "Princeton",
+        points = 614.5
+    ),
+    LeaderboardData(
+        rank = 2,
+        icon = R.drawable.cornell_logo,
+        school = "Penn",
+        points = 614.5
+    ),
+    LeaderboardData(
+        rank = 3,
+        icon = R.drawable.cornell_logo,
+        school = "Harvard",
+        points = 614.5
+    ),
+    LeaderboardData(
+        rank = 4,
+        icon = R.drawable.cornell_logo,
+        school = "Brown",
+        points = 614.5
+    ),
+    LeaderboardData(
+        rank = 5,
+        icon = R.drawable.cornell_logo,
+        school = "Yale",
+        points = 614.5
+    ),
+    LeaderboardData(
+        rank = 6,
+        icon = R.drawable.cornell_logo,
+        school = "Cornell",
+        points = 614.5
+    ),
+    LeaderboardData(
+        rank = 7,
+        icon = R.drawable.cornell_logo,
+        school = "Columbia",
+        points = 614.5
+    )
 )
