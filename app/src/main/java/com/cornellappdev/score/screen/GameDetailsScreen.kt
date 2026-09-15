@@ -1,10 +1,8 @@
 package com.cornellappdev.score.screen
 
-import ScoringSummary
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,19 +36,16 @@ import com.cornellappdev.score.components.GameDetailsLoadingScreen
 import com.cornellappdev.score.components.GameScoreHeader
 import com.cornellappdev.score.components.Leaderboard
 import com.cornellappdev.score.components.NavigationHeader
+import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.ScorePullToRefreshBox
+import com.cornellappdev.score.components.ScoringSummary
 import com.cornellappdev.score.components.TimeUntilStartCard
 import com.cornellappdev.score.components.highlights.ArticleHighlightCard
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.ArticleHighlightData
 import com.cornellappdev.score.model.DetailsCardData
-import com.cornellappdev.score.model.GameData
-import com.cornellappdev.score.model.GameDetailsBoxScore
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.model.Sport
-import com.cornellappdev.score.model.TeamBoxScore
-import com.cornellappdev.score.model.TeamGameSummary
-import com.cornellappdev.score.model.TeamScore
 import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.bodyNormal
@@ -59,13 +53,13 @@ import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.heading3
 import com.cornellappdev.score.theme.White
-import com.cornellappdev.score.util.highlightsList
+import com.cornellappdev.score.util.sampleDetailsCardData
 import com.cornellappdev.score.util.sampleIvyLeaderboardData
 import com.cornellappdev.score.viewmodel.GameDetailsViewModel
-import java.time.LocalDate
 
 @Composable
 fun GameDetailsScreen(
+    modifier: Modifier = Modifier,
     gameDetailsViewModel: GameDetailsViewModel = hiltViewModel(),
     onBackArrow: () -> Unit = {},
     navigateToGameScoreSummary: (List<ScoreEvent>) -> Unit
@@ -75,7 +69,8 @@ fun GameDetailsScreen(
         // We have a separate loading state for this screen so we don't want the refresh indicator
         // to persist as the screen loads.
         false,
-        gameDetailsViewModel::onRefresh
+        gameDetailsViewModel::onRefresh,
+        modifier = modifier
     ) {
         Column(
             modifier = Modifier
@@ -113,11 +108,12 @@ fun GameDetailsScreen(
 @Composable
 fun GameDetailsContent(
     gameCard: DetailsCardData,
+    modifier: Modifier = Modifier,
     navigateToGameScoreSummary: (List<ScoreEvent>) -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(White)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -143,7 +139,7 @@ fun GameDetailsContent(
 
             // render the below if the game is in the future
             // TODO: MESSY, is it every the case when there is a boxscore but no scoring summary
-            if (gameCard.isPastStartTime) {
+            if (gameCard.isPastStartTime == true) {
                 Spacer(modifier = Modifier.height(24.dp))
 
                 //TODO switch to matching for cleaner code
@@ -202,7 +198,7 @@ fun GameDetailsContent(
                     }
                 }
             } else {
-                val context = LocalContext.current
+                //val context = LocalContext.current
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -238,10 +234,10 @@ fun GameDetailsContent(
 private fun GameDetailsInformation(
     gameCard: DetailsCardData,
     scrollState: ScrollState
-){
+) {
     Column(
         modifier = Modifier.fillMaxWidth()
-    ){
+    ) {
         Text(
             text = gameCard.sport,
             style = heading3.copy(color = GrayPrimary)
@@ -282,151 +278,27 @@ private fun GameDetailsInformation(
 
 @Preview
 @Composable
-private fun GameDetailsPreview() {
+private fun GameDetailsInfoPreview() = ScorePreview {
+    val scrollState = rememberScrollState()
+    GameDetailsInformation(
+        sampleDetailsCardData, scrollState = scrollState
+    )
+}
+
+
+@Preview
+@Composable
+private fun GameDetailsPreStartPreview() {
     GameDetailsContent(
-        DetailsCardData(
-            title = "Championship Game",
-            opponentLogo = "https://example.com/logo.png",
-            opponent = "Wildcats",
-            opponentColor = Color(0xFF123456),
-            date = LocalDate.of(2025, 4, 20),
-            time = "7:30 PM",
-            dateString = "April 20, 2025",
-            isPastStartTime = false,
-            location = "Main Stadium",
-            locationString = "Main Stadium, Cityville",
-            gender = "Men's",
-            genderIcon = 123, // Dummy resource ID
-            sport = "Basketball",
-            sportIcon = 456, // Dummy resource ID
-            boxScore = listOf(
-                GameDetailsBoxScore(
-                    team = "Tigers",
-                    period = "1st",
-                    time = "12:34",
-                    description = "3-point shot",
-                    scorer = "John Doe",
-                    assist = "Mike Smith",
-                    scoreBy = "Tigers",
-                    corScore = 21,
-                    oppScore = 18
-                ),
-                GameDetailsBoxScore(
-                    team = "Wildcats",
-                    period = "1st",
-                    time = "10:01",
-                    description = "Layup",
-                    scorer = "Jane Roe",
-                    assist = "Tom Lee",
-                    scoreBy = "Wildcats",
-                    corScore = 21,
-                    oppScore = 20
-                )
-            ),
-            scoreBreakdown = listOf(
-                listOf("10", "15", "20", "18"), // Tigers per quarter
-                listOf("12", "10", "18", "22")  // Wildcats per quarter
-            ),
-            gameData = GameData(
-                Pair(
-                    TeamScore(
-                        team = TeamBoxScore(
-                            name = "Tigers",
-                        ),
-                        scoresByPeriod = listOf(20, 18, 22, 18),
-                        totalScore = 78
-                    ),
-                    TeamScore(
-                        team = TeamBoxScore(
-                            name = "Wildcats",
-                        ),
-                        scoresByPeriod = listOf(18, 20, 16, 21),
-                        totalScore = 75
-                    )
-                )
-            ),
-            scoreEvent = listOf(
-                ScoreEvent(
-                    id = 1,
-                    time = "11:11",
-                    quarter = "2nd",
-                    team = TeamGameSummary(
-                        name = "Tigers",
-                        logo = "https://example.com/tigers.png"
-                    ),
-                    eventType = "3PT",
-                    score = "36-34",
-                    description = "Three-pointer by John Doe"
-                ),
-                ScoreEvent(
-                    id = 2,
-                    time = "08:45",
-                    quarter = "3rd",
-                    team = TeamGameSummary(
-                        name = "Wildcats",
-                        logo = "https://example.com/wildcats.png"
-                    ),
-                    eventType = "FT",
-                    score = "36-35",
-                    description = "Free throw by Jane Roe"
-                )
-            ),
-            daysUntilGame = 6,
-            hoursUntilGame = 144,
-            homeScore = 78,
-            oppScore = 75
-        ), navigateToGameScoreSummary = {}
+        sampleDetailsCardData.copy(isPastStartTime = false), navigateToGameScoreSummary = {}
     )
 }
 
 @Preview
 @Composable
-private fun EmptyGameDetailsPreview() {
+private fun GameDetailsAfterStartPreview() {
     GameDetailsContent(
-        DetailsCardData(
-            title = "Championship Game",
-            opponentLogo = "https://example.com/logo.png",
-            opponent = "Wildcats",
-            opponentColor = Color(0xFF123456),
-            date = LocalDate.of(2025, 4, 20),
-            time = "7:30 PM",
-            dateString = "April 20, 2025",
-            isPastStartTime = true,
-            location = "Main Stadium",
-            locationString = "Main Stadium, Cityville",
-            gender = "Men's",
-            genderIcon = 123, // Dummy resource ID
-            sport = "Basketball",
-            sportIcon = 456, // Dummy resource ID
-            boxScore = emptyList(),
-            scoreBreakdown = listOf(
-                emptyList(),
-                emptyList()
-            ),
-            gameData = GameData(
-                Pair(
-                    TeamScore(
-                        team = TeamBoxScore(
-                            name = "Tigers",
-                        ),
-                        scoresByPeriod = emptyList(),
-                        totalScore = 0
-                    ),
-                    TeamScore(
-                        team = TeamBoxScore(
-                            name = "Wildcats",
-                        ),
-                        scoresByPeriod = emptyList(),
-                        totalScore = 0
-                    )
-                )
-            ),
-            scoreEvent = emptyList(),
-            daysUntilGame = 0,
-            hoursUntilGame = 0,
-            homeScore = 0,
-            oppScore = 0
-        ), navigateToGameScoreSummary = {}
+        sampleDetailsCardData, navigateToGameScoreSummary = {}
     )
 }
 
@@ -434,49 +306,14 @@ private fun EmptyGameDetailsPreview() {
 @Composable
 private fun EmptyGameDetailsLeaderboardPreview() {
     GameDetailsContent(
-        DetailsCardData(
-            title = "Championship Game",
-            opponentLogo = "https://example.com/logo.png",
-            opponent = "Wildcats",
-            opponentColor = Color(0xFF123456),
-            date = LocalDate.of(2025, 4, 20),
-            time = "7:30 PM",
-            dateString = "April 20, 2025",
-            isPastStartTime = true,
-            location = "Main Stadium",
-            locationString = "Main Stadium, Cityville",
-            gender = "Men's",
-            genderIcon = 123, // Dummy resource ID
+        sampleDetailsCardData.copy(
             sport = "Swim and Dive",
-            sportIcon = 456, // Dummy resource ID
             boxScore = emptyList(),
             scoreBreakdown = listOf(
                 emptyList(),
                 emptyList()
             ),
-            gameData = GameData(
-                Pair(
-                    TeamScore(
-                        team = TeamBoxScore(
-                            name = "Tigers",
-                        ),
-                        scoresByPeriod = emptyList(),
-                        totalScore = 0
-                    ),
-                    TeamScore(
-                        team = TeamBoxScore(
-                            name = "Wildcats",
-                        ),
-                        scoresByPeriod = emptyList(),
-                        totalScore = 0
-                    )
-                )
-            ),
-            scoreEvent = emptyList(),
-            daysUntilGame = 0,
-            hoursUntilGame = 0,
-            homeScore = 0,
-            oppScore = 0
+            scoreEvent = emptyList()
         ), navigateToGameScoreSummary = {}
     )
 }
@@ -485,49 +322,14 @@ private fun EmptyGameDetailsLeaderboardPreview() {
 @Composable
 private fun EmptyGameDetailsHighlightPreview() {
     GameDetailsContent(
-        DetailsCardData(
-            title = "Championship Game",
-            opponentLogo = "https://example.com/logo.png",
-            opponent = "Wildcats",
-            opponentColor = Color(0xFF123456),
-            date = LocalDate.of(2025, 4, 20),
-            time = "7:30 PM",
-            dateString = "April 20, 2025",
-            isPastStartTime = true,
-            location = "Main Stadium",
-            locationString = "Main Stadium, Cityville",
-            gender = "Men's",
-            genderIcon = 123, // Dummy resource ID
+        sampleDetailsCardData.copy(
             sport = "Equestrian",
-            sportIcon = 456, // Dummy resource ID
             boxScore = emptyList(),
             scoreBreakdown = listOf(
                 emptyList(),
                 emptyList()
             ),
-            gameData = GameData(
-                Pair(
-                    TeamScore(
-                        team = TeamBoxScore(
-                            name = "Tigers",
-                        ),
-                        scoresByPeriod = emptyList(),
-                        totalScore = 0
-                    ),
-                    TeamScore(
-                        team = TeamBoxScore(
-                            name = "Wildcats",
-                        ),
-                        scoresByPeriod = emptyList(),
-                        totalScore = 0
-                    )
-                )
-            ),
-            scoreEvent = emptyList(),
-            daysUntilGame = 0,
-            hoursUntilGame = 0,
-            homeScore = 0,
-            oppScore = 0
+            scoreEvent = emptyList()
         ), navigateToGameScoreSummary = {}
     )
 }

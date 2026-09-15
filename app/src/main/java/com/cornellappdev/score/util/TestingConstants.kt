@@ -1,21 +1,22 @@
 package com.cornellappdev.score.util
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.LeaderboardData
 import com.cornellappdev.score.model.ArticleHighlightData
+import com.cornellappdev.score.model.DetailsCardData
 import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.model.GameData
+import com.cornellappdev.score.model.GameDetailsBoxScore
 import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.HighlightData
-import com.cornellappdev.score.model.VideoHighlightData
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.model.TeamBoxScore
 import com.cornellappdev.score.model.TeamGameSummary
 import com.cornellappdev.score.model.TeamScore
+import com.cornellappdev.score.model.VideoHighlightData
 import java.time.LocalDate
 
 val PENN_GAME = GameCardData(
@@ -232,48 +233,152 @@ val recentSearchList = listOf("Columbia", "Men's ice hockey", "Late goal lifts N
 //Mixed type
 val highlightsList = listOf(
     HighlightData.Video
-    (VideoHighlightData(
-        "vs Columbia",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/09",
-        Sport.BASEBALL,
-        GenderDivision.MALE
-    )),
+        (
+        VideoHighlightData(
+            "vs Columbia",
+            "maxresdefault.jpg",
+            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+            "11/09",
+            Sport.BASEBALL,
+            GenderDivision.MALE
+        )
+    ),
     HighlightData.Article
-    (ArticleHighlightData(
-        "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/09",
-        Sport.ICE_HOCKEY
-    )),
+        (
+        ArticleHighlightData(
+            "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
+            "maxresdefault.jpg",
+            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+            "11/09",
+            Sport.ICE_HOCKEY
+        )
+    ),
     HighlightData.Video
-    (VideoHighlightData(
-        "vs Columbia",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/9",
-        Sport.BASEBALL,
-        GenderDivision.MALE
-    )),
+        (
+        VideoHighlightData(
+            "vs Columbia",
+            "maxresdefault.jpg",
+            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+            "11/9",
+            Sport.BASEBALL,
+            GenderDivision.MALE
+        )
+    ),
     HighlightData.Article
-    (ArticleHighlightData(
-        "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/09",
-        Sport.ICE_HOCKEY
-    )),
+        (
+        ArticleHighlightData(
+            "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
+            "maxresdefault.jpg",
+            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+            "11/09",
+            Sport.ICE_HOCKEY
+        )
+    ),
     HighlightData.Video
-    (VideoHighlightData(
-        "vs Columbia",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/9",
-        Sport.BASEBALL,
-        GenderDivision.MALE
-    ))
+        (
+        VideoHighlightData(
+            "vs Columbia",
+            "maxresdefault.jpg",
+            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+            "11/9",
+            Sport.BASEBALL,
+            GenderDivision.MALE
+        )
+    )
+)
+
+/*GAME DETAILS SCREEN*/
+val sampleDetailsCardData = DetailsCardData(
+    title = "Championship Game",
+    opponentLogo = "https://example.com/logo.png",
+    opponent = "Wildcats",
+    opponentColor = Color(0xFF123456),
+    date = LocalDate.of(2025, 4, 20),
+    time = "7:30 PM",
+    dateString = "April 20, 2025",
+    isPastStartTime = true,
+    location = "Main Stadium",
+    locationString = "Main Stadium, Cityville",
+    gender = "Men's",
+    genderIcon = 123, // Dummy resource ID
+    sport = "Basketball",
+    sportIcon = 456, // Dummy resource ID
+    boxScore = listOf(
+        GameDetailsBoxScore(
+            team = "Tigers",
+            period = "1st",
+            time = "12:34",
+            description = "3-point shot",
+            scorer = "John Doe",
+            assist = "Mike Smith",
+            scoreBy = "Tigers",
+            corScore = 21,
+            oppScore = 18
+        ),
+        GameDetailsBoxScore(
+            team = "Wildcats",
+            period = "1st",
+            time = "10:01",
+            description = "Layup",
+            scorer = "Jane Roe",
+            assist = "Tom Lee",
+            scoreBy = "Wildcats",
+            corScore = 21,
+            oppScore = 20
+        )
+    ),
+    scoreBreakdown = listOf(
+        listOf("10", "15", "20", "18"), // Tigers per quarter
+        listOf("12", "10", "18", "22")  // Wildcats per quarter
+    ),
+    gameData = GameData(
+        Pair(
+            TeamScore(
+                team = TeamBoxScore(
+                    name = "Tigers",
+                ),
+                scoresByPeriod = listOf(20, 18, 22, 18),
+                totalScore = 78
+            ),
+            TeamScore(
+                team = TeamBoxScore(
+                    name = "Wildcats",
+                ),
+                scoresByPeriod = listOf(18, 20, 16, 21),
+                totalScore = 75
+            )
+        )
+    ),
+    scoreEvent = listOf(
+        ScoreEvent(
+            id = 1,
+            time = "11:11",
+            quarter = "2nd",
+            team = TeamGameSummary(
+                name = "Tigers",
+                logo = "https://example.com/tigers.png"
+            ),
+            eventType = "3PT",
+            score = "36-34",
+            description = "Three-pointer by John Doe"
+        ),
+        ScoreEvent(
+            id = 2,
+            time = "08:45",
+            quarter = "3rd",
+            team = TeamGameSummary(
+                name = "Wildcats",
+                logo = "https://example.com/wildcats.png"
+            ),
+            eventType = "FT",
+            score = "36-35",
+            description = "Free throw by Jane Roe"
+        )
+    ),
+    daysUntilGame = 6,
+    hoursUntilGame = 144,
+    homeScore = 78,
+    oppScore = 75
 )
 
 val sampleIvyLeaderboardData = listOf(
