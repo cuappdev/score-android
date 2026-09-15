@@ -1,25 +1,19 @@
 package com.cornellappdev.score.components
 
-import android.app.GameState
-import android.graphics.Paint.Align
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -30,8 +24,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.cornellappdev.score.R
+import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.Style.scoreHeaderText
-import com.cornellappdev.score.theme.Style.vsText
+import com.cornellappdev.score.theme.rankHeaderNeutral
+import com.cornellappdev.score.theme.rankHeaderRed
+import com.cornellappdev.score.util.toPlacement
 
 @Composable
 fun GameScoreHeader(
@@ -95,6 +92,90 @@ fun GameScoreHeader(
     }
 }
 
+@Composable
+fun AlternativeScoreHeader(
+    rank: Int,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(rankHeaderRed, rankHeaderNeutral)
+                )
+            )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+
+            Image(
+                painter = painterResource(R.drawable.cornell_logo),
+                contentDescription = "Left Team Logo",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier.size(70.dp)
+            )
+            Spacer(modifier = Modifier.width(11.dp))
+
+            //nth place
+            Text(
+                text = "${rank.toPlacement()} Place",
+                style = scoreHeaderText,
+            )
+        }
+    }
+}
+
+@Composable
+fun NthPlaceScoreHeader(
+    resultString: String,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(rankHeaderRed, rankHeaderNeutral)
+                )
+            )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+
+            Image(
+                painter = painterResource(R.drawable.cornell_logo),
+                contentDescription = "Left Team Logo",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier.size(70.dp)
+            )
+            Spacer(modifier = Modifier.width(11.dp))
+
+            //nth place
+            Text(
+                text = resultString.split("(")[0],
+                style = scoreHeaderText,
+            )
+        }
+    }
+}
+
+@Composable
+fun WinLoseHeaderContent(
+    teamOneLogo: Painter,
+    teamTwoLogo: Painter,
+) {
+    //parse result (remove score in parentheses)
+}
+
 @Preview
 @Composable
 private fun GameScoreHeaderPreview() = ScorePreview {
@@ -107,4 +188,17 @@ private fun GameScoreHeaderPreview() = ScorePreview {
         rightScore = 0,
         modifier = Modifier.height(185.dp)
     )
+}
+
+@Preview
+@Composable
+private fun AlternativeScoreHeaderPreview() = ScorePreview {
+    AlternativeScoreHeader(6, Modifier.height(185.dp))
+}
+
+@Preview
+@Composable
+private fun NthPlaceScoreHeaderPreview() = ScorePreview {
+    NthPlaceScoreHeader("11th of 18 (881)", Modifier.height(185.dp))
+    NthPlaceScoreHeader("High Point", Modifier.height(185.dp))
 }
