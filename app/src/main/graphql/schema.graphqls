@@ -9,13 +9,20 @@ type Query {
 
   game(id: String!): GameType
 
-  gameByData(city: String!, date: String!, gender: String!, location: String, opponentId: String!, sport: String!, state: String!, time: String!, ticketLink: String): GameType
+  gameByData(city: String!, date: String!, gender: String!, location: String, opponentId: String!, sport: String!, state: String!, time: String!): GameType
 
   gamesBySport(sport: String!): [GameType]
 
   gamesByGender(gender: String!): [GameType]
 
   gamesBySportGender(sport: String!, gender: String!): [GameType]
+
+  gamesByDate(startDate: DateTime!, endDate: DateTime!): [GameType]
+
+  """
+  Current user's favorited games (requires auth).
+  """
+  myFavoritedGames: [GameType]
 
   teams: [TeamType]
 
@@ -55,9 +62,11 @@ Attributes:
     - id: The YouTube video ID (optional).
     - title: The title of the video.
     - description: The description of the video.
-    - thumbnail: The URL of the video's thumbnail.
+    - thumbnail: The URL of the video's thumbnail. (optional)
     - url: The URL to the video.
     - published_at: The date and time the video was published.
+    - duration: The duration of the video (optional).
+    - sportsType: The sport type extracted from the video title.
 """
 type YoutubeVideoType {
   id: String
@@ -68,11 +77,15 @@ type YoutubeVideoType {
 
   thumbnail: String!
 
-  b64Thumbnail: String!
+  b64Thumbnail: String
 
   url: String!
 
   publishedAt: String!
+
+  duration: String
+
+  sportsType: String
 }
 
 """
@@ -181,6 +194,13 @@ type TeamType {
   name: String!
 }
 
+"""
+The `DateTime` scalar type represents a DateTime
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar DateTime
+
 type Mutation {
   """
   Creates a new game.
@@ -195,12 +215,42 @@ type Mutation {
   """
   Creates a new youtube video.
   """
-  createYoutubeVideo(b64Thumbnail: String!, description: String!, id: String!, publishedAt: String!, thumbnail: String!, title: String!, url: String!): CreateYoutubeVideo
+  createYoutubeVideo(b64Thumbnail: String, description: String!, duration: String!, id: String!, publishedAt: String!, thumbnail: String!, title: String!, url: String!): CreateYoutubeVideo
 
   """
   Creates a new article.
   """
   createArticle(image: String, publishedAt: String!, slug: String!, sportsType: String!, title: String!, url: String!): CreateArticle
+
+  """
+  Login by net_id; returns access_token and refresh_token.
+  """
+  loginUser("User's net ID (e.g. Cornell netid)." netId: String!): LoginUser
+
+  """
+  Create a new user by net_id; returns access_token and refresh_token (no separate login needed).
+  """
+  signupUser("Email address." email: String, "Display name." name: String, "User's net ID (e.g. Cornell netid)." netId: String!): SignupUser
+
+  """
+  Exchange a valid refresh token (in Authorization header) for a new access_token.
+  """
+  refreshAccessToken: RefreshAccessToken
+
+  """
+  Revoke the current token (access or refresh). Send token in Authorization header.
+  """
+  logoutUser: LogoutUser
+
+  """
+  Add a game to the current user's favorites (requires auth).
+  """
+  addFavoriteGame("ID of the game to add to favorites." gameId: String!): AddFavoriteGame
+
+  """
+  Remove a game from the current user's favorites (requires auth).
+  """
+  removeFavoriteGame("ID of the game to remove from favorites." gameId: String!): RemoveFavoriteGame
 }
 
 type CreateGame {
@@ -217,6 +267,34 @@ type CreateYoutubeVideo {
 
 type CreateArticle {
   article: ArticleType
+}
+
+type LoginUser {
+  accessToken: String
+
+  refreshToken: String
+}
+
+type SignupUser {
+  accessToken: String
+
+  refreshToken: String
+}
+
+type RefreshAccessToken {
+  newAccessToken: String
+}
+
+type LogoutUser {
+  success: Boolean
+}
+
+type AddFavoriteGame {
+  success: Boolean
+}
+
+type RemoveFavoriteGame {
+  success: Boolean
 }
 
 """
