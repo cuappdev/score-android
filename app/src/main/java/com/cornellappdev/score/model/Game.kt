@@ -14,6 +14,8 @@ import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+private const val CORNELL_TEAM_NAME = "Cornell"
+
 // TODO Refactor to make easier to filter... actual gender, etc.
 
 data class Game(
@@ -43,16 +45,17 @@ data class GameDetailsTeam(
     val name: String
 )
 
+@Serializable
 data class GameDetailsBoxScore(
-    val team: String?,
-    val period: String?,
-    val time: String?,
-    val description: String?,
-    val scorer: String?,
-    val assist: String?,
-    val scoreBy: String?,
-    val corScore: Int?,
-    val oppScore: Int?
+    val team: String? = null,
+    val period: String? = null,
+    val time: String? = null,
+    val description: String? = null,
+    val scorer: String? = null,
+    val assist: String? = null,
+    val scoreBy: String? = null,
+    val corScore: Int? = null,
+    val oppScore: Int? = null
 )
 
 data class GameDetailsGame(
@@ -273,7 +276,7 @@ fun GameDetailsGame.toGameCardData(): DetailsCardData {
     val (daysUntil, hoursUntil) = getTimeUntilStart(date, time ?: "") ?: (null to null)
     val parsedScores = parseResultScore(result)
     return DetailsCardData(
-        title = "Cornell Vs. ${team?.name ?: ""}",
+        title = "$CORNELL_TEAM_NAME Vs. ${team?.name ?: ""}",
         opponentLogo = team?.image ?: "",
         opponent = team?.name ?: "",
         opponentColor = team?.color ?: Color.White,
@@ -294,7 +297,7 @@ fun GameDetailsGame.toGameCardData(): DetailsCardData {
         scoreBreakdown = scoreBreakdown ?: emptyList(),
         gameData = toGameData(
             scoreBreakdown = scoreBreakdown,
-            team1 = TeamBoxScore("Cornell"),
+            team1 = TeamBoxScore(CORNELL_TEAM_NAME),
             team2 = TeamBoxScore(team?.name ?: ""),
             sport = sport,
             result = result ?: ""
@@ -319,23 +322,25 @@ fun DetailsCardData.applySocketUpdate(update: SocketGameUpdateData): DetailsCard
     val newGameData = if (update.scoreBreakdown != null) {
         toGameData(
             scoreBreakdown = newScoreBreakdown,
-            team1 = TeamBoxScore("Cornell"),
+            team1 = TeamBoxScore(CORNELL_TEAM_NAME),
             team2 = TeamBoxScore(opponent),
             sport = sport,
             result = result
         )
     } else gameData
 
-    val newBoxScore: List<GameDetailsBoxScore?> = update.boxScore
-        ?.map { it?.toGameDetailsBoxScore() }
-        ?: boxScore
+    val newBoxScore = update.boxScore ?: boxScore
     val newScoreEvents = if (update.boxScore != null) {
         newBoxScore.filterNotNull().toScoreEvents(opponentLogo)
     } else scoreEvent
 
     return copy(
-        homeScore = update.homeScore ?: homeScore,
-        oppScore = update.oppScore ?: oppScore,
+        homeScore = update.homeScore
+            ?: update.scoreBreakdown?.let { convertScores(it.getOrNull(0), sport, result).second }
+            ?: homeScore,
+        oppScore = update.oppScore
+            ?: update.scoreBreakdown?.let { convertScores(it.getOrNull(1), sport, result).second }
+            ?: oppScore,
         scoreBreakdown = newScoreBreakdown,
         gameData = newGameData,
         boxScore = newBoxScore,

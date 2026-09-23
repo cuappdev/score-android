@@ -37,7 +37,10 @@ class SocketManager @Inject constructor(private val appScope: CoroutineScope) {
             // "on" is a listener
             s.on(Socket.EVENT_CONNECT) {
                 Log.d(TAG, "Connected")
-                activeSubscriptions.forEach { id ->
+                val subscriptions = synchronized(activeSubscriptions) {
+                    activeSubscriptions.toList()
+                }
+                subscriptions.forEach { id ->
                     s.emit("subscribe", JSONObject().put("gameId", id))
                 }
             }
