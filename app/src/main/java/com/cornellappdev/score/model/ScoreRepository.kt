@@ -104,12 +104,14 @@ class ScoreRepository @Inject constructor(
     }
 
     fun fetchGames() = appScope.launch {
-        if (!gamesFetchMutex.tryLock()) return@launch
+        gamesFetchMutex.lock()
+        val previousSuccess = _upcomingGamesFlow.value as? ApiResponse.Success
         _upcomingGamesFlow.value = ApiResponse.Loading
         val allGames = mutableListOf<Game>()
         var offset = 0
         var retries = 0
         var initialWindow = true
+        var historyComplete = false
 
         try {
             while (true) {
@@ -119,7 +121,7 @@ class ScoreRepository @Inject constructor(
                             val today = LocalDate.now()
                             apolloClient.query(
                                 InitialGamesQuery(
-                                    today.atStartOfDay().toString(),
+                                    today.minusDays(7).atStartOfDay().toString(),
                                     today.plusDays(30).atStartOfDay().toString()
                                 )
                             ).execute().toResult().getOrNull()?.gamesByDate
@@ -153,6 +155,7 @@ class ScoreRepository @Inject constructor(
                 }
 
                 if (pageResult.isEmpty()) {
+                    historyComplete = true
                     break
                 }
 
@@ -195,21 +198,24 @@ class ScoreRepository @Inject constructor(
                     continue
                 }
 
-                if (pageResult.size < PAGE_LIMIT) break
+                if (pageResult.size < PAGE_LIMIT) {
+                    historyComplete = true
+                    break
+                }
                 offset += PAGE_LIMIT
             }
 
             _upcomingGamesFlow.value =
                 if (allGames.isNotEmpty()) ApiResponse.Success(allGames.asReversed().distinctBy { it.id }.asReversed())
-                else if (_upcomingGamesFlow.value is ApiResponse.Success) _upcomingGamesFlow.value
-                else ApiResponse.Error
+                else if (historyComplete) ApiResponse.Success(emptyList())
+                else previousSuccess ?: ApiResponse.Error
 
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             Log.e("ScoreRepository", "Error fetching upcoming games", e)
             if (_upcomingGamesFlow.value !is ApiResponse.Success) {
-                _upcomingGamesFlow.value = ApiResponse.Error
+                _upcomingGamesFlow.value = previousSuccess ?: ApiResponse.Error
             }
         } finally {
             gamesFetchMutex.unlock()
