@@ -3,11 +3,8 @@ package com.cornellappdev.score.model
 import android.util.Log
 import com.apollographql.apollo.ApolloClient
 import com.cornellappdev.score.util.isValidSport
-import com.cornellappdev.score.util.parseColor
-import com.cornellappdev.score.util.parseResultScore
 import com.example.score.GameByIdQuery
 import com.example.score.InitialGamesQuery
-import com.example.score.GamesQuery
 import com.example.score.PagedGamesQuery
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -21,11 +18,13 @@ import java.time.LocalDate
 import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.time.Duration.Companion.seconds
 
-private const val TIMEOUT_TIME_MILLIS = 5000L
+private const val TAG = "ScoreRepository"
+private val GAME_DETAILS_TIMEOUT = 5.seconds
 private const val PAGE_LIMIT = 100
 private const val MAX_RETRIES = 3
-private const val PAGE_TIMEOUT_MILLIS = 3000L
+private val PAGE_TIMEOUT = 3.seconds
 
 /**
  * This is a singleton responsible for fetching and caching all data for Score.
@@ -46,63 +45,7 @@ class ScoreRepository @Inject constructor(
         MutableStateFlow<ApiResponse<GameDetailsGame>>(ApiResponse.Loading)
     val currentGamesFlow = _currentGameFlow.asStateFlow()
 
-    /**
-     * Asynchronously fetches the list of games from the API. Once finished, will send down
-     * `upcomingGamesFlow` to be observed.
-     */
-    fun fetchGamesPrev() = appScope.launch {
-        _upcomingGamesFlow.value = ApiResponse.Loading
-        try {
-            val result =
-                withTimeout(TIMEOUT_TIME_MILLIS) {
-                    apolloClient.query((GamesQuery())).execute().toResult()
-                }
-
-            if (result.isSuccess) {
-                val games = result.getOrNull()
-
-                val gamesList: List<Game> =
-                    games?.games?.filter { game -> isValidSport(game?.sport ?: "") }
-                        ?.mapNotNull { game ->
-                            /**
-                             * The final scores in the past game cards are obtained by parsing a String
-                             * result from the GameQuery, which is oftentimes in the format
-                             * Result, CornellScore-OpponentScore (e.g. "W, 2-1"). Not all of the strings
-                             * are in this format (e.g. 4th of 6, 1498 points for women's Swimming and
-                             * Diving), but in this case, the cornellScore and otherScore parameters of
-                             * the game and associated card should be null, and as of right now,
-                             * null-scored games are filtered out.
-                             */
-                            val scores = game?.result?.split(",")?.getOrNull(1)?.split("-")
-                            val cornellScore = scores?.getOrNull(0)?.toNumberOrNull()
-                            val otherScore = scores?.getOrNull(1)?.toNumberOrNull()
-                            game?.team?.image?.let {
-                                Game(
-                                    id = game.id ?: "", // Should never be null
-                                    teamLogo = it,
-                                    teamName = game.team.name,
-                                    time = game.time,
-                                    teamColor = parseColor(game.team.color).copy(alpha = 0.4f * 255),
-                                    gender = if (game.gender == "Mens") "Men's" else "Women's",
-                                    sport = game.sport,
-                                    date = game.date,
-                                    city = game.city,
-                                    cornellScore = cornellScore,
-                                    otherScore = otherScore
-                                )
-                            }
-                        } ?: emptyList()
-                _upcomingGamesFlow.value = ApiResponse.Success(gamesList)
-            } else {
-                _upcomingGamesFlow.value = ApiResponse.Error
-            }
-
-        } catch (e: Exception) {
-            Log.e("ScoreRepository", "Error fetching posts: ", e)
-            _upcomingGamesFlow.value = ApiResponse.Error
-        }
-    }
-
+    /** Publishes nearby games first, then loads history while preserving results on failure. */
     fun fetchGames() = appScope.launch {
         gamesFetchMutex.lock()
         val previousSuccess = _upcomingGamesFlow.value as? ApiResponse.Success
@@ -114,9 +57,10 @@ class ScoreRepository @Inject constructor(
         var historyComplete = false
 
         try {
+            // The page count is unknown, and retries must reuse the current offset.
             while (true) {
                 val pageResult = try {
-                    withTimeoutOrNull(PAGE_TIMEOUT_MILLIS) {
+                    withTimeoutOrNull(PAGE_TIMEOUT) {
                         if (initialWindow) {
                             val today = LocalDate.now()
                             apolloClient.query(
@@ -135,7 +79,7 @@ class ScoreRepository @Inject constructor(
                     }
                 } catch (e: CancellationException) {
                     throw e
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     null
                 }
 
@@ -163,30 +107,8 @@ class ScoreRepository @Inject constructor(
 
                 val pageGames: List<Game> = pageResult
                     .filterNotNull()
-                    .filter { gql -> isValidSport(gql.sport ?: "") }
-                    .mapNotNull { graphqlGame ->
-                        val scores = graphqlGame.result?.split(",")?.getOrNull(1)?.split("-")
-                        val cornellScore = scores?.getOrNull(0)?.toNumberOrNull()
-                            ?: parseResultScore(graphqlGame.result)?.first
-                        val otherScore = scores?.getOrNull(1)?.toNumberOrNull() ?: parseResultScore(
-                            graphqlGame.result
-                        )?.second
-                        graphqlGame.team?.image?.let { imageUrl ->
-                            Game(
-                                id = graphqlGame.id ?: "",
-                                teamLogo = imageUrl,
-                                time = graphqlGame.time,
-                                teamName = graphqlGame.team.name,
-                                teamColor = parseColor(graphqlGame.team.color).copy(alpha = 0.4f * 255),
-                                gender = if (graphqlGame.gender == "Mens") "Men's" else "Women's",
-                                sport = graphqlGame.sport,
-                                date = graphqlGame.date,
-                                city = graphqlGame.city,
-                                cornellScore = cornellScore,
-                                otherScore = otherScore
-                            )
-                        }
-                    }
+                    .filter { isValidSport(it.sport) }
+                    .mapNotNull { it.toGame() }
 
                 allGames.addAll(pageGames)
 
@@ -213,7 +135,7 @@ class ScoreRepository @Inject constructor(
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            Log.e("ScoreRepository", "Error fetching upcoming games", e)
+            Log.e(TAG, "Error fetching upcoming games", e)
             if (_upcomingGamesFlow.value !is ApiResponse.Success) {
                 _upcomingGamesFlow.value = previousSuccess ?: ApiResponse.Error
             }
@@ -227,11 +149,11 @@ class ScoreRepository @Inject constructor(
      * `currentGamesFlow` to be observed.
      */
     fun getGameById(id: String) = appScope.launch {
-        Log.d("ScoreRepository", "Fetching game with id: $id")
+        Log.d(TAG, "Fetching game with id: $id")
         _currentGameFlow.value = ApiResponse.Loading
         try {
             val result =
-                withTimeout(TIMEOUT_TIME_MILLIS) {
+                withTimeout(GAME_DETAILS_TIMEOUT) {
                     apolloClient.query(GameByIdQuery(id)).execute().toResult()
                 }
 
@@ -241,16 +163,8 @@ class ScoreRepository @Inject constructor(
 
             } ?: _currentGameFlow.update { ApiResponse.Error }
         } catch (e: Exception) {
-            Log.e("ScoreRepository", "Error fetching game with id: ${id}: ", e)
+            Log.e(TAG, "Error fetching game with id: ${id}: ", e)
             _currentGameFlow.value = ApiResponse.Error
         }
     }
 }
-
-fun String.toNumberOrNull(): Number? {
-    return when {
-        this.contains(".") -> this.toFloatOrNull()  // Try converting to Float if there's a decimal
-        else -> this.toIntOrNull()  // Otherwise, try converting to Int
-    }
-}
-

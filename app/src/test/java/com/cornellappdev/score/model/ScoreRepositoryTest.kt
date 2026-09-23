@@ -18,6 +18,7 @@ import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import kotlin.time.Duration.Companion.seconds
 
 class ScoreRepositoryTest {
     private lateinit var server: MockWebServer
@@ -61,7 +62,7 @@ class ScoreRepositoryTest {
     }
 
     @Test fun failedRefreshRestoresPreviousGames() = runBlocking {
-        withTimeout(10000) {
+        withTimeout(10.seconds) {
             repository.fetchGames().join()
             val previous = repository.upcomingGamesFlow.value
             assertTrue(previous is ApiResponse.Success)
@@ -72,7 +73,7 @@ class ScoreRepositoryTest {
     }
 
     @Test fun successfulEmptyRefreshClearsPreviousGames() = runBlocking {
-        withTimeout(10000) {
+        withTimeout(10.seconds) {
             repository.fetchGames().join()
             empty = true
             repository.fetchGames().join()
@@ -81,7 +82,7 @@ class ScoreRepositoryTest {
     }
 
     @Test fun refreshDuringHistoryFetchWaitsAndRuns() = runBlocking {
-        withTimeout(10000) {
+        withTimeout(10.seconds) {
             historyStarted = CountDownLatch(1)
             releaseHistory = CountDownLatch(1)
             val first = repository.fetchGames()
@@ -97,7 +98,7 @@ class ScoreRepositoryTest {
     }
 
     @Test fun firstLoadFailureShowsError() = runBlocking {
-        withTimeout(10000) {
+        withTimeout(10.seconds) {
             fail = true
             repository.fetchGames().join()
             assertEquals(ApiResponse.Error, repository.upcomingGamesFlow.value)
