@@ -1,33 +1,26 @@
 query PagedGames($limit: Int!, $offset: Int!) {
     games(limit: $limit, offset: $offset) {
-        id
-        city
-        date
-        gender
-        location
-        opponentId
-        result
-        sport
-        state
-        time
-        scoreBreakdown
-        utcDate
-        team {
-            id
-            color
-            image
-            name
-        }
-        boxScore {
-            team
-            period
-            time
-            description
-            scorer
-            assist
-            scoreBy
-            corScore
-            oppScore
-        }
+        ...GameListItem
+    }
+}
+
+query InitialGames($startDate: DateTime!, $endDate: DateTime!) {
+    gamesByDate(startDate: $startDate, endDate: $endDate) {
+        ...GameListItem
+    }
+}
+
+fragment GameListItem on GameType {
+    id
+    city
+    date
+    gender
+    result
+    sport
+    time
+    team {
+        color
+        image
+        name
     }
 }
