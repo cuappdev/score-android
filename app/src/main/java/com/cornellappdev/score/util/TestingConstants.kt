@@ -355,8 +355,8 @@ val sampleDetailsCardData = DetailsCardData(
             time = "11:11",
             quarter = "2nd",
             team = TeamGameSummary(
-                name = "Tigers",
-                logo = "https://example.com/tigers.png"
+                name = "Cornell",
+                logo = "https://example.com/cornel_logo.png"
             ),
             eventType = "3PT",
             score = "36-34",
@@ -367,8 +367,8 @@ val sampleDetailsCardData = DetailsCardData(
             time = "08:45",
             quarter = "3rd",
             team = TeamGameSummary(
-                name = "Wildcats",
-                logo = "https://example.com/wildcats.png"
+                name = "Yale",
+                logo = "https://cornellbigred.com/images/logos/YALE_LOGO_2020.png?width=80&height=80&mode=max"
             ),
             eventType = "FT",
             score = "36-35",

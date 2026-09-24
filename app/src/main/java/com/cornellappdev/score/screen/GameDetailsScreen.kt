@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,16 +25,17 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.apollographql.apollo.api.BooleanExpression
 import com.cornellappdev.score.R
+import com.cornellappdev.score.components.AlternativeScoreHeader
 import com.cornellappdev.score.components.BoxScore
 import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GameDetailsLoadingScreen
 import com.cornellappdev.score.components.GameScoreHeader
-import com.cornellappdev.score.components.Leaderboard
 import com.cornellappdev.score.components.NavigationHeader
+import com.cornellappdev.score.components.NthPlaceScoreHeader
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.ScoringSummary
@@ -54,7 +54,6 @@ import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.heading3
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.util.sampleDetailsCardData
-import com.cornellappdev.score.util.sampleIvyLeaderboardData
 import com.cornellappdev.score.viewmodel.GameDetailsViewModel
 
 @Composable
@@ -111,6 +110,8 @@ fun GameDetailsContent(
     modifier: Modifier = Modifier,
     navigateToGameScoreSummary: (List<ScoreEvent>) -> Unit
 ) {
+    // TODO: add navigation
+
     val scrollState = rememberScrollState()
     Column(
         modifier = modifier
@@ -118,16 +119,36 @@ fun GameDetailsContent(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // TODO: add navigation
-        GameScoreHeader(
-            leftTeamLogo = painterResource(R.drawable.cornell_logo),
-            rightTeamLogo = gameCard.opponentLogo,
-            gradientColor1 = Color(0xFFE1A69F),
-            gradientColor2 = gameCard.opponentColor,
-            leftScore = gameCard.homeScore,
-            rightScore = gameCard.oppScore,
-            modifier = Modifier.height(185.dp)
-        )
+
+        if (gameCard.result != null) {
+            if (gameCard.result.contains("place")) {
+                val place = gameCard.result.split(",")[0]
+                AlternativeScoreHeader(place)
+            } else if (gameCard.result.contains("of")) {
+                //todo take the first three words of result
+            } else if (gameCard.title.contains("Tournament")) {
+                //todo: how do i extract this?
+                AlternativeScoreHeader("Temp")
+            } else if (gameCard.result.contains("-")) {
+                //todo jk we can prob just feed the string into the standard score header: GameScoreHeader
+                AlternativeScoreHeader("Temp")
+//                val temp = gameCard.result.split(",")[1].trim(),
+//                val rawScores = temp.split("-")
+//                val leftScore = rawScores[0]
+//                val rightScore = rawScores[1]
+            }
+        }else {
+            //standard score header
+            GameScoreHeader(
+                leftTeamLogo = painterResource(R.drawable.cornell_logo),
+                rightTeamLogo = gameCard.opponentLogo,
+                gradientColor1 = Color(0xFFE1A69F),
+                gradientColor2 = gameCard.opponentColor,
+                leftScore = gameCard.homeScore,
+                rightScore = gameCard.oppScore,
+                modifier = Modifier.height(185.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -137,68 +158,32 @@ fun GameDetailsContent(
                 scrollState
             )
 
-            // render the below if the game is in the future
-            // TODO: MESSY, is it every the case when there is a boxscore but no scoring summary
-            if (gameCard.isPastStartTime == true) {
+            if (gameCard.isPastStartTime) {
                 Spacer(modifier = Modifier.height(24.dp))
-
-                //TODO switch to matching for cleaner code
-                if (gameCard.sport == "Swim and Dive") {
-                    Leaderboard(sampleIvyLeaderboardData)
-                } else if (gameCard.sport == "Equestrian") {
-                    //todo extract this into another component
-                    Text("Highlights", style = heading2)
-                    Spacer(modifier = Modifier.height(13.dp))
-                    ArticleHighlightCard(
-                        ArticleHighlightData(
-                            "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-                            "maxresdefault.jpg",
-                            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-                            "11/09",
-                            Sport.ICE_HOCKEY
-                        ),
-                        isWideFormat = false
+                when (gameCard.sport) {
+                    in listOf(
+                        "Swim Dive",
+                        "Track and Field",
+                        "Wrestling",
+                        "Gymnastics",
+                        "Golf",
+                        "Polo",
+                        "Fencing",
+                        "Equestrian"
                     )
-                } else {
-                    //if (gameCard.scoreBreakdown?.isNotEmpty() == true) {
-                    BoxScore(gameCard.gameData)
-                    Spacer(modifier = Modifier.height(24.dp))
-                    // }
+                        -> if (gameCard.articleData != null) {
+                        GameDetailsContentRecap(gameCard.articleData)
+                    }
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            "Scoring Summary", fontSize = 18.sp,
-                            style = heading2,
-                        )
-                        if (gameCard.boxScore.isNotEmpty()) {
-                            Spacer(modifier = Modifier.weight(1f))
-                            IconButton(onClick = { navigateToGameScoreSummary(gameCard.scoreEvent) }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_right_chevron),
-                                    contentDescription = "Back button",
-                                    modifier = Modifier
-                                        .width(24.dp)
-                                        .height(24.dp),
-                                )
-                            }
-                        }
-                    }
-                    if (gameCard.boxScore.isNotEmpty()) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        ScoringSummary(gameCard.scoreEvent)
-                    } else {
-                        EmptyStateBox(
-                            icon = R.drawable.ic_speaker_gray,
-                            title = "No scores yet.",
-                            height = 200.dp
-                        )
-                    }
+                    in listOf(
+                        "Baseball", "Basketball", "Field Hockey",
+                        "Football", "Ice Hockey", "Lacrosse", "Soccer",
+                        "Softball"
+                    ) -> GameDetailsContentBoxScore(gameCard, navigateToGameScoreSummary)
+
+                    //todo if this game is an ivy tournament, use the ivy leaderboard
                 }
-            } else {
-                //val context = LocalContext.current
+            } else { //display time til start
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -213,20 +198,52 @@ fun GameDetailsContent(
                     }
 
                     Spacer(modifier = Modifier.weight(1f))
-
-//                    ButtonPrimary(
-//                        "Add to Calendar",
-//                        painterResource(R.drawable.ic_calendar),
-//                        onClick = {
-//                            gameCard.toCalendarEvent()?.let { event ->
-//                                addToCalendar(context = context, event)
-//                            }
-//                        }
-//                    )
-
                 }
             }
         }
+    }
+}
+
+@Composable
+fun GameDetailsContentBoxScore(
+    gameCard: DetailsCardData,
+    navigateToGameScoreSummary: (List<ScoreEvent>) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        BoxScore(gameCard.gameData)
+        Spacer(modifier = Modifier.height(24.dp))
+
+
+        if (gameCard.boxScore.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(16.dp))
+            ScoringSummary(
+                gameCard.scoreEvent,
+                gameCard = gameCard,
+                navigateToGameScoreSummary = navigateToGameScoreSummary
+            )
+        } else {
+            EmptyStateBox(
+                icon = R.drawable.ic_speaker_gray,
+                title = "No scores yet.",
+                height = 200.dp
+            )
+        }
+    }
+}
+
+@Composable
+fun GameDetailsContentRecap(
+    article: ArticleHighlightData
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text("Highlights", style = heading2)
+        Spacer(Modifier.height(13.dp))
+        ArticleHighlightCard(article, isWideFormat = true)
     }
 }
 
@@ -275,6 +292,8 @@ private fun GameDetailsInformation(
         }
     }
 }
+
+//todo update previews to test different headers
 
 @Preview
 @Composable
@@ -329,7 +348,16 @@ private fun EmptyGameDetailsHighlightPreview() {
                 emptyList(),
                 emptyList()
             ),
-            scoreEvent = emptyList()
+            scoreEvent = emptyList(),
+            articleData =
+                ArticleHighlightData(
+                    "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
+                    "maxresdefault.jpg",
+                    "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+                    "11/09",
+                    Sport.ICE_HOCKEY
+                )
+
         ), navigateToGameScoreSummary = {}
     )
 }

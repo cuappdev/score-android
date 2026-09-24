@@ -4,10 +4,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,20 +22,54 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.cornellappdev.score.R
+import com.cornellappdev.score.model.ArticleHighlightData
+import com.cornellappdev.score.model.DetailsCardData
 import com.cornellappdev.score.model.ScoreEvent
+import com.cornellappdev.score.model.Sport
+import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.bodyMedium
 import com.cornellappdev.score.theme.Style.bodyNormal
+import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.metricNormal
 import com.cornellappdev.score.theme.Style.metricSemibold
+import com.cornellappdev.score.util.sampleDetailsCardData
 import com.cornellappdev.score.util.scoreEvents1
 
 
 @Composable
-fun ScoringSummary(scoreEvents: List<ScoreEvent>, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
+fun ScoringSummary(
+    scoreEvents: List<ScoreEvent>,
+    gameCard: DetailsCardData,
+    modifier: Modifier = Modifier,
+    navigateToGameScoreSummary: (List<ScoreEvent>) -> Unit
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                "Scoring Summary", fontSize = 18.sp,
+                style = heading2,
+            )
+            if (gameCard.boxScore.isNotEmpty()) {
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(onClick = { navigateToGameScoreSummary(gameCard.scoreEvent) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_right_chevron),
+                        contentDescription = "Back button",
+                        modifier = Modifier
+                            .width(24.dp)
+                            .height(24.dp),
+                        tint = GrayMedium
+                    )
+                }
+            }
+        }
         scoreEvents.take(3).forEach {
             ScoreEventItem(it)
             HorizontalDivider(color = Color.LightGray, thickness = 0.5.dp)
@@ -49,7 +88,7 @@ fun ScoreEventItem(
             .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (event.team.name == "COR") { // TODO: Check if its "COR" for all queries. It is for baseball
+        if (event.team.name == "COR" || event.team.name == "Cornell") { // TODO: Check if its "COR" for all queries. It is for baseball
             Image(
                 painter = painterResource(R.drawable.cornell_logo),
                 contentDescription = event.team.name,
@@ -66,7 +105,6 @@ fun ScoreEventItem(
                     .padding(end = 12.dp)
             )
         }
-
 
         Row(
             modifier = Modifier.weight(2f),
@@ -87,7 +125,6 @@ fun ScoreEventItem(
                 textAlign = TextAlign.Center
             )
         }
-
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -128,5 +165,17 @@ fun ScoreEventItem(
 @Preview
 @Composable
 private fun PreviewScoringSummary() = ScorePreview {
-    ScoringSummary(scoreEvents = scoreEvents1)
+    ScoringSummary(
+        scoreEvents = scoreEvents1,
+        gameCard = sampleDetailsCardData.copy(
+            articleData = ArticleHighlightData(
+                "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
+                "maxresdefault.jpg",
+                "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+                "11/09",
+                Sport.ICE_HOCKEY
+            )
+        ),
+        navigateToGameScoreSummary = {}
+    )
 }

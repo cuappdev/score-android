@@ -24,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.cornellappdev.score.R
-import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.Style.scoreHeaderText
 import com.cornellappdev.score.theme.rankHeaderNeutral
 import com.cornellappdev.score.theme.rankHeaderRed
@@ -93,7 +92,7 @@ fun GameScoreHeader(
 }
 
 @Composable
-fun AlternativeScoreHeader(
+fun NthPlaceScoreHeader(
     rank: Int,
     modifier: Modifier = Modifier,
 ) {
@@ -131,7 +130,7 @@ fun AlternativeScoreHeader(
 }
 
 @Composable
-fun NthPlaceScoreHeader(
+fun AlternativeScoreHeader(
     resultString: String,
     modifier: Modifier = Modifier,
 ) {
@@ -192,13 +191,13 @@ private fun GameScoreHeaderPreview() = ScorePreview {
 
 @Preview
 @Composable
-private fun AlternativeScoreHeaderPreview() = ScorePreview {
-    AlternativeScoreHeader(6, Modifier.height(185.dp))
+private fun NthPlaceScoreHeaderPreview() = ScorePreview {
+    NthPlaceScoreHeader(6, Modifier.height(185.dp))
 }
 
 @Preview
 @Composable
-private fun NthPlaceScoreHeaderPreview() = ScorePreview {
-    NthPlaceScoreHeader("11th of 18 (881)", Modifier.height(185.dp))
-    NthPlaceScoreHeader("High Point", Modifier.height(185.dp))
+private fun alternativeScoreHeaderPreview() = ScorePreview {
+    AlternativeScoreHeader("11th of 18 (881)", Modifier.height(185.dp))
+    AlternativeScoreHeader("High Point", Modifier.height(185.dp))
 }
