@@ -127,7 +127,9 @@ data class DetailsCardData(
     val daysUntilGame: Int?,
     val hoursUntilGame: Int?,
     val homeScore: Int,
-    val oppScore: Int
+    val oppScore: Int,
+    val articleData: ArticleHighlightData? = null,
+    val result: String? = null
 )
 
 // Scoring information by round of a game, used in the box score

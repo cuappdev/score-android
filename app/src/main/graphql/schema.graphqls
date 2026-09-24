@@ -136,6 +136,14 @@ type GameType {
   utcDate: String
 
   ticketLink: String
+
+  recapLink: String
+
+  recapArticleTitle: String
+
+  recapArticleImage: String
+
+  recapPublishedAt: String
 }
 
 """

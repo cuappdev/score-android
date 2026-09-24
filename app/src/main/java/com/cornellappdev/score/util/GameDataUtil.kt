@@ -112,7 +112,10 @@ fun parseResultScore(result: String?): Pair<Int, Int>? {
 
 val validSports = setOf(
     "Baseball", "Basketball", "Field Hockey",
-    "Football", "Ice Hockey", "Lacrosse", "Soccer"
+    "Football", "Ice Hockey", "Lacrosse", "Soccer",
+    "Softball", "Swim Dive", "Track and Field", "Wrestling",
+    "Gymnastics", "Golf", "Fencing", "Equestrian"
+    //"Polo" - waiting on icon designs
 )
 
 fun isValidSport(sportName: String): Boolean {
