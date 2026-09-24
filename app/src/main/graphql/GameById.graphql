@@ -28,5 +28,10 @@ query GameById($id: String!) {
             corScore
             oppScore
         }
+
+        recapArticleTitle
+        recapLink
+        recapPublishedAt
+        recapArticleImage
     }
 }
