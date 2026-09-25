@@ -17,7 +17,11 @@ fun GameByIdQuery.Game.toGameDetails(): GameDetailsGame {
         time = this.time,
         scoreBreakdown = this.scoreBreakdown,
         team = this.team?.toGameDetailsTeam(),
-        boxScore = this.boxScore?.mapNotNull { it?.toGameDetailsBoxScore() }
+        boxScore = this.boxScore?.mapNotNull { it?.toGameDetailsBoxScore() },
+        recapLink = this.recapLink,
+        recapArticleTitle = this.recapArticleTitle,
+        recapArticleImage = this.recapArticleImage,
+        recapPublishedAt = this.recapPublishedAt
     )
 }
 fun GameByIdQuery.Team.toGameDetailsTeam(): GameDetailsTeam {
