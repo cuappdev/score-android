@@ -1,6 +1,7 @@
 package com.cornellappdev.score.model
 
 import androidx.compose.ui.graphics.Color
+import com.cornellappdev.score.util.CORNELL_TEAM_NAME
 import com.cornellappdev.score.R
 import com.cornellappdev.score.util.convertScores
 import com.cornellappdev.score.util.formatDateTimeDisplay
@@ -13,8 +14,6 @@ import com.cornellappdev.score.util.toGameData
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
-
-private const val CORNELL_TEAM_NAME = "Cornell"
 
 // TODO Refactor to make easier to filter... actual gender, etc.
 

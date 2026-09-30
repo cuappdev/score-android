@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.cornellappdev.score.util.CORNELL_TEAM_NAME
 import com.cornellappdev.score.R
 import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.theme.AmbientColor
@@ -155,7 +156,7 @@ private fun TeamScore(
             if (isCornell) {
                 Image(
                     painter = painterResource(R.drawable.cornell_logo),
-                    contentDescription = "Cornell Logo",
+                    contentDescription = "$CORNELL_TEAM_NAME Logo",
                     modifier = Modifier
                         .height(27.dp)
                         .padding(horizontal = 2.dp, vertical = 4.dp)
@@ -171,7 +172,7 @@ private fun TeamScore(
             }
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = if (isCornell) "Cornell" else team,
+                text = if (isCornell) CORNELL_TEAM_NAME else team,
                 style = heading2,
                 color = if (winningTeam) GrayPrimary else GrayLight
             )
