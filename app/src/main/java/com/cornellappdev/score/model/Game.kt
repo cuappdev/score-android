@@ -311,7 +311,18 @@ fun GameDetailsGame.toGameCardData(): DetailsCardData {
             ?: parsedScores?.first ?: 0,
         oppScore = convertScores(scoreBreakdown?.getOrNull(1), sport, result ?: "").second
             ?: parsedScores?.second ?: 0,
-        articleData = ArticleHighlightData(title = recapArticleTitle, imageUrl = recapArticleImage, articleUrl = recapLink, date = recapPublishedAt, sport = Sport.fromDisplayName(sport))
+        articleData = if (recapLink == null && recapArticleTitle == null) {
+            null
+        } else {
+            ArticleHighlightData(
+                title = recapArticleTitle,
+                imageUrl = recapArticleImage,
+                articleUrl = recapLink,
+                date = recapPublishedAt,
+                sport = Sport.fromDisplayName(sport)
+            )
+        },
+        result = result
     )
 }
 
