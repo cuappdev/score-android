@@ -11,6 +11,7 @@ import com.cornellappdev.score.model.TeamScore
  * Handles null values and non-numeric values:
  * - Nulls or "X" are 0
  * - If the sport is baseball, only the first 9 periods counted
+ * - If the sport is softball, only the first 7 periods counted
  * - For other sports, the last item in the list is treated as the total score.
  *
  * @param scoreList the list of score strings, where each item represents a period score and the last item may be the total
@@ -38,6 +39,12 @@ fun convertScores(scoreList: List<String?>?, sport: String, result: String): Pai
         } else {
             scoresByPeriod.take(9)
         }
+        val totalScore = scoresByPeriod.sum()
+        return Pair(scoresByPeriod, totalScore)
+    }
+
+    if (sport.lowercase() == "softball"){
+        scoresByPeriod = scoresByPeriod.dropLast(2) //backend includes a column for aggregate scores before R, H, E metrics
         val totalScore = scoresByPeriod.sum()
         return Pair(scoresByPeriod, totalScore)
     }
