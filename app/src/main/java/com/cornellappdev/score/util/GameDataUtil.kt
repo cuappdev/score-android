@@ -1,6 +1,5 @@
 package com.cornellappdev.score.util
 
-import android.util.Log
 import com.cornellappdev.score.model.GameData
 import com.cornellappdev.score.model.TeamBoxScore
 import com.cornellappdev.score.model.TeamScore
@@ -43,8 +42,9 @@ fun convertScores(scoreList: List<String?>?, sport: String, result: String): Pai
         return Pair(scoresByPeriod, totalScore)
     }
 
-    if (sport.lowercase() == "softball"){
-        scoresByPeriod = scoresByPeriod.dropLast(2) //backend includes a column for aggregate scores before R, H, E metrics
+    if (sport.lowercase() == "softball") {
+        scoresByPeriod =
+            scoresByPeriod.dropLast(2) //backend includes a column for aggregate scores before R, H, E metrics
         val totalScore = scoresByPeriod.sum()
         return Pair(scoresByPeriod, totalScore)
     }
