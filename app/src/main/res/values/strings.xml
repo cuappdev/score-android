@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Score</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="select_profile_picture">Select a profile picture:</string>
+    <string name="selected_profile_picture">Selected profile picture: %1$s</string>
+    <string name="profile_blank">Blank</string>
+    <string name="profile_tennis">Tennis</string>
+    <string name="profile_baseball">Baseball</string>
+    <string name="profile_soccer">Soccer</string>
 </resources>
