@@ -53,7 +53,7 @@ fun HighlightsCardLazyColumn(
 
                 query.isNotEmpty() -> {
                     val filtered = highlightsList.filter {
-                        it.title.contains(query, ignoreCase = true)
+                        it.title?.contains(query, ignoreCase = true) == true
                     }
 
                     if (filtered.isEmpty()) {

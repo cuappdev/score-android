@@ -1,6 +1,5 @@
 package com.cornellappdev.score.util
 
-import android.util.Log
 import com.cornellappdev.score.model.GameData
 import com.cornellappdev.score.model.TeamBoxScore
 import com.cornellappdev.score.model.TeamScore
@@ -11,6 +10,7 @@ import com.cornellappdev.score.model.TeamScore
  * Handles null values and non-numeric values:
  * - Nulls or "X" are 0
  * - If the sport is baseball, only the first 9 periods counted
+ * - If the sport is softball, only the first 7 periods counted
  * - For other sports, the last item in the list is treated as the total score.
  *
  * @param scoreList the list of score strings, where each item represents a period score and the last item may be the total
@@ -38,6 +38,13 @@ fun convertScores(scoreList: List<String?>?, sport: String, result: String): Pai
         } else {
             scoresByPeriod.take(9)
         }
+        val totalScore = scoresByPeriod.sum()
+        return Pair(scoresByPeriod, totalScore)
+    }
+
+    if (sport.lowercase() == "softball") {
+        scoresByPeriod =
+            scoresByPeriod.dropLast(2) //backend includes a column for aggregate scores before R, H, E metrics
         val totalScore = scoresByPeriod.sum()
         return Pair(scoresByPeriod, totalScore)
     }
@@ -97,12 +104,11 @@ fun parseResultScore(result: String?): Pair<Int, Int>? {
     if (parts.size != 2) return null
 
     val scorePart = parts[1].split("-")
-    val secondScorePartEdge = scorePart[1].split("(")
     if (scorePart.size != 2) return null
+    val secondScorePartEdge = scorePart[1].split("(")
 
     val homeScore = scorePart[0].toIntOrNull()
     val oppScore = secondScorePartEdge[0].toIntOrNull()
-    Log.d("HIHI", oppScore.toString())
     if (homeScore != null && oppScore != null) {
         return Pair(homeScore, oppScore)
     } else {

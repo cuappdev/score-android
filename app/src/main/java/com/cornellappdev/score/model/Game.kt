@@ -68,7 +68,11 @@ data class GameDetailsGame(
     val time: String?,
     val scoreBreakdown: List<List<String?>?>?,
     val team: GameDetailsTeam?,
-    val boxScore: List<GameDetailsBoxScore>?
+    val boxScore: List<GameDetailsBoxScore>?,
+    val recapLink: String?,
+    val recapArticleTitle: String?,
+    val recapArticleImage: String?,
+    val recapPublishedAt: String?
 )
 
 
@@ -306,7 +310,19 @@ fun GameDetailsGame.toGameCardData(): DetailsCardData {
         homeScore = convertScores(scoreBreakdown?.getOrNull(0), sport, result ?: "").second
             ?: parsedScores?.first ?: 0,
         oppScore = convertScores(scoreBreakdown?.getOrNull(1), sport, result ?: "").second
-            ?: parsedScores?.second ?: 0
+            ?: parsedScores?.second ?: 0,
+        articleData = if (recapLink == null && recapArticleTitle == null) {
+            null
+        } else {
+            ArticleHighlightData(
+                title = recapArticleTitle,
+                imageUrl = recapArticleImage,
+                articleUrl = recapLink,
+                date = recapPublishedAt,
+                sport = Sport.fromDisplayName(sport)
+            )
+        },
+        result = result
     )
 }
 

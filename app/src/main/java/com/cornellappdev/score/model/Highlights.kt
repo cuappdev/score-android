@@ -10,15 +10,15 @@ data class VideoHighlightData(
 )
 
 data class ArticleHighlightData(
-    val title: String,
-    val imageUrl: String,
-    val articleUrl: String,
-    val date: String,
-    val sport: Sport
+    val title: String?,
+    val imageUrl: String?,
+    val articleUrl: String?,
+    val date: String?,
+    val sport: Sport?
 )
 
 sealed class HighlightData {
-    abstract val title: String
+    abstract val title: String?
 
     data class Video(val data: VideoHighlightData) : HighlightData() {
         override val title = data.title
