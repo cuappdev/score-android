@@ -103,6 +103,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.runtime.android)
     testImplementation(libs.junit)
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -121,9 +122,11 @@ dependencies {
 apollo {
     service("service") {
         packageName.set("com.example.score")
-        introspection {
-            endpointUrl.set("\"${secrets.getProperty("API_URL_DEV")}\"")
-            schemaFile.set(file("src/main/graphql/schema.graphqls"))
+        secrets.getProperty("API_URL_DEV")?.takeIf { it.isNotBlank() }?.let { apiUrl ->
+            introspection {
+                endpointUrl.set(apiUrl)
+                schemaFile.set(file("src/main/graphql/schema.graphqls"))
+            }
         }
     }
 }
