@@ -26,7 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.apollographql.apollo.api.BooleanExpression
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.AlternativeScoreHeader
 import com.cornellappdev.score.components.BoxScore
@@ -35,7 +34,6 @@ import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GameDetailsLoadingScreen
 import com.cornellappdev.score.components.GameScoreHeader
 import com.cornellappdev.score.components.NavigationHeader
-import com.cornellappdev.score.components.NthPlaceScoreHeader
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.ScoringSummary
@@ -120,25 +118,25 @@ fun GameDetailsContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        if (gameCard.result != null) {
-            if (gameCard.result.contains("place")) {
-                val place = gameCard.result.split(",")[0]
-                AlternativeScoreHeader(place)
+        //Logic to determine header type
+        if (!gameCard.result.isNullOrBlank() && !gameCard.result.contains("-")) {
+            if (!gameCard.result.any { it.isDigit() }) { //i.e. NTS, Cancelled
+                AlternativeScoreHeader(
+                    resultString = gameCard.result,
+                    modifier = Modifier.height(185.dp)
+                )
+            } else if (gameCard.result.split(" ").size == 1) { //i.e. 3rd
+                AlternativeScoreHeader(
+                    resultString = "${gameCard.result} Place",
+                    modifier = Modifier.height(185.dp)
+                )
             } else if (gameCard.result.contains("of")) {
-                //todo take the first three words of result
-            } else if (gameCard.title.contains("Tournament")) {
-                //todo: how do i extract this?
-                AlternativeScoreHeader("Temp")
-            } else if (gameCard.result.contains("-")) {
-                //todo jk we can prob just feed the string into the standard score header: GameScoreHeader
-                AlternativeScoreHeader("Temp")
-//                val temp = gameCard.result.split(",")[1].trim(),
-//                val rawScores = temp.split("-")
-//                val leftScore = rawScores[0]
-//                val rightScore = rawScores[1]
+                val res = gameCard.result.split(" ").take(3).joinToString(" ")
+                AlternativeScoreHeader(resultString = res, modifier = Modifier.height(185.dp))
             }
-        }else {
-            //standard score header
+            //todo add case for ncaa tournament
+        } else {
+            //Standard score header
             GameScoreHeader(
                 leftTeamLogo = painterResource(R.drawable.cornell_logo),
                 rightTeamLogo = gameCard.opponentLogo,
@@ -173,6 +171,8 @@ fun GameDetailsContent(
                     )
                         -> if (gameCard.articleData != null) {
                         GameDetailsContentRecap(gameCard.articleData)
+                    } else {
+                        Text("No recap available")
                     }
 
                     in listOf(
