@@ -58,7 +58,7 @@ val gameList = listOf(
     PRINCETON_GAME
 )
 
-val team1 = TeamBoxScore(name = "Cornell")
+val team1 = TeamBoxScore(name = CORNELL_TEAM_NAME)
 val team2 = TeamBoxScore(name = "Yale University")
 
 val teamScore1 = TeamScore(
@@ -129,7 +129,7 @@ val longGameData = GameData(teamScores = longGameTeamScore1 to longGameTeamScore
 val extraLongGameData = GameData(teamScores = extraLongGameTeamScore1 to extraLongGameTeamScore2)
 
 val team3 = TeamGameSummary(
-    name = "Cornell",
+    name = CORNELL_TEAM_NAME,
     "https://cornellbigred.com/images/logos/penn_200x200.png?width=80&height=80&mode=max"
 )
 val team4 = TeamGameSummary(
