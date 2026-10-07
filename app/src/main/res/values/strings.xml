@@ -7,4 +7,18 @@
     <string name="profile_tennis">Tennis</string>
     <string name="profile_baseball">Baseball</string>
     <string name="profile_soccer">Soccer</string>
+    <string name="profile_title">Profile</string>
+    <string name="profile_placeholder_name">Claire Yu</string>
+    <string name="edit_profile_picture">Edit profile picture</string>
+    <string name="profile_favorite_sports">Favorite Sports</string>
+    <string name="profile_edit">Edit</string>
+    <string name="profile_add_sports">Add Sports</string>
+    <string name="profile_bookmarked_highlights">Bookmarked Highlights</string>
+    <string name="profile_show_all">Show all</string>
+    <string name="profile_no_bookmarks">No bookmarks yet</string>
+    <string name="profile_notifications">Notifications</string>
+    <string name="profile_settings">Settings</string>
+    <string name="profile_schedule">Schedule</string>
+    <string name="profile_scores">Scores</string>
+    <string name="profile_highlights">Highlights</string>
 </resources>
