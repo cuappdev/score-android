@@ -49,9 +49,9 @@ fun OnboardingButtons(
 
     LaunchedEffect(Unit) {
         showSignUp = true
-        delay(120.milliseconds)
+        delay(160.milliseconds)
         showLogIn = true
-        delay(120.milliseconds)
+        delay(180.milliseconds)
         showLater = true
     }
 
@@ -85,7 +85,9 @@ private fun OnboardingButtonsContent(
         OnboardingButtonSlot(
             modifier = Modifier.fillMaxWidth().height(50.dp),
             visible = showSignUp,
-            animateEntrance = animateEntrance
+            animateEntrance = animateEntrance,
+            initialOffset = 26.dp,
+            durationMillis = 340
         ) {
             Button(
                 onClick = onSignUp,
@@ -109,7 +111,9 @@ private fun OnboardingButtonsContent(
         OnboardingButtonSlot(
             modifier = Modifier.fillMaxWidth().height(48.dp),
             visible = showLogIn,
-            animateEntrance = animateEntrance
+            animateEntrance = animateEntrance,
+            initialOffset = 24.dp,
+            durationMillis = 340
         ) {
             OutlinedButton(
                 onClick = onLogIn,
@@ -136,7 +140,9 @@ private fun OnboardingButtonsContent(
         OnboardingButtonSlot(
             modifier = Modifier.fillMaxWidth().height(40.dp),
             visible = showLater,
-            animateEntrance = animateEntrance
+            animateEntrance = animateEntrance,
+            initialOffset = 18.dp,
+            durationMillis = 320
         ) {
             TextButton(
                 onClick = onLater,
@@ -155,9 +161,14 @@ private fun OnboardingButtonsContent(
 private fun OnboardingButtonSlot(
     visible: Boolean,
     animateEntrance: Boolean,
+    initialOffset: androidx.compose.ui.unit.Dp,
+    durationMillis: Int,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
+    val initialOffsetPx = with(androidx.compose.ui.platform.LocalDensity.current) {
+        initialOffset.roundToPx()
+    }
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
@@ -165,9 +176,9 @@ private fun OnboardingButtonSlot(
         if (animateEntrance) {
             AnimatedVisibility(
                 visible = visible,
-                enter = fadeIn(tween(350)) + slideInVertically(
-                    initialOffsetY = { it / 3 },
-                    animationSpec = tween(400)
+                enter = fadeIn(tween(durationMillis)) + slideInVertically(
+                    initialOffsetY = { initialOffsetPx },
+                    animationSpec = tween(durationMillis)
                 )
             ) {
                 content()
