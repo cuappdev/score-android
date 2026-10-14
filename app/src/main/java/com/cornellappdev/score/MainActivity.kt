@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.cornellappdev.score.nav.root.RootNavigation
+import com.cornellappdev.score.screen.OnboardingAnimationPreviewScreen
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.analytics
@@ -18,7 +19,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            RootNavigation()
+            //RootNavigation()
+            OnboardingAnimationPreviewScreen(
+                onSignUp = {},
+                onLogIn = {},
+                onLater = {}
+            )
         }
         firebaseAnalytics = Firebase.analytics
     }
