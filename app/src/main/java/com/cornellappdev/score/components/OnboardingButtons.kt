@@ -1,9 +1,9 @@
 package com.cornellappdev.score.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,10 +25,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.Style.heading3
 import com.cornellappdev.score.theme.Style.labelsNormal
@@ -83,7 +81,9 @@ private fun OnboardingButtonsContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OnboardingButtonSlot(
-            modifier = Modifier.fillMaxWidth().height(50.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
             visible = showSignUp,
             animateEntrance = animateEntrance,
             initialOffset = 26.dp,
@@ -91,7 +91,9 @@ private fun OnboardingButtonsContent(
         ) {
             Button(
                 onClick = onSignUp,
-                modifier = Modifier.fillMaxWidth().height(48.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
                 shape = RoundedCornerShape(100),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White,
@@ -109,7 +111,9 @@ private fun OnboardingButtonsContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         OnboardingButtonSlot(
-            modifier = Modifier.fillMaxWidth().height(48.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
             visible = showLogIn,
             animateEntrance = animateEntrance,
             initialOffset = 24.dp,
@@ -117,7 +121,9 @@ private fun OnboardingButtonsContent(
         ) {
             OutlinedButton(
                 onClick = onLogIn,
-                modifier = Modifier.fillMaxWidth().height(48.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
                 shape = RoundedCornerShape(100),
                 border = BorderStroke(
                     width = 1.dp,
@@ -138,7 +144,9 @@ private fun OnboardingButtonsContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         OnboardingButtonSlot(
-            modifier = Modifier.fillMaxWidth().height(40.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp),
             visible = showLater,
             animateEntrance = animateEntrance,
             initialOffset = 18.dp,
