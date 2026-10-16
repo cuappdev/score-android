@@ -70,27 +70,300 @@ private data class SportMotion(
 )
 
 private val sportMotions = listOf(
-    SportMotion(R.drawable.ic_basketball, 172f, 237f, 340f, .94f, 5f, 141f, 13.441f, -16.006f, -6.071f, 6.568f, -18f),
-    SportMotion(R.drawable.ic_baseball, 285f, 299f, 385f, .94f, -108f, 79f, 3.615f, -19.99f, -1.141f, 8.64f, 18f),
-    SportMotion(R.drawable.ic_cross_country, 20f, 331f, 430f, .94f, 157f, 47f, -13.255f, -18.582f, 5.258f, 8.15f, -18f),
-    SportMotion(R.drawable.ic_football, 316f, 441f, 475f, .94f, -139f, -63f, 21.069f, -5.821f, -8.856f, 2.903f, 18f),
-    SportMotion(R.drawable.ic_golf, 176f, 526f, 520f, .94f, 1f, -148f, -14.11f, 16.185f, 6.345f, -6.617f, -18f),
-    SportMotion(R.drawable.ic_volleyball, 20f, 482f, 565f, .94f, 157f, -104f, -9.539f, 23.112f, 3.586f, -9.932f, 18f),
-    SportMotion(R.drawable.ic_ice_hockey, 220f, 179f, 580f, .8f, -43f, 199f, 18.414f, -18.933f, -8.093f, 7.624f, -18f),
-    SportMotion(R.drawable.ic_swim_dive, 259f, 500f, 610f, .94f, -82f, -122f, -2.599f, 21.23f, 1.539f, -9.004f, -18f),
-    SportMotion(R.drawable.ic_soccer, 251f, 240f, 625f, .8f, -74f, 138f, -4.198f, -21.796f, 2.222f, 9.187f, 18f),
-    SportMotion(R.drawable.ic_tennis, 334f, 526f, 670f, .8f, -157f, -148f, 7.667f, 26.467f, -2.744f, -11.244f, -18f),
-    SportMotion(R.drawable.ic_lacrosse, 255f, 582f, 715f, .8f, -78f, -204f, 21.657f, 17.44f, -9.395f, -6.93f, 18f),
-    SportMotion(R.drawable.ic_wrestling, 94f, 508f, 760f, .8f, 83f, -130f, -20.93f, 6.766f, 9.045f, -2.46f, -18f),
-    SportMotion(R.drawable.ic_fencing, 23f, 223f, 805f, .8f, 154f, 155f, -26.871f, -7.183f, 11.399f, 2.535f, 18f),
-    SportMotion(R.drawable.ic_softball, 41f, 575f, 820f, .66f, 136f, -197f, -26.481f, 13.716f, 11.305f, -5.286f, -18f),
-    SportMotion(R.drawable.ic_sailing, 72f, 263f, 850f, .8f, 105f, 115f, -1.211f, -22.09f, .073f, 9.423f, -18f),
-    SportMotion(R.drawable.ic_equestrian, 142f, 591f, 865f, .66f, 35f, -213f, 9.965f, 25.7f, -4.642f, -10.607f, 18f),
-    SportMotion(R.drawable.ic_field_hockey, 334f, 355f, 910f, .66f, -157f, 23f, 19.299f, 11.322f, -7.978f, -5.198f, -18f),
-    SportMotion(R.drawable.ic_gymnastics, 338f, 257f, 955f, .66f, -161f, 121f, 9.299f, -24.502f, -3.46f, 10.481f, 18f),
-    SportMotion(R.drawable.ic_squash, 61f, 415f, 1_000f, .66f, 116f, -37f, -17.014f, -9.268f, 7.134f, 4.337f, -18f),
-    SportMotion(R.drawable.ic_rowing_lightweight, 101f, 191f, 1_045f, .66f, 76f, 187f, -21.33f, -15.299f, 9.256f, 6.043f, 18f),
-    SportMotion(R.drawable.ic_track_field, 302f, 201f, 1_090f, .66f, -125f, 177f, 25.186f, -11.394f, -10.771f, 4.331f, -18f)
+    SportMotion(
+        R.drawable.ic_basketball,
+        172f,
+        237f,
+        340f,
+        .94f,
+        5f,
+        141f,
+        13.441f,
+        -16.006f,
+        -6.071f,
+        6.568f,
+        -18f
+    ),
+    SportMotion(
+        R.drawable.ic_baseball,
+        285f,
+        299f,
+        385f,
+        .94f,
+        -108f,
+        79f,
+        3.615f,
+        -19.99f,
+        -1.141f,
+        8.64f,
+        18f
+    ),
+    SportMotion(
+        R.drawable.ic_cross_country,
+        20f,
+        331f,
+        430f,
+        .94f,
+        157f,
+        47f,
+        -13.255f,
+        -18.582f,
+        5.258f,
+        8.15f,
+        -18f
+    ),
+    SportMotion(
+        R.drawable.ic_football,
+        316f,
+        441f,
+        475f,
+        .94f,
+        -139f,
+        -63f,
+        21.069f,
+        -5.821f,
+        -8.856f,
+        2.903f,
+        18f
+    ),
+    SportMotion(
+        R.drawable.ic_golf,
+        176f,
+        526f,
+        520f,
+        .94f,
+        1f,
+        -148f,
+        -14.11f,
+        16.185f,
+        6.345f,
+        -6.617f,
+        -18f
+    ),
+    SportMotion(
+        R.drawable.ic_volleyball,
+        20f,
+        482f,
+        565f,
+        .94f,
+        157f,
+        -104f,
+        -9.539f,
+        23.112f,
+        3.586f,
+        -9.932f,
+        18f
+    ),
+    SportMotion(
+        R.drawable.ic_ice_hockey,
+        220f,
+        179f,
+        580f,
+        .8f,
+        -43f,
+        199f,
+        18.414f,
+        -18.933f,
+        -8.093f,
+        7.624f,
+        -18f
+    ),
+    SportMotion(
+        R.drawable.ic_swim_dive,
+        259f,
+        500f,
+        610f,
+        .94f,
+        -82f,
+        -122f,
+        -2.599f,
+        21.23f,
+        1.539f,
+        -9.004f,
+        -18f
+    ),
+    SportMotion(
+        R.drawable.ic_soccer,
+        251f,
+        240f,
+        625f,
+        .8f,
+        -74f,
+        138f,
+        -4.198f,
+        -21.796f,
+        2.222f,
+        9.187f,
+        18f
+    ),
+    SportMotion(
+        R.drawable.ic_tennis,
+        334f,
+        526f,
+        670f,
+        .8f,
+        -157f,
+        -148f,
+        7.667f,
+        26.467f,
+        -2.744f,
+        -11.244f,
+        -18f
+    ),
+    SportMotion(
+        R.drawable.ic_lacrosse,
+        255f,
+        582f,
+        715f,
+        .8f,
+        -78f,
+        -204f,
+        21.657f,
+        17.44f,
+        -9.395f,
+        -6.93f,
+        18f
+    ),
+    SportMotion(
+        R.drawable.ic_wrestling,
+        94f,
+        508f,
+        760f,
+        .8f,
+        83f,
+        -130f,
+        -20.93f,
+        6.766f,
+        9.045f,
+        -2.46f,
+        -18f
+    ),
+    SportMotion(
+        R.drawable.ic_fencing,
+        23f,
+        223f,
+        805f,
+        .8f,
+        154f,
+        155f,
+        -26.871f,
+        -7.183f,
+        11.399f,
+        2.535f,
+        18f
+    ),
+    SportMotion(
+        R.drawable.ic_softball,
+        41f,
+        575f,
+        820f,
+        .66f,
+        136f,
+        -197f,
+        -26.481f,
+        13.716f,
+        11.305f,
+        -5.286f,
+        -18f
+    ),
+    SportMotion(
+        R.drawable.ic_sailing,
+        72f,
+        263f,
+        850f,
+        .8f,
+        105f,
+        115f,
+        -1.211f,
+        -22.09f,
+        .073f,
+        9.423f,
+        -18f
+    ),
+    SportMotion(
+        R.drawable.ic_equestrian,
+        142f,
+        591f,
+        865f,
+        .66f,
+        35f,
+        -213f,
+        9.965f,
+        25.7f,
+        -4.642f,
+        -10.607f,
+        18f
+    ),
+    SportMotion(
+        R.drawable.ic_field_hockey,
+        334f,
+        355f,
+        910f,
+        .66f,
+        -157f,
+        23f,
+        19.299f,
+        11.322f,
+        -7.978f,
+        -5.198f,
+        -18f
+    ),
+    SportMotion(
+        R.drawable.ic_gymnastics,
+        338f,
+        257f,
+        955f,
+        .66f,
+        -161f,
+        121f,
+        9.299f,
+        -24.502f,
+        -3.46f,
+        10.481f,
+        18f
+    ),
+    SportMotion(
+        R.drawable.ic_squash,
+        61f,
+        415f,
+        1_000f,
+        .66f,
+        116f,
+        -37f,
+        -17.014f,
+        -9.268f,
+        7.134f,
+        4.337f,
+        -18f
+    ),
+    SportMotion(
+        R.drawable.ic_rowing_lightweight,
+        101f,
+        191f,
+        1_045f,
+        .66f,
+        76f,
+        187f,
+        -21.33f,
+        -15.299f,
+        9.256f,
+        6.043f,
+        18f
+    ),
+    SportMotion(
+        R.drawable.ic_track_field,
+        302f,
+        201f,
+        1_090f,
+        .66f,
+        -125f,
+        177f,
+        25.186f,
+        -11.394f,
+        -10.771f,
+        4.331f,
+        -18f
+    )
 )
 
 @Composable
@@ -101,25 +374,26 @@ fun OnboardingScreen(
     modifier: Modifier = Modifier,
     animationKey: Int = 0
 ) {
-    val playhead = remember(animationKey) { Animatable(0f) }
+    val animationTimeMs = remember(animationKey) { Animatable(0f) }
     LaunchedEffect(animationKey) {
-        playhead.snapTo(0f)
-        playhead.animateTo(
+        animationTimeMs.snapTo(0f)
+        animationTimeMs.animateTo(
             TIMELINE_DURATION_MS.toFloat(),
             animationSpec = tween(TIMELINE_DURATION_MS, easing = LinearEasing)
         )
     }
-    val timeMs = playhead.value
+    val timeMs = animationTimeMs.value
 
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
             .background(CrimsonPrimary)
     ) {
+        /*designScale and designDp scale from Figma units to Compose units*/
         val designScale = min(maxWidth.value / 393f, maxHeight.value / 852f)
         val designDp: (Float) -> Dp = { (it * designScale).dp }
 
-        FigmaSpeaker(
+        AnimatedSpeaker(
             timeMs = timeMs,
             left = 98f,
             top = 229f,
@@ -127,7 +401,11 @@ fun OnboardingScreen(
             designDp = designDp,
             alphaKeys = listOf(MotionKey(0f, 0f), MotionKey(2_760f, 0f), MotionKey(3_280f, 1f)),
             scaleKeys = listOf(MotionKey(0f, .67f), MotionKey(2_760f, .67f), MotionKey(3_280f, 1f)),
-            yKeys = listOf(MotionKey(0f, 68.5f), MotionKey(2_760f, 68.5f), MotionKey(3_280f, 0f, FastOutSlowInEasing))
+            yKeys = listOf(
+                MotionKey(0f, 68.5f),
+                MotionKey(2_760f, 68.5f),
+                MotionKey(3_280f, 0f, FastOutSlowInEasing)
+            )
         )
 
         if (timeMs >= 3_020f) {
@@ -141,11 +419,11 @@ fun OnboardingScreen(
             )
         }
 
-        FigmaHalo(
+        AnimatedHalo(
             timeMs = timeMs,
             designDp = designDp
         )
-        FigmaRing(
+        AnimatedRing(
             timeMs = timeMs,
             designDp = designDp,
             delayMs = 240f,
@@ -157,7 +435,7 @@ fun OnboardingScreen(
             scalePeakTime = 1_020f,
             scaleExit = 2.092f
         )
-        FigmaRing(
+        AnimatedRing(
             timeMs = timeMs,
             designDp = designDp,
             delayMs = 420f,
@@ -170,7 +448,7 @@ fun OnboardingScreen(
             scaleExit = 2.322f
         )
 
-        FigmaSpeaker(
+        AnimatedSpeaker(
             timeMs = timeMs,
             left = 129f,
             top = 330f,
@@ -207,13 +485,13 @@ fun OnboardingScreen(
         )
 
         sportMotions.forEach { sport ->
-            FigmaSportIcon(timeMs = timeMs, motion = sport, designDp = designDp)
+            AnimatedSportIcon(timeMs = timeMs, motion = sport, designDp = designDp)
         }
     }
 }
 
 @Composable
-private fun FigmaSpeaker(
+private fun AnimatedSpeaker(
     timeMs: Float,
     left: Float,
     top: Float,
@@ -252,7 +530,7 @@ private fun FigmaSpeaker(
 }
 
 @Composable
-private fun FigmaHalo(timeMs: Float, designDp: (Float) -> Dp) {
+private fun AnimatedHalo(timeMs: Float, designDp: (Float) -> Dp) {
     val alpha = sampleTrack(
         timeMs,
         listOf(
@@ -292,7 +570,7 @@ private fun FigmaHalo(timeMs: Float, designDp: (Float) -> Dp) {
 }
 
 @Composable
-private fun FigmaRing(
+private fun AnimatedRing(
     timeMs: Float,
     designDp: (Float) -> Dp,
     delayMs: Float,
@@ -344,7 +622,7 @@ private fun FigmaRing(
 }
 
 @Composable
-private fun FigmaSportIcon(
+private fun AnimatedSportIcon(
     timeMs: Float,
     motion: SportMotion,
     designDp: (Float) -> Dp
@@ -424,7 +702,11 @@ private fun FigmaSportIcon(
             MotionKey(wiggleTime, motion.initialRotation * .22f, FastOutSlowInEasing),
             MotionKey(settledTime, 0f, FastOutSlowInEasing),
             MotionKey(ICONS_HOLD_END_MS.toFloat(), 0f),
-            MotionKey(ICONS_EXIT_END_MS.toFloat(), motion.initialRotation * .55f, FastOutLinearInEasing)
+            MotionKey(
+                ICONS_EXIT_END_MS.toFloat(),
+                motion.initialRotation * .55f,
+                FastOutLinearInEasing
+            )
         )
     )
 
