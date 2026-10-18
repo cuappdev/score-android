@@ -10,6 +10,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.cornellappdev.score.nav.root.RootNavigation
+import com.cornellappdev.score.screen.FavoriteSport
+import com.cornellappdev.score.screen.FavoriteSportsScreen
 import com.cornellappdev.score.screen.OnboardingProfileSelectScreen
 import com.cornellappdev.score.screen.OnboardingScreen
 import com.google.firebase.Firebase
@@ -20,6 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 private const val APP_PREFERENCES = "score_app_preferences"
 private const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
 private const val KEY_ONBOARDING_PROFILE_PICTURE = "onboarding_profile_picture"
+private const val KEY_ONBOARDING_FAVORITE_SPORTS = "onboarding_favorite_sports"
 
 private lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -31,10 +34,14 @@ class MainActivity : AppCompatActivity() {
 
         val preferences = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
         val onboardingCompleted = preferences.getBoolean(KEY_ONBOARDING_COMPLETED, false)
+        val savedFavoriteSportKeys = preferences
+            .getStringSet(KEY_ONBOARDING_FAVORITE_SPORTS, emptySet())
+            .orEmpty()
+            .joinToString("|")
 
         setContent {
             var onboardingStep by rememberSaveable {
-                mutableIntStateOf(if (onboardingCompleted) 2 else 0)
+                mutableIntStateOf(if (onboardingCompleted) 3 else 0)
             }
 
             val completeOnboarding = remember {
@@ -42,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                     preferences.edit()
                         .putBoolean(KEY_ONBOARDING_COMPLETED, true)
                         .apply()
-                    onboardingStep = 2
+                    onboardingStep = 3
                 }
             }
 
@@ -57,7 +64,20 @@ class MainActivity : AppCompatActivity() {
                         preferences.edit()
                             .putString(KEY_ONBOARDING_PROFILE_PICTURE, selectedPicture.name)
                             .apply()
-                        completeOnboarding()
+                        onboardingStep = 2
+                    }
+                )
+                2 -> FavoriteSportsScreen(
+                    initiallySelectedKeys = savedFavoriteSportKeys,
+                    onFinish = { selectedSports ->
+                        preferences.edit()
+                            .putStringSet(
+                                KEY_ONBOARDING_FAVORITE_SPORTS,
+                                selectedSports.map(FavoriteSport::storageKey).toSet()
+                            )
+                            .putBoolean(KEY_ONBOARDING_COMPLETED, true)
+                            .apply()
+                        onboardingStep = 3
                     }
                 )
                 else -> RootNavigation()
