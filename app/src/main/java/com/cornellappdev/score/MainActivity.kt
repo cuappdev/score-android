@@ -21,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 private const val APP_PREFERENCES = "score_app_preferences"
 private const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
 private const val KEY_ONBOARDING_PROFILE_PICTURE = "onboarding_profile_picture"
+private const val KEY_ONBOARDING_FAVORITE_SPORTS = "onboarding_favorite_sports"
 
 private lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -38,6 +39,10 @@ class MainActivity : AppCompatActivity() {
 
         val preferences = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
         val onboardingCompleted = preferences.getBoolean(KEY_ONBOARDING_COMPLETED, false)
+        val savedFavoriteSportKeys = preferences
+            .getStringSet(KEY_ONBOARDING_FAVORITE_SPORTS, emptySet())
+            .orEmpty()
+            .joinToString("|")
 
         setContent {
             var onboardingStep by rememberSaveable {

@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +31,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.theme.CrimsonPrimary
+import com.cornellappdev.score.theme.GrayPrimary
+import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.Style
 
@@ -59,13 +60,13 @@ fun OnboardingProfileSelectScreen(
                 Text(
                     text = stringResource(R.string.edit_profile),
                     style = Style.heading1,
-                    color = Color(0xFF333333)
+                    color = GrayPrimary
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = stringResource(R.string.onboarding_profile_subtitle),
                     style = Style.bodyMedium,
-                    color = Color(0xFF333333)
+                    color = GrayPrimary
                 )
 
                 Spacer(Modifier.height(40.dp))
