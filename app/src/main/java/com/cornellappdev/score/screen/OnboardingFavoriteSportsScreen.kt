@@ -81,7 +81,7 @@ data class FavoriteSport(
 }
 
 @Composable
-fun FavoriteSportsScreen(
+fun OnboardingFavoriteSportsScreen(
     onFinish: (Set<FavoriteSport>) -> Unit,
     modifier: Modifier = Modifier,
     initiallySelectedKeys: String = ""
@@ -402,17 +402,17 @@ private fun FavoriteSportsFooter(
 
 @Preview(showBackground = true, widthDp = 393, heightDp = 852)
 @Composable
-private fun FavoriteSportsScreenPreview() {
+private fun OnboardingFavoriteSportsScreenPreview() {
     ScorePreview {
-        FavoriteSportsScreen(onFinish = {})
+        OnboardingFavoriteSportsScreen(onFinish = {})
     }
 }
 
 @Preview(showBackground = true, widthDp = 393, heightDp = 852)
 @Composable
-private fun FavoriteSportsSelectedScreenPreview() {
+private fun OnboardingFavoriteSportsSelectedScreenPreview() {
     ScorePreview {
-        FavoriteSportsScreen(
+        OnboardingFavoriteSportsScreen(
             onFinish = {},
             initiallySelectedKeys = "BASEBALL:MALE|CROSS_COUNTRY:FEMALE"
         )
