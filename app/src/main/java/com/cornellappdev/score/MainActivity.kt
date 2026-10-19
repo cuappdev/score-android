@@ -11,6 +11,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.core.content.edit
 import com.cornellappdev.score.nav.root.RootNavigation
+import com.cornellappdev.score.screen.FavoriteSport
+import com.cornellappdev.score.screen.OnboardingFavoriteSportsScreen
 import com.cornellappdev.score.screen.OnboardingProfileSelectScreen
 import com.cornellappdev.score.screen.OnboardingScreen
 import com.google.firebase.Firebase

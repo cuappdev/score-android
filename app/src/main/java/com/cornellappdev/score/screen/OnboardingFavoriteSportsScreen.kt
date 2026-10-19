@@ -361,11 +361,6 @@ private fun FavoriteSportsFooter(
     onFinish: () -> Unit,
     designDp: (Float) -> Dp
 ) {
-    var showActiveProgressDot by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        showActiveProgressDot = true
-    }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -402,11 +397,6 @@ private fun FavoriteSportsFooter(
             horizontalArrangement = Arrangement.spacedBy(designDp(4f)),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val activeColor by animateColorAsState(
-                targetValue = if (showActiveProgressDot) CrimsonPrimary else GrayStroke,
-                animationSpec = tween(durationMillis = 250),
-                label = "favoriteSportsActiveDot"
-            )
             Box(Modifier.size(designDp(8f)).background(GrayStroke, CircleShape))
             Box(Modifier.size(designDp(8f)).background(activeColor, CircleShape))
         }
