@@ -35,7 +35,7 @@ import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.Style
 
 @Composable
-fun OnboardingProfileScreen(
+fun OnboardingProfileSelectScreen(
     onNext: (ProfilePicture) -> Unit,
     modifier: Modifier = Modifier,
     displayName: String? = null
@@ -165,6 +165,6 @@ private fun RowProgressDots() {
 
 @Preview(showBackground = true, widthDp = 393, heightDp = 852)
 @Composable
-private fun OnboardingProfileScreenPreview() {
-    OnboardingProfileScreen(onNext = {})
+private fun OnboardingProfileSelectScreenPreview() {
+    OnboardingProfileSelectScreen(onNext = {})
 }
