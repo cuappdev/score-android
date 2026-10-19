@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.cornellappdev.score.nav.root.RootNavigation
-import com.cornellappdev.score.screen.OnboardingProfileScreen
+import com.cornellappdev.score.screen.OnboardingProfileSelectScreen
 import com.cornellappdev.score.screen.OnboardingScreen
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                     onLogIn = completeOnboarding,
                     onLater = completeOnboarding
                 )
-                1 -> OnboardingProfileScreen(
+                1 -> OnboardingProfileSelectScreen(
                     onNext = { selectedPicture ->
                         preferences.edit()
                             .putString(KEY_ONBOARDING_PROFILE_PICTURE, selectedPicture.name)
