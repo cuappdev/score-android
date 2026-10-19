@@ -11,7 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.cornellappdev.score.nav.root.RootNavigation
 import com.cornellappdev.score.screen.FavoriteSport
-import com.cornellappdev.score.screen.FavoriteSportsScreen
+import com.cornellappdev.score.screen.OnboardingFavoriteSportsScreen
 import com.cornellappdev.score.screen.OnboardingProfileSelectScreen
 import com.cornellappdev.score.screen.OnboardingScreen
 import com.google.firebase.Firebase
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                         onboardingStep = 2
                     }
                 )
-                2 -> FavoriteSportsScreen(
+                2 -> OnboardingFavoriteSportsScreen(
                     initiallySelectedKeys = savedFavoriteSportKeys,
                     onFinish = { selectedSports ->
                         preferences.edit()
