@@ -277,7 +277,7 @@ private fun ProfileTab(
     }
 }
 
-@Preview(showBackground = true, widthDp = 393, heightDp = 776)
+@Preview
 @Composable
 private fun EmptyProfileScreenPreview() {
     EmptyProfileScreen()
