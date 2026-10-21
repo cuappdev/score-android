@@ -361,6 +361,11 @@ private fun FavoriteSportsFooter(
     onFinish: () -> Unit,
     designDp: (Float) -> Dp
 ) {
+    var showActiveProgressDot by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        showActiveProgressDot = true
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
