@@ -89,58 +89,7 @@ fun EmptyProfileContent(
             .padding(horizontal = 24.dp)
             .padding(top = 8.dp, bottom = 32.dp)
     ) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                stringResource(R.string.profile_title), style = Style.heading1,
-                color = Color.Black, modifier = Modifier.weight(1f)
-            )
-            Icon(
-                painterResource(R.drawable.profile_notifications),
-                stringResource(R.string.profile_notifications),
-                Modifier.size(32.dp),
-                tint = Color.Unspecified
-            )
-            Spacer(Modifier.width(8.dp))
-            Icon(
-                painterResource(R.drawable.profile_settings),
-                stringResource(R.string.profile_settings),
-                Modifier.size(32.dp),
-                tint = Color.Unspecified
-            )
-        }
-        Spacer(Modifier.height(24.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Image(
-                painterResource(selectedPicture.drawable),
-                stringResource(
-                    R.string.selected_profile_picture,
-                    stringResource(selectedPicture.label)
-                ),
-                Modifier.size(70.dp)
-            )
-            Column(Modifier.weight(1f)) {
-                Text(
-                    stringResource(R.string.profile_placeholder_name),
-                    style = Style.heading2,
-                    color = GrayPrimary
-                )
-                Box(
-                    Modifier
-                        .heightIn(min = 48.dp)
-                        .clickable(role = Role.Button, onClick = onEditProfilePicture),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Text(
-                        stringResource(R.string.edit_profile_picture),
-                        style = Style.labelsNormal,
-                        color = CrimsonPrimary
-                    )
-                }
-            }
-        }
+        ProfileIdentityHeader(selectedPicture, onEditProfilePicture)
         ProfileSectionDivider()
         ProfileSectionHeading(R.string.profile_favorite_sports, R.string.profile_edit, Color.Black)
         Spacer(Modifier.height(16.dp))
@@ -210,7 +159,70 @@ fun EmptyProfileContent(
 }
 
 @Composable
-private fun ProfileSectionDivider() {
+internal fun ProfileIdentityHeader(
+    selectedPicture: ProfilePicture,
+    onEditProfilePicture: () -> Unit,
+    compact: Boolean = false,
+    displayName: String = stringResource(R.string.profile_placeholder_name)
+) {
+    Column {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                stringResource(R.string.profile_title), style = Style.heading1,
+                color = Color.Black, modifier = Modifier.weight(1f)
+            )
+            Icon(
+                painterResource(R.drawable.profile_notifications),
+                stringResource(R.string.profile_notifications),
+                Modifier.size(32.dp),
+                tint = Color.Unspecified
+            )
+            Spacer(Modifier.width(8.dp))
+            Icon(
+                painterResource(R.drawable.profile_settings),
+                stringResource(R.string.profile_settings),
+                Modifier.size(32.dp),
+                tint = Color.Unspecified
+            )
+        }
+        Spacer(Modifier.height(24.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Image(
+                painterResource(selectedPicture.drawable),
+                stringResource(
+                    R.string.selected_profile_picture,
+                    stringResource(selectedPicture.label)
+                ),
+                Modifier.size(70.dp)
+            )
+            Column(Modifier.weight(1f)) {
+                Text(
+                    displayName,
+                    style = Style.heading2,
+                    color = GrayPrimary
+                )
+                Box(
+                    Modifier
+                        .heightIn(min = if (compact) 22.dp else 48.dp)
+                        .clickable(role = Role.Button, onClick = onEditProfilePicture),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Text(
+                        stringResource(R.string.edit_profile_picture),
+                        style = Style.labelsNormal,
+                        color = CrimsonPrimary
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+internal fun ProfileSectionDivider() {
     Column {
         Spacer(Modifier.height(24.dp))
         HorizontalDivider(color = GrayStroke)
@@ -242,7 +254,7 @@ private fun ProfileSectionHeading(@StringRes title: Int, @StringRes action: Int,
 
 // Static navigation artwork: the reference tabs are intentionally non-interactive.
 @Composable
-private fun ProfileTabBar() {
+internal fun ProfileTabBar() {
     Row(
         Modifier
             .fillMaxWidth()
