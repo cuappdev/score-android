@@ -25,10 +25,13 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -358,6 +361,11 @@ private fun FavoriteSportsFooter(
     onFinish: () -> Unit,
     designDp: (Float) -> Dp
 ) {
+    var showActiveProgressDot by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        showActiveProgressDot = true
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -394,8 +402,13 @@ private fun FavoriteSportsFooter(
             horizontalArrangement = Arrangement.spacedBy(designDp(4f)),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(Modifier.size(designDp(8f)).background(CrimsonPrimary, CircleShape))
+            val activeColor by animateColorAsState(
+                targetValue = if (showActiveProgressDot) CrimsonPrimary else GrayStroke,
+                animationSpec = tween(durationMillis = 250),
+                label = "favoriteSportsActiveDot"
+            )
             Box(Modifier.size(designDp(8f)).background(GrayStroke, CircleShape))
+            Box(Modifier.size(designDp(8f)).background(activeColor, CircleShape))
         }
     }
 }
