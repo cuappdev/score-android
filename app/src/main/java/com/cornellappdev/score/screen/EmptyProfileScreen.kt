@@ -277,7 +277,7 @@ private fun ProfileTab(
     }
 }
 
-@Preview
+@Preview()
 @Composable
 private fun EmptyProfileScreenPreview() {
     EmptyProfileScreen()
