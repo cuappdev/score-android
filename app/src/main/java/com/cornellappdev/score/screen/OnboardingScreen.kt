@@ -714,27 +714,33 @@ private fun AnimatedSportIcon(
         )
     )
 
-    Box(
-        modifier = Modifier
-            .offset(x = designDp(motion.left), y = designDp(motion.top))
-            .size(designDp(36f)),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(motion.drawable),
-            contentDescription = null,
-            colorFilter = ColorFilter.tint(Color.White),
+    Box(modifier = Modifier.fillMaxSize()) {
+        Box(
             modifier = Modifier
-                .size(36.dp)
-                .graphicsLayer {
-                    this.alpha = alpha.coerceIn(0f, 1f)
-                    scaleX = scale
-                    scaleY = scale
-                    rotationZ = rotation
-                    translationX = designDp(x).toPx()
-                    translationY = designDp(y).toPx()
-                }
-        )
+                .align(Alignment.Center)
+                .offset(
+                    x = designDp(motion.left + 18f - 196.5f),
+                    y = designDp(motion.top + 18f - 426f)
+                )
+                .size(designDp(36f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(motion.drawable),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(Color.White),
+                modifier = Modifier
+                    .size(designDp(36f))
+                    .graphicsLayer {
+                        this.alpha = alpha.coerceIn(0f, 1f)
+                        scaleX = scale
+                        scaleY = scale
+                        rotationZ = rotation
+                        translationX = designDp(x).toPx()
+                        translationY = designDp(y).toPx()
+                    }
+            )
+        }
     }
 }
 
