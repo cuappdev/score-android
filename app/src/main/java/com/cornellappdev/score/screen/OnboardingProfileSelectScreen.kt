@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.theme.CrimsonPrimary
+import com.cornellappdev.score.theme.GrayPrimary
+import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.Style
 
 @Composable
@@ -61,13 +63,13 @@ fun OnboardingProfileSelectScreen(
                 Text(
                     text = stringResource(R.string.edit_profile),
                     style = Style.heading1,
-                    color = Color(0xFF333333)
+                    color = GrayPrimary
                 )
                 Spacer(Modifier.height(designDp(4f)))
                 Text(
                     text = stringResource(R.string.onboarding_profile_subtitle),
                     style = Style.bodyMedium,
-                    color = Color(0xFF333333)
+                    color = GrayPrimary
                 )
 
                 Spacer(Modifier.height(designDp(47f)))
@@ -159,7 +161,7 @@ private fun RowProgressDots() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(Modifier.size(8.dp).background(CrimsonPrimary, CircleShape))
-        Box(Modifier.size(8.dp).background(Color(0xFFEAEAEA), CircleShape))
+        Box(Modifier.size(8.dp).background(GrayStroke, CircleShape))
     }
 }
 
