@@ -53,12 +53,18 @@ fun EmptyProfileScreen(modifier: Modifier = Modifier) {
     var selectedPicture by rememberSaveable { mutableStateOf(ProfilePicture.BLANK) }
     var editingPicture by rememberSaveable { mutableStateOf(false) }
 
-    BackHandler(enabled = editingPicture) { editingPicture = false }
+    var showingSettings by rememberSaveable { mutableStateOf(false) }
+    BackHandler(enabled = editingPicture || showingSettings) {
+        editingPicture = false
+        showingSettings = false
+    }
     Column(modifier
         .fillMaxSize()
         .background(Color.White)) {
         Box(Modifier.weight(1f)) {
-            if (editingPicture) {
+            if (showingSettings) {
+                SettingsScreen(onBack = { showingSettings = false })
+            } else if (editingPicture) {
                 EditProfileScreen(
                     selectedPicture = selectedPicture,
                     onPictureSelected = { selectedPicture = it },
@@ -67,11 +73,12 @@ fun EmptyProfileScreen(modifier: Modifier = Modifier) {
             } else {
                 EmptyProfileContent(
                     selectedPicture = selectedPicture,
-                    onEditProfilePicture = { editingPicture = true }
+                    onEditProfilePicture = { editingPicture = true },
+                    onSettings = { showingSettings = true }
                 )
             }
         }
-        ProfileTabBar()
+        if (!showingSettings) ProfileTabBar()
     }
 }
 
@@ -80,7 +87,8 @@ fun EmptyProfileScreen(modifier: Modifier = Modifier) {
 fun EmptyProfileContent(
     selectedPicture: ProfilePicture,
     onEditProfilePicture: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSettings: () -> Unit = {}
 ) {
     Column(
         modifier
@@ -89,7 +97,7 @@ fun EmptyProfileContent(
             .padding(horizontal = 24.dp)
             .padding(top = 8.dp, bottom = 32.dp)
     ) {
-        ProfileIdentityHeader(selectedPicture, onEditProfilePicture)
+        ProfileIdentityHeader(selectedPicture, onEditProfilePicture, onSettings = onSettings)
         ProfileSectionDivider()
         ProfileSectionHeading(R.string.profile_favorite_sports, R.string.profile_edit, Color.Black)
         Spacer(Modifier.height(16.dp))
@@ -163,7 +171,8 @@ internal fun ProfileIdentityHeader(
     selectedPicture: ProfilePicture,
     onEditProfilePicture: () -> Unit,
     compact: Boolean = false,
-    displayName: String = stringResource(R.string.profile_placeholder_name)
+    displayName: String = stringResource(R.string.profile_placeholder_name),
+    onSettings: () -> Unit = {}
 ) {
     Column {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -181,7 +190,7 @@ internal fun ProfileIdentityHeader(
             Icon(
                 painterResource(R.drawable.profile_settings),
                 stringResource(R.string.profile_settings),
-                Modifier.size(32.dp),
+                Modifier.size(32.dp).clickable(role = Role.Button, onClick = onSettings),
                 tint = Color.Unspecified
             )
         }
