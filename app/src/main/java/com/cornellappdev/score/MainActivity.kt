@@ -30,6 +30,7 @@ private lateinit var firebaseAnalytics: FirebaseAnalytics
 private enum class OnboardingStep {
     WELCOME,
     PROFILE_SELECT,
+    SPORT_SELECT,
     COMPLETE
 }
 
@@ -71,6 +72,19 @@ class MainActivity : AppCompatActivity() {
                     onNext = { selectedPicture ->
                         preferences.edit {
                             putString(KEY_ONBOARDING_PROFILE_PICTURE, selectedPicture.name)
+                        }
+                        onboardingStep = OnboardingStep.SPORT_SELECT
+                    }
+                )
+
+                OnboardingStep.SPORT_SELECT -> OnboardingFavoriteSportsScreen(
+                    initiallySelectedKeys = savedFavoriteSportKeys,
+                    onFinish = { selectedSports ->
+                        preferences.edit {
+                            putStringSet(
+                                KEY_ONBOARDING_FAVORITE_SPORTS,
+                                selectedSports.map(FavoriteSport::storageKey).toSet()
+                            )
                         }
                         completeOnboarding()
                     }
