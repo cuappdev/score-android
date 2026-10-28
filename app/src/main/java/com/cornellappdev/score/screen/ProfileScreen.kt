@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.highlights.ArticleHighlightCard
 import com.cornellappdev.score.components.highlights.VideoHighlightCard
+import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.ProfileData
 import com.cornellappdev.score.model.ProfileFavorite
 import com.cornellappdev.score.model.GenderDivision
@@ -72,22 +74,45 @@ fun ProfileScreen(
     var selectedPicture by rememberSaveable { mutableStateOf(ProfilePicture.TENNIS) }
     var editingPicture by rememberSaveable { mutableStateOf(false) }
 
-    BackHandler(enabled = editingPicture) { editingPicture = false }
+    var editingSports by rememberSaveable { mutableStateOf(false) }
+    var favorites by rememberSaveable(data.favorites, stateSaver = listSaver<List<ProfileFavorite>, String>(
+        save = { list -> list.map { "${it.sport.name}:${it.gender.name}" } },
+        restore = { list -> list.map {
+            val (sport, gender) = it.split(":")
+            ProfileFavorite(Sport.valueOf(sport), GenderDivision.valueOf(gender))
+        } }
+    )) { mutableStateOf(data.favorites) }
+
+    BackHandler(enabled = editingPicture || editingSports) {
+        editingPicture = false
+        editingSports = false
+    }
     Column(modifier.fillMaxSize().background(Color.White)) {
         Box(Modifier.weight(1f)) {
-            if (editingPicture) {
+            if (editingSports) {
+                EditFavoriteSportsScreen(
+                    favorites = favorites,
+                    onToggleFavorite = { favorite ->
+                        favorites = if (favorite in favorites) favorites - favorite else favorites + favorite
+                    },
+                    onBack = { editingSports = false }
+                )
+            } else if (editingPicture) {
                 EditProfileScreen(selectedPicture, { selectedPicture = it }, { editingPicture = false })
             } else {
                 ProfileContent(
-                    data = data,
+                    data = data.copy(favorites = favorites),
                     selectedPicture = selectedPicture,
                     onEditProfilePicture = { editingPicture = true },
-                    onEditSports = onEditSports,
+                    onEditSports = {
+                        editingSports = true
+                        onEditSports()
+                    },
                     onShowAllBookmarks = onShowAllBookmarks
                 )
             }
         }
-        ProfileTabBar()
+        if (!editingSports) ProfileTabBar()
     }
 }
 
