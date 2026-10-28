@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.theme.CrimsonPrimary
+import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.Style
 
 @Composable
@@ -43,19 +44,16 @@ fun OnboardingProfileSelectScreen(
     var selectedPicture by rememberSaveable { mutableStateOf(ProfilePicture.BLANK) }
     val name = displayName ?: stringResource(R.string.onboarding_default_name)
 
-    BoxWithConstraints(
+    Box(
         modifier = modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        val designScale = minOf(maxWidth.value / 393f, maxHeight.value / 852f)
-        val designDp: (Float) -> Dp = { (it * designScale).dp }
-
         Column(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = designDp(79f)),
+                    .padding(top = 80.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -63,30 +61,30 @@ fun OnboardingProfileSelectScreen(
                     style = Style.heading1,
                     color = Color(0xFF333333)
                 )
-                Spacer(Modifier.height(designDp(4f)))
+                Spacer(Modifier.height(4.dp))
                 Text(
                     text = stringResource(R.string.onboarding_profile_subtitle),
                     style = Style.bodyMedium,
                     color = Color(0xFF333333)
                 )
 
-                Spacer(Modifier.height(designDp(47f)))
+                Spacer(Modifier.height(40.dp))
                 Image(
                     painter = painterResource(selectedPicture.drawable),
                     contentDescription = stringResource(
                         R.string.selected_profile_picture,
                         stringResource(selectedPicture.label)
                     ),
-                    modifier = Modifier.size(designDp(100f))
+                    modifier = Modifier.size(100.dp)
                 )
-                Spacer(Modifier.height(designDp(16f)))
+                Spacer(Modifier.height(16.dp))
                 Text(
                     text = name,
                     style = Style.bodyMedium,
                     color = Color.Black
                 )
 
-                Spacer(Modifier.height(designDp(60f)))
+                Spacer(Modifier.height(60.dp))
                 Text(
                     text = stringResource(R.string.onboarding_select_profile_picture),
                     style = Style.metricMedium,
@@ -96,7 +94,7 @@ fun OnboardingProfileSelectScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
                 )
-                Spacer(Modifier.height(designDp(24f)))
+                Spacer(Modifier.height(24.dp))
                 ProfilePictureOptions(
                     selectedPicture = selectedPicture,
                     onPictureSelected = { selectedPicture = it },
@@ -106,8 +104,7 @@ fun OnboardingProfileSelectScreen(
 
             Spacer(Modifier.weight(1f))
             OnboardingProfileFooter(
-                onNext = { onNext(selectedPicture) },
-                designDp = designDp
+                onNext = { onNext(selectedPicture) }
             )
         }
     }
@@ -116,7 +113,6 @@ fun OnboardingProfileSelectScreen(
 @Composable
 private fun OnboardingProfileFooter(
     onNext: () -> Unit,
-    designDp: (Float) -> Dp
 ) {
     Column(
         modifier = Modifier
@@ -124,8 +120,8 @@ private fun OnboardingProfileFooter(
             .padding(
                 start = 24.dp,
                 end = 24.dp,
-                top = designDp(24f),
-                bottom = designDp(60f)
+                top = 24.dp,
+                bottom = 60.dp
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -133,7 +129,7 @@ private fun OnboardingProfileFooter(
             onClick = onNext,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(designDp(48f)),
+                .height(48.dp),
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(
                 containerColor = CrimsonPrimary,
@@ -147,7 +143,7 @@ private fun OnboardingProfileFooter(
             )
         }
 
-        Spacer(Modifier.height(designDp(16f)))
+        Spacer(Modifier.height(16.dp))
         RowProgressDots()
     }
 }
@@ -159,11 +155,11 @@ private fun RowProgressDots() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(Modifier.size(8.dp).background(CrimsonPrimary, CircleShape))
-        Box(Modifier.size(8.dp).background(Color(0xFFEAEAEA), CircleShape))
+        Box(Modifier.size(8.dp).background(GrayStroke, CircleShape))
     }
 }
 
-@Preview(showBackground = true, widthDp = 393, heightDp = 852)
+@Preview(showBackground = true)
 @Composable
 private fun OnboardingProfileSelectScreenPreview() {
     OnboardingProfileSelectScreen(onNext = {})

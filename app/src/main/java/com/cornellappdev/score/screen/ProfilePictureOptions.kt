@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.components.ScorePreview
+import com.cornellappdev.score.theme.saturatedGreen
 
 /**
  * Shared profile picture choices used by profile editing and first-time onboarding.
@@ -37,7 +38,6 @@ fun ProfilePictureOptions(
 ) {
     Row(
         modifier = modifier
-            .widthIn(max = 393.dp)
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
             .selectableGroup(),
@@ -66,7 +66,7 @@ fun ProfilePictureOptions(
                         Modifier
                             .fillMaxSize()
                             .background(Color.White.copy(alpha = 0.6f), CircleShape)
-                            .border(3.dp, Color(0xFF55B63C), CircleShape)
+                            .border(3.dp, saturatedGreen, CircleShape)
                     )
                 }
             }
@@ -74,7 +74,7 @@ fun ProfilePictureOptions(
     }
 }
 
-@Preview(showBackground = true, widthDp = 393)
+@Preview(showBackground = true)
 @Composable
 private fun ProfilePictureOptionsPreview() {
     ScorePreview(backgroundColor = Color.White) {
