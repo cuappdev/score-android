@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -25,13 +24,8 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,10 +41,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.cornellappdev.score.R
+import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.CrimsonPrimary
@@ -62,7 +55,6 @@ import com.cornellappdev.score.theme.GreenWash
 import com.cornellappdev.score.theme.Style
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.theme.saturatedGreen
-import com.cornellappdev.score.components.ScorePreview
 
 data class FavoriteSport(
     val sport: Sport,
@@ -100,19 +92,16 @@ fun OnboardingFavoriteSportsScreen(
         else -> allOptions.filter { it.gender == selectedGender }
     }
 
-    BoxWithConstraints(
+    Box(
         modifier = modifier
             .fillMaxSize()
             .background(White)
     ) {
-        val designScale = minOf(maxWidth.value / 393f, maxHeight.value / 852f)
-        val designDp: (Float) -> Dp = { (it * designScale).dp }
-
         Column(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = designDp(79f)),
+                    .padding(top = 79.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -121,22 +110,21 @@ fun OnboardingFavoriteSportsScreen(
                     color = GrayPrimary,
                     textAlign = TextAlign.Center
                 )
-                Spacer(Modifier.height(designDp(4f)))
+                Spacer(Modifier.height(4.dp))
                 Text(
                     text = stringResource(R.string.favorite_sports_subtitle),
                     style = Style.bodyMedium,
                     color = GrayPrimary,
                     textAlign = TextAlign.Center
                 )
-                Spacer(Modifier.height(designDp(32f)))
+                Spacer(Modifier.height(32.dp))
                 FavoriteSportsGenderFilter(
                     selectedGender = selectedGender,
-                    onGenderSelected = { selectedGender = it },
-                    designDp = designDp
+                    onGenderSelected = { selectedGender = it }
                 )
             }
 
-            Spacer(Modifier.height(designDp(45f)))
+            Spacer(Modifier.height(32.dp))
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
                 modifier = Modifier
@@ -145,7 +133,8 @@ fun OnboardingFavoriteSportsScreen(
                 contentPadding = PaddingValues(
                     start = 24.dp,
                     end = 24.dp,
-                    bottom = designDp(8f)
+                    top = 8.dp,
+                    bottom = 8.dp
                 ),
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -160,18 +149,21 @@ fun OnboardingFavoriteSportsScreen(
                             } else {
                                 selectedSports + option.storageKey
                             }.joinToString("|")
-                        },
-                        designDp = designDp
+                        }
                     )
                 }
             }
 
-            FavoriteSportsFooter(
-                selectedCount = selectedSports.size,
-                onFinish = {
+            OnboardingFooter(
+                buttonText = when (selectedSports.size) {
+                    0 -> stringResource(R.string.finish)
+                    1 -> stringResource(R.string.finish_with_one_sport)
+                    else -> stringResource(R.string.finish_with_sports, selectedSports.size)
+                },
+                onClick = {
                     onFinish(selectedSports.mapNotNull(FavoriteSport::fromStorageKey).toSet())
                 },
-                designDp = designDp
+                activeStep = OnboardingState.SPORT_SELECT
             )
         }
     }
@@ -181,39 +173,39 @@ fun OnboardingFavoriteSportsScreen(
 private fun rememberFavoriteSportOptions(): List<FavoriteSport> {
     return remember {
         Sport.entries
-        .flatMap { sport ->
-            when (sport.gender) {
-                GenderDivision.ALL -> listOf(
-                    FavoriteSport(sport, GenderDivision.MALE),
-                    FavoriteSport(sport, GenderDivision.FEMALE)
-                )
-                GenderDivision.MALE -> listOf(FavoriteSport(sport, GenderDivision.MALE))
-                GenderDivision.FEMALE -> listOf(FavoriteSport(sport, GenderDivision.FEMALE))
+            .flatMap { sport ->
+                when (sport.gender) {
+                    GenderDivision.ALL -> listOf(
+                        FavoriteSport(sport, GenderDivision.MALE),
+                        FavoriteSport(sport, GenderDivision.FEMALE)
+                    )
+
+                    GenderDivision.MALE -> listOf(FavoriteSport(sport, GenderDivision.MALE))
+                    GenderDivision.FEMALE -> listOf(FavoriteSport(sport, GenderDivision.FEMALE))
+                }
             }
-        }
-        .sortedWith(
-            compareBy<FavoriteSport> { it.sport.displayName }
-                .thenBy { if (it.gender == GenderDivision.MALE) 0 else 1 }
-        )
+            .sortedWith(
+                compareBy<FavoriteSport> { it.sport.displayName }
+                    .thenBy { if (it.gender == GenderDivision.MALE) 0 else 1 }
+            )
     }
 }
 
 @Composable
 private fun FavoriteSportsGenderFilter(
     selectedGender: GenderDivision,
-    onGenderSelected: (GenderDivision) -> Unit,
-    designDp: (Float) -> Dp
+    onGenderSelected: (GenderDivision) -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .height(designDp(48f))
+            .height(48.dp)
             .border(
                 BorderStroke(1.dp, GrayLight),
                 CircleShape
             )
-            .padding(designDp(5f))
+            .padding(5.dp)
             .selectableGroup(),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -250,10 +242,9 @@ private fun FavoriteSportsGenderFilter(
 private fun FavoriteSportCard(
     option: FavoriteSport,
     selected: Boolean,
-    onClick: () -> Unit,
-    designDp: (Float) -> Dp
+    onClick: () -> Unit
 ) {
-    val cardShape = RoundedCornerShape(designDp(20f))
+    val cardShape = RoundedCornerShape(20.dp)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -264,14 +255,16 @@ private fun FavoriteSportCard(
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(modifier = Modifier.fillMaxWidth().aspectRatio(1f)) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(cardShape)
                     .background(if (selected) GreenWash else GrayStroke)
                     .border(
-                        width = if (selected) designDp(3f) else designDp(1f),
+                        width = if (selected) 3.dp else 1.dp,
                         color = if (selected) saturatedGreen else GrayStroke,
                         shape = cardShape
                     ),
@@ -280,7 +273,7 @@ private fun FavoriteSportCard(
                 Image(
                     painter = painterResource(option.sport.emptyIcon),
                     contentDescription = null,
-                    modifier = Modifier.size(designDp(45f)),
+                    modifier = Modifier.size(45.dp),
                     colorFilter = ColorFilter.tint(
                         if (selected) saturatedGreen else GrayPrimary
                     )
@@ -291,22 +284,22 @@ private fun FavoriteSportCard(
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .offset(x = designDp(-8f), y = designDp(-8f))
-                        .size(designDp(32f))
+                        .offset(x = (-8).dp, y = (-8).dp)
+                        .size(32.dp)
                         .background(CrimsonPrimary, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
                         painter = painterResource(R.drawable.ic_round_minus),
                         contentDescription = stringResource(R.string.remove_favorite_sport),
-                        modifier = Modifier.size(designDp(24f)),
+                        modifier = Modifier.size(24.dp),
                         colorFilter = ColorFilter.tint(White)
                     )
                 }
             }
         }
 
-        Spacer(Modifier.height(designDp(8f)))
+        Spacer(Modifier.height(8.dp))
         Text(
             text = option.sport.displayName,
             style = Style.bodyMedium,
@@ -314,37 +307,39 @@ private fun FavoriteSportCard(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(Modifier.height(designDp(2f)))
-        FavoriteSportGenderTag(option.gender, designDp)
+        Spacer(Modifier.height(2.dp))
+        FavoriteSportGenderTag(option.gender)
     }
 }
 
 @Composable
 private fun FavoriteSportGenderTag(
     gender: GenderDivision,
-    designDp: (Float) -> Dp
 ) {
     val label = if (gender == GenderDivision.FEMALE) "W" else "M"
-    val symbol = if (gender == GenderDivision.FEMALE) "♀" else "♂"
+    val genderIcon = if (gender == GenderDivision.FEMALE) {
+        R.drawable.ic_light_gray_female_gender
+    } else {
+        R.drawable.ic_light_gray_male_gender
+    }
 
     Row(
         modifier = Modifier
             .background(White, RoundedCornerShape(100))
-            .padding(horizontal = designDp(2f)),
+            .padding(horizontal = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(designDp(2f))
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Box(
             modifier = Modifier
-                .size(designDp(18f))
+                .size(18.dp)
                 .background(GrayStroke, CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = symbol,
-                color = GrayMedium,
-                fontSize = 10.sp,
-                lineHeight = 10.sp
+            Image(
+                painter = painterResource(genderIcon),
+                contentDescription = null,
+                modifier = Modifier.size(12.dp)
             )
         }
         Text(
@@ -355,60 +350,8 @@ private fun FavoriteSportGenderTag(
     }
 }
 
-@Composable
-private fun FavoriteSportsFooter(
-    selectedCount: Int,
-    onFinish: () -> Unit,
-    designDp: (Float) -> Dp
-) {
-    var showActiveProgressDot by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        showActiveProgressDot = true
-    }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(White)
-            .padding(
-                start = 24.dp,
-                end = 24.dp,
-                top = designDp(24f),
-                bottom = designDp(60f)
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(
-            onClick = onFinish,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(designDp(48f)),
-            shape = CircleShape,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = CrimsonPrimary,
-                contentColor = White
-            )
-        ) {
-            val buttonText = when (selectedCount) {
-                0 -> stringResource(R.string.finish)
-                1 -> stringResource(R.string.finish_with_one_sport)
-                else -> stringResource(R.string.finish_with_sports, selectedCount)
-            }
-            Text(buttonText, style = Style.heading3, color = White)
-        }
-
-        Spacer(Modifier.height(designDp(16f)))
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(designDp(4f)),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(Modifier.size(designDp(8f)).background(GrayStroke, CircleShape))
-            Box(Modifier.size(designDp(8f)).background(activeColor, CircleShape))
-        }
-    }
-}
-
-@Preview(showBackground = true, widthDp = 393, heightDp = 852)
+@Preview
 @Composable
 private fun OnboardingFavoriteSportsScreenPreview() {
     ScorePreview {
@@ -416,7 +359,7 @@ private fun OnboardingFavoriteSportsScreenPreview() {
     }
 }
 
-@Preview(showBackground = true, widthDp = 393, heightDp = 852)
+@Preview
 @Composable
 private fun OnboardingFavoriteSportsSelectedScreenPreview() {
     ScorePreview {
