@@ -5,10 +5,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.core.content.edit
 import com.cornellappdev.score.nav.root.RootNavigation
 import com.cornellappdev.score.screen.OnboardingProfileSelectScreen
 import com.cornellappdev.score.screen.OnboardingScreen
@@ -23,6 +24,12 @@ private const val KEY_ONBOARDING_PROFILE_PICTURE = "onboarding_profile_picture"
 
 private lateinit var firebaseAnalytics: FirebaseAnalytics
 
+private enum class OnboardingStep {
+    WELCOME,
+    PROFILE_SELECT,
+    COMPLETE
+}
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,33 +41,35 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             var onboardingStep by rememberSaveable {
-                mutableIntStateOf(if (onboardingCompleted) 2 else 0)
+                mutableStateOf(if (onboardingCompleted) OnboardingStep.COMPLETE else OnboardingStep.WELCOME)
             }
 
             val completeOnboarding = remember {
                 {
-                    preferences.edit()
-                        .putBoolean(KEY_ONBOARDING_COMPLETED, true)
-                        .apply()
-                    onboardingStep = 2
+                    preferences.edit {
+                        putBoolean(KEY_ONBOARDING_COMPLETED, true)
+                    }
+                    onboardingStep = OnboardingStep.COMPLETE
                 }
             }
 
             when (onboardingStep) {
-                0 -> OnboardingScreen(
-                    onSignUp = { onboardingStep = 1 },
+                OnboardingStep.WELCOME -> OnboardingScreen(
+                    onSignUp = { onboardingStep = OnboardingStep.PROFILE_SELECT },
                     onLogIn = completeOnboarding,
                     onLater = completeOnboarding
                 )
-                1 -> OnboardingProfileSelectScreen(
+
+                OnboardingStep.PROFILE_SELECT -> OnboardingProfileSelectScreen(
                     onNext = { selectedPicture ->
-                        preferences.edit()
-                            .putString(KEY_ONBOARDING_PROFILE_PICTURE, selectedPicture.name)
-                            .apply()
+                        preferences.edit {
+                            putString(KEY_ONBOARDING_PROFILE_PICTURE, selectedPicture.name)
+                        }
                         completeOnboarding()
                     }
                 )
-                else -> RootNavigation()
+
+                OnboardingStep.COMPLETE -> RootNavigation()
             }
         }
 
