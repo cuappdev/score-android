@@ -40,7 +40,7 @@ fun OnboardingProfileSelectScreen(
     modifier: Modifier = Modifier,
     displayName: String? = null
 ) {
-    var selectedPicture by rememberSaveable { mutableStateOf(ProfilePicture.TENNIS) }
+    var selectedPicture by rememberSaveable { mutableStateOf(ProfilePicture.BLANK) }
     val name = displayName ?: stringResource(R.string.onboarding_default_name)
 
     BoxWithConstraints(

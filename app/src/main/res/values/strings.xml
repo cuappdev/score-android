@@ -7,7 +7,7 @@
     <string name="profile_tennis">Tennis</string>
     <string name="profile_baseball">Baseball</string>
     <string name="profile_soccer">Soccer</string>
-    <string name="onboarding_default_name">Claire Yu</string>
+    <string name="onboarding_default_name">Your Name</string>
     <string name="onboarding_profile_subtitle">You can change this later in the profile page.</string>
     <string name="onboarding_select_profile_picture">Select profile picture:</string>
     <string name="next">Next</string>
