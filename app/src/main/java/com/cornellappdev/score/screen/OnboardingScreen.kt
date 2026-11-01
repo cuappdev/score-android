@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.OnboardingButtons
 import com.cornellappdev.score.theme.CrimsonPrimary
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlin.math.min
 
 private const val TIMELINE_DURATION_MS = 3_850
@@ -44,6 +46,12 @@ private const val ICONS_EXIT_END_MS = 3_080
 
 private data class MotionKey(val timeMs: Float, val value: Float, val easing: Easing = LinearEasing)
 
+/**
+ * Tells an animated element what value to use at the current point in the onboarding animation.
+ * The value is the visual property tracked here, such as opacity, scale, position, or rotation.
+ * Between keyframes, it is interpolated using the easing on the starting keyframe; times before
+ * or after the track use the first or last keyframe value. Keep [keys] ordered by time.
+ */
 private fun sampleTrack(timeMs: Float, keys: List<MotionKey>): Float {
     if (timeMs <= keys.first().timeMs) return keys.first().value
     for (index in 0 until keys.lastIndex) {
@@ -402,9 +410,9 @@ fun OnboardingScreen(
             top = 229f,
             size = 197f,
             designDp = designDp,
-            alphaKeys = listOf(MotionKey(0f, 0f), MotionKey(2_760f, 0f), MotionKey(3_280f, 1f)),
-            scaleKeys = listOf(MotionKey(0f, .67f), MotionKey(2_760f, .67f), MotionKey(3_280f, 1f)),
-            yKeys = listOf(
+            alphaKeys = persistentListOf(MotionKey(0f, 0f), MotionKey(2_760f, 0f), MotionKey(3_280f, 1f)),
+            scaleKeys = persistentListOf(MotionKey(0f, .67f), MotionKey(2_760f, .67f), MotionKey(3_280f, 1f)),
+            yKeys = persistentListOf(
                 MotionKey(0f, 68.5f),
                 MotionKey(2_760f, 68.5f),
                 MotionKey(3_280f, 0f, FastOutSlowInEasing)
@@ -433,7 +441,6 @@ fun OnboardingScreen(
             delayMs = 240f,
             opacityPeak = .72f,
             opacityInEnd = 420f,
-            opacityOutStart = 420f,
             opacityOutEnd = 1_020f,
             scalePeak = 1.55f,
             scalePeakTime = 1_020f,
@@ -445,7 +452,6 @@ fun OnboardingScreen(
             delayMs = 420f,
             opacityPeak = .5f,
             opacityInEnd = 620f,
-            opacityOutStart = 620f,
             opacityOutEnd = 1_260f,
             scalePeak = 1.72f,
             scalePeakTime = 1_260f,
@@ -458,13 +464,13 @@ fun OnboardingScreen(
             top = 330f,
             size = 132f,
             designDp = designDp,
-            alphaKeys = listOf(
+            alphaKeys = persistentListOf(
                 MotionKey(0f, 0f),
                 MotionKey(180f, 1f, FastOutSlowInEasing),
                 MotionKey(3_120f, 1f),
                 MotionKey(3_340f, 0f, FastOutLinearInEasing)
             ),
-            scaleKeys = listOf(
+            scaleKeys = persistentListOf(
                 MotionKey(0f, .54f),
                 MotionKey(420f, 1.17f, FastOutSlowInEasing),
                 MotionKey(630f, .94f, FastOutSlowInEasing),
@@ -472,7 +478,7 @@ fun OnboardingScreen(
                 MotionKey(2_420f, 1f),
                 MotionKey(3_220f, 1.492f, FastOutSlowInEasing)
             ),
-            yKeys = listOf(
+            yKeys = persistentListOf(
                 MotionKey(0f, 34f),
                 MotionKey(420f, -9f, FastOutSlowInEasing),
                 MotionKey(630f, 4f, FastOutSlowInEasing),
@@ -480,7 +486,7 @@ fun OnboardingScreen(
                 MotionKey(2_420f, 0f),
                 MotionKey(3_220f, -68.5f, FastOutSlowInEasing)
             ),
-            rotationKeys = listOf(
+            rotationKeys = persistentListOf(
                 MotionKey(0f, 9f),
                 MotionKey(420f, -6f, FastOutSlowInEasing),
                 MotionKey(630f, 3f, FastOutSlowInEasing),
@@ -501,10 +507,10 @@ private fun AnimatedSpeaker(
     top: Float,
     size: Float,
     designDp: (Float) -> Dp,
-    alphaKeys: List<MotionKey>,
-    scaleKeys: List<MotionKey>,
-    yKeys: List<MotionKey>,
-    rotationKeys: List<MotionKey> = listOf(MotionKey(0f, 0f))
+    alphaKeys: ImmutableList<MotionKey>,
+    scaleKeys: ImmutableList<MotionKey>,
+    yKeys: ImmutableList<MotionKey>,
+    rotationKeys: ImmutableList<MotionKey> = persistentListOf(MotionKey(0f, 0f))
 ) {
     val y = sampleTrack(timeMs, yKeys)
     val alpha = sampleTrack(timeMs, alphaKeys).coerceIn(0f, 1f)
@@ -580,7 +586,6 @@ private fun AnimatedRing(
     delayMs: Float,
     opacityPeak: Float,
     opacityInEnd: Float,
-    opacityOutStart: Float,
     opacityOutEnd: Float,
     scalePeak: Float,
     scalePeakTime: Float,
