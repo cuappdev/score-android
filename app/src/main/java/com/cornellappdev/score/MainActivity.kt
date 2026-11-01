@@ -10,25 +10,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.cornellappdev.score.nav.root.RootNavigation
+import com.cornellappdev.score.model.OnboardingPreferencesRepository
 import com.cornellappdev.score.screen.OnboardingScreen
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.analytics
 import dagger.hilt.android.AndroidEntryPoint
-
-private const val APP_PREFERENCES = "score_app_preferences"
-private const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
+import javax.inject.Inject
 
 private lateinit var firebaseAnalytics: FirebaseAnalytics
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    @Inject
+    lateinit var onboardingPreferencesRepository: OnboardingPreferencesRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val preferences = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
-        val onboardingCompleted = preferences.getBoolean(KEY_ONBOARDING_COMPLETED, false)
+        val onboardingCompleted = onboardingPreferencesRepository.isOnboardingCompleted()
 
         setContent {
             var showOnboarding by rememberSaveable {
@@ -37,9 +38,7 @@ class MainActivity : AppCompatActivity() {
 
             val completeOnboarding = remember {
                 {
-                    preferences.edit()
-                        .putBoolean(KEY_ONBOARDING_COMPLETED, true)
-                        .apply()
+                    onboardingPreferencesRepository.markOnboardingCompleted()
                     showOnboarding = false
                 }
             }
