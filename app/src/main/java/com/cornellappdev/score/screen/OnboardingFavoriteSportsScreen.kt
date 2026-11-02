@@ -1,6 +1,5 @@
 package com.cornellappdev.score.screen
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,7 +20,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -34,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,12 +40,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
+import com.cornellappdev.score.components.GenderDivisionFilter
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.CrimsonPrimary
-import com.cornellappdev.score.theme.GrayLight
-import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.GreenWash
@@ -60,6 +56,7 @@ data class FavoriteSport(
     val sport: Sport,
     val gender: GenderDivision
 ) {
+    //combines sport and gender into one identifier for favorite team selection
     val storageKey: String get() = "${sport.name}:${gender.name}"
 
     companion object {
@@ -118,7 +115,7 @@ fun OnboardingFavoriteSportsScreen(
                     textAlign = TextAlign.Center
                 )
                 Spacer(Modifier.height(32.dp))
-                FavoriteSportsGenderFilter(
+                GenderDivisionFilter(
                     selectedGender = selectedGender,
                     onGenderSelected = { selectedGender = it }
                 )
@@ -188,53 +185,6 @@ private fun rememberFavoriteSportOptions(): List<FavoriteSport> {
                 compareBy<FavoriteSport> { it.sport.displayName }
                     .thenBy { if (it.gender == GenderDivision.MALE) 0 else 1 }
             )
-    }
-}
-
-@Composable
-private fun FavoriteSportsGenderFilter(
-    selectedGender: GenderDivision,
-    onGenderSelected: (GenderDivision) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp)
-            .height(48.dp)
-            .border(
-                BorderStroke(1.dp, GrayLight),
-                CircleShape
-            )
-            .padding(5.dp)
-            .selectableGroup(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        listOf(
-            GenderDivision.ALL to R.string.all,
-            GenderDivision.MALE to R.string.onboarding_mens,
-            GenderDivision.FEMALE to R.string.onboarding_womens
-        ).forEach { (gender, label) ->
-            val selected = gender == selectedGender
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxSize()
-                    .clip(CircleShape)
-                    .background(if (selected) CrimsonPrimary else Color.Transparent)
-                    .selectable(
-                        selected = selected,
-                        role = Role.RadioButton,
-                        onClick = { onGenderSelected(gender) }
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(label),
-                    style = if (selected) Style.bodySemibold else Style.bodyMedium,
-                    color = if (selected) White else GrayMedium
-                )
-            }
-        }
     }
 }
 
