@@ -43,7 +43,7 @@ fun DetailsCardData.toCalendarEvent(): CalendarEvent? {
     val date = this.date ?: return null
 
     return CalendarEvent(
-        title = "Cornell vs. ${this.opponent}",
+        title = "$CORNELL_TEAM_NAME vs. ${this.opponent}",
         description = "${this.sport} game (${this.gender})",
         location = this.locationString,
         date = date,

@@ -171,11 +171,12 @@ private fun HomeLazyColumn(
                         text = "Game Schedule",
                         style = title,
                     )
-                    IconButton(
-                        icon = painterResource(id = R.drawable.advanced_filter),
-                        contentDescription = "Advanced filter",
-                        onClick = onAdvancedFilterClick
-                    )
+                    //removed for 2/2026 release
+//                    IconButton(
+//                        icon = painterResource(id = R.drawable.advanced_filter),
+//                        contentDescription = "Advanced filter",
+//                        onClick = onAdvancedFilterClick
+//                    )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 SportSelectorHeader(

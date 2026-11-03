@@ -1,7 +1,17 @@
+import java.io.FileInputStream
+import java.util.Properties
+
+val secretsPropertiesFile = rootProject.file("secrets.properties")
+val secrets = Properties()
+
+if (secretsPropertiesFile.exists()) {
+    secrets.load(FileInputStream(secretsPropertiesFile))
+}
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid) version "1.9.10"
-    alias(libs.plugins.apollo)
+    id("com.apollographql.apollo") version "4.0.0"
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // this version matches your Kotlin version
@@ -17,9 +27,9 @@ android {
     defaultConfig {
         applicationId = "com.cornellappdev.score"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 3
-        versionName = "1.0"
+        targetSdk = 35
+        versionCode = 7
+        versionName = "1.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
@@ -31,14 +41,24 @@ android {
             buildConfigField(
                 "String",
                 "BASE_URL",
-                "\"https://score-dev.cornellappdev.com/graphql\""
+                "\"${secrets.getProperty("API_URL_DEV")}\""
+            )
+            buildConfigField(
+                "String",
+                "SOCKET_URL",
+                "\"${secrets.getProperty("SOCKET_URL_DEV")}\""
             )
         }
         release {
             buildConfigField(
                 "String",
                 "BASE_URL",
-                "\"https://score-backend.cornellappdev.com/graphql\""
+                "\"${secrets.getProperty("API_URL_PROD")}\""
+            )
+            buildConfigField(
+                "String",
+                "SOCKET_URL",
+                "\"${secrets.getProperty("SOCKET_URL_PROD")}\""
             )
             isMinifyEnabled = false
             proguardFiles(
@@ -83,11 +103,15 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.runtime.android)
     testImplementation(libs.junit)
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
-    implementation(libs.apollo.runtime)
+    implementation("io.socket:socket.io-client:2.1.1") {
+        exclude(group = "org.json", module = "json")
+    }
+    implementation("com.apollographql.apollo:apollo-runtime:4.0.0")
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
     lintChecks(libs.compose.lint.checks)
@@ -98,10 +122,11 @@ dependencies {
 apollo {
     service("service") {
         packageName.set("com.example.score")
-        introspection {
-            endpointUrl.set("https://score-dev.cornellappdev.com/graphql")
-            schemaFile.set(file("src/main/graphql/schema.graphqls"))
+        secrets.getProperty("API_URL_DEV")?.takeIf { it.isNotBlank() }?.let { apiUrl ->
+            introspection {
+                endpointUrl.set(apiUrl)
+                schemaFile.set(file("src/main/graphql/schema.graphqls"))
+            }
         }
     }
 }
-

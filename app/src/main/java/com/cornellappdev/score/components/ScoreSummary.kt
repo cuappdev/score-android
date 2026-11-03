@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.cornellappdev.score.util.CORNELL_TEAM_NAME
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.model.ScoreEvent
@@ -100,7 +101,7 @@ fun ScoreEventItem(event: ScoreEvent) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = homeScore.toString(),
-                    style = if (event.team.name == "Cornell") metricSemibold else metricNormal, // TODO: Check name
+                    style = if (event.team.name == CORNELL_TEAM_NAME) metricSemibold else metricNormal, // TODO: Check name
                     color = GrayPrimary,
                     textAlign = TextAlign.Center
                 )
@@ -112,7 +113,7 @@ fun ScoreEventItem(event: ScoreEvent) {
                 )
                 Text(
                     text = awayScore.toString(),
-                    style = if (event.team.name != "Cornell") metricSemibold else metricNormal,
+                    style = if (event.team.name != CORNELL_TEAM_NAME) metricSemibold else metricNormal,
                     color = GrayPrimary,
                     textAlign = TextAlign.Center
                 )

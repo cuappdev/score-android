@@ -2,6 +2,7 @@ query Games{
     games{
         id
         date
+        time
         city
         sport
         team{
