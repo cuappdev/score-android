@@ -12,6 +12,8 @@ import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.cancellation.CancellationException
+import kotlinx.coroutines.Job
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val TIMEOUT_TIME_MILLIS = 5000L
 
@@ -24,16 +26,23 @@ class HighlightsRepository @Inject constructor(
         MutableStateFlow<ApiResponse<List<HighlightData>>>(ApiResponse.Loading)
     val highlightsFlow = _highlightsFlow.asStateFlow()
 
+    //track the in-flight job so we can cancel it before starting a new one
+    private var currentFetchJob: Job? = null
+
 
     /**
      * Asynchronously fetches the list of highlights from the API. Once finished, will send down
      * `upcomingGamesFlow` to be observed.
      */
     fun fetchHighlights() = appScope.launch {
+        currentFetchJob?.cancel()
+        currentFetchJob = coroutineContext[Job]
+
         _highlightsFlow.value = ApiResponse.Loading
+
         try {
             val result =
-                withTimeout(TIMEOUT_TIME_MILLIS) {
+                withTimeout(TIMEOUT_TIME_MILLIS.milliseconds) {
                     apolloClient.query(HighlightsQuery()).execute().toResult()
                 }
 
