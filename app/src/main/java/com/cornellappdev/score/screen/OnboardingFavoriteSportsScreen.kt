@@ -51,6 +51,7 @@ import com.cornellappdev.score.theme.GreenWash
 import com.cornellappdev.score.theme.Style
 import com.cornellappdev.score.theme.White
 import com.cornellappdev.score.theme.saturatedGreen
+import com.cornellappdev.score.util.isValidSport
 
 data class FavoriteSport(
     val sport: Sport,
@@ -170,6 +171,7 @@ fun OnboardingFavoriteSportsScreen(
 private fun rememberFavoriteSportOptions(): List<FavoriteSport> {
     return remember {
         Sport.entries
+            .filter { sport -> isValidSport(sport.displayName) }
             .flatMap { sport ->
                 when (sport.gender) {
                     GenderDivision.ALL -> listOf(
