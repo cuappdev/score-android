@@ -30,23 +30,23 @@ import com.cornellappdev.score.viewmodel.HighlightsViewModel
 
 @Composable
 fun HighlightsSearchScreen(
-    highlightsViewModel: HighlightsViewModel = hiltViewModel(),
     navigateBack: () -> Unit,
-    searchScreenType: HighlightsSubScreenType
+    searchScreenType: HighlightsSubScreenType,
+    highlightsViewModel: HighlightsViewModel = hiltViewModel()
 ) {
     val uiState = highlightsViewModel.collectUiStateValue()
 
-    val header = when (searchScreenType) {
-        HighlightsSubScreenType.TODAY -> "Search today"
-        HighlightsSubScreenType.PAST3DAYS -> "Search past 3 days"
-        HighlightsSubScreenType.ALL -> "Search all highlights"
+    val (header, filteredResults) = when (searchScreenType) {
+        HighlightsSubScreenType.TODAY -> "Search today" to uiState.todayHighlights
+        HighlightsSubScreenType.PAST3DAYS -> "Search past 3 days" to uiState.pastThreeDaysHighlights
+        HighlightsSubScreenType.ALL -> "Search all highlights" to uiState.filteredHighlights
     }
 
     HighlightsSearchScreenContent(
         sportList = uiState.sportSelectionList,
         onFilterSelected = { highlightsViewModel.onSportSelected(it) },
         recentSearchList = uiState.recentSearches,
-        filteredResults = uiState.filteredHighlights,
+        filteredResults = filteredResults,
         query = uiState.query,
         selectedFilter = uiState.sportSelect,
         onQueryChange = { highlightsViewModel.onQueryChange(it) },
