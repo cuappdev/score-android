@@ -34,6 +34,14 @@ import com.cornellappdev.score.model.ProfileFavorite
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.*
 
+private val favoriteSportComparator = compareBy<ProfileFavorite>(
+    { it.sport.displayName },
+    { it.gender == GenderDivision.FEMALE }
+)
+
+private fun selectedFavoritesFirst(favorites: List<ProfileFavorite>): Comparator<ProfileFavorite> =
+    compareBy<ProfileFavorite> { it !in favorites }.then(favoriteSportComparator)
+
 // Use the complete icon catalog, independent of sports with games in the current season.
 private val favoriteSportOptions = Sport.entries.flatMap { sport ->
     // The profile design includes both golf divisions, unlike the schedule catalog.
@@ -41,7 +49,7 @@ private val favoriteSportOptions = Sport.entries.flatMap { sport ->
         listOf(GenderDivision.MALE, GenderDivision.FEMALE)
     } else listOf(sport.gender)
     divisions.map { ProfileFavorite(sport, it) }
-}.sortedWith(compareBy({ it.sport.displayName }, { it.gender == GenderDivision.FEMALE }))
+}.sortedWith(favoriteSportComparator)
 
 @Composable
 fun EditFavoriteSportsScreen(
@@ -53,8 +61,7 @@ fun EditFavoriteSportsScreen(
     var gender by rememberSaveable { mutableStateOf(GenderDivision.ALL) }
     val options = (favorites + favoriteSportOptions).distinct()
         .filter { gender == GenderDivision.ALL || it.gender == gender }
-        .sortedWith(compareBy<ProfileFavorite> { it !in favorites }
-            .thenBy { it.sport.displayName }.thenBy { it.gender == GenderDivision.FEMALE })
+        .sortedWith(selectedFavoritesFirst(favorites))
 
     Column(modifier.fillMaxSize().background(Color.White)) {
         NavigationHeader(stringResource(R.string.edit_favorite_sports), onBack)
@@ -63,7 +70,7 @@ fun EditFavoriteSportsScreen(
                 .fillMaxWidth().border(1.dp, GrayLight, CircleShape)
                 .padding(6.dp).selectableGroup()
         ) {
-            listOf(GenderDivision.ALL, GenderDivision.MALE, GenderDivision.FEMALE).forEach { division ->
+            GenderDivision.entries.forEach { division ->
                 val selected = gender == division
                 Box(
                     Modifier.weight(1f).clip(CircleShape)
@@ -72,9 +79,11 @@ fun EditFavoriteSportsScreen(
                         .padding(vertical = 8.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(division.displayName,
+                    Text(
+                        division.displayName,
                         style = if (selected) Style.bodySemibold else Style.bodyMedium,
-                        color = if (selected) Color.White else GrayMedium)
+                        color = if (selected) Color.White else GrayMedium
+                    )
                 }
             }
         }
@@ -106,28 +115,53 @@ private fun FavoriteSportOption(favorite: ProfileFavorite, selected: Boolean, on
         Box(Modifier.fillMaxWidth().aspectRatio(1f), contentAlignment = Alignment.Center) {
             Box(
                 Modifier.fillMaxSize()
-                    .background(if (selected) Color(0xFFF6FFF3) else GrayStroke, shape)
-                    .border(if (selected) 3.dp else 1.dp, if (selected) saturatedGreen else GrayStroke, shape),
+                    .background(if (selected) GreenBackground else GrayStroke, shape)
+                    .border(
+                        if (selected) 3.dp else 1.dp,
+                        if (selected) saturatedGreen else GrayStroke,
+                        shape
+                    ),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(painterResource(favorite.sport.emptyIcon), null, Modifier.size(45.dp),
-                    tint = if (selected) saturatedGreen else GrayPrimary)
+                Icon(
+                    painterResource(favorite.sport.emptyIcon), null, Modifier.size(45.dp),
+                    tint = if (selected) saturatedGreen else GrayPrimary
+                )
             }
             if (selected) {
-                Box(Modifier.align(Alignment.TopStart).offset(x = (-5).dp, y = (-5).dp)
-                    .size(32.dp).background(CrimsonPrimary, CircleShape), contentAlignment = Alignment.Center) {
-                    Icon(painterResource(R.drawable.ic_round_minus), null, Modifier.size(24.dp), tint = Color.White)
+                Box(
+                    Modifier.align(Alignment.TopStart).offset(x = (-5).dp, y = (-5).dp)
+                        .size(32.dp).background(CrimsonPrimary, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_round_minus),
+                        null,
+                        Modifier.size(24.dp),
+                        tint = Color.White
+                    )
                 }
             }
         }
         Spacer(Modifier.height(8.dp))
-        Text(favorite.sport.displayName, style = Style.bodyMedium, color = GrayPrimary,
-            textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+        Text(
+            favorite.sport.displayName, style = Style.bodyMedium, color = GrayPrimary,
+            textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()
+        )
         Spacer(Modifier.height(2.dp))
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-            Icon(painterResource(if (favorite.gender == GenderDivision.FEMALE) R.drawable.ic_gender_women else R.drawable.ic_gender_men),
-                null, Modifier.size(18.dp), tint = Color.Unspecified)
-            Text(if (favorite.gender == GenderDivision.FEMALE) "W" else "M", style = Style.labelsNormal, color = GrayPrimary)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Icon(
+                painterResource(if (favorite.gender == GenderDivision.FEMALE) R.drawable.ic_gender_women else R.drawable.ic_gender_men),
+                null, Modifier.size(18.dp), tint = Color.Unspecified
+            )
+            Text(
+                if (favorite.gender == GenderDivision.FEMALE) "W" else "M",
+                style = Style.labelsNormal,
+                color = GrayPrimary
+            )
         }
     }
 }
