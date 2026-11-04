@@ -47,18 +47,37 @@ fun SettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.spacedBy(28.dp)
         ) {
             SettingsSection(stringResource(R.string.settings_preferences)) {
-                SettingsRow(stringResource(R.string.profile_favorite_sports), R.drawable.settings_star)
+                SettingsRow(
+                    stringResource(R.string.profile_favorite_sports),
+                    R.drawable.settings_star
+                )
                 HorizontalDivider(color = GrayStroke)
-                SettingsRow(stringResource(R.string.profile_notifications), R.drawable.settings_notifications, iconSize = 28.dp)
+                SettingsRow(
+                    stringResource(R.string.profile_notifications),
+                    R.drawable.settings_notifications,
+                    iconSize = 28.dp
+                )
             }
             SettingsSection(stringResource(R.string.settings_help)) {
-                SettingsRow(stringResource(R.string.settings_about), R.drawable.settings_info, iconSize = 33.dp)
+                SettingsRow(
+                    stringResource(R.string.settings_about),
+                    R.drawable.settings_info,
+                    iconSize = 33.dp
+                )
                 HorizontalDivider(color = GrayStroke)
                 SettingsRow(stringResource(R.string.settings_report), R.drawable.settings_flag)
                 HorizontalDivider(color = GrayStroke)
-                SettingsRow(stringResource(R.string.settings_logout), R.drawable.settings_logout, destructive = true)
+                SettingsRow(
+                    stringResource(R.string.settings_logout),
+                    R.drawable.settings_logout,
+                    destructive = true
+                )
                 HorizontalDivider(color = GrayStroke)
-                SettingsRow(stringResource(R.string.settings_delete), R.drawable.settings_delete, destructive = true)
+                SettingsRow(
+                    stringResource(R.string.settings_delete),
+                    R.drawable.settings_delete,
+                    destructive = true
+                )
             }
         }
     }
@@ -85,15 +104,23 @@ private fun SettingsRow(
 ) {
     // Placeholder actions intentionally do nothing until the settings flows are implemented.
     Row(
-        Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = {}).padding(vertical = 16.dp),
+        Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = {})
+            .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(painterResource(icon), null, Modifier.size(iconSize), tint = Color.Unspecified)
         Spacer(Modifier.width(10.dp))
-        Text(title, style = Style.bodyMedium.copy(fontSize = 16.sp),
-            color = if (destructive) CrimsonPrimary else GrayPrimary, modifier = Modifier.weight(1f))
+        Text(
+            title, style = Style.bodyMedium.copy(fontSize = 16.sp),
+            color = if (destructive) CrimsonPrimary else GrayPrimary, modifier = Modifier.weight(1f)
+        )
         if (!destructive) {
-            Icon(painterResource(R.drawable.ic_right_chevron), null, Modifier.size(24.dp), tint = GrayMedium)
+            Icon(
+                painterResource(R.drawable.ic_right_chevron),
+                null,
+                Modifier.size(24.dp),
+                tint = GrayMedium
+            )
         }
     }
 }
