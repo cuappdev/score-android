@@ -21,4 +21,5 @@
     <string name="profile_schedule">Schedule</string>
     <string name="profile_scores">Scores</string>
     <string name="profile_highlights">Highlights</string>
+    <string name="edit_favorite_sports">Edit Favorite Sports</string>
 </resources>
