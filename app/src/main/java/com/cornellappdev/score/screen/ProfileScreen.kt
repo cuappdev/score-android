@@ -75,13 +75,18 @@ fun ProfileScreen(
     var editingPicture by rememberSaveable { mutableStateOf(false) }
 
     var editingSports by rememberSaveable { mutableStateOf(false) }
-    var favorites by rememberSaveable(data.favorites, stateSaver = listSaver<List<ProfileFavorite>, String>(
-        save = { list -> list.map { "${it.sport.name}:${it.gender.name}" } },
-        restore = { list -> list.map {
-            val (sport, gender) = it.split(":")
-            ProfileFavorite(Sport.valueOf(sport), GenderDivision.valueOf(gender))
-        } }
-    )) { mutableStateOf(data.favorites) }
+    var favorites by rememberSaveable(
+        data.favorites,
+        stateSaver = listSaver(
+            save = { list -> list.map { "${it.sport.name}:${it.gender.name}" } },
+            restore = { list ->
+                list.map {
+                    val (sport, gender) = it.split(":")
+                    ProfileFavorite(Sport.valueOf(sport), GenderDivision.valueOf(gender))
+                }
+            }
+        )
+    ) { mutableStateOf(data.favorites) }
 
     BackHandler(enabled = editingPicture || editingSports) {
         editingPicture = false
@@ -93,12 +98,16 @@ fun ProfileScreen(
                 EditFavoriteSportsScreen(
                     favorites = favorites,
                     onToggleFavorite = { favorite ->
-                        favorites = if (favorite in favorites) favorites - favorite else favorites + favorite
+                        favorites =
+                            if (favorite in favorites) favorites - favorite else favorites + favorite
                     },
                     onBack = { editingSports = false }
                 )
             } else if (editingPicture) {
-                EditProfileScreen(selectedPicture, { selectedPicture = it }, { editingPicture = false })
+                EditProfileScreen(
+                    selectedPicture,
+                    { selectedPicture = it },
+                    { editingPicture = false })
             } else {
                 ProfileContent(
                     data = data.copy(favorites = favorites),
@@ -126,33 +135,62 @@ fun ProfileContent(
     onShowAllBookmarks: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(top = 24.dp, bottom = 32.dp)) {
+    Column(
+        modifier.fillMaxSize().verticalScroll(rememberScrollState())
+            .padding(top = 24.dp, bottom = 32.dp)
+    ) {
         Column(Modifier.padding(horizontal = 24.dp)) {
-            ProfileIdentityHeader(selectedPicture, onEditProfilePicture, compact = true, displayName = data.name)
+            ProfileIdentityHeader(
+                selectedPicture,
+                onEditProfilePicture,
+                compact = true,
+                displayName = data.name
+            )
             ProfileSectionDivider()
-            ProfileActionHeading(R.string.profile_favorite_sports, R.string.profile_edit, onEditSports)
+            ProfileActionHeading(
+                R.string.profile_favorite_sports,
+                R.string.profile_edit,
+                onEditSports
+            )
         }
         Spacer(Modifier.height(16.dp))
-        LazyRow(contentPadding = PaddingValues(horizontal = 24.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             items(data.favorites, key = { "${it.sport.name}:${it.gender.name}" }) { favorite ->
                 FavoriteSportTile(favorite)
             }
             if (data.favorites.isEmpty()) {
                 item {
-                    TextButton(onClick = onEditSports) { Text(stringResource(R.string.profile_add_sports), color = CrimsonPrimary) }
+                    TextButton(onClick = onEditSports) {
+                        Text(
+                            stringResource(R.string.profile_add_sports),
+                            color = CrimsonPrimary
+                        )
+                    }
                 }
             }
         }
         Column(Modifier.padding(horizontal = 24.dp)) {
             ProfileSectionDivider()
-            ProfileActionHeading(R.string.profile_bookmarked_highlights, R.string.profile_show_all, onShowAllBookmarks)
+            ProfileActionHeading(
+                R.string.profile_bookmarked_highlights,
+                R.string.profile_show_all,
+                onShowAllBookmarks
+            )
         }
         Spacer(Modifier.height(16.dp))
         if (data.bookmarks.isEmpty()) {
-            Text(stringResource(R.string.profile_no_bookmarks), style = Style.bodyNormal,
-                modifier = Modifier.padding(horizontal = 24.dp), color = GrayPrimary)
+            Text(
+                stringResource(R.string.profile_no_bookmarks), style = Style.bodyNormal,
+                modifier = Modifier.padding(horizontal = 24.dp), color = GrayPrimary
+            )
         } else {
-            LazyRow(contentPadding = PaddingValues(horizontal = 24.dp, vertical = 2.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 2.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
                 items(data.bookmarks) { ProfileBookmarkCard(it) }
             }
         }
@@ -160,12 +198,29 @@ fun ProfileContent(
 }
 
 @Composable
-private fun ProfileActionHeading(@StringRes title: Int, @StringRes action: Int, onClick: () -> Unit) {
+private fun ProfileActionHeading(
+    @StringRes title: Int,
+    @StringRes action: Int,
+    onClick: () -> Unit
+) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text(stringResource(title), style = Style.heading2, color = GrayPrimary, modifier = Modifier.weight(1f))
-        Row(Modifier.heightIn(min = 27.dp).clickable(role = Role.Button, onClick = onClick), verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            stringResource(title),
+            style = Style.heading2,
+            color = GrayPrimary,
+            modifier = Modifier.weight(1f)
+        )
+        Row(
+            Modifier.heightIn(min = 27.dp).clickable(role = Role.Button, onClick = onClick),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(stringResource(action), style = Style.bodyMedium, color = CrimsonPrimary)
-            Icon(painterResource(R.drawable.ic_right_chevron), null, Modifier.size(20.dp), tint = CrimsonPrimary)
+            Icon(
+                painterResource(R.drawable.ic_right_chevron),
+                null,
+                Modifier.size(20.dp),
+                tint = CrimsonPrimary
+            )
         }
     }
 }
@@ -173,17 +228,36 @@ private fun ProfileActionHeading(@StringRes title: Int, @StringRes action: Int, 
 @Composable
 private fun FavoriteSportTile(favorite: ProfileFavorite) {
     Column(Modifier.width(90.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(Modifier.size(90.dp).border(1.dp, GrayStroke, RoundedCornerShape(20.dp)), contentAlignment = Alignment.Center) {
-            Icon(painterResource(favorite.sport.emptyIcon), null, Modifier.size(40.dp), tint = GrayPrimary)
+        Box(
+            Modifier.size(90.dp).border(1.dp, GrayStroke, RoundedCornerShape(20.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painterResource(favorite.sport.emptyIcon),
+                null,
+                Modifier.size(40.dp),
+                tint = GrayPrimary
+            )
         }
         Spacer(Modifier.height(8.dp))
         Text(favorite.sport.displayName, style = Style.bodyMedium, color = GrayPrimary)
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
             Box(Modifier.size(18.dp).background(GrayStroke, CircleShape).clip(CircleShape)) {
-                Image(painterResource(R.drawable.profile_favorite_gender), favorite.gender.displayName,
-                    Modifier.requiredSize(47.dp, 56.dp).wrapContentSize(unbounded = true).offset(x = 1.dp, y = 5.dp))
+                Image(
+                    painterResource(R.drawable.profile_favorite_gender),
+                    favorite.gender.displayName,
+                    Modifier.requiredSize(47.dp, 56.dp).wrapContentSize(unbounded = true)
+                        .offset(x = 1.dp, y = 5.dp)
+                )
             }
-            Text(if (favorite.gender == GenderDivision.FEMALE) "W" else "M", style = Style.labelsNormal, color = GrayPrimary)
+            Text(
+                if (favorite.gender == GenderDivision.FEMALE) "W" else "M",
+                style = Style.labelsNormal,
+                color = GrayPrimary
+            )
         }
     }
 }
@@ -191,30 +265,53 @@ private fun FavoriteSportTile(favorite: ProfileFavorite) {
 @Composable
 private fun ProfileBookmarkCard(bookmark: HighlightData) {
     val shape = RoundedCornerShape(12.dp)
-    Box(Modifier.width(241.dp).shadow(3.dp, shape, ambientColor = AmbientColor, spotColor = SpotColor)
-        .clip(shape).border(1.dp, GrayStroke, shape)) {
+    Box(
+        Modifier.width(241.dp)
+            .shadow(3.dp, shape, ambientColor = AmbientColor, spotColor = SpotColor)
+            .clip(shape).border(1.dp, GrayStroke, shape)
+    ) {
         when (bookmark) {
-            is HighlightData.Video -> VideoHighlightCard(bookmark.data, isWideFormat = false, linkTextStyle = Style.bodyMedium,
+            is HighlightData.Video -> VideoHighlightCard(
+                bookmark.data, isWideFormat = false, linkTextStyle = Style.bodyMedium,
                 headerOverlay = {
                     Box(Modifier.fillMaxSize().padding(10.dp)) {
                         bookmark.data.finalScore?.let { score ->
-                            Text(score, style = Style.labelsMedium, color = GrayPrimary,
-                                modifier = Modifier.align(Alignment.TopEnd).background(Color.White, RoundedCornerShape(3.dp)).padding(horizontal = 4.dp, vertical = 2.dp))
+                            Text(
+                                score, style = Style.labelsMedium, color = GrayPrimary,
+                                modifier = Modifier.align(Alignment.TopEnd)
+                                    .background(Color.White, RoundedCornerShape(3.dp))
+                                    .padding(horizontal = 4.dp, vertical = 2.dp)
+                            )
                         }
                         bookmark.data.duration?.let { duration ->
-                            Row(Modifier.align(Alignment.BottomStart), verticalAlignment = Alignment.CenterVertically) {
-                                Image(painterResource(R.drawable.profile_highlight_play), null, Modifier.size(9.dp, 8.dp))
+                            Row(
+                                Modifier.align(Alignment.BottomStart),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Image(
+                                    painterResource(R.drawable.profile_highlight_play),
+                                    null,
+                                    Modifier.size(9.dp, 8.dp)
+                                )
                                 Spacer(Modifier.width(3.dp))
                                 Text(duration, style = Style.labelsMedium, color = Color.White)
                             }
                         }
                         bookmark.data.photoCredit?.let { credit ->
-                            Text(credit, style = Style.labelsMedium.copy(fontSize = 10.sp),
-                                color = Color.White, modifier = Modifier.align(Alignment.BottomEnd))
+                            Text(
+                                credit, style = Style.labelsMedium.copy(fontSize = 10.sp),
+                                color = Color.White, modifier = Modifier.align(Alignment.BottomEnd)
+                            )
                         }
                     }
                 })
-            is HighlightData.Article -> ArticleHighlightCard(bookmark.data, isWideFormat = false, linkTextStyle = Style.bodySemibold, imageOverlayAlpha = 0.55f)
+
+            is HighlightData.Article -> ArticleHighlightCard(
+                bookmark.data,
+                isWideFormat = false,
+                linkTextStyle = Style.bodySemibold,
+                imageOverlayAlpha = 0.55f
+            )
         }
     }
 }
