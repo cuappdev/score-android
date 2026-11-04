@@ -45,7 +45,9 @@ import com.cornellappdev.score.util.sampleVideoHighlightData
 @Composable
 private fun VideoHighlightCardHeader(
     imageUrl: String,
-    overlay: @Composable () -> Unit
+    overlay: @Composable () -> Unit,
+    highlightKey: String,
+    hasAccount: Boolean
 ) {
     Box(
         modifier = Modifier
@@ -65,6 +67,11 @@ private fun VideoHighlightCardHeader(
                 .background(color = Color.Black.copy(alpha = 0.4f))
         )
         overlay()
+        HighlightFavoriteButton(
+            highlightKey = highlightKey,
+            hasAccount = hasAccount,
+            modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
+        )
     }
 }
 
@@ -152,6 +159,7 @@ fun VideoHighlightCard(
     isWideFormat: Boolean,
     modifier: Modifier = Modifier,
     linkTextStyle: TextStyle = TextStyle.Default,
+    hasAccount: Boolean = false,
     headerOverlay: @Composable () -> Unit = {}
 ) {
     val uriHandler = LocalUriHandler.current
@@ -162,7 +170,12 @@ fun VideoHighlightCard(
             .clip(RoundedCornerShape(12.dp))
             .clickable { uriHandler.openUri(videoHighlight.videoUrl) }
     ) {
-        VideoHighlightCardHeader(videoHighlight.thumbnailImageUrl, headerOverlay)
+        VideoHighlightCardHeader(
+            imageUrl = videoHighlight.thumbnailImageUrl,
+            overlay = headerOverlay,
+            highlightKey = videoHighlight.videoUrl,
+            hasAccount = hasAccount
+        )
         VideoHighlightCardBody(videoHighlight, isWideFormat, linkTextStyle)
     }
 }
