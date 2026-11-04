@@ -100,7 +100,7 @@ fun ReportIssueScreen(
                     label = stringResource(R.string.report_issue_question),
                     selected = issue,
                     options = ReportIssueType.entries,
-                    optionLabel = { stringResource(it.label) },
+                    optionLabelRes = { it.label },
                     onSelect = { issue = it }
                 )
             }
@@ -109,7 +109,7 @@ fun ReportIssueScreen(
                     label = stringResource(R.string.report_sport_question),
                     selected = sport,
                     options = ReportSport.entries,
-                    optionLabel = { stringResource(it.label) },
+                    optionLabelRes = { it.label },
                     onSelect = { sport = it }
                 )
             }
@@ -171,11 +171,11 @@ private fun <T> ReportDropdown(
     label: String,
     selected: T?,
     options: List<T>,
-    optionLabel: @Composable (T) -> String,
+    optionLabelRes: (T) -> Int,
     onSelect: (T) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val selectedLabel = selected?.let { optionLabel(it) }
+    val selectedLabel = selected?.let { stringResource(optionLabelRes(it)) }
         ?: stringResource(R.string.report_choose_option)
     Box {
         Row(
@@ -210,7 +210,7 @@ private fun <T> ReportDropdown(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            optionLabel(option), style = Style.bodyMedium,
+                            stringResource(optionLabelRes(option)), style = Style.bodyMedium,
                             color = if (selected == option) CrimsonPrimary else GrayPrimary
                         )
                     },

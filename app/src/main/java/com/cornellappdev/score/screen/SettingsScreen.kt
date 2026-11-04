@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -51,56 +52,57 @@ fun SettingsScreen(
 ) {
     var reportingIssue by rememberSaveable { mutableStateOf(false) }
     BackHandler(enabled = reportingIssue) { reportingIssue = false }
-    if (reportingIssue) {
-        ReportIssueScreen(
-            onBack = { reportingIssue = false },
-            modifier = modifier,
-            onSubmit = onSubmitIssue
-        )
-        return
-    }
-    Column(modifier.fillMaxSize().background(Color.White)) {
-        NavigationHeader(stringResource(R.string.profile_settings), onBack)
-        Column(
-            Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(24.dp, 32.dp),
-            verticalArrangement = Arrangement.spacedBy(28.dp)
-        ) {
-            SettingsSection(stringResource(R.string.settings_preferences)) {
-                SettingsRow(
-                    stringResource(R.string.profile_favorite_sports),
-                    R.drawable.settings_star
-                )
-                HorizontalDivider(color = GrayStroke)
-                SettingsRow(
-                    stringResource(R.string.profile_notifications),
-                    R.drawable.settings_notifications,
-                    iconSize = 28.dp
-                )
-            }
-            SettingsSection(stringResource(R.string.settings_help)) {
-                SettingsRow(
-                    stringResource(R.string.settings_about),
-                    R.drawable.settings_info,
-                    iconSize = 33.dp
-                )
-                HorizontalDivider(color = GrayStroke)
-                SettingsRow(
-                    stringResource(R.string.settings_report),
-                    R.drawable.settings_flag,
-                    onClick = { reportingIssue = true }
-                )
-                HorizontalDivider(color = GrayStroke)
-                SettingsRow(
-                    stringResource(R.string.settings_logout),
-                    R.drawable.settings_logout,
-                    destructive = true
-                )
-                HorizontalDivider(color = GrayStroke)
-                SettingsRow(
-                    stringResource(R.string.settings_delete),
-                    R.drawable.settings_delete,
-                    destructive = true
-                )
+    Box(modifier) {
+        if (reportingIssue) {
+            ReportIssueScreen(
+                onBack = { reportingIssue = false },
+                onSubmit = onSubmitIssue
+            )
+            return@Box
+        }
+        Column(Modifier.fillMaxSize().background(Color.White)) {
+            NavigationHeader(stringResource(R.string.profile_settings), onBack)
+            Column(
+                Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(24.dp, 32.dp),
+                verticalArrangement = Arrangement.spacedBy(28.dp)
+            ) {
+                SettingsSection(stringResource(R.string.settings_preferences)) {
+                    SettingsRow(
+                        stringResource(R.string.profile_favorite_sports),
+                        R.drawable.settings_star
+                    )
+                    HorizontalDivider(color = GrayStroke)
+                    SettingsRow(
+                        stringResource(R.string.profile_notifications),
+                        R.drawable.settings_notifications,
+                        iconSize = 28.dp
+                    )
+                }
+                SettingsSection(stringResource(R.string.settings_help)) {
+                    SettingsRow(
+                        stringResource(R.string.settings_about),
+                        R.drawable.settings_info,
+                        iconSize = 33.dp
+                    )
+                    HorizontalDivider(color = GrayStroke)
+                    SettingsRow(
+                        stringResource(R.string.settings_report),
+                        R.drawable.settings_flag,
+                        onClick = { reportingIssue = true }
+                    )
+                    HorizontalDivider(color = GrayStroke)
+                    SettingsRow(
+                        stringResource(R.string.settings_logout),
+                        R.drawable.settings_logout,
+                        destructive = true
+                    )
+                    HorizontalDivider(color = GrayStroke)
+                    SettingsRow(
+                        stringResource(R.string.settings_delete),
+                        R.drawable.settings_delete,
+                        destructive = true
+                    )
+                }
             }
         }
     }
