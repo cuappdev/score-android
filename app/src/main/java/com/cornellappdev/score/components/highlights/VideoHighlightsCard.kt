@@ -52,7 +52,9 @@ private fun VideoHighlightCardHeader(
         AsyncImage(
             model = imageUrl,
             contentDescription = "Highlight article image",
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
         )
         Box(
             modifier = Modifier
@@ -94,17 +96,27 @@ fun VideoHighlightCardBody(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(videoHighlight.sport.emptyIcon),
-                    contentDescription = "Sport icon",
-                    modifier = Modifier.size(24.dp),
-                    tint = Color.Unspecified
-                )
-                Icon(
-                    painter = painterResource(if (videoHighlight.gender == GenderDivision.FEMALE) R.drawable.ic_gender_women else R.drawable.ic_gender_men),
-                    contentDescription = "Gender icon",
-                    tint = Color.Unspecified
-                )
+                videoHighlight.sport?.let { sport ->
+                    Icon(
+                        painter = painterResource(sport.emptyIcon),
+                        contentDescription = "Sport icon",
+                        modifier = Modifier.size(24.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                videoHighlight.gender?.let { gender ->
+                    val iconRes = when (gender) {
+                        GenderDivision.FEMALE -> R.drawable.ic_gender_women
+                        else -> R.drawable.ic_gender_men
+                    }
+
+                    Icon(
+                        painter = painterResource(iconRes),
+                        contentDescription = "Gender icon",
+                        tint = Color.Unspecified
+                    )
+                }
             }
         }
         Spacer(Modifier.height(8.dp))
@@ -123,7 +135,7 @@ fun VideoHighlightCardBody(
             }
             Text(
                 style = labelsNormal,
-                text = videoHighlight.date
+                text = videoHighlight.dateString
             )
         }
     }
@@ -157,17 +169,21 @@ class VideoHighlightsPreviewProvider : PreviewParameterProvider<VideoHighlightPr
                 "vs Columbia",
                 "maxresdefault.jpg",
                 "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-                "11/9",
+                null,
+                "11/9/25",
                 Sport.BASEBALL,
-                GenderDivision.MALE
+                GenderDivision.MALE,
+                "0:44"
             ),
             VideoHighlightData(
                 "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
                 "maxresdefault.jpg",
                 "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-                "11/9",
+                null,
+                "11/9/25",
                 Sport.BASEBALL,
-                GenderDivision.MALE
+                GenderDivision.MALE,
+                "0:44"
             )
         )
         for (sample in samples) {

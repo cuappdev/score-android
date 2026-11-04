@@ -234,15 +234,18 @@ val highlightsList = listOf(
         "vs Columbia",
         "maxresdefault.jpg",
         "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+        null,
         "11/09",
         Sport.BASEBALL,
-        GenderDivision.MALE
+        GenderDivision.MALE,
+        "0:44"
     )),
     HighlightData.Article
     (ArticleHighlightData(
         "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
         "maxresdefault.jpg",
         "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+        null,
         "11/09",
         Sport.ICE_HOCKEY
     )),
@@ -251,15 +254,18 @@ val highlightsList = listOf(
         "vs Columbia",
         "maxresdefault.jpg",
         "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+        null,
         "11/9",
         Sport.BASEBALL,
-        GenderDivision.MALE
+        GenderDivision.MALE,
+        "0:44"
     )),
     HighlightData.Article
     (ArticleHighlightData(
         "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
         "maxresdefault.jpg",
         "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+        null,
         "11/09",
         Sport.ICE_HOCKEY
     )),
@@ -268,8 +274,10 @@ val highlightsList = listOf(
         "vs Columbia",
         "maxresdefault.jpg",
         "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+        null,
         "11/9",
         Sport.BASEBALL,
-        GenderDivision.MALE
+        GenderDivision.MALE,
+        "0:44"
     ))
 )
