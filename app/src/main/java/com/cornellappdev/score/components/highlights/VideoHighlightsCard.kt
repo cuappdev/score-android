@@ -41,7 +41,9 @@ import com.cornellappdev.score.theme.Style.labelsNormal
 
 @Composable
 private fun VideoHighlightCardHeader(
-    imageUrl: String
+    imageUrl: String,
+    highlightKey: String,
+    hasAccount: Boolean
 ) {
     Box(
         modifier = Modifier
@@ -52,12 +54,18 @@ private fun VideoHighlightCardHeader(
         AsyncImage(
             model = imageUrl,
             contentDescription = "Highlight article image",
+            modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = Color.Black.copy(alpha = 0.4f))
+        )
+        HighlightFavoriteButton(
+            highlightKey = highlightKey,
+            hasAccount = hasAccount,
+            modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
         )
     }
 }
@@ -133,14 +141,15 @@ fun VideoHighlightCardBody(
 fun VideoHighlightCard(
     videoHighlight: VideoHighlightData,
     isWideFormat: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    hasAccount: Boolean = false
 ) {
     Column(
         modifier = modifier
             .then(if (isWideFormat) Modifier.fillMaxWidth() else Modifier.width(241.dp))
             .clip(RoundedCornerShape(12.dp))
     ) {
-        VideoHighlightCardHeader(videoHighlight.thumbnailImageUrl)
+        VideoHighlightCardHeader(videoHighlight.thumbnailImageUrl, videoHighlight.videoUrl, hasAccount)
         VideoHighlightCardBody(videoHighlight, isWideFormat)
     }
 }
