@@ -22,11 +22,16 @@ fun ButtonPrimary(
     text: String,
     icon: Painter?,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    enabled: Boolean = true
 ) {
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = CrimsonPrimary),
+        enabled = enabled,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = CrimsonPrimary,
+            disabledContainerColor = CrimsonPrimary.copy(alpha = 0.38f)
+        ),
         modifier = modifier,
         contentPadding = PaddingValues(12.dp)
     ) {

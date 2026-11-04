@@ -1,6 +1,7 @@
 package com.cornellappdev.score.screen
 
 import androidx.annotation.DrawableRes
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,6 +21,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,7 +44,21 @@ import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.Style
 
 @Composable
-fun SettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
+fun SettingsScreen(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    onSubmitIssue: ((IssueReport) -> Unit)? = null
+) {
+    var reportingIssue by rememberSaveable { mutableStateOf(false) }
+    BackHandler(enabled = reportingIssue) { reportingIssue = false }
+    if (reportingIssue) {
+        ReportIssueScreen(
+            onBack = { reportingIssue = false },
+            modifier = modifier,
+            onSubmit = onSubmitIssue
+        )
+        return
+    }
     Column(modifier.fillMaxSize().background(Color.White)) {
         NavigationHeader(stringResource(R.string.profile_settings), onBack)
         Column(
@@ -65,7 +84,11 @@ fun SettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
                     iconSize = 33.dp
                 )
                 HorizontalDivider(color = GrayStroke)
-                SettingsRow(stringResource(R.string.settings_report), R.drawable.settings_flag)
+                SettingsRow(
+                    stringResource(R.string.settings_report),
+                    R.drawable.settings_flag,
+                    onClick = { reportingIssue = true }
+                )
                 HorizontalDivider(color = GrayStroke)
                 SettingsRow(
                     stringResource(R.string.settings_logout),
@@ -100,11 +123,11 @@ private fun SettingsRow(
     title: String,
     @DrawableRes icon: Int,
     iconSize: Dp = 30.dp,
-    destructive: Boolean = false
+    destructive: Boolean = false,
+    onClick: () -> Unit = {}
 ) {
-    // Placeholder actions intentionally do nothing until the settings flows are implemented.
     Row(
-        Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = {})
+        Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = onClick)
             .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
