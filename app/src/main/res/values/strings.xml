@@ -20,4 +20,8 @@
     <string name="finish_with_sports">Finish with %1$d sports</string>
     <string name="finish_with_one_sport">Finish with 1 sport</string>
     <string name="remove_favorite_sport">Remove favorite sport</string>
+    <string name="auth_cornell_required">Please use your Cornell Google account (@cornell.edu).</string>
+    <string name="auth_sign_in_failed">Couldn’t sign in. Check your connection and try again.</string>
+    <string name="auth_error_title">Account</string>
+    <string name="auth_no_google_account">No Google account is available for sign-in. Add your Cornell Google account to this device and try again.</string>
 </resources>
