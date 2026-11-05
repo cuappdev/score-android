@@ -223,14 +223,14 @@ type Mutation {
   createArticle(image: String, publishedAt: String!, slug: String!, sportsType: String!, title: String!, url: String!): CreateArticle
 
   """
-  Login by net_id; returns access_token and refresh_token.
+  Login with Firebase ID token; returns access_token and refresh_token.
   """
-  loginUser("User's net ID (e.g. Cornell netid)." netId: String!): LoginUser
+  loginUser("Firebase ID token from the client." idToken: String!): LoginUser
 
   """
-  Create a new user by net_id; returns access_token and refresh_token (no separate login needed).
+  Create a new user with Firebase ID token; returns access_token and refresh_token.
   """
-  signupUser("Email address." email: String, "Display name." name: String, "User's net ID (e.g. Cornell netid)." netId: String!): SignupUser
+  signupUser("Email address." email: String, "Display name." name: String, "Firebase ID token from the client." idToken: String!): SignupUser
 
   """
   Exchange a valid refresh token (in Authorization header) for a new access_token.
