@@ -172,24 +172,24 @@ class VideoHighlightsPreviewProvider : PreviewParameterProvider<VideoHighlightPr
     override val values: Sequence<VideoHighlightPreviewData> = sequence {
         val samples = listOf(
             VideoHighlightData(
-                "vs Columbia",
-                "maxresdefault.jpg",
-                "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-                null,
-                "11/9/25",
-                Sport.BASEBALL,
-                GenderDivision.MALE,
-                "0:44"
+                title = "vs Columbia",
+                thumbnailImageUrl = "maxresdefault.jpg",
+                videoUrl = "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+                date = null,
+                dateString = "11/9/25",
+                sport = Sport.BASEBALL,
+                gender = GenderDivision.MALE,
+                duration = "0:44"
             ),
             VideoHighlightData(
-                "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-                "maxresdefault.jpg",
-                "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-                null,
-                "11/9/25",
-                Sport.BASEBALL,
-                GenderDivision.MALE,
-                "0:44"
+                title = "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
+                thumbnailImageUrl = "maxresdefault.jpg",
+                videoUrl = "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+                date = null,
+                dateString = "11/9/25",
+                sport = Sport.BASEBALL,
+                gender = GenderDivision.MALE,
+                duration = "0:44"
             )
         )
         for (sample in samples) {
