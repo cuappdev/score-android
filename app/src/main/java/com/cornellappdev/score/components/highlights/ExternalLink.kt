@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,11 +25,13 @@ fun ExternalLink(
     url: String,
     urlLabel: String,
     linkColor: Color,
+    textStyle: TextStyle = TextStyle.Default,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
         BasicText(
+            style = textStyle,
             text = buildAnnotatedString {
                 withLink(
                     LinkAnnotation.Url(
@@ -37,7 +40,7 @@ fun ExternalLink(
                             style = SpanStyle(
                                 textDecoration = TextDecoration.Underline,
                                 color = linkColor,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = textStyle.fontWeight ?: FontWeight.Bold
                             )
                         ),
                     )
