@@ -68,30 +68,30 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_1_8)
+        jvmTarget.set(JvmTarget.JVM_11)
     }
 }
 
 dependencies {
     // Jetpack Compose dependencies
-    implementation(platform("androidx.compose:compose-bom:2025.11.01"))
+    implementation(platform("androidx.compose:compose-bom:2026.09.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.activity:activity-compose")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
-    implementation("androidx.navigation:navigation-compose:2.8.2")
+    implementation("androidx.navigation:navigation-compose:2.10.2")
     implementation(libs.material3)
     implementation("com.google.dagger:hilt-android:${libs.versions.hilt.get()}")
     implementation(libs.androidx.foundation)
     ksp("com.google.dagger:hilt-android-compiler:${libs.versions.hilt.get()}")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.4.0")
     implementation("com.google.accompanist:accompanist-pager:0.24.0-alpha")
 
     // Other dependencies
