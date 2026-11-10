@@ -1,7 +1,9 @@
 [versions]
-agp = "8.8.2"
+agp = "9.5.1"
 composeLintChecks = "1.4.2"
 kotlin = "2.4.21"
+ksp = "2.3.13"
+hilt = "2.60.1"
 coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -11,7 +13,7 @@ material = "1.12.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
 runtimeAndroid = "1.7.2"
-apollo = "4.1.1"
+apollo = "4.4.4"
 
 # Using alpha due to pull-to-refresh bug in stable
 # See https://stackoverflow.com/a/79126321
@@ -39,5 +41,8 @@ androidx-foundation = { group = "androidx.compose.foundation", name = "foundatio
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
-jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 apollo = { id = "com.apollographql.apollo", version.ref = "apollo" }
