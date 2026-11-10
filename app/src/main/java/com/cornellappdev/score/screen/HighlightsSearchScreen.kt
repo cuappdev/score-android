@@ -98,7 +98,7 @@ fun HighlightsSearchScreenContent(
             filteredResults,
             onItemClick,
             onCloseClick,
-            { HighlightsCardLazyColumnResultsHeader(highlightsList.size) })
+            { HighlightsCardLazyColumnResultsHeader(filteredResults.size) })
     }
 }
 
