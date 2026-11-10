@@ -22,4 +22,10 @@
     <string name="profile_scores">Scores</string>
     <string name="profile_highlights">Highlights</string>
     <string name="edit_favorite_sports">Edit Favorite Sports</string>
+    <string name="settings_preferences">Preferences</string>
+    <string name="settings_help">Help</string>
+    <string name="settings_about">About Score</string>
+    <string name="settings_report">Report an Issue</string>
+    <string name="settings_logout">Log Out</string>
+    <string name="settings_delete">Delete Account</string>
 </resources>
