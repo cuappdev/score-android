@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -10,19 +11,18 @@ if (secretsPropertiesFile.exists()) {
 
 plugins {
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.jetbrainsKotlinAndroid) version "1.9.10"
-    id("com.apollographql.apollo") version "4.0.0"
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // this version matches your Kotlin version
-    id("org.jetbrains.kotlin.plugin.serialization")
+    alias(libs.plugins.apollo)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlinCompose)
+    alias(libs.plugins.kotlinSerialization)
     id("com.google.gms.google-services")
 }
 
 
 android {
     namespace = "com.cornellappdev.score"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.cornellappdev.score"
@@ -67,16 +67,15 @@ android {
             )
         }
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.7.0"
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_1_8)
     }
 }
 
@@ -89,9 +88,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
     implementation("androidx.navigation:navigation-compose:2.8.2")
     implementation(libs.material3)
-    implementation("com.google.dagger:hilt-android:2.51.1")
+    implementation("com.google.dagger:hilt-android:${libs.versions.hilt.get()}")
     implementation(libs.androidx.foundation)
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    ksp("com.google.dagger:hilt-android-compiler:${libs.versions.hilt.get()}")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("com.google.accompanist:accompanist-pager:0.24.0-alpha")
 
@@ -111,7 +110,7 @@ dependencies {
     implementation("io.socket:socket.io-client:2.1.1") {
         exclude(group = "org.json", module = "json")
     }
-    implementation("com.apollographql.apollo:apollo-runtime:4.0.0")
+    implementation(libs.apollo.runtime)
     implementation("io.coil-kt.coil3:coil-compose:3.6.3")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
     lintChecks(libs.compose.lint.checks)
