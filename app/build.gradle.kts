@@ -14,7 +14,7 @@ plugins {
     id("com.apollographql.apollo") version "4.0.0"
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.21" // this version matches your Kotlin version
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.gms.google-services")
 }
