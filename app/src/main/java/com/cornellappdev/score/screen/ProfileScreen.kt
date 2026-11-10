@@ -74,6 +74,7 @@ fun ProfileScreen(
     var selectedPicture by rememberSaveable { mutableStateOf(ProfilePicture.TENNIS) }
     var editingPicture by rememberSaveable { mutableStateOf(false) }
 
+    var showingSettings by rememberSaveable { mutableStateOf(false) }
     var editingSports by rememberSaveable { mutableStateOf(false) }
     var favorites by rememberSaveable(
         data.favorites,
@@ -88,13 +89,16 @@ fun ProfileScreen(
         )
     ) { mutableStateOf(data.favorites) }
 
-    BackHandler(enabled = editingPicture || editingSports) {
+    BackHandler(enabled = editingPicture || editingSports || showingSettings) {
         editingPicture = false
         editingSports = false
+        showingSettings = false
     }
     Column(modifier.fillMaxSize().background(Color.White)) {
         Box(Modifier.weight(1f)) {
-            if (editingSports) {
+            if (showingSettings) {
+                SettingsScreen(onBack = { showingSettings = false })
+            } else if (editingSports) {
                 EditFavoriteSportsScreen(
                     favorites = favorites,
                     onToggleFavorite = { favorite ->
@@ -117,11 +121,12 @@ fun ProfileScreen(
                         editingSports = true
                         onEditSports()
                     },
-                    onShowAllBookmarks = onShowAllBookmarks
+                    onShowAllBookmarks = onShowAllBookmarks,
+                    onSettings = { showingSettings = true }
                 )
             }
         }
-        if (!editingSports) ProfileTabBar()
+        if (!editingSports && !showingSettings) ProfileTabBar()
     }
 }
 
@@ -133,7 +138,8 @@ fun ProfileContent(
     onEditProfilePicture: () -> Unit,
     onEditSports: () -> Unit,
     onShowAllBookmarks: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSettings: () -> Unit = {}
 ) {
     Column(
         modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -144,7 +150,8 @@ fun ProfileContent(
                 selectedPicture,
                 onEditProfilePicture,
                 compact = true,
-                displayName = data.name
+                displayName = data.name,
+                onSettings = onSettings
             )
             ProfileSectionDivider()
             ProfileActionHeading(
