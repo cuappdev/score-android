@@ -37,3 +37,4 @@ secrets.properties
 
 # Mac
 .DS_store
+.kotlin/

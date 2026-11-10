@@ -1,0 +1,25 @@
+mutation LoginUser($idToken: String!) {
+  loginUser(idToken: $idToken) {
+    accessToken
+    refreshToken
+  }
+}
+
+mutation SignupUser($idToken: String!, $name: String) {
+  signupUser(idToken: $idToken, name: $name) {
+    accessToken
+    refreshToken
+  }
+}
+
+mutation RefreshAccessToken {
+  refreshAccessToken {
+    newAccessToken
+  }
+}
+
+mutation LogoutUser {
+  logoutUser {
+    success
+  }
+}
