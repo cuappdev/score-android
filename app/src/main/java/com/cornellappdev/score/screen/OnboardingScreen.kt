@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.OnboardingButtons
 import com.cornellappdev.score.theme.CrimsonPrimary
+import com.cornellappdev.score.util.SportMotion
+import com.cornellappdev.score.util.sportMotions
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlin.math.min
@@ -44,7 +46,33 @@ private const val ICONS_HOLD_END_MS = 2_420
 private const val ICONS_FADE_END_MS = 3_020
 private const val ICONS_EXIT_END_MS = 3_080
 
-private data class MotionKey(val timeMs: Float, val value: Float, val easing: Easing = LinearEasing)
+private const val DESIGN_FRAME_WIDTH = 393f
+private const val DESIGN_FRAME_HEIGHT = 852f
+private const val DESIGN_CENTER_X = DESIGN_FRAME_WIDTH / 2f
+private const val DESIGN_CENTER_Y = DESIGN_FRAME_HEIGHT / 2f
+private const val ICON_SIZE = 36f
+private const val ICON_CENTER_OFFSET = ICON_SIZE / 2f
+private const val HALO_SIZE = 188f
+private const val HALO_CENTER_OFFSET_X = -1.5f
+private const val HALO_CENTER_OFFSET_Y = -30f
+private const val ICON_ENTRY_DISTANCE = 450f
+private const val ICON_EXIT_DISTANCE = 58f
+private const val SPEAKER_REVEAL_START_MS = 2_760f
+private const val SPEAKER_REVEAL_END_MS = 3_280f
+private val BUTTON_HORIZONTAL_PADDING = 24.dp
+private const val SPEAKER_BOUNCE_MS = 420f
+private const val SPEAKER_SETTLE_MS = 630f
+private const val SPEAKER_LANDED_MS = 820f
+private const val SPEAKER_MOVE_UP_MS = 3_220f
+private const val HALO_SCALE_EXIT_MS = 2_980f
+private const val RING_FIRST_OUT_END_MS = 1_020f
+private const val RING_SECOND_OUT_END_MS = 1_260f
+
+private data class MotionKey(
+    val timeMs: Float,
+    val value: Float,
+    val easing: Easing = LinearEasing
+)
 
 /**
  * Tells an animated element what value to use at the current point in the onboarding animation.
@@ -64,318 +92,6 @@ private fun sampleTrack(timeMs: Float, keys: List<MotionKey>): Float {
     }
     return keys.last().value
 }
-
-private data class SportMotion(
-    @DrawableRes val drawable: Int,
-    val left: Float,
-    val top: Float,
-    val enterAtMs: Float,
-    val peakAlpha: Float,
-    val entryX: Float,
-    val entryY: Float,
-    val bounceX: Float,
-    val bounceY: Float,
-    val settleX: Float,
-    val settleY: Float,
-    val initialRotation: Float
-)
-
-private val sportMotions = listOf(
-    SportMotion(
-        R.drawable.ic_basketball,
-        172f,
-        237f,
-        340f,
-        .94f,
-        5f,
-        141f,
-        13.441f,
-        -16.006f,
-        -6.071f,
-        6.568f,
-        -18f
-    ),
-    SportMotion(
-        R.drawable.ic_baseball,
-        285f,
-        299f,
-        385f,
-        .94f,
-        -108f,
-        79f,
-        3.615f,
-        -19.99f,
-        -1.141f,
-        8.64f,
-        18f
-    ),
-    SportMotion(
-        R.drawable.ic_cross_country,
-        20f,
-        331f,
-        430f,
-        .94f,
-        157f,
-        47f,
-        -13.255f,
-        -18.582f,
-        5.258f,
-        8.15f,
-        -18f
-    ),
-    SportMotion(
-        R.drawable.ic_football,
-        316f,
-        441f,
-        475f,
-        .94f,
-        -139f,
-        -63f,
-        21.069f,
-        -5.821f,
-        -8.856f,
-        2.903f,
-        18f
-    ),
-    SportMotion(
-        R.drawable.ic_golf,
-        176f,
-        526f,
-        520f,
-        .94f,
-        1f,
-        -148f,
-        -14.11f,
-        16.185f,
-        6.345f,
-        -6.617f,
-        -18f
-    ),
-    SportMotion(
-        R.drawable.ic_volleyball,
-        20f,
-        482f,
-        565f,
-        .94f,
-        157f,
-        -104f,
-        -9.539f,
-        23.112f,
-        3.586f,
-        -9.932f,
-        18f
-    ),
-    SportMotion(
-        R.drawable.ic_ice_hockey,
-        220f,
-        179f,
-        580f,
-        .8f,
-        -43f,
-        199f,
-        18.414f,
-        -18.933f,
-        -8.093f,
-        7.624f,
-        -18f
-    ),
-    SportMotion(
-        R.drawable.ic_swim_dive,
-        259f,
-        500f,
-        610f,
-        .94f,
-        -82f,
-        -122f,
-        -2.599f,
-        21.23f,
-        1.539f,
-        -9.004f,
-        -18f
-    ),
-    SportMotion(
-        R.drawable.ic_soccer,
-        251f,
-        240f,
-        625f,
-        .8f,
-        -74f,
-        138f,
-        -4.198f,
-        -21.796f,
-        2.222f,
-        9.187f,
-        18f
-    ),
-    SportMotion(
-        R.drawable.ic_tennis,
-        334f,
-        526f,
-        670f,
-        .8f,
-        -157f,
-        -148f,
-        7.667f,
-        26.467f,
-        -2.744f,
-        -11.244f,
-        -18f
-    ),
-    SportMotion(
-        R.drawable.ic_lacrosse,
-        255f,
-        582f,
-        715f,
-        .8f,
-        -78f,
-        -204f,
-        21.657f,
-        17.44f,
-        -9.395f,
-        -6.93f,
-        18f
-    ),
-    SportMotion(
-        R.drawable.ic_wrestling,
-        94f,
-        508f,
-        760f,
-        .8f,
-        83f,
-        -130f,
-        -20.93f,
-        6.766f,
-        9.045f,
-        -2.46f,
-        -18f
-    ),
-    SportMotion(
-        R.drawable.ic_fencing,
-        23f,
-        223f,
-        805f,
-        .8f,
-        154f,
-        155f,
-        -26.871f,
-        -7.183f,
-        11.399f,
-        2.535f,
-        18f
-    ),
-    SportMotion(
-        R.drawable.ic_softball,
-        41f,
-        575f,
-        820f,
-        .66f,
-        136f,
-        -197f,
-        -26.481f,
-        13.716f,
-        11.305f,
-        -5.286f,
-        -18f
-    ),
-    SportMotion(
-        R.drawable.ic_sailing,
-        72f,
-        263f,
-        850f,
-        .8f,
-        105f,
-        115f,
-        -1.211f,
-        -22.09f,
-        .073f,
-        9.423f,
-        -18f
-    ),
-    SportMotion(
-        R.drawable.ic_equestrian,
-        142f,
-        591f,
-        865f,
-        .66f,
-        35f,
-        -213f,
-        9.965f,
-        25.7f,
-        -4.642f,
-        -10.607f,
-        18f
-    ),
-    SportMotion(
-        R.drawable.ic_field_hockey,
-        334f,
-        355f,
-        910f,
-        .66f,
-        -157f,
-        23f,
-        19.299f,
-        11.322f,
-        -7.978f,
-        -5.198f,
-        -18f
-    ),
-    SportMotion(
-        R.drawable.ic_gymnastics,
-        338f,
-        257f,
-        955f,
-        .66f,
-        -161f,
-        121f,
-        9.299f,
-        -24.502f,
-        -3.46f,
-        10.481f,
-        18f
-    ),
-    SportMotion(
-        R.drawable.ic_squash,
-        61f,
-        415f,
-        1_000f,
-        .66f,
-        116f,
-        -37f,
-        -17.014f,
-        -9.268f,
-        7.134f,
-        4.337f,
-        -18f
-    ),
-    SportMotion(
-        R.drawable.ic_rowing_lightweight,
-        101f,
-        191f,
-        1_045f,
-        .66f,
-        76f,
-        187f,
-        -21.33f,
-        -15.299f,
-        9.256f,
-        6.043f,
-        18f
-    ),
-    SportMotion(
-        R.drawable.ic_track_field,
-        302f,
-        201f,
-        1_090f,
-        .66f,
-        -125f,
-        177f,
-        25.186f,
-        -11.394f,
-        -10.771f,
-        4.331f,
-        -18f
-    )
-)
 
 @Composable
 fun OnboardingScreen(
@@ -401,7 +117,7 @@ fun OnboardingScreen(
             .background(CrimsonPrimary)
     ) {
         /*designScale and designDp scale from Figma units to Compose units*/
-        val designScale = min(maxWidth.value / 393f, maxHeight.value / 852f)
+        val designScale = min(maxWidth.value / DESIGN_FRAME_WIDTH, maxHeight.value / DESIGN_FRAME_HEIGHT)
         val designDp: (Float) -> Dp = { (it * designScale).dp }
 
         AnimatedSpeaker(
@@ -410,16 +126,16 @@ fun OnboardingScreen(
             top = 229f,
             size = 197f,
             designDp = designDp,
-            alphaKeys = persistentListOf(MotionKey(0f, 0f), MotionKey(2_760f, 0f), MotionKey(3_280f, 1f)),
-            scaleKeys = persistentListOf(MotionKey(0f, .67f), MotionKey(2_760f, .67f), MotionKey(3_280f, 1f)),
+            alphaKeys = persistentListOf(MotionKey(0f, 0f), MotionKey(SPEAKER_REVEAL_START_MS, 0f), MotionKey(SPEAKER_REVEAL_END_MS, 1f)),
+            scaleKeys = persistentListOf(MotionKey(0f, .67f), MotionKey(SPEAKER_REVEAL_START_MS, .67f), MotionKey(SPEAKER_REVEAL_END_MS, 1f)),
             yKeys = persistentListOf(
                 MotionKey(0f, 68.5f),
-                MotionKey(2_760f, 68.5f),
-                MotionKey(3_280f, 0f, FastOutSlowInEasing)
+                MotionKey(SPEAKER_REVEAL_START_MS, 68.5f),
+                MotionKey(SPEAKER_REVEAL_END_MS, 0f, FastOutSlowInEasing)
             )
         )
 
-        if (timeMs >= 3_020f) {
+        if (timeMs >= ICONS_FADE_END_MS) {
             OnboardingButtons(
                 onSignUp = onSignUp,
                 onLogIn = onLogIn,
@@ -427,7 +143,11 @@ fun OnboardingScreen(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .windowInsetsPadding(WindowInsets.navigationBars)
-                    .padding(start = 24.dp, end = 24.dp, bottom = 40.dp)
+                    .padding(
+                        start = BUTTON_HORIZONTAL_PADDING,
+                        end = BUTTON_HORIZONTAL_PADDING,
+                        bottom = 40.dp
+                    )
             )
         }
 
@@ -441,9 +161,9 @@ fun OnboardingScreen(
             delayMs = 240f,
             opacityPeak = .72f,
             opacityInEnd = 420f,
-            opacityOutEnd = 1_020f,
+            opacityOutEnd = RING_FIRST_OUT_END_MS,
             scalePeak = 1.55f,
-            scalePeakTime = 1_020f,
+            scalePeakTime = RING_FIRST_OUT_END_MS,
             scaleExit = 2.092f
         )
         AnimatedRing(
@@ -452,9 +172,9 @@ fun OnboardingScreen(
             delayMs = 420f,
             opacityPeak = .5f,
             opacityInEnd = 620f,
-            opacityOutEnd = 1_260f,
+            opacityOutEnd = RING_SECOND_OUT_END_MS,
             scalePeak = 1.72f,
-            scalePeakTime = 1_260f,
+            scalePeakTime = RING_SECOND_OUT_END_MS,
             scaleExit = 2.322f
         )
 
@@ -472,25 +192,25 @@ fun OnboardingScreen(
             ),
             scaleKeys = persistentListOf(
                 MotionKey(0f, .54f),
-                MotionKey(420f, 1.17f, FastOutSlowInEasing),
-                MotionKey(630f, .94f, FastOutSlowInEasing),
-                MotionKey(820f, 1f, FastOutSlowInEasing),
-                MotionKey(2_420f, 1f),
-                MotionKey(3_220f, 1.492f, FastOutSlowInEasing)
+                MotionKey(SPEAKER_BOUNCE_MS, 1.17f, FastOutSlowInEasing),
+                MotionKey(SPEAKER_SETTLE_MS, .94f, FastOutSlowInEasing),
+                MotionKey(SPEAKER_LANDED_MS, 1f, FastOutSlowInEasing),
+                MotionKey(ICONS_HOLD_END_MS.toFloat(), 1f),
+                MotionKey(SPEAKER_MOVE_UP_MS, 1.492f, FastOutSlowInEasing)
             ),
             yKeys = persistentListOf(
                 MotionKey(0f, 34f),
-                MotionKey(420f, -9f, FastOutSlowInEasing),
-                MotionKey(630f, 4f, FastOutSlowInEasing),
-                MotionKey(820f, 0f, FastOutSlowInEasing),
-                MotionKey(2_420f, 0f),
-                MotionKey(3_220f, -68.5f, FastOutSlowInEasing)
+                MotionKey(SPEAKER_BOUNCE_MS, -9f, FastOutSlowInEasing),
+                MotionKey(SPEAKER_SETTLE_MS, 4f, FastOutSlowInEasing),
+                MotionKey(SPEAKER_LANDED_MS, 0f, FastOutSlowInEasing),
+                MotionKey(ICONS_HOLD_END_MS.toFloat(), 0f),
+                MotionKey(SPEAKER_MOVE_UP_MS, -68.5f, FastOutSlowInEasing)
             ),
             rotationKeys = persistentListOf(
                 MotionKey(0f, 9f),
-                MotionKey(420f, -6f, FastOutSlowInEasing),
-                MotionKey(630f, 3f, FastOutSlowInEasing),
-                MotionKey(820f, 0f, FastOutSlowInEasing)
+                MotionKey(SPEAKER_BOUNCE_MS, -6f, FastOutSlowInEasing),
+                MotionKey(SPEAKER_SETTLE_MS, 3f, FastOutSlowInEasing),
+                MotionKey(SPEAKER_LANDED_MS, 0f, FastOutSlowInEasing)
             )
         )
 
@@ -525,8 +245,9 @@ private fun AnimatedSpeaker(
             modifier = Modifier
                 .align(Alignment.Center)
                 .offset(
-                    x = designDp(left + size / 2f - 196.5f),
-                    y = designDp(top + size / 2f - 426f + y)
+                    // Normalize the icon's direction from the center, then scale it to get its entry and exit offsets.
+                    x = designDp(left + size / 2f - DESIGN_CENTER_X),
+                    y = designDp(top + size / 2f - DESIGN_CENTER_Y + y)
                 )
                 .size(designDp(size))
                 .graphicsLayer {
@@ -547,7 +268,7 @@ private fun AnimatedHalo(timeMs: Float, designDp: (Float) -> Dp) {
             MotionKey(0f, 0f),
             MotionKey(240f, 1f, FastOutSlowInEasing),
             MotionKey(1_160f, .72f),
-            MotionKey(2_420f, .72f),
+            MotionKey(ICONS_HOLD_END_MS.toFloat(), .72f),
             MotionKey(2_920f, 0f, FastOutLinearInEasing)
         )
     )
@@ -557,16 +278,16 @@ private fun AnimatedHalo(timeMs: Float, designDp: (Float) -> Dp) {
             MotionKey(0f, .62f),
             MotionKey(460f, 1.12f, FastOutSlowInEasing),
             MotionKey(840f, 1f, FastOutSlowInEasing),
-            MotionKey(2_420f, 1f),
-            MotionKey(2_980f, 1.35f, FastOutSlowInEasing)
+            MotionKey(ICONS_HOLD_END_MS.toFloat(), 1f),
+            MotionKey(HALO_SCALE_EXIT_MS, 1.35f, FastOutSlowInEasing)
         )
     )
     Box(modifier = Modifier.fillMaxSize()) {
         Canvas(
             modifier = Modifier
                 .align(Alignment.Center)
-                .offset(x = designDp(-1.5f), y = designDp(-30f))
-                .size(designDp(188f))
+                .offset(x = designDp(HALO_CENTER_OFFSET_X), y = designDp(HALO_CENTER_OFFSET_Y))
+                .size(designDp(HALO_SIZE))
                 .graphicsLayer {
                     this.alpha = alpha
                     scaleX = scale
@@ -606,16 +327,16 @@ private fun AnimatedRing(
             MotionKey(0f, .28f),
             MotionKey(delayMs, .28f),
             MotionKey(scalePeakTime, scalePeak, FastOutSlowInEasing),
-            MotionKey(2_420f, scalePeak),
-            MotionKey(2_980f, scaleExit, FastOutSlowInEasing)
+            MotionKey(ICONS_HOLD_END_MS.toFloat(), scalePeak),
+            MotionKey(HALO_SCALE_EXIT_MS, scaleExit, FastOutSlowInEasing)
         )
     )
     Box(modifier = Modifier.fillMaxSize()) {
         Canvas(
             modifier = Modifier
                 .align(Alignment.Center)
-                .offset(x = designDp(-1.5f), y = designDp(-30f))
-                .size(designDp(188f))
+                .offset(x = designDp(HALO_CENTER_OFFSET_X), y = designDp(HALO_CENTER_OFFSET_Y))
+                .size(designDp(HALO_SIZE))
                 .graphicsLayer {
                     this.alpha = alpha.coerceIn(0f, 1f)
                     scaleX = scale
@@ -642,13 +363,13 @@ private fun AnimatedSportIcon(
     val landedTime = motion.enterAtMs + 700f
     val wiggleTime = motion.enterAtMs + 860f
     val settledTime = motion.enterAtMs + 1_020f
-    val centerX = motion.left + 18f - 196.5f
-    val centerY = motion.top + 18f - 426f
+    val centerX = motion.left + ICON_CENTER_OFFSET - DESIGN_CENTER_X
+    val centerY = motion.top + ICON_CENTER_OFFSET - DESIGN_CENTER_Y
     val radius = kotlin.math.hypot(centerX, centerY).coerceAtLeast(1f)
-    val entryX = centerX / radius * 450f
-    val entryY = centerY / radius * 450f
-    val exitX = centerX / radius * 58f
-    val exitY = centerY / radius * 58f
+    val entryX = centerX / radius * ICON_ENTRY_DISTANCE
+    val entryY = centerY / radius * ICON_ENTRY_DISTANCE
+    val exitX = centerX / radius * ICON_EXIT_DISTANCE
+    val exitY = centerY / radius * ICON_EXIT_DISTANCE
 
     val alpha = sampleTrack(
         timeMs,
@@ -724,10 +445,10 @@ private fun AnimatedSportIcon(
             modifier = Modifier
                 .align(Alignment.Center)
                 .offset(
-                    x = designDp(motion.left + 18f - 196.5f),
-                    y = designDp(motion.top + 18f - 426f)
+                    x = designDp(motion.left + ICON_CENTER_OFFSET - DESIGN_CENTER_X),
+                    y = designDp(motion.top + ICON_CENTER_OFFSET - DESIGN_CENTER_Y)
                 )
-                .size(designDp(36f)),
+                .size(designDp(ICON_SIZE)),
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -735,7 +456,7 @@ private fun AnimatedSportIcon(
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(Color.White),
                 modifier = Modifier
-                    .size(designDp(36f))
+                    .size(designDp(ICON_SIZE))
                     .graphicsLayer {
                         this.alpha = alpha.coerceIn(0f, 1f)
                         scaleX = scale
