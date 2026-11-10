@@ -111,7 +111,7 @@ dependencies {
         exclude(group = "org.json", module = "json")
     }
     implementation(libs.apollo.runtime)
-    implementation("io.coil-kt.coil3:coil-compose:3.1.0")
+    implementation("io.coil-kt.coil3:coil-compose:3.6.3")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
     lintChecks(libs.compose.lint.checks)
     implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
