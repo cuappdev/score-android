@@ -133,7 +133,7 @@ fun SubHighlightsLoadingScreen(
         HighlightsSubScreenHeader(
             header = header, navigateBack = {})
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 24.dp, end = 24.dp, top = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
