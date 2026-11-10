@@ -1,10 +1,12 @@
 package com.cornellappdev.score.screen
 
 import androidx.annotation.DrawableRes
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +22,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,45 +45,64 @@ import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.Style
 
 @Composable
-fun SettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
-    Column(modifier.fillMaxSize().background(Color.White)) {
-        NavigationHeader(stringResource(R.string.profile_settings), onBack)
-        Column(
-            Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(24.dp, 32.dp),
-            verticalArrangement = Arrangement.spacedBy(28.dp)
-        ) {
-            SettingsSection(stringResource(R.string.settings_preferences)) {
-                SettingsRow(
-                    stringResource(R.string.profile_favorite_sports),
-                    R.drawable.settings_star
-                )
-                HorizontalDivider(color = GrayStroke)
-                SettingsRow(
-                    stringResource(R.string.profile_notifications),
-                    R.drawable.settings_notifications,
-                    iconSize = 28.dp
-                )
-            }
-            SettingsSection(stringResource(R.string.settings_help)) {
-                SettingsRow(
-                    stringResource(R.string.settings_about),
-                    R.drawable.settings_info,
-                    iconSize = 33.dp
-                )
-                HorizontalDivider(color = GrayStroke)
-                SettingsRow(stringResource(R.string.settings_report), R.drawable.settings_flag)
-                HorizontalDivider(color = GrayStroke)
-                SettingsRow(
-                    stringResource(R.string.settings_logout),
-                    R.drawable.settings_logout,
-                    destructive = true
-                )
-                HorizontalDivider(color = GrayStroke)
-                SettingsRow(
-                    stringResource(R.string.settings_delete),
-                    R.drawable.settings_delete,
-                    destructive = true
-                )
+fun SettingsScreen(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    onSubmitIssue: ((IssueReport) -> Unit)? = null
+) {
+    var reportingIssue by rememberSaveable { mutableStateOf(false) }
+    BackHandler(enabled = reportingIssue) { reportingIssue = false }
+    Box(modifier) {
+        if (reportingIssue) {
+            ReportIssueScreen(
+                onBack = { reportingIssue = false },
+                onSubmit = onSubmitIssue
+            )
+            return@Box
+        }
+        Column(Modifier.fillMaxSize().background(Color.White)) {
+            NavigationHeader(stringResource(R.string.profile_settings), onBack)
+            Column(
+                Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(24.dp, 32.dp),
+                verticalArrangement = Arrangement.spacedBy(28.dp)
+            ) {
+                SettingsSection(stringResource(R.string.settings_preferences)) {
+                    SettingsRow(
+                        stringResource(R.string.profile_favorite_sports),
+                        R.drawable.settings_star
+                    )
+                    HorizontalDivider(color = GrayStroke)
+                    SettingsRow(
+                        stringResource(R.string.profile_notifications),
+                        R.drawable.settings_notifications,
+                        iconSize = 28.dp
+                    )
+                }
+                SettingsSection(stringResource(R.string.settings_help)) {
+                    SettingsRow(
+                        stringResource(R.string.settings_about),
+                        R.drawable.settings_info,
+                        iconSize = 33.dp
+                    )
+                    HorizontalDivider(color = GrayStroke)
+                    SettingsRow(
+                        stringResource(R.string.settings_report),
+                        R.drawable.settings_flag,
+                        onClick = { reportingIssue = true }
+                    )
+                    HorizontalDivider(color = GrayStroke)
+                    SettingsRow(
+                        stringResource(R.string.settings_logout),
+                        R.drawable.settings_logout,
+                        destructive = true
+                    )
+                    HorizontalDivider(color = GrayStroke)
+                    SettingsRow(
+                        stringResource(R.string.settings_delete),
+                        R.drawable.settings_delete,
+                        destructive = true
+                    )
+                }
             }
         }
     }
@@ -100,11 +125,11 @@ private fun SettingsRow(
     title: String,
     @DrawableRes icon: Int,
     iconSize: Dp = 30.dp,
-    destructive: Boolean = false
+    destructive: Boolean = false,
+    onClick: () -> Unit = {}
 ) {
-    // Placeholder actions intentionally do nothing until the settings flows are implemented.
     Row(
-        Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = {})
+        Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = onClick)
             .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
