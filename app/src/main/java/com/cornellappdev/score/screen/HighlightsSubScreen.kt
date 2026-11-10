@@ -91,10 +91,10 @@ private fun HighlightsSubScreenHeaderPreview() {
 
 @Composable
 fun HighlightsSubScreen(
-    highlightsViewModel: HighlightsViewModel = hiltViewModel(),
     navigateBack: () -> Unit,
     toSearchScreen: () -> Unit,
-    subScreenType: HighlightsSubScreenType
+    subScreenType: HighlightsSubScreenType,
+    highlightsViewModel: HighlightsViewModel = hiltViewModel()
 ) {
     val uiState = highlightsViewModel.collectUiStateValue()
 

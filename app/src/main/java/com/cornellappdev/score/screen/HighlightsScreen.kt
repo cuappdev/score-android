@@ -38,8 +38,8 @@ import kotlinx.serialization.Serializable
 
 @Composable
 fun HighlightsScreen(
-    highlightsViewModel: HighlightsViewModel = hiltViewModel(),
     toSearchScreen: () -> Unit,
+    highlightsViewModel: HighlightsViewModel = hiltViewModel(),
     toSubScreen: (HighlightsSubScreenType) -> Unit
 ) {
     val uiState = highlightsViewModel.collectUiStateValue()
