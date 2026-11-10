@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.highlights.ArticleHighlightCard
 import com.cornellappdev.score.components.highlights.VideoHighlightCard
+import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.ProfileData
 import com.cornellappdev.score.model.ProfileFavorite
 import com.cornellappdev.score.model.GenderDivision
@@ -72,25 +74,59 @@ fun ProfileScreen(
     var selectedPicture by rememberSaveable { mutableStateOf(ProfilePicture.TENNIS) }
     var editingPicture by rememberSaveable { mutableStateOf(false) }
 
-    BackHandler(enabled = editingPicture) { editingPicture = false }
+    var showingSettings by rememberSaveable { mutableStateOf(false) }
+    var editingSports by rememberSaveable { mutableStateOf(false) }
+    var favorites by rememberSaveable(
+        data.favorites,
+        stateSaver = listSaver(
+            save = { list -> list.map { "${it.sport.name}:${it.gender.name}" } },
+            restore = { list ->
+                list.map {
+                    val (sport, gender) = it.split(":")
+                    ProfileFavorite(Sport.valueOf(sport), GenderDivision.valueOf(gender))
+                }
+            }
+        )
+    ) { mutableStateOf(data.favorites) }
+
+    BackHandler(enabled = editingPicture || editingSports || showingSettings) {
+        editingPicture = false
+        editingSports = false
+        showingSettings = false
+    }
     Column(modifier.fillMaxSize().background(Color.White)) {
         Box(Modifier.weight(1f)) {
-            if (editingPicture) {
+            if (showingSettings) {
+                SettingsScreen(onBack = { showingSettings = false })
+            } else if (editingSports) {
+                EditFavoriteSportsScreen(
+                    favorites = favorites,
+                    onToggleFavorite = { favorite ->
+                        favorites =
+                            if (favorite in favorites) favorites - favorite else favorites + favorite
+                    },
+                    onBack = { editingSports = false }
+                )
+            } else if (editingPicture) {
                 EditProfileScreen(
                     selectedPicture,
                     { selectedPicture = it },
                     { editingPicture = false })
             } else {
                 ProfileContent(
-                    data = data,
+                    data = data.copy(favorites = favorites),
                     selectedPicture = selectedPicture,
                     onEditProfilePicture = { editingPicture = true },
-                    onEditSports = onEditSports,
-                    onShowAllBookmarks = onShowAllBookmarks
+                    onEditSports = {
+                        editingSports = true
+                        onEditSports()
+                    },
+                    onShowAllBookmarks = onShowAllBookmarks,
+                    onSettings = { showingSettings = true }
                 )
             }
         }
-        ProfileTabBar()
+        if (!editingSports && !showingSettings) ProfileTabBar()
     }
 }
 
@@ -102,7 +138,8 @@ fun ProfileContent(
     onEditProfilePicture: () -> Unit,
     onEditSports: () -> Unit,
     onShowAllBookmarks: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSettings: () -> Unit = {}
 ) {
     Column(
         modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -113,7 +150,8 @@ fun ProfileContent(
                 selectedPicture,
                 onEditProfilePicture,
                 compact = true,
-                displayName = data.name
+                displayName = data.name,
+                onSettings = onSettings
             )
             ProfileSectionDivider()
             ProfileActionHeading(
