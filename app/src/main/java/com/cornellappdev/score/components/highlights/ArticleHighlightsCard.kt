@@ -1,6 +1,7 @@
 package com.cornellappdev.score.components.highlights
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -47,13 +49,15 @@ fun ArticleHighlightCard(
     linkTextStyle: TextStyle = TextStyle.Default,
     imageOverlayAlpha: Float = 0.4f
 ) {
+    val uriHandler = LocalUriHandler.current
+
     Box(
         modifier = Modifier
             .then(if (isWideFormat) Modifier.fillMaxWidth() else Modifier.width(241.dp))
             .height(192.dp)
             .clip(shape = RoundedCornerShape(12.dp))
+            .clickable { uriHandler.openUri(articleHighlight.articleUrl) }
     ) {
-        //todo: empty state if image doesn't load
         AsyncImage(
             model = articleHighlight.imageUrl,
             contentDescription = "highlight image",
