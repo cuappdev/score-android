@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.ButtonPrimary
 import com.cornellappdev.score.components.NavigationHeader
+import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayMedium
@@ -61,19 +62,19 @@ enum class ReportIssueType(@StringRes val label: Int) {
     OTHER(R.string.report_other)
 }
 
-enum class ReportSport(@StringRes val label: Int) {
-    BASKETBALL(R.string.report_basketball),
-    ICE_HOCKEY(R.string.report_ice_hockey),
-    LACROSSE(R.string.report_lacrosse),
-    SOCCER(R.string.report_soccer),
-    FIELD_HOCKEY(R.string.report_field_hockey),
-    BASEBALL(R.string.report_baseball),
-    FOOTBALL(R.string.report_football)
-}
+private val reportSports = listOf(
+    Sport.BASKETBALL,
+    Sport.ICE_HOCKEY,
+    Sport.LACROSSE,
+    Sport.SOCCER,
+    Sport.FIELD_HOCKEY,
+    Sport.BASEBALL,
+    Sport.FOOTBALL
+)
 
 data class IssueReport(
     val issue: ReportIssueType,
-    val sport: ReportSport,
+    val sport: Sport,
     val description: String
 )
 
@@ -85,8 +86,9 @@ fun ReportIssueScreen(
     onSubmit: ((IssueReport) -> Unit)? = null
 ) {
     var issue by rememberSaveable { mutableStateOf<ReportIssueType?>(null) }
-    var sport by rememberSaveable { mutableStateOf<ReportSport?>(null) }
+    var sport by rememberSaveable { mutableStateOf<Sport?>(null) }
     var description by rememberSaveable { mutableStateOf("") }
+    val issueLabels = ReportIssueType.entries.associateWith { stringResource(it.label) }
     val descriptionLabel = stringResource(R.string.report_description)
 
     Column(modifier.fillMaxSize().background(White).imePadding()) {
@@ -100,7 +102,7 @@ fun ReportIssueScreen(
                     label = stringResource(R.string.report_issue_question),
                     selected = issue,
                     options = ReportIssueType.entries,
-                    optionLabelRes = { it.label },
+                    optionLabel = { issueLabels.getValue(it) },
                     onSelect = { issue = it }
                 )
             }
@@ -108,8 +110,8 @@ fun ReportIssueScreen(
                 ReportDropdown(
                     label = stringResource(R.string.report_sport_question),
                     selected = sport,
-                    options = ReportSport.entries,
-                    optionLabelRes = { it.label },
+                    options = reportSports,
+                    optionLabel = { it.displayName },
                     onSelect = { sport = it }
                 )
             }
@@ -171,11 +173,11 @@ private fun <T> ReportDropdown(
     label: String,
     selected: T?,
     options: List<T>,
-    optionLabelRes: (T) -> Int,
+    optionLabel: (T) -> String,
     onSelect: (T) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val selectedLabel = selected?.let { stringResource(optionLabelRes(it)) }
+    val selectedLabel = selected?.let(optionLabel)
         ?: stringResource(R.string.report_choose_option)
     Box {
         Row(
@@ -210,7 +212,7 @@ private fun <T> ReportDropdown(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            stringResource(optionLabelRes(option)), style = Style.bodyMedium,
+                            optionLabel(option), style = Style.bodyMedium,
                             color = if (selected == option) CrimsonPrimary else GrayPrimary
                         )
                     },
