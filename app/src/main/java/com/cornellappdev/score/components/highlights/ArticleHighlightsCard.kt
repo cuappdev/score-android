@@ -11,31 +11,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.LinkAnnotation
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextLinkStyles
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.cornellappdev.score.R
 import com.cornellappdev.score.model.ArticleHighlightData
-import com.cornellappdev.score.model.Sport
-import com.cornellappdev.score.theme.Style.bodySemibold
+import com.cornellappdev.score.util.sampleArticleHighlight
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.labelsNormal
 import com.cornellappdev.score.theme.White
@@ -44,11 +33,12 @@ import com.cornellappdev.score.theme.White
 fun ArticleHighlightCard(
     articleHighlight: ArticleHighlightData,
     isWideFormat: Boolean,
+    modifier: Modifier = Modifier,
     linkTextStyle: TextStyle = TextStyle.Default,
     imageOverlayAlpha: Float = 0.4f
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .then(if (isWideFormat) Modifier.fillMaxWidth() else Modifier.width(241.dp))
             .height(192.dp)
             .clip(shape = RoundedCornerShape(12.dp))
@@ -98,9 +88,9 @@ fun ArticleHighlightCard(
                     )
                 }
                 Text(
-                    color = Color.White,
+                    text = articleHighlight.dateString,
                     style = labelsNormal,
-                    text = articleHighlight.date
+                    color = Color.White,
                 )
             }
         }
@@ -111,13 +101,7 @@ fun ArticleHighlightCard(
 @Composable
 private fun ArticleHighlightCardPreview() {
     ArticleHighlightCard(
-        ArticleHighlightData(
-            "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-            "maxresdefault.jpg",
-            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-            "11/9",
-            Sport.ICE_HOCKEY
-        ),
+        sampleArticleHighlight,
         false
     )
 }
@@ -126,13 +110,7 @@ private fun ArticleHighlightCardPreview() {
 @Composable
 private fun WideArticleHighlightCardPreview() {
     ArticleHighlightCard(
-        ArticleHighlightData(
-            "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-            "maxresdefault.jpg",
-            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-            "11/9",
-            Sport.ICE_HOCKEY
-        ),
+        sampleArticleHighlight,
         true
     )
 }
