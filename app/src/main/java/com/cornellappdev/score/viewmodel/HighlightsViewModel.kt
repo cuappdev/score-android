@@ -22,6 +22,7 @@ data class HighlightsUiState(
     val recentSearches: List<String>
 )
 
+
 private data class FilteredHighlightsByDateBlock(
     val filteredHighlights: List<HighlightData>,
     val todayHighlights: List<HighlightData>,

@@ -32,7 +32,7 @@ fun parseDateOrNull(strDate: String): LocalDate? {
             "$strDate ${LocalDate.now().year}",
             format
         ) //assumes current year
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         null
     }
 
