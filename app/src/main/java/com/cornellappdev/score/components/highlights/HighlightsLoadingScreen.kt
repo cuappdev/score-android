@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.components.LoadingStateBox
+import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.screen.HighlightsSubScreenHeader
 import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.Style.heading1
@@ -172,13 +173,13 @@ fun SubHighlightsLoadingScreen(
 @Preview
 @Composable
 private fun HighlightsLoadingScreenPreview() =
-    _root_ide_package_.com.cornellappdev.score.components.ScorePreview {
+    ScorePreview{
         HighlightsLoadingScreen("Loading Highlights...")
     }
 
 @Preview
 @Composable
 private fun SubHighlightsLoadingScreenPreview() =
-    _root_ide_package_.com.cornellappdev.score.components.ScorePreview {
+    ScorePreview {
         SubHighlightsLoadingScreen("Past 3 Days")
     }
