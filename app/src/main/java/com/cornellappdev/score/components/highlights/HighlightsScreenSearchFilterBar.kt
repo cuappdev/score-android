@@ -15,9 +15,10 @@ import com.cornellappdev.score.util.sportList
 
 @Composable
 fun HighlightsScreenSearchFilterBar(
-    sportList: List<Sport>
+    sportList: List<Sport>,
+    modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth()) {
         HighlightsSearchBar(modifier = Modifier.padding(horizontal = 24.dp))
         Spacer(modifier = Modifier.height(16.dp))
         HighlightsFilterRow(sportList, {/*todo on filter selected*/ })

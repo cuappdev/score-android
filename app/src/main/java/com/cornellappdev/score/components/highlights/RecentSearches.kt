@@ -64,10 +64,11 @@ private fun RecentSearchItem(
 fun RecentSearches(
     recentQueriesList: List<String>,
     onItemClick: () -> Unit,
-    onCloseClick: () -> Unit
+    onCloseClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
