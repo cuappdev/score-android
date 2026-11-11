@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                         preferences.edit {
                             putStringSet(
                                 KEY_ONBOARDING_FAVORITE_SPORTS,
-                                selectedSports.map(FavoriteSport::storageKey).toSet()
+                                selectedSports.map { it.storageKey }.toSet()
                             )
                         }
                         completeOnboarding()

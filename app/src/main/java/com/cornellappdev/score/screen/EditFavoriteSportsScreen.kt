@@ -65,17 +65,43 @@ fun EditFavoriteSportsScreen(
 
     Column(modifier.fillMaxSize().background(Color.White)) {
         NavigationHeader(stringResource(R.string.edit_favorite_sports), onBack)
+        FavoriteSportSelectionScreenContents(
+            favorites = favorites,
+            options = options,
+            gender = gender,
+            onGenderSelected = { gender = it },
+            onToggleFavorite = onToggleFavorite,
+            modifier = Modifier.fillMaxWidth().weight(1f)
+        )
+    }
+}
+
+@Composable
+fun FavoriteSportSelectionScreenContents(
+    favorites: List<ProfileFavorite>,
+    options: List<ProfileFavorite>,
+    gender: GenderDivision,
+    onGenderSelected: (GenderDivision) -> Unit,
+    onToggleFavorite: (ProfileFavorite) -> Unit,
+    modifier: Modifier = Modifier
+){
+    Column(modifier = modifier){
         Row(
             Modifier.padding(horizontal = 24.dp, vertical = 32.dp)
                 .fillMaxWidth().border(1.dp, GrayLight, CircleShape)
                 .padding(6.dp).selectableGroup()
         ) {
-            GenderDivision.entries.forEach { division ->
+        val options = listOf(
+            GenderDivision.ALL,
+            GenderDivision.MALE,
+            GenderDivision.FEMALE
+        )
+        options.forEach { division ->
                 val selected = gender == division
                 Box(
                     Modifier.weight(1f).clip(CircleShape)
                         .background(if (selected) CrimsonPrimary else Color.Transparent)
-                        .selectable(selected, role = Role.Tab, onClick = { gender = division })
+                        .selectable(selected, role = Role.Tab, onClick = { onGenderSelected(division) })
                         .padding(vertical = 8.dp),
                     contentAlignment = Alignment.Center
                 ) {
