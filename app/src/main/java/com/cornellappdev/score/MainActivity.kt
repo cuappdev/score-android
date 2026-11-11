@@ -4,6 +4,11 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.core.content.edit
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +17,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.cornellappdev.score.model.OnboardingPreferencesRepository
 import com.cornellappdev.score.nav.root.RootNavigation
+import com.cornellappdev.score.screen.OnboardingScreen
 import com.cornellappdev.score.screen.OnboardingProfileSelectScreen
 import com.cornellappdev.score.screen.OnboardingScreen
 import com.google.firebase.Firebase

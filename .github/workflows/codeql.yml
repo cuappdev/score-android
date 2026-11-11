@@ -1,0 +1,61 @@
+name: CodeQL
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+  schedule:
+    - cron: '0 21 * * 1'
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: actions
+            build-mode: none
+          - language: java-kotlin
+            build-mode: manual
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+
+      - name: Set up JDK 17
+        if: matrix.build-mode == 'manual'
+        uses: actions/setup-java@v6
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Create google-services.json
+        if: matrix.build-mode == 'manual'
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_NEW }}" | base64 --decode > app/google-services.json
+
+      - name: Build
+        if: matrix.build-mode == 'manual'
+        run: ./gradlew --no-daemon --no-build-cache assembleDebug compileDebugUnitTestKotlin
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{ matrix.language }}"
