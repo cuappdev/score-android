@@ -21,6 +21,10 @@
     <string name="profile_schedule">Schedule</string>
     <string name="profile_scores">Scores</string>
     <string name="profile_highlights">Highlights</string>
+    <string name="onboarding_default_name">Your Name</string>
+    <string name="onboarding_profile_subtitle">You can change this later in the profile page.</string>
+    <string name="onboarding_select_profile_picture">Select profile picture:</string>
+    <string name="next">Next</string>
     <string name="edit_favorite_sports">Edit Favorite Sports</string>
     <string name="settings_preferences">Preferences</string>
     <string name="settings_help">Help</string>
@@ -39,10 +43,6 @@
     <string name="report_description">Describe what’s wrong for us.</string>
     <string name="report_description_hint">What happened?</string>
     <string name="report_submit">SUBMIT</string>
-    <string name="onboarding_default_name">Your Name</string>
-    <string name="onboarding_profile_subtitle">You can change this later in the profile page.</string>
-    <string name="onboarding_select_profile_picture">Select profile picture:</string>
-    <string name="next">Next</string>
     <string name="select_favorite_sports">Select Favorite Sports</string>
     <string name="favorite_sports_subtitle">You can change your picks at any time!</string>
     <string name="all">All</string>
