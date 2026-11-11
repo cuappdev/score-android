@@ -1,4 +1,4 @@
-package com.cornellappdev.score.screen
+package com.cornellappdev.score.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,24 +19,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.Style
 import com.cornellappdev.score.theme.White
 
-enum class OnboardingState{
-    PROFILE_SELECT, SPORT_SELECT
-}
-
 @Composable
 fun OnboardingFooter(
     buttonText: String,
     onClick: () -> Unit,
-    activeStep: OnboardingState
+    activeStep: Int,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(White)
             .padding(
@@ -67,10 +63,7 @@ fun OnboardingFooter(
             verticalAlignment = Alignment.CenterVertically
         ) {
             repeat(2) { index ->
-                val isActive = when (activeStep) {
-                    OnboardingState.PROFILE_SELECT -> index == 0
-                    OnboardingState.SPORT_SELECT -> index == 1
-                }
+                val isActive = index == activeStep
                 Box(
                     Modifier
                         .size(8.dp)
@@ -88,7 +81,7 @@ private fun OnboardingFooterPreview() {
         OnboardingFooter(
             buttonText = "Next",
             onClick = {},
-            activeStep = OnboardingState.PROFILE_SELECT
+            activeStep = 0
         )
     }
 }
