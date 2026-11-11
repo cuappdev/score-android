@@ -24,7 +24,8 @@ val sampleProfileData = ProfileData(
                 title = "vs. Columbia",
                 thumbnailImageUrl = "android.resource://com.cornellappdev.score/${R.drawable.profile_highlight_soccer}",
                 videoUrl = "https://www.youtube.com/@CornellAthletics",
-                date = "11/09",
+                dateString = "11/09",
+                date = null,
                 sport = Sport.BASEBALL,
                 gender = GenderDivision.MALE,
                 duration = "1:25",
@@ -37,7 +38,8 @@ val sampleProfileData = ProfileData(
                 title = "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
                 imageUrl = "android.resource://com.cornellappdev.score/${R.drawable.profile_highlight_hockey}",
                 articleUrl = "https://cornellsun.com/",
-                date = "11/09",
+                date = null,
+                dateString = "11/09",
                 sport = Sport.ICE_HOCKEY
             )
         )

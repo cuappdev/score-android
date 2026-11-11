@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.model.HighlightData
+import com.cornellappdev.score.screen.HighlightsSubScreenType
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.util.highlightsList
@@ -30,7 +31,8 @@ import com.cornellappdev.score.util.highlightsList
 @Composable
 fun HighlightsCardRow(
     highlightsList: List<HighlightData>,
-    rowHeader: String
+    rowHeader: String,
+    toSubScreen: (HighlightsSubScreenType) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -47,7 +49,7 @@ fun HighlightsCardRow(
                 style = heading2
             )
             Row(
-                modifier = Modifier.clickable {/*todo navigation to Today screen*/ },
+                modifier = Modifier.clickable { toSubScreen(if (rowHeader == "Today") HighlightsSubScreenType.TODAY else HighlightsSubScreenType.PAST3DAYS) },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -82,6 +84,6 @@ fun HighlightsCardRow(
 @Composable
 private fun HighlightsCardRowPreview() {
     ScorePreview {
-        HighlightsCardRow(highlightsList, "Today")
+        HighlightsCardRow(highlightsList, "Today", {})
     }
 }
