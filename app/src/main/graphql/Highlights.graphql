@@ -1,0 +1,17 @@
+query Highlights($sportsType: String) {
+    articles(sportsType: $sportsType) {
+        title
+        image
+        sportsType
+        publishedAt
+        url
+    }
+    youtubeVideos {
+        title
+        thumbnail
+        url
+        publishedAt
+        duration
+        sportsType
+    }
+}
