@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,7 +43,9 @@ import com.cornellappdev.score.theme.White
 @Composable
 fun ArticleHighlightCard(
     articleHighlight: ArticleHighlightData,
-    isWideFormat: Boolean
+    isWideFormat: Boolean,
+    linkTextStyle: TextStyle = TextStyle.Default,
+    imageOverlayAlpha: Float = 0.4f
 ) {
     Box(
         modifier = Modifier
@@ -54,12 +57,13 @@ fun ArticleHighlightCard(
         AsyncImage(
             model = articleHighlight.imageUrl,
             contentDescription = "highlight image",
+            modifier = Modifier.matchParentSize(),
             contentScale = ContentScale.Crop
         )
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color.Black.copy(alpha = 0.4f))
+                .background(color = Color.Black.copy(alpha = imageOverlayAlpha))
         )
         Column(
             modifier = Modifier
@@ -89,7 +93,8 @@ fun ArticleHighlightCard(
                     ExternalLink(
                         articleHighlight.articleUrl,
                         urlLabel = "Cornell Daily Sun",
-                        linkColor = White
+                        linkColor = White,
+                        textStyle = linkTextStyle
                     )
                 }
                 Text(
