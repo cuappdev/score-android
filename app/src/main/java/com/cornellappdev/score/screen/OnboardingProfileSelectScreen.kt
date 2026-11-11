@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
+import com.cornellappdev.score.components.OnboardingFooter
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style
 
@@ -99,7 +100,7 @@ fun OnboardingProfileSelectScreen(
             OnboardingFooter(
                 buttonText = stringResource(R.string.next),
                 onClick = { onNext(selectedPicture) },
-                activeStep = OnboardingState.PROFILE_SELECT
+                activeStep = 0
             )
         }
     }
