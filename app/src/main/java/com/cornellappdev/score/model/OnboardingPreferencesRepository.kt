@@ -25,8 +25,31 @@ class OnboardingPreferencesRepository @Inject constructor(
         }
     }
 
+    fun getFavoriteSports(): Set<ProfileFavorite> =
+        preferences.getStringSet(KEY_ONBOARDING_FAVORITE_SPORTS, emptySet())
+            .orEmpty()
+            .mapNotNull { ProfileFavorite.fromStorageKey(it) }
+            .toSet()
+
+    fun saveFavoriteSports(favorites: Set<ProfileFavorite>) {
+        preferences.edit {
+            putStringSet(KEY_ONBOARDING_FAVORITE_SPORTS, favorites.map { it.storageKey }.toSet())
+        }
+    }
+
+    fun getProfilePicture(): String? =
+        preferences.getString(KEY_ONBOARDING_PROFILE_PICTURE, null)
+
+    fun saveProfilePicture(pictureName: String) {
+        preferences.edit {
+            putString(KEY_ONBOARDING_PROFILE_PICTURE, pictureName)
+        }
+    }
+
     private companion object {
         const val PREFERENCES_NAME = "score_app_preferences"
         const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
+        const val KEY_ONBOARDING_PROFILE_PICTURE = "onboarding_profile_picture"
+        const val KEY_ONBOARDING_FAVORITE_SPORTS = "onboarding_favorite_sports"
     }
 }

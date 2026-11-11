@@ -43,4 +43,13 @@
     <string name="report_description">Describe what’s wrong for us.</string>
     <string name="report_description_hint">What happened?</string>
     <string name="report_submit">SUBMIT</string>
+    <string name="select_favorite_sports">Select Favorite Sports</string>
+    <string name="favorite_sports_subtitle">You can change your picks at any time!</string>
+    <string name="all">All</string>
+    <string name="onboarding_mens">Men’s</string>
+    <string name="onboarding_womens">Women’s</string>
+    <string name="finish">Finish</string>
+    <string name="finish_with_sports">Finish with %1$d sports</string>
+    <string name="finish_with_one_sport">Finish with 1 sport</string>
+    <string name="remove_favorite_sport">Remove favorite sport</string>
 </resources>

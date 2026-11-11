@@ -9,9 +9,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.core.content.edit
 import com.cornellappdev.score.model.OnboardingPreferencesRepository
 import com.cornellappdev.score.nav.root.RootNavigation
+import com.cornellappdev.score.screen.OnboardingFavoriteSportsScreen
 import com.cornellappdev.score.screen.OnboardingProfileSelectScreen
 import com.cornellappdev.score.screen.OnboardingScreen
 import com.google.firebase.Firebase
@@ -20,14 +20,12 @@ import com.google.firebase.analytics.analytics
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-private const val APP_PREFERENCES = "score_app_preferences"
-private const val KEY_ONBOARDING_PROFILE_PICTURE = "onboarding_profile_picture"
-
 private lateinit var firebaseAnalytics: FirebaseAnalytics
 
 private enum class OnboardingStep {
     WELCOME,
     PROFILE_SELECT,
+    SPORT_SELECT,
     COMPLETE
 }
 
@@ -41,7 +39,6 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         val onboardingCompleted = onboardingPreferencesRepository.isOnboardingCompleted()
-        val preferences = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
 
         setContent {
             var onboardingStep by rememberSaveable {
@@ -66,12 +63,30 @@ class MainActivity : AppCompatActivity() {
 
                 OnboardingStep.PROFILE_SELECT -> OnboardingProfileSelectScreen(
                     onNext = { selectedPicture ->
-                        preferences.edit {
-                            putString(KEY_ONBOARDING_PROFILE_PICTURE, selectedPicture.name)
-                        }
-                        completeOnboarding()
+                        onboardingPreferencesRepository.saveProfilePicture(selectedPicture.name)
+                        onboardingStep = OnboardingStep.SPORT_SELECT
                     }
                 )
+
+                OnboardingStep.SPORT_SELECT -> {
+                    var selectedFavorites by remember {
+                        mutableStateOf(onboardingPreferencesRepository.getFavoriteSports().toList())
+                    }
+                    OnboardingFavoriteSportsScreen(
+                        favorites = selectedFavorites,
+                        onToggleFavorite = { favorite ->
+                            selectedFavorites = if (favorite in selectedFavorites) {
+                                selectedFavorites - favorite
+                            } else {
+                                selectedFavorites + favorite
+                            }
+                        },
+                        onFinish = {
+                            onboardingPreferencesRepository.saveFavoriteSports(selectedFavorites.toSet())
+                            completeOnboarding()
+                        }
+                    )
+                }
 
                 OnboardingStep.COMPLETE -> RootNavigation()
             }
