@@ -39,6 +39,7 @@ import com.cornellappdev.score.theme.Style.bodySemibold
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.labelsNormal
 import com.cornellappdev.score.theme.White
+import com.cornellappdev.score.util.sampleArticleHighlightData
 
 @Composable
 fun ArticleHighlightCard(
@@ -100,7 +101,7 @@ fun ArticleHighlightCard(
                 Text(
                     color = Color.White,
                     style = labelsNormal,
-                    text = articleHighlight.date
+                    text = articleHighlight.dateString
                 )
             }
         }
@@ -111,13 +112,7 @@ fun ArticleHighlightCard(
 @Composable
 private fun ArticleHighlightCardPreview() {
     ArticleHighlightCard(
-        ArticleHighlightData(
-            "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-            "maxresdefault.jpg",
-            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-            "11/9",
-            Sport.ICE_HOCKEY
-        ),
+        sampleArticleHighlightData,
         false
     )
 }
@@ -126,13 +121,7 @@ private fun ArticleHighlightCardPreview() {
 @Composable
 private fun WideArticleHighlightCardPreview() {
     ArticleHighlightCard(
-        ArticleHighlightData(
-            "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-            "maxresdefault.jpg",
-            "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-            "11/9",
-            Sport.ICE_HOCKEY
-        ),
+        sampleArticleHighlightData,
         true
     )
 }
