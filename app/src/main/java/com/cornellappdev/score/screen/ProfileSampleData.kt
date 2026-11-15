@@ -1,13 +1,12 @@
 package com.cornellappdev.score.screen
 
-import com.cornellappdev.score.R
-import com.cornellappdev.score.model.ArticleHighlightData
 import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.model.ProfileData
 import com.cornellappdev.score.model.ProfileFavorite
 import com.cornellappdev.score.model.Sport
-import com.cornellappdev.score.model.VideoHighlightData
+import com.cornellappdev.score.util.sampleArticleHighlightData
+import com.cornellappdev.score.util.sampleVideoHighlightData
 
 // Temporary design fixtures. Replace ProfileScreen.data when account data is available.
 val sampleProfileData = ProfileData(
@@ -20,28 +19,10 @@ val sampleProfileData = ProfileData(
     ),
     bookmarks = listOf(
         HighlightData.Video(
-            VideoHighlightData(
-                title = "vs. Columbia",
-                thumbnailImageUrl = "android.resource://com.cornellappdev.score/${R.drawable.profile_highlight_soccer}",
-                videoUrl = "https://www.youtube.com/@CornellAthletics",
-                date = null,
-                dateString = "11/09",
-                sport = Sport.BASEBALL,
-                gender = GenderDivision.MALE,
-                duration = "1:25",
-                finalScore = "3-0",
-                photoCredit = "Photo By: Caroline Sherman"
-            )
+            sampleVideoHighlightData
         ),
         HighlightData.Article(
-            ArticleHighlightData(
-                title = "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-                imageUrl = "android.resource://com.cornellappdev.score/${R.drawable.profile_highlight_hockey}",
-                articleUrl = "https://cornellsun.com/",
-                date = null,
-                dateString = "11/09",
-                sport = Sport.ICE_HOCKEY
-            )
+            sampleArticleHighlightData
         )
     )
 )
