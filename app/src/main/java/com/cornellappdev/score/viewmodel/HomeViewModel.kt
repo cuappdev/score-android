@@ -1,8 +1,12 @@
 package com.cornellappdev.score.viewmodel
 
+import com.cornellappdev.score.components.DateFilter
+import com.cornellappdev.score.components.LocationFilter
+import com.cornellappdev.score.components.PriceFilter
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.model.GenderDivision
+import com.cornellappdev.score.model.OnboardingPreferencesRepository
 import com.cornellappdev.score.model.ScoreRepository
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
@@ -16,52 +20,88 @@ data class HomeUiState(
     val selectedGender: GenderDivision,
     val sportSelect: SportSelection,
     val selectionList: List<SportSelection>,
-    val loadedState: ApiResponse<List<GameCardData>>
+    val favoriteSports: Set<Sport>,
+    val loadedState: ApiResponse<List<GameCardData>>,
+    val priceFilter: PriceFilter? = null,
+    val locationFilter: LocationFilter? = null,
+    val dateFilter: DateFilter? = null
 ) {
+    private val games: List<GameCardData>
+        get() = (loadedState as? ApiResponse.Success)?.data.orEmpty()
+
     //TODO: refactor filters to use flows - not best practice to expose original games list to the view
     val filteredGames: List<GameCardData>
-        get() = when (loadedState) {
-            is ApiResponse.Success -> loadedState.data.filter { game ->
-                (selectedGender == GenderDivision.ALL || game.gender == selectedGender.displayName) &&
-                        (sportSelect is SportSelection.All ||
-                                (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName))
+        get() {
+            val favoriteSportNames = favoriteSports.map { it.displayName }
+            return games.filter { game ->
+                val matchesGender = when (selectedGender) {
+                    GenderDivision.ALL -> true
+                    GenderDivision.FAVORITES -> if (favoriteSports.isNotEmpty()) {
+                        game.sport in favoriteSportNames
+                    } else {
+                        true
+                    }
+                    else -> game.gender == selectedGender.displayName
+                }
+                val matchesSport = when (sportSelect) {
+                    is SportSelection.SportSelect -> game.sport == sportSelect.sport.displayName
+                    else -> true
+                }
+                val matchesLocation = when (locationFilter) {
+                    LocationFilter.ON_CAMPUS -> game.isHome
+                    else -> true
+                }
+                val matchesDate = when (dateFilter) {
+                    DateFilter.TODAY -> game.date == LocalDate.now()
+                    DateFilter.WITHIN_7_DAYS -> game.date?.isBefore(LocalDate.now().plusDays(8)) == true && (game.date?.isAfter(LocalDate.now().minusDays(1)) == true)
+                    DateFilter.WITHIN_A_MONTH -> game.date?.isBefore(LocalDate.now().plusMonths(1)) == true && (game.date?.isAfter(LocalDate.now().minusDays(1)) == true)
+                    DateFilter.OVER_A_MONTH -> game.date?.isAfter(LocalDate.now().plusMonths(1)) == true
+                    null -> true
+                }
+                matchesGender && matchesSport && matchesLocation && matchesDate
             }
-
-            ApiResponse.Loading -> emptyList()
-            ApiResponse.Error -> emptyList()
         }
-    val upcomingGames: List<GameCardData>
-        get() = when (loadedState) {
-            is ApiResponse.Success -> loadedState.data
 
-            ApiResponse.Loading -> emptyList()
-            ApiResponse.Error -> emptyList()
-        }.take(3)
+    val upcomingGames: List<GameCardData>
+        get() = games.take(3)
 }
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val scoreRepository: ScoreRepository
+    private val scoreRepository: ScoreRepository,
+    preferencesRepository: OnboardingPreferencesRepository
 ) : BaseViewModel<HomeUiState>(
     HomeUiState(
-        selectedGender = GenderDivision.ALL,
+        selectedGender = GenderDivision.FAVORITES,
         sportSelect = SportSelection.All,
-        selectionList = Sport.getSportSelectionList(GenderDivision.ALL),
+        selectionList = Sport.getSportSelectionList(GenderDivision.FAVORITES),
+        favoriteSports = preferencesRepository.getFavoriteSportNames()
+            .mapNotNull { runCatching { Sport.valueOf(it) }.getOrNull() }
+            .toSet(),
         loadedState = ApiResponse.Loading
     )
 ) {
     init {
+        applyMutation {
+            copy(selectionList = selectionListFor(selectedGender, favoriteSports, emptyList()))
+        }
         scoreRepository.fetchGames()
         asyncCollect(scoreRepository.upcomingGamesFlow) { response ->
             applyMutation {
+                val loadedState = response.map { list ->
+                    list.map { game ->
+                        game.toGameCardData()
+                    }.filter { game ->
+                        game.date?.isAfter(LocalDate.now().minusDays(1)) ?: false
+                    }.sortedBy { it.date }
+                }
                 copy(
-                    loadedState = response.map { list ->
-                        list.map { game ->
-                            game.toGameCardData()
-                        }.filter { game ->
-                            game.date?.isAfter(LocalDate.now().minusDays(1)) ?: false
-                        }.sortedBy { it.date }
-                    }
+                    loadedState = loadedState,
+                    selectionList = selectionListFor(
+                        selectedGender,
+                        favoriteSports,
+                        (loadedState as? ApiResponse.Success)?.data.orEmpty()
+                    )
                 )
             }
         }
@@ -71,7 +111,6 @@ class HomeViewModel @Inject constructor(
         applyMutation {
             copy(loadedState = ApiResponse.Loading)
         }
-
         scoreRepository.fetchGames()
     }
 
@@ -79,16 +118,48 @@ class HomeViewModel @Inject constructor(
         applyMutation {
             copy(
                 selectedGender = gender,
-                selectionList = Sport.getSportSelectionList(gender),
+                selectionList = selectionListFor(
+                    gender,
+                    favoriteSports,
+                    (loadedState as? ApiResponse.Success)?.data.orEmpty()
+                ),
             )
         }
     }
 
     fun onSportSelected(sport: SportSelection) {
+        applyMutation { copy(sportSelect = sport) }
+    }
+
+    fun onApplyAdvancedFilters(
+        priceFilter: PriceFilter?,
+        locationFilter: LocationFilter?,
+        dateFilter: DateFilter?
+    ) {
         applyMutation {
             copy(
-                sportSelect = sport
+                priceFilter = priceFilter,
+                locationFilter = locationFilter,
+                dateFilter = dateFilter
             )
         }
+    }
+
+    fun onResetAdvancedFilters() {
+        applyMutation {
+            copy(
+                priceFilter = null,
+                locationFilter = null,
+                dateFilter = null
+            )
+        }
+    }
+
+    private fun selectionListFor(
+        gender: GenderDivision,
+        favorites: Set<Sport>,
+        upcomingGames: List<GameCardData>
+    ): List<SportSelection> {
+        return Sport.getSportSelectionList(gender)
     }
 }

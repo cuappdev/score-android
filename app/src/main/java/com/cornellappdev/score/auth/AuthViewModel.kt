@@ -1,6 +1,7 @@
 package com.cornellappdev.score.auth
 
 import android.app.Activity
+import android.util.Log
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.NoCredentialException
 import androidx.lifecycle.ViewModel
@@ -48,11 +49,20 @@ constructor(private val repository: AuthRepository, private val google: GoogleSi
             } catch (error: CancellationException) {
                 mutableSignInState.value = SignInState()
                 throw error
-            } catch (_: Exception) {
-                google.signOut()
+            } catch (error: Exception) {
+                Log.e(TAG, "Google sign-in failed", error)
                 mutableSignInState.value = SignInState(error = R.string.auth_sign_in_failed)
+                try {
+                    google.signOut()
+                } catch (cleanupError: Exception) {
+                    Log.w(TAG, "Could not clear Google credential state", cleanupError)
+                }
             }
         }
+    }
+
+    private companion object {
+        const val TAG = "AuthViewModel"
     }
 
     fun dismissError() {

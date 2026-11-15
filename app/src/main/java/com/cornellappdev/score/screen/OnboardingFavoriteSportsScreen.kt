@@ -67,7 +67,7 @@ data class FavoriteSport(
             val sport = runCatching { Sport.valueOf(parts[0]) }.getOrNull() ?: return null
             val gender = runCatching { GenderDivision.valueOf(parts[1]) }.getOrNull()
                 ?: return null
-            if (gender == GenderDivision.ALL) return null
+            if (gender == GenderDivision.ALL || gender == GenderDivision.FAVORITES) return null
             return FavoriteSport(sport, gender)
         }
     }
@@ -118,7 +118,12 @@ fun OnboardingFavoriteSportsScreen(
                 Spacer(Modifier.height(32.dp))
                 GenderDivisionFilter(
                     selectedGender = selectedGender,
-                    onGenderSelected = { selectedGender = it }
+                    onGenderSelected = { selectedGender = it },
+                    options = listOf(
+                        GenderDivision.ALL,
+                        GenderDivision.MALE,
+                        GenderDivision.FEMALE
+                    )
                 )
             }
 
@@ -181,6 +186,7 @@ private fun rememberFavoriteSportOptions(): List<FavoriteSport> {
 
                     GenderDivision.MALE -> listOf(FavoriteSport(sport, GenderDivision.MALE))
                     GenderDivision.FEMALE -> listOf(FavoriteSport(sport, GenderDivision.FEMALE))
+                    GenderDivision.FAVORITES -> emptyList()
                 }
             }
             .sortedWith(

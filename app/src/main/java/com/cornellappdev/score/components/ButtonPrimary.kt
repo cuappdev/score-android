@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.Style.bodyMedium
@@ -44,5 +45,13 @@ fun ButtonPrimary(
             }
         }
         Text(text = text, style = bodyMedium.copy(color = White))
+    }
+}
+
+@Preview
+@Composable
+private fun ButtonPrimaryPreview(){
+    ScorePreview{
+        ButtonPrimary(text = "test", onClick = {}, icon = null)
     }
 }

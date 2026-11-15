@@ -25,8 +25,21 @@ class OnboardingPreferencesRepository @Inject constructor(
         }
     }
 
+    fun getFavoriteSportNames(): Set<String> = preferences
+        .getStringSet(KEY_FAVORITE_SPORTS, emptySet())
+        .orEmpty()
+        .mapNotNull { it.substringBefore(':').takeIf(String::isNotBlank) }
+        .toSet()
+
+    fun saveFavoriteSportKeys(keys: Set<String>) {
+        preferences.edit {
+            putStringSet(KEY_FAVORITE_SPORTS, keys.toSet())
+        }
+    }
+
     private companion object {
         const val PREFERENCES_NAME = "score_app_preferences"
         const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
+        const val KEY_FAVORITE_SPORTS = "favorite_sports"
     }
 }
