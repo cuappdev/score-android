@@ -1,6 +1,7 @@
 package com.cornellappdev.score.components.highlights
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -24,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.cornellappdev.score.model.ArticleHighlightData
+import com.cornellappdev.score.util.sampleArticleHighlight
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.labelsNormal
 import com.cornellappdev.score.theme.White
@@ -33,16 +36,19 @@ import com.cornellappdev.score.util.sampleArticleHighlightData
 fun ArticleHighlightCard(
     articleHighlight: ArticleHighlightData,
     isWideFormat: Boolean,
+    modifier: Modifier = Modifier,
     linkTextStyle: TextStyle = TextStyle.Default,
     imageOverlayAlpha: Float = 0.4f
 ) {
+    val uriHandler = LocalUriHandler.current
+
     Box(
-        modifier = Modifier
+        modifier = modifier
             .then(if (isWideFormat) Modifier.fillMaxWidth() else Modifier.width(241.dp))
             .height(192.dp)
             .clip(shape = RoundedCornerShape(12.dp))
+            .clickable { uriHandler.openUri(articleHighlight.articleUrl) }
     ) {
-        //todo: empty state if image doesn't load
         AsyncImage(
             model = articleHighlight.imageUrl,
             contentDescription = "highlight image",
