@@ -2,10 +2,10 @@ package com.cornellappdev.score.model
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
-import androidx.core.content.edit
 
 @Singleton
 class OnboardingPreferencesRepository @Inject constructor(
@@ -29,8 +29,8 @@ class OnboardingPreferencesRepository @Inject constructor(
         preferences.getBoolean(
             KEY_PROFILE_SETUP_COMPLETED,
             isOnboardingCompleted() &&
-                preferences.contains(KEY_ONBOARDING_PROFILE_PICTURE) &&
-                preferences.contains(KEY_ONBOARDING_FAVORITE_SPORTS)
+                    preferences.contains(KEY_ONBOARDING_PROFILE_PICTURE) &&
+                    preferences.contains(KEY_ONBOARDING_FAVORITE_SPORTS)
         )
 
     fun markProfileSetupCompleted() {

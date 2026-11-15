@@ -36,14 +36,13 @@ import com.cornellappdev.score.theme.White
 fun GenderDivisionFilter(
     selectedGender: GenderDivision,
     onGenderSelected: (GenderDivision) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val options = listOf(
-        GenderDivision.ALL,
+    modifier: Modifier = Modifier,
+    options: List<GenderDivision> = listOf(
+        GenderDivision.FAVORITES,
         GenderDivision.MALE,
         GenderDivision.FEMALE
     )
-
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -85,7 +84,7 @@ fun GenderDivisionFilter(
 @Composable
 private fun GenderDivisionFilterPreview() {
     ScorePreview {
-        var selectedGender by remember { mutableStateOf(GenderDivision.ALL) }
+        var selectedGender by remember { mutableStateOf(GenderDivision.FAVORITES) }
 
         GenderDivisionFilter(
             selectedGender = selectedGender,

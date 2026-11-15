@@ -36,7 +36,6 @@ import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GameCard
 import com.cornellappdev.score.components.GamesCarousel
-import com.cornellappdev.score.components.IconButton
 import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.ScorePullToRefreshBox
@@ -93,10 +92,10 @@ fun HomeScreen(
                 sheetState = sheetState,
                 onDismiss = { showBottomSheet = false },
                 onApply = { price, location, date ->
-                    // TODO: forward to ViewModel
+                    homeViewModel.onApplyAdvancedFilters(price, location, date)
                 },
                 onReset = {
-                    // TODO: reset filters in ViewModel
+                    homeViewModel.onResetAdvancedFilters()
                 }
             )
         }
@@ -234,9 +233,10 @@ private fun HomeScreenPreview() = ScorePreview {
     ) {
         HomeContent(
             HomeUiState(
-                selectedGender = GenderDivision.ALL,
+                selectedGender = GenderDivision.FAVORITES,
                 sportSelect = SportSelection.All,
                 selectionList = sportSelectionList,
+                favoriteSports = emptySet(),
                 loadedState = ApiResponse.Success(gameList)
             ),
             onGenderSelected = {},
@@ -252,9 +252,10 @@ private fun HomeScreenPreview() = ScorePreview {
 private fun HomeScreenEmptyStatePreview() = ScorePreview {
     HomeContent(
         HomeUiState(
-            selectedGender = GenderDivision.ALL,
+            selectedGender = GenderDivision.FAVORITES,
             sportSelect = SportSelection.All,
             selectionList = sportSelectionList,
+            favoriteSports = emptySet(),
             loadedState = ApiResponse.Success(emptyList())
         ),
         onGenderSelected = {},
