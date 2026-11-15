@@ -35,13 +35,12 @@ import coil3.compose.AsyncImage
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.model.GenderDivision
-import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.VideoHighlightData
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.labelsNormal
-import com.cornellappdev.score.util.sampleVideoHighlight
+import com.cornellappdev.score.util.sampleVideoHighlightData
 
 @Composable
 private fun VideoHighlightCardHeader(
@@ -176,27 +175,8 @@ data class VideoHighlightPreviewData(
 class VideoHighlightsPreviewProvider : PreviewParameterProvider<VideoHighlightPreviewData> {
     override val values: Sequence<VideoHighlightPreviewData> = sequence {
         val samples = listOf(
-            sampleVideoHighlight,
-            VideoHighlightData(
-                title = "vs Columbia",
-                thumbnailImageUrl = "maxresdefault.jpg",
-                videoUrl = "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-                date = null,
-                dateString = "11/9/25",
-                sport = Sport.BASEBALL,
-                gender = GenderDivision.MALE,
-                duration = "0:44"
-            ),
-            VideoHighlightData(
-                title = "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-                thumbnailImageUrl = "maxresdefault.jpg",
-                videoUrl = "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-                date = null,
-                dateString = "11/9/25",
-                sport = Sport.BASEBALL,
-                gender = GenderDivision.MALE,
-                duration = "0:44"
-            )
+            sampleVideoHighlightData,
+            sampleVideoHighlightData
         )
         for (sample in samples) {
             yield(VideoHighlightPreviewData(sample, true))

@@ -26,10 +26,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.cornellappdev.score.model.ArticleHighlightData
-import com.cornellappdev.score.util.sampleArticleHighlight
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.labelsNormal
 import com.cornellappdev.score.theme.White
+import com.cornellappdev.score.util.sampleArticleHighlightData
 
 @Composable
 fun ArticleHighlightCard(
@@ -105,7 +105,7 @@ fun ArticleHighlightCard(
 @Composable
 private fun ArticleHighlightCardPreview() {
     ArticleHighlightCard(
-        sampleArticleHighlight,
+        sampleArticleHighlightData,
         false
     )
 }
@@ -114,7 +114,7 @@ private fun ArticleHighlightCardPreview() {
 @Composable
 private fun WideArticleHighlightCardPreview() {
     ArticleHighlightCard(
-        sampleArticleHighlight,
+        sampleArticleHighlightData,
         true
     )
 }
