@@ -126,13 +126,13 @@ fun HighlightsLoadingScreen(
 
 @Composable
 fun SubHighlightsLoadingScreen(
-    header: String, modifier: Modifier = Modifier
+    header: String, navigateBack: () -> Unit, modifier: Modifier = Modifier
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
         HighlightsSubScreenHeader(
-            header = header, navigateBack = {})
+            header = header, navigateBack = navigateBack)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -181,5 +181,5 @@ private fun HighlightsLoadingScreenPreview() =
 @Composable
 private fun SubHighlightsLoadingScreenPreview() =
     ScorePreview {
-        SubHighlightsLoadingScreen("Past 3 Days")
+        SubHighlightsLoadingScreen("Past 3 Days", navigateBack = {})
     }
