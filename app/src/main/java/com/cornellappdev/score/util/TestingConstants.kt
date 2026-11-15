@@ -227,49 +227,29 @@ val sportSelectionList = listOf(
 
 val recentSearchList = listOf("Columbia", "Men's ice hockey", "Late goal lifts No.6 men’s hockey")
 
-//Mixed type
+val sampleVideoHighlight = VideoHighlightData(
+    title = "vs Columbia",
+    thumbnailImageUrl = "maxresdefault.jpg",
+    videoUrl = "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+    date = null,
+    dateString = "11/09",
+    sport = Sport.BASEBALL,
+    gender = GenderDivision.MALE
+)
+
+val sampleArticleHighlight = ArticleHighlightData(
+    title = "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
+    imageUrl = "maxresdefault.jpg",
+    articleUrl = "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+    date = null,
+    dateString = "11/09",
+    sport = Sport.ICE_HOCKEY
+)
+
 val highlightsList = listOf(
-    HighlightData.Video
-    (VideoHighlightData(
-        "vs Columbia",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/09",
-        Sport.BASEBALL,
-        GenderDivision.MALE
-    )),
-    HighlightData.Article
-    (ArticleHighlightData(
-        "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/09",
-        Sport.ICE_HOCKEY
-    )),
-    HighlightData.Video
-    (VideoHighlightData(
-        "vs Columbia",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/9",
-        Sport.BASEBALL,
-        GenderDivision.MALE
-    )),
-    HighlightData.Article
-    (ArticleHighlightData(
-        "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/09",
-        Sport.ICE_HOCKEY
-    )),
-    HighlightData.Video
-    (VideoHighlightData(
-        "vs Columbia",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/9",
-        Sport.BASEBALL,
-        GenderDivision.MALE
-    ))
+    HighlightData.Video(sampleVideoHighlight),
+    HighlightData.Article(sampleArticleHighlight),
+    HighlightData.Video(sampleVideoHighlight),
+    HighlightData.Article(sampleArticleHighlight),
+    HighlightData.Video(sampleVideoHighlight)
 )
