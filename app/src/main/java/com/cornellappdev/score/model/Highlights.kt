@@ -66,7 +66,7 @@ fun HighlightsQuery.YoutubeVideo.toHighlightData(): HighlightData? {
             date = date,
             dateString = date?.format(outputFormatter) ?: "-/-/-",
             sport = Sport.fromDisplayName(sportName),
-            gender = if (title.contains("Men's")) {
+            gender = if (title.contains("Men")) {
                 GenderDivision.MALE
             } else {
                 GenderDivision.FEMALE
