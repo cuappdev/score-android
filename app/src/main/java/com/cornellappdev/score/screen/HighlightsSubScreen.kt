@@ -116,7 +116,7 @@ fun HighlightsSubScreen(
 
         when (uiState.loadedState) {
             is ApiResponse.Loading -> {
-                SubHighlightsLoadingScreen(header)
+                SubHighlightsLoadingScreen(header, navigateBack)
             }
 
             is ApiResponse.Error -> {
