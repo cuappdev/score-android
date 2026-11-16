@@ -84,18 +84,20 @@ fun ScoreNavHost(navController: NavHostController) {
         }
 
         composable<ScoreScreens.HighlightsSubScreen> { backStackEntry ->
-            val route = backStackEntry.toRoute<ScoreScreens.HighlightsSubScreen>()
-            val subScreenType = route.subScreenType
+            CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
+                val route = backStackEntry.toRoute<ScoreScreens.HighlightsSubScreen>()
+                val subScreenType = route.subScreenType
 
-            HighlightsSubScreen(
-                toSearchScreen = {
-                    navController.navigate(
-                        ScoreScreens.HighlightsSearchScreen(subScreenType)
-                    )
-                },
-                navigateBack = { navController.popBackStack() },
-                subScreenType = subScreenType
-            )
+                HighlightsSubScreen(
+                    toSearchScreen = {
+                        navController.navigate(
+                            ScoreScreens.HighlightsSearchScreen(subScreenType)
+                        )
+                    },
+                    navigateBack = { navController.popBackStack() },
+                    subScreenType = subScreenType
+                )
+            }
         }
 
         composable<ScoreScreens.HighlightsSearchScreen> { backStackEntry ->
