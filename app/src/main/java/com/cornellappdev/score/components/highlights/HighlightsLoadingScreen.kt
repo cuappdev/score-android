@@ -132,7 +132,8 @@ fun SubHighlightsLoadingScreen(
         modifier = Modifier.fillMaxWidth()
     ) {
         HighlightsSubScreenHeader(
-            header = header, navigateBack = navigateBack)
+            header = header, navigateBack = navigateBack
+        )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -173,7 +174,7 @@ fun SubHighlightsLoadingScreen(
 @Preview
 @Composable
 private fun HighlightsLoadingScreenPreview() =
-    ScorePreview{
+    ScorePreview {
         HighlightsLoadingScreen("Loading Highlights...")
     }
 
