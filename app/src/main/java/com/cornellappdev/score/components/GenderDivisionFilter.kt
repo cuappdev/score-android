@@ -46,7 +46,6 @@ fun GenderDivisionFilter(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp)
             .height(48.dp)
             .border(BorderStroke(1.dp, GrayLight), CircleShape)
             .padding(5.dp)

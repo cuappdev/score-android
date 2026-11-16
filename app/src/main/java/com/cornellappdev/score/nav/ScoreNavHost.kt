@@ -12,12 +12,12 @@ import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.nav.root.ScoreScreens
 import com.cornellappdev.score.nav.root.ScoreScreens.Home
 import com.cornellappdev.score.screen.GameDetailsScreen
+import com.cornellappdev.score.screen.HomeScreen
+import com.cornellappdev.score.screen.PastGamesScreen
 import com.cornellappdev.score.screen.highlights.HighlightsScreen
 import com.cornellappdev.score.screen.highlights.HighlightsSearchScreen
 import com.cornellappdev.score.screen.highlights.HighlightsSubScreen
 import com.cornellappdev.score.screen.highlights.HighlightsSubScreenType
-import com.cornellappdev.score.screen.HomeScreen
-import com.cornellappdev.score.screen.PastGamesScreen
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
@@ -34,16 +34,20 @@ fun ScoreNavHost(navController: NavHostController) {
     ) {
         composable<Home> {
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
-                HomeScreen(navigateToGameDetails = {
-                    navController.navigate(ScoreScreens.GameDetailsPage(it))
-                })
+                HomeScreen(
+                    navigateToGameDetails = {
+                        navController.navigate(ScoreScreens.GameDetailsPage(it))
+                    },
+                )
             }
         }
         composable<ScoreScreens.ScoresScreen> {
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
-                PastGamesScreen(navigateToGameDetails = {
-                    navController.navigate(ScoreScreens.GameDetailsPage(it))
-                })
+                PastGamesScreen(
+                    navigateToGameDetails = {
+                        navController.navigate(ScoreScreens.GameDetailsPage(it))
+                    },
+                )
             }
         }
         composable<ScoreScreens.GameDetailsPage> {
