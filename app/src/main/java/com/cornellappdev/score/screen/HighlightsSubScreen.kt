@@ -49,10 +49,11 @@ import com.cornellappdev.score.viewmodel.HighlightsViewModel
 @Composable
 fun HighlightsSubScreenHeader(
     header: String,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .wrapContentSize()
             .dropShadow(
                 shape = RectangleShape,
@@ -94,12 +95,13 @@ fun HighlightsSubScreen(
     navigateBack: () -> Unit,
     toSearchScreen: () -> Unit,
     subScreenType: HighlightsSubScreenType,
+    modifier: Modifier = Modifier,
     highlightsViewModel: HighlightsViewModel = hiltViewModel()
 ) {
     val uiState = highlightsViewModel.collectUiStateValue()
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(color = Color.White)
     ) {
@@ -125,7 +127,7 @@ fun HighlightsSubScreen(
 
             is ApiResponse.Success -> {
                 ScorePullToRefreshBox(
-                    isRefreshing = uiState.loadedState == ApiResponse.Loading,
+                    isRefreshing = uiState.isRefreshing,
                     { highlightsViewModel.onRefresh() }
                 ) {
                     HighlightsSubScreenContent(
@@ -152,12 +154,12 @@ fun HighlightsSubScreenContent(
     header: String,
     navigateBack: () -> Unit,
     toSearchScreen: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(color = Color.White)
-            //.padding(top = 24.dp)
     ) {
         HighlightsSubScreenHeader(header, navigateBack)
         Spacer(modifier = Modifier.height(24.dp))
