@@ -1,6 +1,7 @@
 package com.cornellappdev.score.components.highlights
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,13 +18,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -33,7 +35,6 @@ import coil3.compose.AsyncImage
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.model.GenderDivision
-import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.VideoHighlightData
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayStroke
@@ -51,12 +52,12 @@ private fun VideoHighlightCardHeader(
             .fillMaxWidth()
             .height(117.dp)
     ) {
-        //todo: empty state if image doesn't load
         AsyncImage(
             model = imageUrl,
             contentDescription = "Highlight article image",
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
         )
         Box(
             modifier = Modifier
@@ -100,7 +101,7 @@ fun VideoHighlightCardBody(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (videoHighlight.sport != null){
+                if (videoHighlight.sport != null) {
                     Icon(
                         painter = painterResource(videoHighlight.sport.emptyIcon),
                         contentDescription = "Sport icon",
@@ -108,12 +109,19 @@ fun VideoHighlightCardBody(
                         tint = Color.Unspecified
                     )
                 }
-
-                Icon(
-                    painter = painterResource(if (videoHighlight.gender == GenderDivision.FEMALE) R.drawable.ic_gender_women else R.drawable.ic_gender_men),
-                    contentDescription = "Gender icon",
-                    tint = Color.Unspecified
-                )
+                when (videoHighlight.gender) {
+                    GenderDivision.FEMALE -> Icon(
+                        painter = painterResource(R.drawable.ic_gender_women),
+                        contentDescription = "Women's gender icon",
+                        tint = Color.Unspecified
+                    )
+                    GenderDivision.MALE -> Icon(
+                        painter = painterResource(R.drawable.ic_gender_men),
+                        contentDescription = "Men's gender icon",
+                        tint = Color.Unspecified
+                    )
+                    GenderDivision.ALL, null -> Unit
+                }
             }
         }
         Spacer(Modifier.height(8.dp))
@@ -146,10 +154,13 @@ fun VideoHighlightCard(
     linkTextStyle: TextStyle = TextStyle.Default,
     headerOverlay: @Composable () -> Unit = {}
 ) {
+    val uriHandler = LocalUriHandler.current
+
     Column(
         modifier = modifier
             .then(if (isWideFormat) Modifier.fillMaxWidth() else Modifier.width(241.dp))
             .clip(RoundedCornerShape(12.dp))
+            .clickable { uriHandler.openUri(videoHighlight.videoUrl) }
     ) {
         VideoHighlightCardHeader(videoHighlight.thumbnailImageUrl, headerOverlay)
         VideoHighlightCardBody(videoHighlight, isWideFormat, linkTextStyle)

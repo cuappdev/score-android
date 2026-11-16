@@ -28,6 +28,7 @@ import androidx.navigation.toRoute
 import com.cornellappdev.score.R
 import com.cornellappdev.score.nav.ScoreNavHost
 import com.cornellappdev.score.nav.ScoreNavigationBar
+import com.cornellappdev.score.screen.HighlightsSubScreenType
 import com.cornellappdev.score.theme.LocalInfiniteLoading
 import com.cornellappdev.score.theme.White
 import kotlinx.serialization.Serializable
@@ -110,12 +111,18 @@ sealed class ScoreScreens {
     @Serializable
     data class GameScoreSummaryPage(val scoreEvents: String) : ScoreScreens()
 
-////removed for 2/2026 release
-//    @Serializable
-//    data object HighlightsScreen : ScoreScreens()
-//
-//    @Serializable
-//    data object HighlightsSearchScreen : ScoreScreens()
+    @Serializable
+    data object HighlightsScreen : ScoreScreens()
+
+    @Serializable
+    data class HighlightsSubScreen(
+        val subScreenType: HighlightsSubScreenType
+    ) : ScoreScreens()
+
+    @Serializable
+    data class HighlightsSearchScreen(
+        val subScreenType: HighlightsSubScreenType
+    ) : ScoreScreens()
 }
 
 fun NavBackStackEntry.toScreen(): ScoreScreens? =
@@ -124,9 +131,9 @@ fun NavBackStackEntry.toScreen(): ScoreScreens? =
         "GameDetailsPage" -> toRoute<ScoreScreens.GameDetailsPage>()
         "ScoresScreen" -> toRoute<ScoreScreens.ScoresScreen>()
         "GameScoreSummaryPage" -> toRoute<ScoreScreens.GameScoreSummaryPage>()
-        //removed for 2/2026 release
-//        "HighlightsScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
-//        "HighlightsSearchScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
+        "HighlightsScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
+        "HighlightsSearchScreen" -> toRoute<ScoreScreens.HighlightsSearchScreen>()
+        "HighlightsSubScreen" -> toRoute<ScoreScreens.HighlightsSubScreen>()
         else -> throw IllegalArgumentException("Invalid screen")
     }
 
@@ -144,13 +151,12 @@ val tabs = listOf(
         selectedIcon = R.drawable.ic_schedule_filled,
         screen = ScoreScreens.Home,
     ),
-    //removed for 2/2026 review
-//    NavItem(
-//        label = "Highlights",
-//        unselectedIcon = R.drawable.ic_nav_star,
-//        selectedIcon = R.drawable.ic_nav_star_filled,
-//        screen = ScoreScreens.HighlightsScreen,
-//    ),
+    NavItem(
+        label = "Highlights",
+        unselectedIcon = R.drawable.ic_nav_star,
+        selectedIcon = R.drawable.ic_nav_star_filled,
+        screen = ScoreScreens.HighlightsScreen,
+    ),
     NavItem(
         label = "Scores",
         unselectedIcon = R.drawable.ic_scores,

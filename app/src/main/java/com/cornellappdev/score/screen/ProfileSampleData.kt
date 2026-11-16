@@ -1,13 +1,10 @@
 package com.cornellappdev.score.screen
 
-import com.cornellappdev.score.R
-import com.cornellappdev.score.model.ArticleHighlightData
 import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.model.ProfileData
 import com.cornellappdev.score.model.ProfileFavorite
 import com.cornellappdev.score.model.Sport
-import com.cornellappdev.score.model.VideoHighlightData
 import com.cornellappdev.score.util.sampleArticleHighlightData
 import com.cornellappdev.score.util.sampleVideoHighlightData
 
