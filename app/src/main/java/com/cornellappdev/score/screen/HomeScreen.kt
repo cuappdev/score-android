@@ -56,6 +56,8 @@ import com.cornellappdev.score.viewmodel.HomeViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    navigateToProfile: () -> Unit,
+    modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel = hiltViewModel(),
     navigateToGameDetails: (String) -> Unit = {}
 ) {
@@ -64,7 +66,7 @@ fun HomeScreen(
     val sheetState = rememberModalBottomSheetState()
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-        modifier = Modifier
+        modifier = modifier
             .background(Color.White)
     ) {
         when (uiState.loadedState) {
@@ -83,7 +85,8 @@ fun HomeScreen(
                     onSportSelected = { homeViewModel.onSportSelected(it) },
                     navigateToGameDetails = navigateToGameDetails,
                     onRefresh = { homeViewModel.onRefresh() },
-                    onAdvancedFilterClick = { showBottomSheet = true }
+                    onAdvancedFilterClick = { showBottomSheet = true },
+                    navigateToProfile = navigateToProfile
                 )
             }
         }
@@ -110,8 +113,9 @@ private fun HomeContent(
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
     onRefresh: () -> Unit,
+    onAdvancedFilterClick: () -> Unit,
     navigateToGameDetails: (String) -> Unit = {},
-    onAdvancedFilterClick: () -> Unit
+    navigateToProfile: () -> Unit
 ) {
     ScorePullToRefreshBox(isRefreshing = uiState.loadedState == ApiResponse.Loading, onRefresh) {
         HomeLazyColumn(
@@ -119,7 +123,8 @@ private fun HomeContent(
             onGenderSelected,
             onSportSelected,
             navigateToGameDetails,
-            onAdvancedFilterClick
+            onAdvancedFilterClick,
+            navigateToProfile
         )
     }
 }
@@ -131,7 +136,8 @@ private fun HomeLazyColumn(
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
     navigateToGameDetails: (String) -> Unit,
-    onAdvancedFilterClick: () -> Unit
+    onAdvancedFilterClick: () -> Unit,
+    toProfile: () -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
         if (uiState.filteredGames.isNotEmpty()) {
@@ -182,8 +188,10 @@ private fun HomeLazyColumn(
                     sports = uiState.selectionList,
                     selectedGender = uiState.selectedGender,
                     selectedSport = uiState.sportSelect,
+                    favoriteSports = uiState.favoriteSports,
                     onGenderSelected = onGenderSelected,
                     onSportSelected = onSportSelected,
+                    toProfile = toProfile
                 )
             }
             Box(modifier = Modifier.background(White)) {
@@ -237,12 +245,14 @@ private fun HomeScreenPreview() = ScorePreview {
                 sportSelect = SportSelection.All,
                 selectionList = sportSelectionList,
                 favoriteSports = emptySet(),
-                loadedState = ApiResponse.Success(gameList)
+                loadedState = ApiResponse.Success(gameList),
+
             ),
             onGenderSelected = {},
             onSportSelected = {},
             onRefresh = {},
-            onAdvancedFilterClick = {}
+            onAdvancedFilterClick = {},
+            navigateToProfile = {}
         )
     }
 }
@@ -261,7 +271,8 @@ private fun HomeScreenEmptyStatePreview() = ScorePreview {
         onGenderSelected = {},
         onSportSelected = {},
         onRefresh = {},
-        onAdvancedFilterClick = {}
+        onAdvancedFilterClick = {},
+        navigateToProfile = {}
     )
 }
 
