@@ -36,11 +36,11 @@ import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GameCard
 import com.cornellappdev.score.components.GamesCarousel
-import com.cornellappdev.score.components.onboarding.WelcomeBanner
 import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.SportSelectorHeader
+import com.cornellappdev.score.components.onboarding.WelcomeBanner
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.SportSelection
