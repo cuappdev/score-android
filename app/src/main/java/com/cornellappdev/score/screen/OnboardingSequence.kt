@@ -6,7 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import com.cornellappdev.score.model.OnboardingPreferencesRepository
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.cornellappdev.score.viewmodel.OnboardingSequenceViewModel
 
 private enum class OnboardingStep {
     WELCOME,
@@ -16,8 +17,8 @@ private enum class OnboardingStep {
 
 @Composable
 fun OnboardingSequence(
-    onboardingPreferencesRepository: OnboardingPreferencesRepository,
-    onOnboardingComplete: () -> Unit
+    onOnboardingComplete: () -> Unit,
+    viewModel: OnboardingSequenceViewModel = hiltViewModel()
 ) {
     var onboardingStep by rememberSaveable {
         mutableStateOf(OnboardingStep.WELCOME)
@@ -36,14 +37,14 @@ fun OnboardingSequence(
 
         OnboardingStep.PROFILE_SELECT -> OnboardingProfileSelectScreen(
             onNext = { selectedPicture ->
-                onboardingPreferencesRepository.saveProfilePicture(selectedPicture.name)
+                viewModel.saveProfilePicture(selectedPicture.name)
                 onboardingStep = OnboardingStep.SPORT_SELECT
             }
         )
 
         OnboardingStep.SPORT_SELECT -> {
             var selectedFavorites by remember {
-                mutableStateOf(onboardingPreferencesRepository.getFavoriteSports().toList())
+                mutableStateOf(viewModel.getFavoriteSports())
             }
             OnboardingFavoriteSportsScreen(
                 favorites = selectedFavorites,
@@ -55,7 +56,7 @@ fun OnboardingSequence(
                     }
                 },
                 onFinish = {
-                    onboardingPreferencesRepository.saveFavoriteSports(selectedFavorites.toSet())
+                    viewModel.saveFavoriteSports(selectedFavorites.toSet())
                     completeOnboarding()
                 }
             )

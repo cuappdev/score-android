@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
                 RootNavigation()
             } else {
                 OnboardingSequence(
-                    onboardingPreferencesRepository = onboardingPreferencesRepository,
                     onOnboardingComplete = {
                         onboardingPreferencesRepository.markOnboardingCompleted()
                         isOnboardingCompleted = true
