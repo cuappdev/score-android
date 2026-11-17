@@ -33,6 +33,7 @@ data class PastGamesUiState(
                         } else {
                             true
                         }
+
                         else -> game.gender == selectedGender.displayName
                     }
                     val matchesSport = (sportSelect is SportSelection.All ||
@@ -71,24 +72,30 @@ class PastGamesViewModel @Inject constructor(
     init {
         asyncCollect(scoreRepository.upcomingGamesFlow) { response ->
             applyMutation {
+                val loadedState = response.map { list ->
+                    list.map { game ->
+                        game.toGameCardData()
+                    }.filter { game ->
+                        game.date?.isBefore(LocalDate.now()) ?: false
+                    }.sortedByDescending { it.date }
+                }
+                val pastGames = (loadedState as? ApiResponse.Success)?.data.orEmpty()
                 copy(
-                    loadedState = response.map { list ->
-                        list.map { game ->
-                            game.toGameCardData()
-                        }.filter { game ->
-                            game.date?.isBefore(LocalDate.now()) ?: false
-                        }.sortedByDescending { it.date }
-                    }
+                    loadedState = loadedState,
+                    selectionList = selectionListFor(selectedGender, pastGames)
                 )
             }
         }
     }
-    
+
     fun onGenderSelected(gender: GenderDivision) {
         applyMutation {
             copy(
                 selectedGender = gender,
-                selectionList = Sport.getSportSelectionList(gender),
+                selectionList = selectionListFor(
+                    gender,
+                    (loadedState as? ApiResponse.Success)?.data.orEmpty()
+                ),
             )
         }
     }
@@ -105,5 +112,25 @@ class PastGamesViewModel @Inject constructor(
         applyMutation { copy(loadedState = ApiResponse.Loading) }
 
         scoreRepository.fetchGames()
+    }
+
+    private fun selectionListFor(
+        gender: GenderDivision,
+        pastGames: List<GameCardData>
+    ): List<SportSelection> {
+        val mostRecentGameBySport = pastGames
+            .groupBy { it.sport }
+            .mapValues { (_, games) -> games.mapNotNull { it.date }.maxOrNull() }
+
+        return Sport.getSportSelectionList(gender).sortedWith(
+            compareBy<SportSelection> { if (it is SportSelection.All) 0 else 1 }
+                .thenByDescending { selection ->
+                    (selection as? SportSelection.SportSelect)
+                        ?.sport
+                        ?.displayName
+                        ?.let(mostRecentGameBySport::get)
+                        ?: LocalDate.MIN
+                }
+        )
     }
 }

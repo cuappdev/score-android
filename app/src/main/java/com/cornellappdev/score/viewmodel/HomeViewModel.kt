@@ -41,6 +41,7 @@ data class HomeUiState(
                     } else {
                         true
                     }
+
                     else -> game.gender == selectedGender.displayName
                 }
                 val matchesSport = when (sportSelect) {
@@ -53,9 +54,18 @@ data class HomeUiState(
                 }
                 val matchesDate = when (dateFilter) {
                     DateFilter.TODAY -> game.date == LocalDate.now()
-                    DateFilter.WITHIN_7_DAYS -> game.date?.isBefore(LocalDate.now().plusDays(8)) == true && (game.date?.isAfter(LocalDate.now().minusDays(1)) == true)
-                    DateFilter.WITHIN_A_MONTH -> game.date?.isBefore(LocalDate.now().plusMonths(1)) == true && (game.date?.isAfter(LocalDate.now().minusDays(1)) == true)
-                    DateFilter.OVER_A_MONTH -> game.date?.isAfter(LocalDate.now().plusMonths(1)) == true
+                    DateFilter.WITHIN_7_DAYS -> game.date?.isBefore(
+                        LocalDate.now().plusDays(8)
+                    ) == true && (game.date?.isAfter(LocalDate.now().minusDays(1)) == true)
+
+                    DateFilter.WITHIN_A_MONTH -> game.date?.isBefore(
+                        LocalDate.now().plusMonths(1)
+                    ) == true && (game.date?.isAfter(LocalDate.now().minusDays(1)) == true)
+
+                    DateFilter.OVER_A_MONTH -> game.date?.isAfter(
+                        LocalDate.now().plusMonths(1)
+                    ) == true
+
                     null -> true
                 }
                 matchesGender && matchesSport && matchesLocation && matchesDate
@@ -160,6 +170,19 @@ class HomeViewModel @Inject constructor(
         favorites: Set<Sport>,
         upcomingGames: List<GameCardData>
     ): List<SportSelection> {
-        return Sport.getSportSelectionList(gender)
+        val nextGameDateBySport = upcomingGames
+            .groupBy { it.sport }
+            .mapValues { (_, games) -> games.mapNotNull { it.date }.minOrNull() }
+
+        return Sport.getSportSelectionList(gender).sortedWith(
+            compareBy<SportSelection> { if (it is SportSelection.All) 0 else 1 }
+                .thenBy { selection ->
+                    (selection as? SportSelection.SportSelect)
+                        ?.sport
+                        ?.displayName
+                        ?.let(nextGameDateBySport::get)
+                        ?: LocalDate.MAX
+                }
+        )
     }
 }
