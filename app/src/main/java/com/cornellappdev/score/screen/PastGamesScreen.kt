@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,12 +22,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.cornellappdev.score.R
-import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.PastGameCard
+import com.cornellappdev.score.components.PastGamesEmptyState
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.SportSelectorHeader
@@ -42,7 +42,6 @@ import com.cornellappdev.score.util.gameList
 import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.PastGamesUiState
 import com.cornellappdev.score.viewmodel.PastGamesViewModel
-import kotlin.collections.emptyList
 
 @Composable
 fun PastGamesScreen(
@@ -92,7 +91,13 @@ private fun PastGamesContent(
     navigateToProfile: () -> Unit
 ) {
     ScorePullToRefreshBox(uiState.loadedState == ApiResponse.Loading, onRefresh = onRefresh) {
-        PastGamesLazyColumn(uiState, onGenderSelected, onSportSelected, navigateToGameDetails, navigateToProfile)
+        PastGamesLazyColumn(
+            uiState,
+            onGenderSelected,
+            onSportSelected,
+            navigateToGameDetails,
+            navigateToProfile
+        )
     }
 }
 
@@ -174,7 +179,13 @@ private fun PastGamesLazyColumn(
             }
         } else {
             item {
-                EmptyStateBox(icon = R.drawable.ic_speaker_gray, title = "No games yet.")
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .fillMaxSize()
+                ) {
+                    PastGamesEmptyState()
+                }
             }
         }
     }
