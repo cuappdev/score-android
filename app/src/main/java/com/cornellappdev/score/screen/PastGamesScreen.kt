@@ -42,17 +42,20 @@ import com.cornellappdev.score.util.gameList
 import com.cornellappdev.score.util.sportSelectionList
 import com.cornellappdev.score.viewmodel.PastGamesUiState
 import com.cornellappdev.score.viewmodel.PastGamesViewModel
+import kotlin.collections.emptyList
 
 @Composable
 fun PastGamesScreen(
+    modifier: Modifier = Modifier,
     pastGamesViewModel: PastGamesViewModel = hiltViewModel(),
-    navigateToGameDetails: (String) -> Unit = {}
+    navigateToGameDetails: (String) -> Unit = {},
+    navigateToProfile: () -> Unit
 ) {
     val uiState = pastGamesViewModel.collectUiStateValue()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-        modifier = Modifier
+        modifier = modifier
             .background(Color.White)
     ) {
         when (uiState.loadedState) {
@@ -70,7 +73,8 @@ fun PastGamesScreen(
                     onGenderSelected = { pastGamesViewModel.onGenderSelected(it) },
                     onSportSelected = { pastGamesViewModel.onSportSelected(it) },
                     navigateToGameDetails = navigateToGameDetails,
-                    onRefresh = pastGamesViewModel::onRefresh
+                    onRefresh = pastGamesViewModel::onRefresh,
+                    navigateToProfile = navigateToProfile
                 )
             }
         }
@@ -84,10 +88,11 @@ private fun PastGamesContent(
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
     onRefresh: () -> Unit,
-    navigateToGameDetails: (String) -> Unit = {}
+    navigateToGameDetails: (String) -> Unit = {},
+    navigateToProfile: () -> Unit
 ) {
     ScorePullToRefreshBox(uiState.loadedState == ApiResponse.Loading, onRefresh = onRefresh) {
-        PastGamesLazyColumn(uiState, onGenderSelected, onSportSelected, navigateToGameDetails)
+        PastGamesLazyColumn(uiState, onGenderSelected, onSportSelected, navigateToGameDetails, navigateToProfile)
     }
 }
 
@@ -97,7 +102,8 @@ private fun PastGamesLazyColumn(
     uiState: PastGamesUiState,
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
-    navigateToGameDetails: (String) -> Unit
+    navigateToGameDetails: (String) -> Unit,
+    navigateToProfile: () -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
         if (uiState.filteredGames.isNotEmpty()) {
@@ -140,7 +146,9 @@ private fun PastGamesLazyColumn(
                     selectedGender = uiState.selectedGender,
                     selectedSport = uiState.sportSelect,
                     onGenderSelected = onGenderSelected,
-                    onSportSelected = onSportSelected
+                    onSportSelected = onSportSelected,
+                    toProfile = navigateToProfile,
+                    favoriteSports = emptySet() //todo pass in a preferences viewmodel
                 )
             }
             Box(modifier = Modifier.background(White)) {
@@ -185,6 +193,7 @@ private fun PastGamesPreview() = ScorePreview {
         onGenderSelected = {},
         onSportSelected = {},
         onRefresh = {},
+        navigateToProfile = {}
     )
 }
 
@@ -201,5 +210,6 @@ private fun PastGamesEmptyStatePreview() = ScorePreview {
         onGenderSelected = {},
         onSportSelected = {},
         onRefresh = {},
+        navigateToProfile = {}
     )
 }
