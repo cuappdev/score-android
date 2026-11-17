@@ -35,6 +35,7 @@ import kotlinx.serialization.Serializable
 @Composable
 fun RootNavigation(
     modifier: Modifier = Modifier,
+    welcomeName: String? = null,
     rootNavigationViewModel: RootNavigationViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
@@ -89,7 +90,7 @@ fun RootNavigation(
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             CompositionLocalProvider(LocalInfiniteLoading provides animatedValue) {
-                ScoreNavHost(navController)
+                ScoreNavHost(navController, welcomeName)
             }
         }
     }
