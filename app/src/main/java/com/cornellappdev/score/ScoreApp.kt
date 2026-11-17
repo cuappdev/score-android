@@ -34,7 +34,8 @@ fun ScoreApp(
     var skippedWelcome by rememberSaveable {
         mutableStateOf(onboardingPreferences.isOnboardingCompleted())
     }
-    val signedIn = authState is AuthState.SignedIn
+    val signedInUser = (authState as? AuthState.SignedIn)?.user
+    val signedIn = signedInUser != null
 
     LaunchedEffect(signedIn) {
         if (signedIn) {
@@ -49,7 +50,7 @@ fun ScoreApp(
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = CrimsonPrimary)
                 }
-            signedIn || skippedWelcome -> RootNavigation()
+            signedIn || skippedWelcome -> RootNavigation(welcomeName = signedInUser?.name)
             else ->
                 OnboardingScreen(
                     onSignUp = onSignIn,

@@ -36,6 +36,7 @@ import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GameCard
 import com.cornellappdev.score.components.GamesCarousel
+import com.cornellappdev.score.components.onboarding.WelcomeBanner
 import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.ScorePullToRefreshBox
@@ -58,6 +59,7 @@ import com.cornellappdev.score.viewmodel.HomeViewModel
 fun HomeScreen(
     navigateToProfile: () -> Unit,
     modifier: Modifier = Modifier,
+    welcomeName: String? = null,
     homeViewModel: HomeViewModel = hiltViewModel(),
     navigateToGameDetails: (String) -> Unit = {}
 ) {
@@ -81,6 +83,7 @@ fun HomeScreen(
             is ApiResponse.Success -> {
                 HomeContent(
                     uiState = uiState,
+                    welcomeName = welcomeName,
                     onGenderSelected = { homeViewModel.onGenderSelected(it) },
                     onSportSelected = { homeViewModel.onSportSelected(it) },
                     navigateToGameDetails = navigateToGameDetails,
@@ -114,8 +117,9 @@ private fun HomeContent(
     onSportSelected: (SportSelection) -> Unit,
     onRefresh: () -> Unit,
     onAdvancedFilterClick: () -> Unit,
-    navigateToGameDetails: (String) -> Unit = {},
-    navigateToProfile: () -> Unit
+    navigateToProfile: () -> Unit,
+    welcomeName: String? = null,
+    navigateToGameDetails: (String) -> Unit = {}
 ) {
     ScorePullToRefreshBox(isRefreshing = uiState.loadedState == ApiResponse.Loading, onRefresh) {
         HomeLazyColumn(
@@ -124,7 +128,8 @@ private fun HomeContent(
             onSportSelected,
             navigateToGameDetails,
             onAdvancedFilterClick,
-            navigateToProfile
+            navigateToProfile,
+            welcomeName
         )
     }
 }
@@ -137,9 +142,21 @@ private fun HomeLazyColumn(
     onSportSelected: (SportSelection) -> Unit,
     navigateToGameDetails: (String) -> Unit,
     onAdvancedFilterClick: () -> Unit,
-    toProfile: () -> Unit
+    toProfile: () -> Unit,
+    welcomeName: String? = null
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
+        if (welcomeName != null) {
+            item {
+                WelcomeBanner(
+                    name = welcomeName,
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                )
+            }
+            item {
+                Spacer(Modifier.height(24.dp))
+            }
+        }
         if (uiState.filteredGames.isNotEmpty()) {
             item {
                 Text(
@@ -245,14 +262,14 @@ private fun HomeScreenPreview() = ScorePreview {
                 sportSelect = SportSelection.All,
                 selectionList = sportSelectionList,
                 favoriteSports = emptySet(),
-                loadedState = ApiResponse.Success(gameList),
-
+                loadedState = ApiResponse.Success(gameList)
             ),
             onGenderSelected = {},
             onSportSelected = {},
             onRefresh = {},
             onAdvancedFilterClick = {},
-            navigateToProfile = {}
+            navigateToProfile = {},
+            welcomeName = "Claire"
         )
     }
 }
