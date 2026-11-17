@@ -2,7 +2,19 @@ package com.cornellappdev.score.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -13,8 +25,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,18 +47,25 @@ import com.cornellappdev.score.components.NavigationHeader
 import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.ProfileFavorite
 import com.cornellappdev.score.model.Sport
-import com.cornellappdev.score.theme.*
+import com.cornellappdev.score.theme.CrimsonPrimary
+import com.cornellappdev.score.theme.GrayLight
+import com.cornellappdev.score.theme.GrayMedium
+import com.cornellappdev.score.theme.GrayPrimary
+import com.cornellappdev.score.theme.GrayStroke
+import com.cornellappdev.score.theme.GreenBackground
+import com.cornellappdev.score.theme.Style
+import com.cornellappdev.score.theme.saturatedGreen
 
-private val favoriteSportComparator = compareBy<ProfileFavorite>(
+internal val favoriteSportComparator = compareBy<ProfileFavorite>(
     { it.sport.displayName },
     { it.gender == GenderDivision.FEMALE }
 )
 
-private fun selectedFavoritesFirst(favorites: List<ProfileFavorite>): Comparator<ProfileFavorite> =
+internal fun selectedFavoritesFirst(favorites: List<ProfileFavorite>): Comparator<ProfileFavorite> =
     compareBy<ProfileFavorite> { it !in favorites }.then(favoriteSportComparator)
 
 // Use the complete icon catalog, independent of sports with games in the current season.
-private val favoriteSportOptions = Sport.entries.flatMap { sport ->
+internal val favoriteSportOptions = Sport.entries.flatMap { sport ->
     // The profile design includes both golf divisions, unlike the schedule catalog.
     val divisions = if (sport.gender == GenderDivision.ALL || sport == Sport.GOLF) {
         listOf(GenderDivision.MALE, GenderDivision.FEMALE)
@@ -63,19 +85,57 @@ fun EditFavoriteSportsScreen(
         .filter { gender == GenderDivision.ALL || it.gender == gender }
         .sortedWith(selectedFavoritesFirst(favorites))
 
-    Column(modifier.fillMaxSize().background(Color.White)) {
+    Column(modifier
+        .fillMaxSize()
+        .background(Color.White)) {
         NavigationHeader(stringResource(R.string.edit_favorite_sports), onBack)
+        FavoriteSportSelectionScreenContents(
+            favorites = favorites,
+            options = options,
+            gender = gender,
+            onGenderSelected = { gender = it },
+            onToggleFavorite = onToggleFavorite,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        )
+    }
+}
+
+@Composable
+fun FavoriteSportSelectionScreenContents(
+    favorites: List<ProfileFavorite>,
+    options: List<ProfileFavorite>,
+    gender: GenderDivision,
+    onGenderSelected: (GenderDivision) -> Unit,
+    onToggleFavorite: (ProfileFavorite) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
         Row(
-            Modifier.padding(horizontal = 24.dp, vertical = 32.dp)
-                .fillMaxWidth().border(1.dp, GrayLight, CircleShape)
-                .padding(6.dp).selectableGroup()
+            Modifier
+                .padding(horizontal = 24.dp, vertical = 32.dp)
+                .fillMaxWidth()
+                .border(1.dp, GrayLight, CircleShape)
+                .padding(6.dp)
+                .selectableGroup()
         ) {
-            GenderDivision.entries.forEach { division ->
+            val options = listOf(
+                GenderDivision.ALL,
+                GenderDivision.MALE,
+                GenderDivision.FEMALE
+            )
+            options.forEach { division ->
                 val selected = gender == division
                 Box(
-                    Modifier.weight(1f).clip(CircleShape)
+                    Modifier
+                        .weight(1f)
+                        .clip(CircleShape)
                         .background(if (selected) CrimsonPrimary else Color.Transparent)
-                        .selectable(selected, role = Role.Tab, onClick = { gender = division })
+                        .selectable(
+                            selected,
+                            role = Role.Tab,
+                            onClick = { onGenderSelected(division) })
                         .padding(vertical = 8.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -105,16 +165,20 @@ fun EditFavoriteSportsScreen(
 private fun FavoriteSportOption(favorite: ProfileFavorite, selected: Boolean, onClick: () -> Unit) {
     val shape = RoundedCornerShape(20.dp)
     Column(
-        Modifier.fillMaxWidth()
+        Modifier
+            .fillMaxWidth()
             .semantics(mergeDescendants = true) {
                 contentDescription = "${favorite.gender.displayName} ${favorite.sport.displayName}"
             }
             .toggleable(selected, role = Role.Checkbox, onValueChange = { onClick() }),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(Modifier.fillMaxWidth().aspectRatio(1f), contentAlignment = Alignment.Center) {
+        Box(Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f), contentAlignment = Alignment.Center) {
             Box(
-                Modifier.fillMaxSize()
+                Modifier
+                    .fillMaxSize()
                     .background(if (selected) GreenBackground else GrayStroke, shape)
                     .border(
                         if (selected) 3.dp else 1.dp,
@@ -130,8 +194,11 @@ private fun FavoriteSportOption(favorite: ProfileFavorite, selected: Boolean, on
             }
             if (selected) {
                 Box(
-                    Modifier.align(Alignment.TopStart).offset(x = (-5).dp, y = (-5).dp)
-                        .size(32.dp).background(CrimsonPrimary, CircleShape),
+                    Modifier
+                        .align(Alignment.TopStart)
+                        .offset(x = (-5).dp, y = (-5).dp)
+                        .size(32.dp)
+                        .background(CrimsonPrimary, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
