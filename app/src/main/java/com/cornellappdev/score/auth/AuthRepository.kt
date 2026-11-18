@@ -34,7 +34,7 @@ constructor(private val api: AuthApi, private val storage: SessionStorage) {
                 try {
                     api.login(identity.firebaseIdToken)
                 } catch (_: UserNotFoundException) {
-                    api.signup(identity)
+                    api.signup(identity.firebaseIdToken)
                 }
             saveSession(AuthSession(identity.user, tokens.accessToken, tokens.refreshToken))
             restored = true

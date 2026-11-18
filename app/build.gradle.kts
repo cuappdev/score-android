@@ -38,15 +38,15 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"${secrets.getProperty("API_URL_DEV")}\"")
-            buildConfigField("String", "SOCKET_URL", "\"${secrets.getProperty("SOCKET_URL_DEV")}\"")
+            buildConfigField("String", "BASE_URL", "\"${secrets.getProperty("API_URL_PROD")}\"")
+            buildConfigField("String", "SOCKET_URL", "\"${secrets.getProperty("SOCKET_URL_PROD")}\"")
         }
         release {
-            buildConfigField("String", "BASE_URL", "\"${secrets.getProperty("API_URL_PROD")}\"")
+            buildConfigField("String", "BASE_URL", "\"${secrets.getProperty("API_URL_DEV")}\"")
             buildConfigField(
                 "String",
                 "SOCKET_URL",
-                "\"${secrets.getProperty("SOCKET_URL_PROD")}\"",
+                "\"${secrets.getProperty("SOCKET_URL_DEV")}\"",
             )
             isMinifyEnabled = false
             proguardFiles(
@@ -114,7 +114,7 @@ apollo {
     service("service") {
         packageName.set("com.example.score")
         secrets
-            .getProperty("API_URL_DEV")
+            .getProperty("API_URL_PROD")
             ?.takeIf { it.isNotBlank() }
             ?.let { apiUrl ->
                 introspection {
