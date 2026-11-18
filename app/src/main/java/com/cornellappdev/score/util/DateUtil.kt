@@ -79,7 +79,7 @@ fun parseIsoDateToLocalDateOrNull(strDate: String): LocalDate? {
         Instant.parse(strDate)
             .atZone(ZoneId.systemDefault())
             .toLocalDate()
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         null
     }
 }

@@ -7,10 +7,6 @@ import com.cornellappdev.score.model.HighlightsRepository
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.debounce
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -26,15 +22,21 @@ data class HighlightsUiState(
     val recentSearches: List<String>
 )
 
-private fun buildDerivedLists(
+private data class FilteredHighlightsByDateBlock(
+    val filteredHighlights: List<HighlightData>,
+    val todayHighlights: List<HighlightData>,
+    val pastThreeDaysHighlights: List<HighlightData>
+)
+
+private fun filterAndGroupHighlightsByDateBlock(
     highlights: List<HighlightData>,
     sportSelect: SportSelection,
     query: String
-): Triple<List<HighlightData>, List<HighlightData>, List<HighlightData>> {
+): FilteredHighlightsByDateBlock {
     val today = LocalDate.now()
     val threeDaysAgo = today.minusDays(3)
 
-    val filteredBySport = highlights
+    val highlightsFilteredBySportSelection = highlights
         .filter { it.date != null }
         .filter { h ->
             when (sportSelect) {
@@ -44,8 +46,8 @@ private fun buildDerivedLists(
         }
 
     val filteredByQuery =
-        if (query.isBlank()) filteredBySport
-        else filteredBySport.filter {
+        if (query.isBlank()) highlightsFilteredBySportSelection
+        else highlightsFilteredBySportSelection.filter {
             it.title.contains(query, ignoreCase = true) ||
                     (it.sport?.displayName?.contains(query, ignoreCase = true) == true)
         }
@@ -56,23 +58,27 @@ private fun buildDerivedLists(
 
     val pastThreeDays = sorted.filter { date ->
         date.date?.let {
-            it < today && it >= threeDaysAgo
+            it in threeDaysAgo..<today
         } ?: false
     }
 
-    return Triple(sorted, todayHighlights, pastThreeDays)
+    return FilteredHighlightsByDateBlock(
+        filteredHighlights = sorted,
+        todayHighlights = todayHighlights,
+        pastThreeDaysHighlights = pastThreeDays
+    )
 }
 
-private fun recompute(highlights: List<HighlightData>, state: HighlightsUiState)
+private fun refreshFilteredHighlights(highlights: List<HighlightData>, state: HighlightsUiState)
         : HighlightsUiState {
 
-    val (filtered, today, pastThreeDays) =
-        buildDerivedLists(highlights, state.sportSelect, state.query)
+    val groupedHighlights =
+        filterAndGroupHighlightsByDateBlock(highlights, state.sportSelect, state.query)
 
     return state.copy(
-        filteredHighlights = filtered,
-        todayHighlights = today,
-        pastThreeDaysHighlights = pastThreeDays
+        filteredHighlights = groupedHighlights.filteredHighlights,
+        todayHighlights = groupedHighlights.todayHighlights,
+        pastThreeDaysHighlights = groupedHighlights.pastThreeDaysHighlights
     )
 }
 
@@ -100,15 +106,15 @@ class HighlightsViewModel @Inject constructor(
                     is ApiResponse.Success -> {
                         val sorted = response.data.sortedByDescending { it.date }
 
-                        val (filtered, today, pastThreeDays) =
-                            buildDerivedLists(sorted, sportSelect, query)
+                        val groupedHighlights =
+                            filterAndGroupHighlightsByDateBlock(sorted, sportSelect, query)
 
                         copy(
                             loadedState = ApiResponse.Success(sorted),
                             isRefreshing = false,
-                            filteredHighlights = filtered,
-                            todayHighlights = today,
-                            pastThreeDaysHighlights = pastThreeDays
+                            filteredHighlights = groupedHighlights.filteredHighlights,
+                            todayHighlights = groupedHighlights.todayHighlights,
+                            pastThreeDaysHighlights = groupedHighlights.pastThreeDaysHighlights
                         )
                     }
 
@@ -118,7 +124,8 @@ class HighlightsViewModel @Inject constructor(
                                 isRefreshing = true
                             )
                         } else {
-                            copy(isRefreshing = true,
+                            copy(
+                                isRefreshing = true,
                                 loadedState = ApiResponse.Loading,
                                 filteredHighlights = emptyList(),
                                 todayHighlights = emptyList(),
@@ -149,7 +156,7 @@ class HighlightsViewModel @Inject constructor(
         applyMutation {
             val highlights = (loadedState as? ApiResponse.Success)?.data.orEmpty()
 
-            recompute(
+            refreshFilteredHighlights(
                 highlights,
                 copy(query = newQuery)
             )
@@ -163,7 +170,7 @@ class HighlightsViewModel @Inject constructor(
         highlightsRepository.fetchHighlights()
     }
 
-    fun onSportSelected(sport: SportSelection) {
+    fun onSportToggled(sport: SportSelection) {
         applyMutation {
             val highlights =
                 (loadedState as? ApiResponse.Success)?.data.orEmpty()
@@ -175,7 +182,7 @@ class HighlightsViewModel @Inject constructor(
                     sport
                 }
 
-            recompute(
+            refreshFilteredHighlights(
                 highlights,
                 copy(sportSelect = newSelection)
             )
@@ -194,7 +201,7 @@ class HighlightsViewModel @Inject constructor(
                     .distinct()
                     .take(3)
 
-            recompute(
+            refreshFilteredHighlights(
                 highlights,
                 copy(
                     query = query,
