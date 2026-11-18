@@ -7,6 +7,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -17,9 +18,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cornellappdev.score.auth.AuthState
 import com.cornellappdev.score.auth.AuthStatusOverlay
 import com.cornellappdev.score.auth.AuthViewModel
+import com.cornellappdev.score.auth.OnboardingStage
 import com.cornellappdev.score.model.OnboardingPreferencesRepository
 import com.cornellappdev.score.nav.root.RootNavigation
 import com.cornellappdev.score.screen.OnboardingScreen
+import com.cornellappdev.score.screen.OnboardingSequence
 import com.cornellappdev.score.theme.CrimsonPrimary
 
 @Composable
@@ -34,11 +37,11 @@ fun ScoreApp(
     var skippedWelcome by rememberSaveable {
         mutableStateOf(onboardingPreferences.isOnboardingCompleted())
     }
-    val signedInUser = (authState as? AuthState.SignedIn)?.user
-    val signedIn = signedInUser != null
+    val signedInState = authState as? AuthState.SignedIn
+    val onboardingComplete = signedInState?.onboardingStage == OnboardingStage.COMPLETE
 
-    LaunchedEffect(signedIn) {
-        if (signedIn) {
+    LaunchedEffect(onboardingComplete) {
+        if (onboardingComplete) {
             onboardingPreferences.markOnboardingCompleted()
             skippedWelcome = true
         }
@@ -50,7 +53,21 @@ fun ScoreApp(
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = CrimsonPrimary)
                 }
-            signedIn || skippedWelcome -> RootNavigation(welcomeName = signedInUser?.name)
+            signedInState != null && !onboardingComplete ->
+                key(signedInState.user.id) {
+                    OnboardingSequence(
+                        stage = signedInState.onboardingStage,
+                        displayName = signedInState.user.name,
+                        onProfileComplete = {
+                            authViewModel.completeOnboardingStep(OnboardingStage.PROFILE)
+                        },
+                        onOnboardingComplete = {
+                            authViewModel.completeOnboardingStep(OnboardingStage.SPORTS)
+                        },
+                    )
+                }
+            onboardingComplete || skippedWelcome ->
+                RootNavigation(welcomeName = signedInState?.user?.name)
             else ->
                 OnboardingScreen(
                     onSignUp = onSignIn,

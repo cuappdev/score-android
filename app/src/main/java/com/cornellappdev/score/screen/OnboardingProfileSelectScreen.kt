@@ -33,50 +33,42 @@ import com.cornellappdev.score.theme.Style
 fun OnboardingProfileSelectScreen(
     onNext: (ProfilePicture) -> Unit,
     modifier: Modifier = Modifier,
-    displayName: String? = null
+    displayName: String? = null,
+    initiallySelectedPicture: ProfilePicture = ProfilePicture.BLANK,
 ) {
-    var selectedPicture by rememberSaveable { mutableStateOf(ProfilePicture.BLANK) }
+    var selectedPicture by rememberSaveable { mutableStateOf(initiallySelectedPicture) }
     val name = displayName ?: stringResource(R.string.onboarding_default_name)
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
+    Box(modifier = modifier.fillMaxSize().background(Color.White)) {
         Column(modifier = Modifier.fillMaxSize()) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 80.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.fillMaxWidth().padding(top = 80.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     text = stringResource(R.string.edit_profile),
                     style = Style.heading1,
-                    color = GrayPrimary
+                    color = GrayPrimary,
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = stringResource(R.string.onboarding_profile_subtitle),
                     style = Style.bodyMedium,
-                    color = GrayPrimary
+                    color = GrayPrimary,
                 )
 
                 Spacer(Modifier.height(40.dp))
                 Image(
                     painter = painterResource(selectedPicture.drawable),
-                    contentDescription = stringResource(
-                        R.string.selected_profile_picture,
-                        stringResource(selectedPicture.label)
-                    ),
-                    modifier = Modifier.size(100.dp)
+                    contentDescription =
+                        stringResource(
+                            R.string.selected_profile_picture,
+                            stringResource(selectedPicture.label),
+                        ),
+                    modifier = Modifier.size(100.dp),
                 )
                 Spacer(Modifier.height(16.dp))
-                Text(
-                    text = name,
-                    style = Style.bodyMedium,
-                    color = Color.Black
-                )
+                Text(text = name, style = Style.bodyMedium, color = Color.Black)
 
                 Spacer(Modifier.height(60.dp))
                 Text(
@@ -84,15 +76,13 @@ fun OnboardingProfileSelectScreen(
                     style = Style.metricMedium,
                     color = Color.Black,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
                 )
                 Spacer(Modifier.height(24.dp))
                 ProfilePictureOptions(
                     selectedPicture = selectedPicture,
                     onPictureSelected = { selectedPicture = it },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
 
@@ -100,7 +90,7 @@ fun OnboardingProfileSelectScreen(
             OnboardingFooter(
                 buttonText = stringResource(R.string.next),
                 onClick = { onNext(selectedPicture) },
-                activeStep = 0
+                activeStep = 0,
             )
         }
     }
