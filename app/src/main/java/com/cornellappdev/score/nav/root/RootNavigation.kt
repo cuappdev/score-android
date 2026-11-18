@@ -83,7 +83,13 @@ fun RootNavigation(
                 color = Color.White,
                 shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
             ) {
-                ScoreNavigationBar({ navController.navigate(it) }, navBackStackEntry)
+                ScoreNavigationBar({ screen ->
+                    navController.navigate(screen) {
+                        popUpTo(ScoreScreens.Home) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }, navBackStackEntry)
             }
         },
         containerColor = White
@@ -111,12 +117,15 @@ sealed class ScoreScreens {
     @Serializable
     data class GameScoreSummaryPage(val scoreEvents: String) : ScoreScreens()
 
-////removed for 2/2026 release
-//    @Serializable
-//    data object HighlightsScreen : ScoreScreens()
-//
-//    @Serializable
-//    data object HighlightsSearchScreen : ScoreScreens()
+    @Serializable
+    data object HighlightsScreen : ScoreScreens()
+
+    @Serializable
+    data object HighlightsSearchScreen : ScoreScreens()
+
+    @Serializable
+    data object ProfileScreen : ScoreScreens()
+
 }
 
 fun NavBackStackEntry.toScreen(): ScoreScreens? =
@@ -125,9 +134,9 @@ fun NavBackStackEntry.toScreen(): ScoreScreens? =
         "GameDetailsPage" -> toRoute<ScoreScreens.GameDetailsPage>()
         "ScoresScreen" -> toRoute<ScoreScreens.ScoresScreen>()
         "GameScoreSummaryPage" -> toRoute<ScoreScreens.GameScoreSummaryPage>()
-        //removed for 2/2026 release
-//        "HighlightsScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
-//        "HighlightsSearchScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
+        "HighlightsScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
+        "HighlightsSearchScreen" -> toRoute<ScoreScreens.HighlightsSearchScreen>()
+        "ProfileScreen" -> toRoute<ScoreScreens.ProfileScreen>()
         else -> throw IllegalArgumentException("Invalid screen")
     }
 
@@ -145,17 +154,22 @@ val tabs = listOf(
         selectedIcon = R.drawable.ic_schedule_filled,
         screen = ScoreScreens.Home,
     ),
-    //removed for 2/2026 review
-//    NavItem(
-//        label = "Highlights",
-//        unselectedIcon = R.drawable.ic_nav_star,
-//        selectedIcon = R.drawable.ic_nav_star_filled,
-//        screen = ScoreScreens.HighlightsScreen,
-//    ),
     NavItem(
         label = "Scores",
         unselectedIcon = R.drawable.ic_scores,
         selectedIcon = R.drawable.ic_scores_filled,
         screen = ScoreScreens.ScoresScreen,
+    ),
+    NavItem(
+        label = "Highlights",
+        unselectedIcon = R.drawable.ic_nav_star,
+        selectedIcon = R.drawable.ic_nav_star_filled,
+        screen = ScoreScreens.HighlightsScreen,
+    ),
+    NavItem(
+        label = "Profile",
+        unselectedIcon = R.drawable.profile_person,
+        selectedIcon = R.drawable.profile_person,
+        screen = ScoreScreens.ProfileScreen,
     ),
 )

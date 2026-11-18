@@ -29,7 +29,10 @@ fun ScoreNavigationBar(
         containerColor = Color.Transparent
     ) {
         tabs.map { item ->
-            val isSelected = item.screen == navBackStackEntry?.toScreen()
+            val currentScreen = navBackStackEntry?.toScreen()
+            val isSelected = item.screen == currentScreen ||
+                (item.screen == ScoreScreens.HighlightsScreen &&
+                    currentScreen == ScoreScreens.HighlightsSearchScreen)
 
             NavigationBarItem(
                 selected = isSelected,
@@ -41,7 +44,9 @@ fun ScoreNavigationBar(
                     Icon(
                         painter = painterResource(id = if (isSelected) item.selectedIcon else item.unselectedIcon),
                         contentDescription = null,
-                        tint = Color.Unspecified
+                        tint = if (item.screen == ScoreScreens.ProfileScreen) {
+                            if (isSelected) CrimsonPrimary else GrayPrimary
+                        } else Color.Unspecified
                     )
                 },
                 label = {
