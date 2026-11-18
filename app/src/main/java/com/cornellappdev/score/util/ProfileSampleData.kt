@@ -1,15 +1,10 @@
-package com.cornellappdev.score.screen
+package com.cornellappdev.score.util
 
-import com.cornellappdev.score.R
-import com.cornellappdev.score.model.ArticleHighlightData
 import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.model.ProfileData
 import com.cornellappdev.score.model.ProfileFavorite
 import com.cornellappdev.score.model.Sport
-import com.cornellappdev.score.model.VideoHighlightData
-import com.cornellappdev.score.util.sampleArticleHighlightData
-import com.cornellappdev.score.util.sampleVideoHighlightData
 
 // Temporary design fixtures. Replace ProfileScreen.data when account data is available.
 val sampleProfileData = ProfileData(

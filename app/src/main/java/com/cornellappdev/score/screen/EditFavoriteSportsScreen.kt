@@ -33,6 +33,7 @@ import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.ProfileFavorite
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.*
+import com.cornellappdev.score.util.sampleProfileData
 
 private val favoriteSportComparator = compareBy<ProfileFavorite>(
     { it.sport.displayName },
