@@ -2,7 +2,7 @@
 agp = "9.5.1"
 composeLintChecks = "1.4.2"
 kotlin = "2.4.21"
-ksp = "2.3.13"
+ksp = "2.3.14"
 hilt = "2.60.1"
 coreKtx = "1.19.1"
 junit = "4.13.2"
