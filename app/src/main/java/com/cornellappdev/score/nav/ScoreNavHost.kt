@@ -96,18 +96,26 @@ fun ScoreNavHost(navController: NavHostController, welcomeName: String? = null) 
             )
         }
         composable<ScoreScreens.ProfileScreen> {
-            val viewModel: OnboardingSequenceViewModel = hiltViewModel()
-            ProfileScreen(
-                data = ProfileData(
-                    name = welcomeName?.takeIf { it.isNotBlank() } ?: "Guest",
-                    favorites = viewModel.getFavoriteSports(),
-                    bookmarks = emptyList()
-                ),
-                initialPicture = viewModel.getProfilePicture(),
-                onPictureSelected = { viewModel.saveProfilePicture(it.name) },
-                onFavoritesChanged = { viewModel.saveFavoriteSports(it.toSet()) },
-                showBottomBar = false
-            )
+            ProfileRoute(displayName = welcomeName)
         }
     }
+}
+
+
+@Composable
+private fun ProfileRoute(
+    displayName: String?,
+    viewModel: OnboardingSequenceViewModel = hiltViewModel()
+) {
+    ProfileScreen(
+        data = ProfileData(
+            name = displayName?.takeIf { it.isNotBlank() } ?: "Guest",
+            favorites = viewModel.getFavoriteSports(),
+            bookmarks = emptyList()
+        ),
+        initialPicture = viewModel.getProfilePicture(),
+        onPictureSelected = { viewModel.saveProfilePicture(it.name) },
+        onFavoritesChanged = { viewModel.saveFavoriteSports(it.toSet()) },
+        showBottomBar = false
+    )
 }
