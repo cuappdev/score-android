@@ -12,13 +12,28 @@ sealed interface AuthState {
 
     data object SignedOut : AuthState
 
-    data class SignedIn(val user: AuthUser) : AuthState
+    data class SignedIn(
+        val user: AuthUser,
+        val onboardingStage: OnboardingStage = OnboardingStage.COMPLETE,
+    ) : AuthState
+}
+
+@Serializable
+enum class OnboardingStage {
+    PROFILE,
+    SPORTS,
+    COMPLETE,
 }
 
 @Serializable data class AuthUser(val id: String, val name: String, val email: String)
 
 @Serializable
-data class AuthSession(val user: AuthUser, val accessToken: String, val refreshToken: String)
+data class AuthSession(
+    val user: AuthUser,
+    val accessToken: String,
+    val refreshToken: String,
+    val onboardingStage: OnboardingStage = OnboardingStage.COMPLETE,
+)
 
 data class AuthTokens(val accessToken: String, val refreshToken: String)
 
