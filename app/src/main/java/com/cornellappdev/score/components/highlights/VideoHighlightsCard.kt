@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,7 +42,8 @@ import com.cornellappdev.score.theme.Style.labelsNormal
 
 @Composable
 private fun VideoHighlightCardHeader(
-    imageUrl: String
+    imageUrl: String,
+    overlay: @Composable () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -52,6 +54,7 @@ private fun VideoHighlightCardHeader(
         AsyncImage(
             model = imageUrl,
             contentDescription = "Highlight article image",
+            modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
         Box(
@@ -59,13 +62,15 @@ private fun VideoHighlightCardHeader(
                 .fillMaxSize()
                 .background(color = Color.Black.copy(alpha = 0.4f))
         )
+        overlay()
     }
 }
 
 @Composable
 fun VideoHighlightCardBody(
     videoHighlight: VideoHighlightData,
-    isWideFormat: Boolean
+    isWideFormat: Boolean,
+    linkTextStyle: TextStyle = TextStyle.Default
 ) {
     Column(
         modifier = Modifier
@@ -119,7 +124,7 @@ fun VideoHighlightCardBody(
                 if (isWideFormat) {
                     Text("Watch on ")
                 }
-                ExternalLink(videoHighlight.videoUrl, "Youtube", CrimsonPrimary)
+                ExternalLink(videoHighlight.videoUrl, "Youtube", CrimsonPrimary, linkTextStyle)
             }
             Text(
                 style = labelsNormal,
@@ -133,15 +138,17 @@ fun VideoHighlightCardBody(
 fun VideoHighlightCard(
     videoHighlight: VideoHighlightData,
     isWideFormat: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    linkTextStyle: TextStyle = TextStyle.Default,
+    headerOverlay: @Composable () -> Unit = {}
 ) {
     Column(
         modifier = modifier
             .then(if (isWideFormat) Modifier.fillMaxWidth() else Modifier.width(241.dp))
             .clip(RoundedCornerShape(12.dp))
     ) {
-        VideoHighlightCardHeader(videoHighlight.thumbnailImageUrl)
-        VideoHighlightCardBody(videoHighlight, isWideFormat)
+        VideoHighlightCardHeader(videoHighlight.thumbnailImageUrl, headerOverlay)
+        VideoHighlightCardBody(videoHighlight, isWideFormat, linkTextStyle)
     }
 }
 

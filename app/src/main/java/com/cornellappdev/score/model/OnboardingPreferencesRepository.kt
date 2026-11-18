@@ -25,21 +25,34 @@ class OnboardingPreferencesRepository @Inject constructor(
         }
     }
 
-    fun getFavoriteSportNames(): Set<String> = preferences
-        .getStringSet(KEY_FAVORITE_SPORTS, emptySet())
-        .orEmpty()
-        .mapNotNull { it.substringBefore(':').takeIf(String::isNotBlank) }
-        .toSet()
+    fun getFavoriteSports(): Set<ProfileFavorite> =
+        (preferences.getStringSet(KEY_ONBOARDING_FAVORITE_SPORTS, null)
+            ?: preferences.getStringSet("favorite_sports", emptySet()))
+            .orEmpty()
+            .mapNotNull { ProfileFavorite.fromStorageKey(it) }
+            .toSet()
 
-    fun saveFavoriteSportKeys(keys: Set<String>) {
+    fun getFavoriteSportNames(): Set<String> = getFavoriteSports().map { it.sport.name }.toSet()
+
+    fun saveFavoriteSports(favorites: Set<ProfileFavorite>) {
         preferences.edit {
-            putStringSet(KEY_FAVORITE_SPORTS, keys.toSet())
+            putStringSet(KEY_ONBOARDING_FAVORITE_SPORTS, favorites.map { it.storageKey }.toSet())
+        }
+    }
+
+    fun getProfilePicture(): String? =
+        preferences.getString(KEY_ONBOARDING_PROFILE_PICTURE, null)
+
+    fun saveProfilePicture(pictureName: String) {
+        preferences.edit {
+            putString(KEY_ONBOARDING_PROFILE_PICTURE, pictureName)
         }
     }
 
     private companion object {
         const val PREFERENCES_NAME = "score_app_preferences"
         const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
-        const val KEY_FAVORITE_SPORTS = "favorite_sports"
+        const val KEY_ONBOARDING_PROFILE_PICTURE = "onboarding_profile_picture"
+        const val KEY_ONBOARDING_FAVORITE_SPORTS = "onboarding_favorite_sports"
     }
 }

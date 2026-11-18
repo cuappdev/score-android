@@ -230,7 +230,7 @@ type Mutation {
   """
   Create a new user with Firebase ID token; returns access_token and refresh_token.
   """
-  signupUser("Email address." email: String, "Display name." name: String, "Firebase ID token from the client." idToken: String!): SignupUser
+  signupUser("Firebase ID token from the client." idToken: String!): SignupUser
 
   """
   Exchange a valid refresh token (in Authorization header) for a new access_token.

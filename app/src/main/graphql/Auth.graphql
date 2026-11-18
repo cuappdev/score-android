@@ -5,8 +5,8 @@ mutation LoginUser($idToken: String!) {
   }
 }
 
-mutation SignupUser($idToken: String!, $name: String) {
-  signupUser(idToken: $idToken, name: $name) {
+mutation SignupUser($idToken: String!) {
+  signupUser(idToken: $idToken) {
     accessToken
     refreshToken
   }

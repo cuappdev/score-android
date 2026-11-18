@@ -6,7 +6,10 @@ data class VideoHighlightData(
     val videoUrl: String,
     val date: String,
     val sport: Sport,
-    val gender: GenderDivision
+    val gender: GenderDivision,
+    val duration: String? = null,
+    val finalScore: String? = null,
+    val photoCredit: String? = null
 )
 
 data class ArticleHighlightData(

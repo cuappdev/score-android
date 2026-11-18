@@ -2,7 +2,6 @@ package com.cornellappdev.score.auth
 
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloResponse
-import com.apollographql.apollo.api.Optional
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.example.score.LoginUserMutation
@@ -15,7 +14,7 @@ import javax.inject.Named
 interface AuthApi {
     suspend fun login(idToken: String): AuthTokens
 
-    suspend fun signup(identity: GoogleIdentity): AuthTokens
+    suspend fun signup(idToken: String): AuthTokens
 
     suspend fun refresh(refreshToken: String): String
 
@@ -29,7 +28,7 @@ class InvalidSessionException : Exception()
 class ApolloAuthApi @Inject constructor(@Named("auth") private val client: ApolloClient) : AuthApi {
     override suspend fun login(idToken: String): AuthTokens {
         val response = client.mutation(LoginUserMutation(idToken)).execute()
-        if (response.errors?.any { it.message == "User not found." } == true) {
+        if (response.errors?.any { it.message.removeSuffix(".") == "User not found" } == true) {
             throw UserNotFoundException()
         }
         response.checkErrors()
@@ -37,16 +36,8 @@ class ApolloAuthApi @Inject constructor(@Named("auth") private val client: Apoll
         return tokens(result.accessToken, result.refreshToken)
     }
 
-    override suspend fun signup(identity: GoogleIdentity): AuthTokens {
-        val response =
-            client
-                .mutation(
-                    SignupUserMutation(
-                        identity.firebaseIdToken,
-                        Optional.present(identity.user.name),
-                    )
-                )
-                .execute()
+    override suspend fun signup(idToken: String): AuthTokens {
+        val response = client.mutation(SignupUserMutation(idToken)).execute()
         response.checkErrors()
         val result = response.data?.signupUser ?: error("Missing signup response")
         return tokens(result.accessToken, result.refreshToken)
