@@ -3,63 +3,55 @@ package com.cornellappdev.score.screen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.cornellappdev.score.auth.OnboardingStage
+import com.cornellappdev.score.model.ProfileFavorite
 import com.cornellappdev.score.viewmodel.OnboardingSequenceViewModel
-
-private enum class OnboardingStep {
-    WELCOME,
-    PROFILE_SELECT,
-    SPORT_SELECT
-}
 
 @Composable
 fun OnboardingSequence(
+    stage: OnboardingStage,
+    displayName: String,
+    onProfileComplete: () -> Unit,
     onOnboardingComplete: () -> Unit,
-    viewModel: OnboardingSequenceViewModel = hiltViewModel()
+    viewModel: OnboardingSequenceViewModel = hiltViewModel(),
 ) {
-    var onboardingStep by rememberSaveable {
-        mutableStateOf(OnboardingStep.WELCOME)
-    }
+    when (stage) {
+        OnboardingStage.PROFILE ->
+            OnboardingProfileSelectScreen(
+                displayName = displayName,
+                initiallySelectedPicture = viewModel.getProfilePicture(),
+                onNext = { selectedPicture ->
+                    viewModel.saveProfilePicture(selectedPicture.name)
+                    onProfileComplete()
+                },
+            )
 
-    val completeOnboarding = remember {
-        onOnboardingComplete
-    }
-
-    when (onboardingStep) {
-        OnboardingStep.WELCOME -> OnboardingScreen(
-            onSignUp = { onboardingStep = OnboardingStep.PROFILE_SELECT },
-            onLogIn = completeOnboarding,
-            onLater = completeOnboarding
-        )
-
-        OnboardingStep.PROFILE_SELECT -> OnboardingProfileSelectScreen(
-            onNext = { selectedPicture ->
-                viewModel.saveProfilePicture(selectedPicture.name)
-                onboardingStep = OnboardingStep.SPORT_SELECT
+        OnboardingStage.SPORTS -> {
+            var selectedKeys by rememberSaveable {
+                mutableStateOf(viewModel.getFavoriteSports().joinToString("|") { it.storageKey })
             }
-        )
-
-        OnboardingStep.SPORT_SELECT -> {
-            var selectedFavorites by remember {
-                mutableStateOf(viewModel.getFavoriteSports())
-            }
+            val selectedFavorites =
+                selectedKeys.split('|').mapNotNull(ProfileFavorite::fromStorageKey)
             OnboardingFavoriteSportsScreen(
                 favorites = selectedFavorites,
                 onToggleFavorite = { favorite ->
-                    selectedFavorites = if (favorite in selectedFavorites) {
-                        selectedFavorites - favorite
-                    } else {
-                        selectedFavorites + favorite
-                    }
+                    val updatedFavorites =
+                        if (favorite in selectedFavorites) {
+                            selectedFavorites - favorite
+                        } else {
+                            selectedFavorites + favorite
+                        }
+                    selectedKeys = updatedFavorites.joinToString("|") { it.storageKey }
                 },
                 onFinish = {
                     viewModel.saveFavoriteSports(selectedFavorites.toSet())
-                    completeOnboarding()
-                }
+                    onOnboardingComplete()
+                },
             )
         }
+        OnboardingStage.COMPLETE -> Unit
     }
 }

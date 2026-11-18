@@ -12,18 +12,13 @@ import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.nav.root.ScoreScreens
 import com.cornellappdev.score.nav.root.ScoreScreens.Home
 import com.cornellappdev.score.screen.GameDetailsScreen
-import com.cornellappdev.score.screen.HighlightsScreen
-import com.cornellappdev.score.screen.HighlightsSearchScreen
 import com.cornellappdev.score.screen.HomeScreen
 import com.cornellappdev.score.screen.PastGamesScreen
-import com.cornellappdev.score.util.highlightsList
-import com.cornellappdev.score.util.recentSearchList
-import com.cornellappdev.score.util.sportList
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
 @Composable
-fun ScoreNavHost(navController: NavHostController) {
+fun ScoreNavHost(navController: NavHostController, welcomeName: String? = null) {
     // This ViewModelStoreOwner is used to scope the past and home screen view models to the root
     //  screen instead of their individual tabs. This way the view models are not reconstructed
     //  everytime you switch tabs.
@@ -35,16 +30,20 @@ fun ScoreNavHost(navController: NavHostController) {
     ) {
         composable<Home> {
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
-                HomeScreen(navigateToGameDetails = {
+                HomeScreen(welcomeName = welcomeName, navigateToGameDetails = {
                     navController.navigate(ScoreScreens.GameDetailsPage(it))
-                })
+                },
+                   navigateToProfile = {}
+                    )
             }
         }
         composable<ScoreScreens.ScoresScreen> {
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
                 PastGamesScreen(navigateToGameDetails = {
                     navController.navigate(ScoreScreens.GameDetailsPage(it))
-                })
+                },
+                    navigateToProfile = {}
+                    )
             }
         }
         composable<ScoreScreens.GameDetailsPage> {

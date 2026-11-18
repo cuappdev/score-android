@@ -30,13 +30,18 @@ constructor(private val api: AuthApi, private val storage: SessionStorage) {
     suspend fun signIn(identity: GoogleIdentity) =
         mutex.withLock {
             require(identity.user.email.endsWith("@cornell.edu", ignoreCase = true))
+            var onboardingStage = OnboardingStage.COMPLETE
             val tokens =
                 try {
                     api.login(identity.firebaseIdToken)
                 } catch (_: UserNotFoundException) {
-                    api.signup(identity.firebaseIdToken)
+                    val signupTokens = api.signup(identity.firebaseIdToken)
+                    onboardingStage = OnboardingStage.PROFILE
+                    signupTokens
                 }
-            saveSession(AuthSession(identity.user, tokens.accessToken, tokens.refreshToken))
+            saveSession(
+                AuthSession(identity.user, tokens.accessToken, tokens.refreshToken, onboardingStage)
+            )
             restored = true
         }
 
@@ -57,6 +62,19 @@ constructor(private val api: AuthApi, private val storage: SessionStorage) {
                 clearSession()
                 null
             }
+        }
+
+    suspend fun completeOnboardingStep(expectedStage: OnboardingStage) =
+        mutex.withLock {
+            val current = checkNotNull(session)
+            check(current.onboardingStage == expectedStage)
+            val nextStage =
+                when (expectedStage) {
+                    OnboardingStage.PROFILE -> OnboardingStage.SPORTS
+                    OnboardingStage.SPORTS -> OnboardingStage.COMPLETE
+                    OnboardingStage.COMPLETE -> error("Onboarding is already complete")
+                }
+            saveSession(current.copy(onboardingStage = nextStage))
         }
 
     suspend fun signOut() {
@@ -96,6 +114,7 @@ constructor(private val api: AuthApi, private val storage: SessionStorage) {
     }
 
     private fun publishState() {
-        mutableState.value = session?.let { AuthState.SignedIn(it.user) } ?: AuthState.SignedOut
+        mutableState.value =
+            session?.let { AuthState.SignedIn(it.user, it.onboardingStage) } ?: AuthState.SignedOut
     }
 }

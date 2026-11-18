@@ -56,4 +56,5 @@
     <string name="auth_sign_in_failed">Couldn’t sign in. Check your connection and try again.</string>
     <string name="auth_error_title">Account</string>
     <string name="auth_no_google_account">No Google account is available for sign-in. Add your Cornell Google account to this device and try again.</string>
+    <string name="auth_onboarding_save_failed">Couldn’t save your progress. Please try again.</string>
 </resources>

@@ -26,7 +26,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
+import com.cornellappdev.score.components.onboarding.HomeScreenFavoritesInfoBanner
 import com.cornellappdev.score.model.GenderDivision
+import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayMedium
@@ -40,8 +42,10 @@ fun SportSelectorHeader(
     sports: List<SportSelection>,
     selectedGender: GenderDivision,
     selectedSport: SportSelection,
+    favoriteSports: Set<Sport>,
     onGenderSelected: (GenderDivision) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
+    toProfile: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -54,7 +58,11 @@ fun SportSelectorHeader(
             selectedGender = selectedGender,
             onGenderSelected = onGenderSelected
         )
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(16.dp))
+        if (favoriteSports.isEmpty()) {
+            HomeScreenFavoritesInfoBanner(toProfile)
+            Spacer(Modifier.height(16.dp))
+        }
         LazyRow(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(20.dp)
@@ -129,14 +137,16 @@ fun SportSelector(
 @Preview
 @Composable
 private fun PreviewSportSelectorHeader() = ScorePreview {
-    var selectedOption by remember { mutableStateOf(GenderDivision.ALL) }
+    var selectedOption by remember { mutableStateOf(GenderDivision.FAVORITES) }
     var selectedSport: SportSelection by remember { mutableStateOf(SportSelection.All) }
 
     SportSelectorHeader(
         sports = sportSelectionList,
         selectedGender = selectedOption,
         selectedSport = selectedSport,
+        favoriteSports = emptySet(),
         onGenderSelected = { selectedOption = it },
-        onSportSelected = { selectedSport = it }
+        onSportSelected = { selectedSport = it },
+        toProfile = {}
     )
 }
