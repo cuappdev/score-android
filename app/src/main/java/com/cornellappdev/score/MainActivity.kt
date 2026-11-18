@@ -3,50 +3,30 @@ package com.cornellappdev.score
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import com.cornellappdev.score.auth.AuthViewModel
 import com.cornellappdev.score.model.OnboardingPreferencesRepository
-import com.cornellappdev.score.nav.root.RootNavigation
-import com.cornellappdev.score.screen.OnboardingSequence
 import com.google.firebase.Firebase
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.analytics
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-private lateinit var firebaseAnalytics: FirebaseAnalytics
-
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    @Inject
-    lateinit var onboardingPreferencesRepository: OnboardingPreferencesRepository
+    @Inject lateinit var onboardingPreferences: OnboardingPreferencesRepository
+    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        val onboardingCompleted = onboardingPreferencesRepository.isOnboardingCompleted()
-
+        Firebase.analytics
         setContent {
-            var isOnboardingCompleted by rememberSaveable {
-                mutableStateOf(onboardingCompleted)
-            }
-
-            if (isOnboardingCompleted) {
-                RootNavigation()
-            } else {
-                OnboardingSequence(
-                    onOnboardingComplete = {
-                        onboardingPreferencesRepository.markOnboardingCompleted()
-                        isOnboardingCompleted = true
-                    }
-                )
-            }
+            ScoreApp(
+                authViewModel = authViewModel,
+                onboardingPreferences = onboardingPreferences,
+                onSignIn = { authViewModel.signIn(this) },
+            )
         }
-
-        firebaseAnalytics = Firebase.analytics
     }
 }
