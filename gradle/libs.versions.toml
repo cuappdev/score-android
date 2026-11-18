@@ -13,7 +13,7 @@ material = "1.12.0"
 activity = "1.8.0"
 constraintlayout = "2.2.2"
 runtimeAndroid = "1.7.2"
-apollo = "4.4.4"
+apollo = "5.2.0"
 
 # Using alpha due to pull-to-refresh bug in stable
 # See https://stackoverflow.com/a/79126321
