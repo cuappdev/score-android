@@ -45,12 +45,15 @@ import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.Style.bodyMedium
 import com.cornellappdev.score.theme.Style.bodyNormal
 
-private fun Modifier.highlightsSearchRowModifier(): Modifier =
+private fun Modifier.highlightsSearchRowSurfaceModifier(): Modifier =
     this
         .fillMaxWidth()
         .background(Color.White, RoundedCornerShape(100.dp))
         .border(1.dp, GrayLight, RoundedCornerShape(100.dp))
         .clip(RoundedCornerShape(100.dp))
+
+private fun Modifier.highlightsSearchRowModifier(): Modifier =
+    highlightsSearchRowSurfaceModifier()
         .padding(horizontal = 8.dp, vertical = 8.dp)
 
 @Composable
@@ -137,7 +140,8 @@ fun HighlightsSearchBar(
                             painter = painterResource(R.drawable.ic_close),
                             contentDescription = "clear field",
                             modifier = Modifier.clickable(
-                                onClick = { onQueryChange("") }))
+                                onClick = { onQueryChange("") })
+                        )
                     }
                 }
             })
@@ -147,12 +151,13 @@ fun HighlightsSearchBar(
         ) {
             Text(
                 "Cancel", style = bodyMedium, modifier = Modifier.clickable(
-                onClick = {
-                    isFocused = false
-                    focusManager.clearFocus(force = true)
-                    onQueryChange("")
-                    navigateBack()
-                }))
+                    onClick = {
+                        isFocused = false
+                        focusManager.clearFocus(force = true)
+                        onQueryChange("")
+                        navigateBack()
+                    })
+            )
         }
     }
 }
@@ -162,12 +167,15 @@ fun HighlightsSearchBar(
 fun HighlightsSearchEntryPointRow(
     onClick: () -> Unit, modifier: Modifier = Modifier
 ) {
-    Row(modifier = Modifier
-        .highlightsSearchRowModifier()
-        .clickable { onClick() }
-        .then(modifier),
+    Row(
+        modifier = Modifier
+            .highlightsSearchRowSurfaceModifier()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 8.dp, vertical = 8.dp)
+            .then(modifier),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
         Icon(
             painter = painterResource(R.drawable.search),
             contentDescription = "search icon",
