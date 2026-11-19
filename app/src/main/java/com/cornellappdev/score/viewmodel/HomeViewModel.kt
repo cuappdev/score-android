@@ -5,7 +5,7 @@ import com.cornellappdev.score.components.LocationFilter
 import com.cornellappdev.score.components.PriceFilter
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GameCardData
-import com.cornellappdev.score.model.GenderDivision
+import com.cornellappdev.score.model.GameFilter
 import com.cornellappdev.score.model.OnboardingPreferencesRepository
 import com.cornellappdev.score.model.ScoreRepository
 import com.cornellappdev.score.model.Sport
@@ -17,7 +17,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 data class HomeUiState(
-    val selectedGender: GenderDivision,
+    val selectedFilter: GameFilter,
     val sportSelect: SportSelection,
     val selectionList: List<SportSelection>,
     val favoriteSports: Set<Sport>,
@@ -34,15 +34,15 @@ data class HomeUiState(
         get() {
             val favoriteSportNames = favoriteSports.map { it.displayName }
             return games.filter { game ->
-                val matchesGender = when (selectedGender) {
-                    GenderDivision.ALL -> true
-                    GenderDivision.FAVORITES -> if (favoriteSports.isNotEmpty()) {
+                val matchesGender = when (selectedFilter) {
+                    GameFilter.ALL -> true
+                    GameFilter.FAVORITES -> if (favoriteSports.isNotEmpty()) {
                         game.sport in favoriteSportNames
                     } else {
                         true
                     }
 
-                    else -> game.gender == selectedGender.displayName
+                    else -> game.gender == selectedFilter.displayName
                 }
                 val matchesSport = when (sportSelect) {
                     is SportSelection.SportSelect -> game.sport == sportSelect.sport.displayName
@@ -82,9 +82,9 @@ class HomeViewModel @Inject constructor(
     preferencesRepository: OnboardingPreferencesRepository
 ) : BaseViewModel<HomeUiState>(
     HomeUiState(
-        selectedGender = GenderDivision.FAVORITES,
+        selectedFilter = GameFilter.FAVORITES,
         sportSelect = SportSelection.All,
-        selectionList = Sport.getSportSelectionList(GenderDivision.FAVORITES),
+        selectionList = Sport.getSportSelectionList(GameFilter.FAVORITES),
         favoriteSports = preferencesRepository.getFavoriteSportNames()
             .mapNotNull { runCatching { Sport.valueOf(it) }.getOrNull() }
             .toSet(),
@@ -93,7 +93,7 @@ class HomeViewModel @Inject constructor(
 ) {
     init {
         applyMutation {
-            copy(selectionList = selectionListFor(selectedGender, favoriteSports, emptyList()))
+            copy(selectionList = selectionListFor(selectedFilter, favoriteSports, emptyList()))
         }
         scoreRepository.fetchGames()
         asyncCollect(scoreRepository.upcomingGamesFlow) { response ->
@@ -108,7 +108,7 @@ class HomeViewModel @Inject constructor(
                 copy(
                     loadedState = loadedState,
                     selectionList = selectionListFor(
-                        selectedGender,
+                        selectedFilter,
                         favoriteSports,
                         (loadedState as? ApiResponse.Success)?.data.orEmpty()
                     )
@@ -124,12 +124,12 @@ class HomeViewModel @Inject constructor(
         scoreRepository.fetchGames()
     }
 
-    fun onGenderSelected(gender: GenderDivision) {
+    fun onFilterSelected(filter: GameFilter) {
         applyMutation {
             copy(
-                selectedGender = gender,
+                selectedFilter = filter,
                 selectionList = selectionListFor(
-                    gender,
+                    filter,
                     favoriteSports,
                     (loadedState as? ApiResponse.Success)?.data.orEmpty()
                 ),
@@ -166,7 +166,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun selectionListFor(
-        gender: GenderDivision,
+        filter: GameFilter,
         favorites: Set<Sport>,
         upcomingGames: List<GameCardData>
     ): List<SportSelection> {
@@ -174,7 +174,7 @@ class HomeViewModel @Inject constructor(
             .groupBy { it.sport }
             .mapValues { (_, games) -> games.mapNotNull { it.date }.minOrNull() }
 
-        return Sport.getSportSelectionList(gender).sortedWith(
+        return Sport.getSportSelectionList(filter).sortedWith(
             compareBy<SportSelection> { if (it is SportSelection.All) 0 else 1 }
                 .thenBy { selection ->
                     (selection as? SportSelection.SportSelect)
