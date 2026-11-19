@@ -2,7 +2,7 @@ package com.cornellappdev.score.viewmodel
 
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GameCardData
-import com.cornellappdev.score.model.GenderDivision
+import com.cornellappdev.score.model.GameFilter
 import com.cornellappdev.score.model.OnboardingPreferencesRepository
 import com.cornellappdev.score.model.ScoreRepository
 import com.cornellappdev.score.model.Sport
@@ -14,7 +14,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 data class PastGamesUiState(
-    val selectedGender: GenderDivision,
+    val selectedFilter: GameFilter,
     val sportSelect: SportSelection,
     val selectionList: List<SportSelection>,
     val favoriteSports: Set<Sport> = emptySet(),
@@ -26,15 +26,15 @@ data class PastGamesUiState(
             is ApiResponse.Success -> {
                 val favoriteSportNames = favoriteSports.map { it.displayName }
                 loadedState.data.filter { game ->
-                    val matchesGender = when (selectedGender) {
-                        GenderDivision.ALL -> true
-                        GenderDivision.FAVORITES -> if (favoriteSports.isNotEmpty()) {
+                    val matchesGender = when (selectedFilter) {
+                        GameFilter.ALL -> true
+                        GameFilter.FAVORITES -> if (favoriteSports.isNotEmpty()) {
                             game.sport in favoriteSportNames
                         } else {
                             true
                         }
 
-                        else -> game.gender == selectedGender.displayName
+                        else -> game.gender == selectedFilter.displayName
                     }
                     val matchesSport = (sportSelect is SportSelection.All ||
                             (sportSelect is SportSelection.SportSelect && game.sport == sportSelect.sport.displayName))
@@ -60,9 +60,9 @@ class PastGamesViewModel @Inject constructor(
     preferencesRepository: OnboardingPreferencesRepository
 ) : BaseViewModel<PastGamesUiState>(
     PastGamesUiState(
-        selectedGender = GenderDivision.FAVORITES,
+        selectedFilter = GameFilter.FAVORITES,
         sportSelect = SportSelection.All,
-        selectionList = Sport.getSportSelectionList(GenderDivision.FAVORITES),
+        selectionList = Sport.getSportSelectionList(GameFilter.FAVORITES),
         favoriteSports = preferencesRepository.getFavoriteSportNames()
             .mapNotNull { runCatching { Sport.valueOf(it) }.getOrNull() }
             .toSet(),
@@ -82,18 +82,18 @@ class PastGamesViewModel @Inject constructor(
                 val pastGames = (loadedState as? ApiResponse.Success)?.data.orEmpty()
                 copy(
                     loadedState = loadedState,
-                    selectionList = selectionListFor(selectedGender, pastGames)
+                    selectionList = selectionListFor(selectedFilter, pastGames)
                 )
             }
         }
     }
 
-    fun onGenderSelected(gender: GenderDivision) {
+    fun onFilterSelected(filter: GameFilter) {
         applyMutation {
             copy(
-                selectedGender = gender,
+                selectedFilter = filter,
                 selectionList = selectionListFor(
-                    gender,
+                    filter,
                     (loadedState as? ApiResponse.Success)?.data.orEmpty()
                 ),
             )
@@ -115,14 +115,14 @@ class PastGamesViewModel @Inject constructor(
     }
 
     private fun selectionListFor(
-        gender: GenderDivision,
+        filter: GameFilter,
         pastGames: List<GameCardData>
     ): List<SportSelection> {
         val mostRecentGameBySport = pastGames
             .groupBy { it.sport }
             .mapValues { (_, games) -> games.mapNotNull { it.date }.maxOrNull() }
 
-        return Sport.getSportSelectionList(gender).sortedWith(
+        return Sport.getSportSelectionList(filter).sortedWith(
             compareBy<SportSelection> { if (it is SportSelection.All) 0 else 1 }
                 .thenByDescending { selection ->
                     (selection as? SportSelection.SportSelect)

@@ -24,23 +24,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.cornellappdev.score.model.GenderDivision
+import com.cornellappdev.score.model.GameFilter
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayLight
 import com.cornellappdev.score.theme.GrayMedium
 import com.cornellappdev.score.theme.Style
 import com.cornellappdev.score.theme.White
 
-/** Accessible, single-choice filter shared by the Home screen and onboarding. */
+/** Accessible, single-choice game filter used by the Home and Scores screens. */
 @Composable
-fun GenderDivisionFilter(
-    selectedGender: GenderDivision,
-    onGenderSelected: (GenderDivision) -> Unit,
+fun GameFilterSelector(
+    selectedFilter: GameFilter,
+    onFilterSelected: (GameFilter) -> Unit,
     modifier: Modifier = Modifier,
-    options: List<GenderDivision> = listOf(
-        GenderDivision.FAVORITES,
-        GenderDivision.MALE,
-        GenderDivision.FEMALE
+    options: List<GameFilter> = listOf(
+        GameFilter.FAVORITES,
+        GameFilter.MALE,
+        GameFilter.FEMALE
     )
 ) {
     Row(
@@ -52,8 +52,8 @@ fun GenderDivisionFilter(
             .selectableGroup(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        options.forEach { gender ->
-            val selected = gender == selectedGender
+        options.forEach { filter ->
+            val selected = filter == selectedFilter
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -65,12 +65,12 @@ fun GenderDivisionFilter(
                     .selectable(
                         selected = selected,
                         role = Role.RadioButton,
-                        onClick = { onGenderSelected(gender) }
+                        onClick = { onFilterSelected(filter) }
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = gender.displayName,
+                    text = filter.displayName,
                     style = if (selected) Style.bodySemibold else Style.bodyMedium,
                     color = if (selected) White else GrayMedium
                 )
@@ -81,13 +81,13 @@ fun GenderDivisionFilter(
 
 @Preview(showBackground = true)
 @Composable
-private fun GenderDivisionFilterPreview() {
+private fun GameFilterSelectorPreview() {
     ScorePreview {
-        var selectedGender by remember { mutableStateOf(GenderDivision.FAVORITES) }
+        var selectedFilter by remember { mutableStateOf(GameFilter.FAVORITES) }
 
-        GenderDivisionFilter(
-            selectedGender = selectedGender,
-            onGenderSelected = { selectedGender = it }
+        GameFilterSelector(
+            selectedFilter = selectedFilter,
+            onFilterSelected = { selectedFilter = it }
         )
     }
 }

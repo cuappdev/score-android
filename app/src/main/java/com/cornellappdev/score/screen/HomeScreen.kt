@@ -42,7 +42,8 @@ import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.components.onboarding.WelcomeBanner
 import com.cornellappdev.score.model.ApiResponse
-import com.cornellappdev.score.model.GenderDivision
+import com.cornellappdev.score.model.GameFilter
+import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.GrayStroke
@@ -84,11 +85,10 @@ fun HomeScreen(
                 HomeContent(
                     uiState = uiState,
                     welcomeName = welcomeName,
-                    onGenderSelected = { homeViewModel.onGenderSelected(it) },
+                    onFilterSelected = { homeViewModel.onFilterSelected(it) },
                     onSportSelected = { homeViewModel.onSportSelected(it) },
                     navigateToGameDetails = navigateToGameDetails,
                     onRefresh = { homeViewModel.onRefresh() },
-                    onAdvancedFilterClick = { showBottomSheet = true },
                     navigateToProfile = navigateToProfile
                 )
             }
@@ -113,10 +113,9 @@ fun HomeScreen(
 @Composable
 private fun HomeContent(
     uiState: HomeUiState,
-    onGenderSelected: (GenderDivision) -> Unit,
+    onFilterSelected: (GameFilter) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
     onRefresh: () -> Unit,
-    onAdvancedFilterClick: () -> Unit,
     navigateToProfile: () -> Unit,
     welcomeName: String? = null,
     navigateToGameDetails: (String) -> Unit = {}
@@ -124,10 +123,9 @@ private fun HomeContent(
     ScorePullToRefreshBox(isRefreshing = uiState.loadedState == ApiResponse.Loading, onRefresh) {
         HomeLazyColumn(
             uiState,
-            onGenderSelected,
+            onFilterSelected,
             onSportSelected,
             navigateToGameDetails,
-            onAdvancedFilterClick,
             navigateToProfile,
             welcomeName
         )
@@ -138,14 +136,17 @@ private fun HomeContent(
 @OptIn(ExperimentalFoundationApi::class)
 private fun HomeLazyColumn(
     uiState: HomeUiState,
-    onGenderSelected: (GenderDivision) -> Unit,
+    onFilterSelected: (GameFilter) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
     navigateToGameDetails: (String) -> Unit,
-    onAdvancedFilterClick: () -> Unit,
     toProfile: () -> Unit,
     welcomeName: String? = null
 ) {
-    LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
+    Box(Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(top = 24.dp)
+        ) {
         if (welcomeName != null) {
             item {
                 WelcomeBanner(
@@ -157,25 +158,22 @@ private fun HomeLazyColumn(
                 Spacer(Modifier.height(24.dp))
             }
         }
-        if (uiState.filteredGames.isNotEmpty()) {
-            item {
-                Text(
-                    text = "Upcoming",
-                    style = heading1,
-                    color = GrayPrimary,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 24.dp)
-                )
-            }
-            item {
-                Spacer(Modifier.height(16.dp))
-            }
+        item {
+            Text(
+                text = "Upcoming",
+                style = heading1,
+                color = GrayPrimary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp)
+            )
         }
-        if (uiState.filteredGames.isNotEmpty()) {
-            item {
-                GamesCarousel(uiState.upcomingGames, navigateToGameDetails)
-            }
+        item {
+            Spacer(Modifier.height(16.dp))
+        }
+
+        item {
+            GamesCarousel(uiState.upcomingGames, navigateToGameDetails)
         }
         stickyHeader {
             Column(
@@ -193,20 +191,14 @@ private fun HomeLazyColumn(
                         text = "Game Schedule",
                         style = title,
                     )
-                    //removed for 2/2026 release
-//                    IconButton(
-//                        icon = painterResource(id = R.drawable.advanced_filter),
-//                        contentDescription = "Advanced filter",
-//                        onClick = onAdvancedFilterClick
-//                    )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 SportSelectorHeader(
                     sports = uiState.selectionList,
-                    selectedGender = uiState.selectedGender,
+                    selectedFilter = uiState.selectedFilter,
                     selectedSport = uiState.sportSelect,
                     favoriteSports = uiState.favoriteSports,
-                    onGenderSelected = onGenderSelected,
+                    onFilterSelected = onFilterSelected,
                     onSportSelected = onSportSelected,
                     toProfile = toProfile
                 )
@@ -224,26 +216,32 @@ private fun HomeLazyColumn(
                 Spacer(modifier = Modifier.height(24.dp))
             }
             items(uiState.filteredGames) {
-                val game = it
                 Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                     GameCard(
-                        teamLogo = game.teamLogo,
-                        team = game.team,
-                        date = game.dateString,
-                        isLive = game.isLive,
-                        genderIcon = painterResource(game.genderIcon),
-                        sportIcon = painterResource(game.sportIcon),
-                        location = game.location,
+                        teamLogo = it.teamLogo,
+                        team = it.team,
+                        date = it.dateString,
+                        isLive = it.isLive,
+                        genderIcon = painterResource(it.genderIcon),
+                        sportIcon = painterResource(it.sportIcon),
+                        location = it.location,
                         topCornerRound = true,
-                        onClick = { navigateToGameDetails(game.id) }
+                        onClick = { navigateToGameDetails(it.id) }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
-        } else {
-            item {
-                EmptyStateBox(icon = R.drawable.ic_speaker_gray, title = "No games yet.")
-            }
+        }
+        }
+        if (uiState.filteredGames.isEmpty()) {
+            EmptyStateBox(
+                icon = R.drawable.ic_speaker_gray,
+                title = "No games yet.",
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 24.dp),
+                height = 200.dp
+            )
         }
     }
 }
@@ -258,16 +256,15 @@ private fun HomeScreenPreview() = ScorePreview {
     ) {
         HomeContent(
             HomeUiState(
-                selectedGender = GenderDivision.FAVORITES,
+                selectedFilter = GameFilter.FAVORITES,
                 sportSelect = SportSelection.All,
                 selectionList = sportSelectionList,
                 favoriteSports = emptySet(),
                 loadedState = ApiResponse.Success(gameList)
             ),
-            onGenderSelected = {},
+            onFilterSelected = {},
             onSportSelected = {},
             onRefresh = {},
-            onAdvancedFilterClick = {},
             navigateToProfile = {},
             welcomeName = "Claire"
         )
@@ -279,16 +276,15 @@ private fun HomeScreenPreview() = ScorePreview {
 private fun HomeScreenEmptyStatePreview() = ScorePreview {
     HomeContent(
         HomeUiState(
-            selectedGender = GenderDivision.FAVORITES,
-            sportSelect = SportSelection.All,
+            selectedFilter = GameFilter.FAVORITES,
+            sportSelect = SportSelection.SportSelect(Sport.FOOTBALL),
             selectionList = sportSelectionList,
             favoriteSports = emptySet(),
-            loadedState = ApiResponse.Success(emptyList())
+            loadedState = ApiResponse.Success(gameList)
         ),
-        onGenderSelected = {},
+        onFilterSelected = {},
         onSportSelected = {},
         onRefresh = {},
-        onAdvancedFilterClick = {},
         navigateToProfile = {}
     )
 }

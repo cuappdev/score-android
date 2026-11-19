@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.onboarding.HomeScreenFavoritesInfoBanner
-import com.cornellappdev.score.model.GenderDivision
+import com.cornellappdev.score.model.GameFilter
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.CrimsonPrimary
@@ -40,10 +40,10 @@ import com.cornellappdev.score.util.sportSelectionList
 @Composable
 fun SportSelectorHeader(
     sports: List<SportSelection>,
-    selectedGender: GenderDivision,
+    selectedFilter: GameFilter,
     selectedSport: SportSelection,
     favoriteSports: Set<Sport>,
-    onGenderSelected: (GenderDivision) -> Unit,
+    onFilterSelected: (GameFilter) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
     toProfile: () -> Unit,
     modifier: Modifier = Modifier
@@ -54,9 +54,9 @@ fun SportSelectorHeader(
             .background(color = White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        GenderDivisionFilter(
-            selectedGender = selectedGender,
-            onGenderSelected = onGenderSelected
+        GameFilterSelector(
+            selectedFilter = selectedFilter,
+            onFilterSelected = onFilterSelected
         )
         Spacer(Modifier.height(16.dp))
         if (favoriteSports.isEmpty()) {
@@ -137,15 +137,15 @@ fun SportSelector(
 @Preview
 @Composable
 private fun PreviewSportSelectorHeader() = ScorePreview {
-    var selectedOption by remember { mutableStateOf(GenderDivision.FAVORITES) }
+    var selectedOption by remember { mutableStateOf(GameFilter.FAVORITES) }
     var selectedSport: SportSelection by remember { mutableStateOf(SportSelection.All) }
 
     SportSelectorHeader(
         sports = sportSelectionList,
-        selectedGender = selectedOption,
+        selectedFilter = selectedOption,
         selectedSport = selectedSport,
         favoriteSports = emptySet(),
-        onGenderSelected = { selectedOption = it },
+        onFilterSelected = { selectedOption = it },
         onSportSelected = { selectedSport = it },
         toProfile = {}
     )
