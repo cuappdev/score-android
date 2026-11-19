@@ -19,7 +19,6 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-
 android {
     namespace = "com.cornellappdev.score"
     compileSdk = 37
@@ -38,32 +37,20 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField(
-                "String",
-                "BASE_URL",
-                "\"${secrets.getProperty("API_URL_DEV")}\""
-            )
-            buildConfigField(
-                "String",
-                "SOCKET_URL",
-                "\"${secrets.getProperty("SOCKET_URL_DEV")}\""
-            )
+            buildConfigField("String", "BASE_URL", "\"${secrets.getProperty("API_URL_PROD")}\"")
+            buildConfigField("String", "SOCKET_URL", "\"${secrets.getProperty("SOCKET_URL_PROD")}\"")
         }
         release {
-            buildConfigField(
-                "String",
-                "BASE_URL",
-                "\"${secrets.getProperty("API_URL_PROD")}\""
-            )
+            buildConfigField("String", "BASE_URL", "\"${secrets.getProperty("API_URL_DEV")}\"")
             buildConfigField(
                 "String",
                 "SOCKET_URL",
-                "\"${secrets.getProperty("SOCKET_URL_PROD")}\""
+                "\"${secrets.getProperty("SOCKET_URL_DEV")}\"",
             )
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -117,16 +104,25 @@ dependencies {
     lintChecks(libs.compose.lint.checks)
     implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("androidx.credentials:credentials:1.5.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
 }
 
 apollo {
     service("service") {
         packageName.set("com.example.score")
-        secrets.getProperty("API_URL_DEV")?.takeIf { it.isNotBlank() }?.let { apiUrl ->
-            introspection {
-                endpointUrl.set(apiUrl)
-                schemaFile.set(file("src/main/graphql/schema.graphqls"))
+        secrets
+            .getProperty("API_URL_PROD")
+            ?.takeIf { it.isNotBlank() }
+            ?.let { apiUrl ->
+                introspection {
+                    endpointUrl.set(apiUrl)
+                    schemaFile.set(file("src/main/graphql/schema.graphqls"))
+                }
             }
-        }
     }
 }
