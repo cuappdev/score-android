@@ -41,7 +41,8 @@ android {
             buildConfigField("String", "SOCKET_URL", "\"${secrets.getProperty("SOCKET_URL_PROD")}\"")
         }
         release {
-            buildConfigField("String", "BASE_URL", "\"${secrets.getProperty("API_URL_DEV")}\"")
+            // Match the endpoint used to download the current GraphQL schema.
+            buildConfigField("String", "BASE_URL", "\"${secrets.getProperty("API_URL_PROD")}\"")
             buildConfigField(
                 "String",
                 "SOCKET_URL",

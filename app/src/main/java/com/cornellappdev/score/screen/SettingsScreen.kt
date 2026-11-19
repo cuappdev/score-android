@@ -1,5 +1,6 @@
 package com.cornellappdev.score.screen
 
+import android.R as AndroidR
 import androidx.annotation.DrawableRes
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -18,6 +19,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -48,8 +51,29 @@ import com.cornellappdev.score.theme.Style
 fun SettingsScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    onSubmitIssue: ((IssueReport) -> Unit)? = null
+    onSubmitIssue: ((IssueReport) -> Unit)? = null,
+    onFavoriteSports: () -> Unit = {},
+    onLogout: (() -> Unit)? = null,
+    onDeleteAccount: (() -> Unit)? = null
 ) {
+    var confirmingDeletion by rememberSaveable { mutableStateOf(false) }
+    if (confirmingDeletion) {
+        AlertDialog(
+            onDismissRequest = { confirmingDeletion = false },
+            title = { Text(stringResource(R.string.account_delete_title)) },
+            text = { Text(stringResource(R.string.account_delete_message)) },
+            confirmButton = {
+                TextButton(onClick = { confirmingDeletion = false; onDeleteAccount?.invoke() }) {
+                    Text(stringResource(R.string.settings_delete), color = CrimsonPrimary)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmingDeletion = false }) {
+                    Text(stringResource(AndroidR.string.cancel))
+                }
+            }
+        )
+    }
     var reportingIssue by rememberSaveable { mutableStateOf(false) }
     BackHandler(enabled = reportingIssue) { reportingIssue = false }
     Box(modifier) {
@@ -69,7 +93,8 @@ fun SettingsScreen(
                 SettingsSection(stringResource(R.string.settings_preferences)) {
                     SettingsRow(
                         stringResource(R.string.profile_favorite_sports),
-                        R.drawable.settings_star
+                        R.drawable.settings_star,
+                        onClick = onFavoriteSports
                     )
                     HorizontalDivider(color = GrayStroke)
                     SettingsRow(
@@ -90,18 +115,24 @@ fun SettingsScreen(
                         R.drawable.settings_flag,
                         onClick = { reportingIssue = true }
                     )
-                    HorizontalDivider(color = GrayStroke)
-                    SettingsRow(
-                        stringResource(R.string.settings_logout),
-                        R.drawable.settings_logout,
-                        destructive = true
-                    )
-                    HorizontalDivider(color = GrayStroke)
-                    SettingsRow(
-                        stringResource(R.string.settings_delete),
-                        R.drawable.settings_delete,
-                        destructive = true
-                    )
+                    if (onLogout != null) {
+                        HorizontalDivider(color = GrayStroke)
+                        SettingsRow(
+                            stringResource(R.string.settings_logout),
+                            R.drawable.settings_logout,
+                            destructive = true,
+                            onClick = onLogout
+                        )
+                    }
+                    if (onDeleteAccount != null) {
+                        HorizontalDivider(color = GrayStroke)
+                        SettingsRow(
+                            stringResource(R.string.settings_delete),
+                            R.drawable.settings_delete,
+                            destructive = true,
+                            onClick = { confirmingDeletion = true }
+                        )
+                    }
                 }
             }
         }

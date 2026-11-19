@@ -1,5 +1,7 @@
 package com.cornellappdev.score.screen
 
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.cornellappdev.score.auth.AuthStatusOverlay
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +20,8 @@ fun OnboardingSequence(
     onOnboardingComplete: () -> Unit,
     viewModel: OnboardingSequenceViewModel = hiltViewModel(),
 ) {
+    val status by viewModel.status.collectAsStateWithLifecycle()
+    AuthStatusOverlay(status, viewModel::dismissError)
     when (stage) {
         OnboardingStage.PROFILE ->
             OnboardingProfileSelectScreen(
@@ -47,8 +51,7 @@ fun OnboardingSequence(
                     selectedKeys = updatedFavorites.joinToString("|") { it.storageKey }
                 },
                 onFinish = {
-                    viewModel.saveFavoriteSports(selectedFavorites.toSet())
-                    onOnboardingComplete()
+                    viewModel.saveFavoriteSports(selectedFavorites.toSet(), onOnboardingComplete)
                 },
             )
         }

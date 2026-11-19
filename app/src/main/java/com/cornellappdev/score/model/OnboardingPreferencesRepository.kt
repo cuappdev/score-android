@@ -49,6 +49,14 @@ class OnboardingPreferencesRepository @Inject constructor(
         }
     }
 
+    fun clearAccountPreferences() {
+        preferences.edit {
+            remove(KEY_ONBOARDING_FAVORITE_SPORTS)
+            remove("favorite_sports")
+            remove(KEY_ONBOARDING_PROFILE_PICTURE)
+        }
+    }
+
     private companion object {
         const val PREFERENCES_NAME = "score_app_preferences"
         const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"

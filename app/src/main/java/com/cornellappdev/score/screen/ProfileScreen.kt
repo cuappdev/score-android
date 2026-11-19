@@ -31,12 +31,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,10 +50,13 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.cornellappdev.score.auth.AuthState
+import com.cornellappdev.score.auth.AuthStatusOverlay
+import com.cornellappdev.score.model.OnboardingPreferencesRepository
+import com.cornellappdev.score.viewmodel.AccountViewModel
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.highlights.ArticleHighlightCard
 import com.cornellappdev.score.components.highlights.VideoHighlightCard
-import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.ProfileData
 import com.cornellappdev.score.model.ProfileFavorite
 import com.cornellappdev.score.model.GenderDivision
@@ -63,9 +68,47 @@ import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.SpotColor
 import com.cornellappdev.score.theme.Style
 
-/** Profile flow shared by the app navigation and standalone previews. */
+/** Connects the profile UI to account state and actions. */
 @Composable
 fun ProfileScreen(
+    viewModel: AccountViewModel,
+    preferences: OnboardingPreferencesRepository,
+    onShowBookmarks: () -> Unit,
+    onSignIn: () -> Unit,
+) {
+    LaunchedEffect(viewModel) { viewModel.refreshAccount() }
+    val profile by viewModel.profile.collectAsStateWithLifecycle()
+    val auth by viewModel.authState.collectAsStateWithLifecycle()
+    val status by viewModel.status.collectAsStateWithLifecycle()
+    val signedIn = auth is AuthState.SignedIn
+    key((auth as? AuthState.SignedIn)?.user?.id) {
+        Column {
+            if (!signedIn) {
+                TextButton(onClick = onSignIn) {
+                    Text(stringResource(R.string.account_sign_in_required))
+                }
+            }
+            ProfileScreenLayout(
+                data = profile,
+                initialPicture =
+                    ProfilePicture.entries.find { it.name == preferences.getProfilePicture() }
+                        ?: ProfilePicture.BLANK,
+                onPictureSelected = { preferences.saveProfilePicture(it.name) },
+                onFavoritesChanged = { if (signedIn) viewModel.saveFavorites(it) else onSignIn() },
+                onShowAllBookmarks = onShowBookmarks,
+                showBottomBar = false,
+                onLogout = if (signedIn) ({ viewModel.signOut() }) else null,
+                onDeleteAccount = if (signedIn) ({ viewModel.deleteAccount() }) else null,
+                onToggleBookmark = if (signedIn) viewModel::toggleBookmark else null,
+            )
+        }
+    }
+    AuthStatusOverlay(status, viewModel::dismissError)
+}
+
+/** Profile layout and local navigation, also used by previews. */
+@Composable
+private fun ProfileScreenLayout(
     modifier: Modifier = Modifier,
     data: ProfileData = sampleProfileData,
     onEditSports: () -> Unit = {},
@@ -73,25 +116,17 @@ fun ProfileScreen(
     initialPicture: ProfilePicture = ProfilePicture.BLANK,
     onPictureSelected: (ProfilePicture) -> Unit = {},
     onFavoritesChanged: (List<ProfileFavorite>) -> Unit = {},
-    showBottomBar: Boolean = true
+    showBottomBar: Boolean = true,
+    onLogout: (() -> Unit)? = null,
+    onDeleteAccount: (() -> Unit)? = null,
+    onToggleBookmark: ((HighlightData) -> Unit)? = null
 ) {
     var selectedPicture by rememberSaveable { mutableStateOf(initialPicture) }
     var editingPicture by rememberSaveable { mutableStateOf(false) }
 
     var showingSettings by rememberSaveable { mutableStateOf(false) }
     var editingSports by rememberSaveable { mutableStateOf(false) }
-    var favorites by rememberSaveable(
-        data.favorites,
-        stateSaver = listSaver(
-            save = { list -> list.map { "${it.sport.name}:${it.gender.name}" } },
-            restore = { list ->
-                list.map {
-                    val (sport, gender) = it.split(":")
-                    ProfileFavorite(Sport.valueOf(sport), GenderDivision.valueOf(gender))
-                }
-            }
-        )
-    ) { mutableStateOf(data.favorites) }
+    val favorites = data.favorites
 
     BackHandler(enabled = editingPicture || editingSports || showingSettings) {
         editingPicture = false
@@ -101,14 +136,19 @@ fun ProfileScreen(
     Column(modifier.fillMaxSize().background(Color.White)) {
         Box(Modifier.weight(1f)) {
             if (showingSettings) {
-                SettingsScreen(onBack = { showingSettings = false })
+                SettingsScreen(
+                    onBack = { showingSettings = false },
+                    onFavoriteSports = { showingSettings = false; editingSports = true },
+                    onLogout = onLogout,
+                    onDeleteAccount = onDeleteAccount
+                )
             } else if (editingSports) {
                 EditFavoriteSportsScreen(
                     favorites = favorites,
                     onToggleFavorite = { favorite ->
-                        favorites =
+                        onFavoritesChanged(
                             if (favorite in favorites) favorites - favorite else favorites + favorite
-                        onFavoritesChanged(favorites)
+                        )
                     },
                     onBack = { editingSports = false }
                 )
@@ -122,7 +162,7 @@ fun ProfileScreen(
                     { editingPicture = false })
             } else {
                 ProfileContent(
-                    data = data.copy(favorites = favorites),
+                    data = data,
                     selectedPicture = selectedPicture,
                     onEditProfilePicture = { editingPicture = true },
                     onEditSports = {
@@ -130,7 +170,8 @@ fun ProfileScreen(
                         onEditSports()
                     },
                     onShowAllBookmarks = onShowAllBookmarks,
-                    onSettings = { showingSettings = true }
+                    onSettings = { showingSettings = true },
+                    onToggleBookmark = onToggleBookmark
                 )
             }
         }
@@ -147,7 +188,8 @@ fun ProfileContent(
     onEditSports: () -> Unit,
     onShowAllBookmarks: () -> Unit,
     modifier: Modifier = Modifier,
-    onSettings: () -> Unit = {}
+    onSettings: () -> Unit = {},
+    onToggleBookmark: ((HighlightData) -> Unit)? = null
 ) {
     Column(
         modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -206,7 +248,16 @@ fun ProfileContent(
                 contentPadding = PaddingValues(horizontal = 24.dp, vertical = 2.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(data.bookmarks) { ProfileBookmarkCard(it) }
+                items(data.bookmarks) { bookmark ->
+                    Column {
+                        ProfileBookmarkCard(bookmark)
+                        onToggleBookmark?.let { toggle ->
+                            TextButton(onClick = { toggle(bookmark) }) {
+                                Text(stringResource(R.string.account_bookmark_remove))
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -278,7 +329,7 @@ private fun FavoriteSportTile(favorite: ProfileFavorite) {
 }
 
 @Composable
-private fun ProfileBookmarkCard(bookmark: HighlightData) {
+internal fun ProfileBookmarkCard(bookmark: HighlightData) {
     val shape = RoundedCornerShape(12.dp)
     Box(
         Modifier.width(241.dp)
@@ -334,5 +385,5 @@ private fun ProfileBookmarkCard(bookmark: HighlightData) {
 @Preview(showBackground = true, widthDp = 393, heightDp = 758)
 @Composable
 private fun ProfileScreenPreview() {
-    ProfileScreen()
+    ProfileScreenLayout()
 }

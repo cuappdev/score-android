@@ -25,6 +25,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.cornellappdev.score.model.OnboardingPreferencesRepository
 import com.cornellappdev.score.R
 import com.cornellappdev.score.nav.ScoreNavHost
 import com.cornellappdev.score.nav.ScoreNavigationBar
@@ -34,6 +35,8 @@ import kotlinx.serialization.Serializable
 
 @Composable
 fun RootNavigation(
+    preferences: OnboardingPreferencesRepository,
+    onSignIn: () -> Unit,
     modifier: Modifier = Modifier,
     welcomeName: String? = null,
     rootNavigationViewModel: RootNavigationViewModel = hiltViewModel(),
@@ -96,7 +99,7 @@ fun RootNavigation(
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             CompositionLocalProvider(LocalInfiniteLoading provides animatedValue) {
-                ScoreNavHost(navController, welcomeName)
+                ScoreNavHost(navController, preferences, onSignIn, welcomeName)
             }
         }
     }
@@ -126,6 +129,9 @@ sealed class ScoreScreens {
     @Serializable
     data object ProfileScreen : ScoreScreens()
 
+    @Serializable
+    data object BookmarksScreen : ScoreScreens()
+
 }
 
 fun NavBackStackEntry.toScreen(): ScoreScreens? =
@@ -137,6 +143,7 @@ fun NavBackStackEntry.toScreen(): ScoreScreens? =
         "HighlightsScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
         "HighlightsSearchScreen" -> toRoute<ScoreScreens.HighlightsSearchScreen>()
         "ProfileScreen" -> toRoute<ScoreScreens.ProfileScreen>()
+        "BookmarksScreen" -> toRoute<ScoreScreens.BookmarksScreen>()
         else -> throw IllegalArgumentException("Invalid screen")
     }
 
