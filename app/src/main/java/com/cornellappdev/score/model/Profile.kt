@@ -1,10 +1,11 @@
 package com.cornellappdev.score.model
 
-/** UI data for the populated profile; independent of a future account API response. */
+/** Profile data loaded from the authenticated account. */
 data class ProfileData(
     val name: String,
     val favorites: List<ProfileFavorite>,
-    val bookmarks: List<HighlightData>
+    val bookmarks: List<HighlightData>,
+    val bookmarkedHighlightIds: Set<String> = emptySet()
 )
 
 /** A favorite identifies a sport and division, allowing both golf teams to appear separately. */

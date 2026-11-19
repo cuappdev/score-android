@@ -1,0 +1,43 @@
+query AccountProfile {
+  me {
+    id
+    name
+    favoriteTeams { gender sport }
+    bookmarkedHighlightIds
+  }
+  myBookmarkedHighlights { ...AccountHighlight }
+}
+
+fragment AccountHighlight on YoutubeVideoType {
+  id
+  title
+  thumbnail
+  url
+  publishedAt
+  duration
+  sportsType
+}
+
+query HighlightCatalog {
+  youtubeVideos { ...AccountHighlight }
+}
+
+mutation AddFavoriteTeam($gender: String!, $sport: String!) {
+  addFavoriteTeam(gender: $gender, sport: $sport) { success }
+}
+
+mutation RemoveFavoriteTeam($gender: String!, $sport: String!) {
+  removeFavoriteTeam(gender: $gender, sport: $sport) { success }
+}
+
+mutation AddBookmarkedHighlight($highlightId: String!) {
+  addBookmarkedHighlight(highlightId: $highlightId) { success }
+}
+
+mutation RemoveBookmarkedHighlight($highlightId: String!) {
+  removeBookmarkedHighlight(highlightId: $highlightId) { success }
+}
+
+mutation DeleteUser {
+  deleteUser { success }
+}

@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +32,9 @@ import com.cornellappdev.score.util.highlightsList
 @Composable
 fun HighlightsCardRow(
     highlightsList: List<HighlightData>,
-    rowHeader: String
+    rowHeader: String,
+    bookmarkedIds: Set<String> = emptySet(),
+    onToggleBookmark: ((HighlightData) -> Unit)? = null,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -67,9 +71,20 @@ fun HighlightsCardRow(
         ) {
             item { Spacer(Modifier.width(8.dp)) }
             items(highlightsList) { item ->
-                when (item) {
-                    is HighlightData.Video -> VideoHighlightCard(item.data, false)
-                    is HighlightData.Article -> ArticleHighlightCard(item.data, false)
+                Column {
+                    when (item) {
+                        is HighlightData.Video -> VideoHighlightCard(item.data, false)
+                        is HighlightData.Article -> ArticleHighlightCard(item.data, false)
+                    }
+                    val id = (item as? HighlightData.Video)?.data?.id
+                    if (id != null && onToggleBookmark != null) {
+                        TextButton(onClick = { onToggleBookmark(item) }) {
+                            Text(stringResource(
+                                if (id in bookmarkedIds) R.string.account_bookmark_remove
+                                else R.string.account_bookmark_add
+                            ))
+                        }
+                    }
                 }
             }
             item { Spacer(Modifier.width(8.dp)) }

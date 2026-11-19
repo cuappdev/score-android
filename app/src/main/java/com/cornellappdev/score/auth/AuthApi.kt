@@ -4,6 +4,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.exception.ApolloHttpException
+import com.example.score.DeleteUserMutation
 import com.example.score.LoginUserMutation
 import com.example.score.LogoutUserMutation
 import com.example.score.RefreshAccessTokenMutation
@@ -19,6 +20,8 @@ interface AuthApi {
     suspend fun refresh(refreshToken: String): String
 
     suspend fun revoke(token: String)
+
+    suspend fun deleteAccount(token: String)
 }
 
 class UserNotFoundException : Exception()
@@ -62,6 +65,14 @@ class ApolloAuthApi @Inject constructor(@Named("auth") private val client: Apoll
             .httpHeaders(listOf(HttpHeader("Authorization", "Bearer $token")))
             .execute()
             .checkErrors()
+    }
+
+    override suspend fun deleteAccount(token: String) {
+        val response = client.mutation(DeleteUserMutation())
+            .httpHeaders(listOf(HttpHeader("Authorization", "Bearer $token")))
+            .execute()
+        response.checkErrors()
+        check(response.data?.deleteUser?.success == true) { "Account deletion failed" }
     }
 
     private fun tokens(access: String?, refresh: String?): AuthTokens {

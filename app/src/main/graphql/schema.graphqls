@@ -5,6 +5,8 @@ type Query {
 
   youtubeVideo(id: String!): YoutubeVideoType
 
+  myBookmarkedHighlights: [YoutubeVideoType]
+
   games("Number of games to return" limit: Int = 100, "Number of games to skip" offset: Int = 0): [GameType]
 
   game(id: String!): GameType
@@ -19,16 +21,20 @@ type Query {
 
   gamesByDate(startDate: DateTime!, endDate: DateTime!): [GameType]
 
+  gamesByLocation(onCampus: Boolean!): [GameType]
+
   """
-  Current user's favorited games (requires auth).
+  Current user's favorited teams, identified by gender and sport (requires auth).
   """
-  myFavoritedGames: [GameType]
+  myFavoritedTeams: [FavoriteTeamType]
 
   teams: [TeamType]
 
   team(id: String!): TeamType
 
   teamByName(name: String!): TeamType
+
+  me: UserType!
 }
 
 """
@@ -54,6 +60,11 @@ type ArticleType {
 
   url: String!
 }
+
+"""
+The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
+"""
+scalar String
 
 """
 A GraphQL type representing a YouTube video.
@@ -105,6 +116,10 @@ Attributes:
     - `box_score`: The box score of the game.
     - `score_breakdown`: The score breakdown of the game.
     - `ticket_link`: The ticket link of the game. (optional)
+    - `recap_link`: The recap article link. (optional)
+    - `recap_article_title`: The recap article title. (optional)
+    - `recap_article_image`: The recap article image. (optional)
+    - `recap_published_at`: The recap article publication date. (optional)
 """
 type GameType {
   id: String
@@ -136,12 +151,21 @@ type GameType {
   utcDate: String
 
   ticketLink: String
+
+  recapLink: String
+
+  recapArticleTitle: String
+
+  recapArticleImage: String
+
+  recapPublishedAt: String
 }
 
 """
 Represents an individual entry in the box score of a game.
 
 Attributes:
+    - `play_id`: Sidearm's stable id for the play, when it came from a live feed.
     - `team`: The team involved in the scoring event.
     - `period`: The period or inning of the event.
     - `time`: The time of the scoring event.
@@ -153,6 +177,8 @@ Attributes:
     - `opp_score`: Opponent's score at the time of the event.
 """
 type BoxScoreEntryType {
+  playId: String
+
   team: String
 
   period: String
@@ -171,6 +197,11 @@ type BoxScoreEntryType {
 
   oppScore: Int
 }
+
+"""
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31 - 1) and 2^31 - 1 since represented in JSON as double-precision floating point numbers specifiedby [IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point).
+"""
+scalar Int
 
 """
 A GraphQL type representing a team.
@@ -201,11 +232,45 @@ value as specified by
 """
 scalar DateTime
 
+"""
+The `Boolean` scalar type represents `true` or `false`.
+"""
+scalar Boolean
+
+"""
+A Cornell team identified by its gender and sport.
+"""
+type FavoriteTeamType {
+  gender: String!
+
+  sport: String!
+}
+
+"""
+Public application-user fields returned after authentication.
+"""
+type UserType {
+  id: ID!
+
+  email: String
+
+  name: String
+
+  favoriteTeams: [FavoriteTeamType]!
+
+  bookmarkedHighlightIds: [String]!
+}
+
+"""
+The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
+"""
+scalar ID
+
 type Mutation {
   """
   Creates a new game.
   """
-  createGame(boxScore: String, city: String!, date: String!, gender: String!, location: String, opponentId: String!, result: String, scoreBreakdown: String, sport: String!, state: String!, ticketLink: String, time: String!, utcDate: String): CreateGame
+  createGame(boxScore: String, city: String!, date: String!, gender: String!, location: String, opponentId: String!, recapArticleImage: String, recapArticleTitle: String, recapLink: String, recapPublishedAt: String, result: String, scoreBreakdown: String, sport: String!, state: String!, ticketLink: String, time: String, utcDate: String): CreateGame
 
   """
   Creates a new team.
@@ -223,14 +288,14 @@ type Mutation {
   createArticle(image: String, publishedAt: String!, slug: String!, sportsType: String!, title: String!, url: String!): CreateArticle
 
   """
-  Login with Firebase ID token; returns access_token and refresh_token.
+  Login with a Google Firebase ID token; returns access_token and refresh_token.
   """
-  loginUser("Firebase ID token from the client." idToken: String!): LoginUser
+  loginUser("Google Firebase ID token from the client." idToken: String!): LoginUser
 
   """
-  Create a new user with Firebase ID token; returns access_token and refresh_token.
+  Create a new user with a Google Firebase ID token; returns access_token and refresh_token.
   """
-  signupUser("Firebase ID token from the client." idToken: String!): SignupUser
+  signupUser("Google Firebase ID token from the client." idToken: String!): SignupUser
 
   """
   Exchange a valid refresh token (in Authorization header) for a new access_token.
@@ -243,14 +308,29 @@ type Mutation {
   logoutUser: LogoutUser
 
   """
-  Add a game to the current user's favorites (requires auth).
+  Permanently delete the current user's application and Firebase accounts (requires auth).
   """
-  addFavoriteGame("ID of the game to add to favorites." gameId: String!): AddFavoriteGame
+  deleteUser: DeleteUser
 
   """
-  Remove a game from the current user's favorites (requires auth).
+  Add a team, identified by gender and sport, to the current user's favorites (requires auth).
   """
-  removeFavoriteGame("ID of the game to remove from favorites." gameId: String!): RemoveFavoriteGame
+  addFavoriteTeam("Gender of the team, such as Mens or Womens." gender: String!, "Sport of the team" sport: String!): AddFavoriteTeam
+
+  """
+  Remove a team, identified by gender and sport, from the current user's favorites (requires auth).
+  """
+  removeFavoriteTeam("Gender of the team, such as Mens or Womens." gender: String!, "Sport of the team" sport: String!): RemoveFavoriteTeam
+
+  """
+  Bookmark a highlight for the current user (requires auth).
+  """
+  addBookmarkedHighlight("ID of the highlight to bookmark." highlightId: String!): AddBookmarkedHighlight
+
+  """
+  Remove a highlight bookmark for the current user (requires auth).
+  """
+  removeBookmarkedHighlight("ID of the highlight to remove from bookmarks." highlightId: String!): RemoveBookmarkedHighlight
 }
 
 type CreateGame {
@@ -273,12 +353,16 @@ type LoginUser {
   accessToken: String
 
   refreshToken: String
+
+  user: UserType!
 }
 
 type SignupUser {
   accessToken: String
 
   refreshToken: String
+
+  user: UserType!
 }
 
 type RefreshAccessToken {
@@ -289,11 +373,26 @@ type LogoutUser {
   success: Boolean
 }
 
-type AddFavoriteGame {
+"""
+Permanently delete the authenticated user's application and Firebase accounts.
+"""
+type DeleteUser {
+  success: Boolean!
+}
+
+type AddFavoriteTeam {
   success: Boolean
 }
 
-type RemoveFavoriteGame {
+type RemoveFavoriteTeam {
+  success: Boolean
+}
+
+type AddBookmarkedHighlight {
+  success: Boolean
+}
+
+type RemoveBookmarkedHighlight {
   success: Boolean
 }
 

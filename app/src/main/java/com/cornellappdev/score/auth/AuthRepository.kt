@@ -77,6 +77,15 @@ constructor(private val api: AuthApi, private val storage: SessionStorage) {
             saveSession(current.copy(onboardingStage = nextStage))
         }
 
+    suspend fun deleteAccount() {
+        val token = checkNotNull(accessToken()) { "Sign in to delete your account" }
+        mutex.withLock {
+            check(session?.accessToken == token) { "Session changed" }
+            api.deleteAccount(token)
+            clearSession()
+        }
+    }
+
     suspend fun signOut() {
         val previous =
             mutex.withLock {

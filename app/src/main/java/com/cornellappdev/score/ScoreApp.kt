@@ -67,7 +67,13 @@ fun ScoreApp(
                     )
                 }
             onboardingComplete || skippedWelcome ->
-                RootNavigation(welcomeName = signedInState?.user?.name)
+                key(signedInState?.user?.id) {
+                    RootNavigation(
+                        preferences = onboardingPreferences,
+                        onSignIn = onSignIn,
+                        welcomeName = signedInState?.user?.name,
+                    )
+                }
             else ->
                 OnboardingScreen(
                     onSignUp = onSignIn,

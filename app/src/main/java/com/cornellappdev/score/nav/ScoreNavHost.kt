@@ -9,11 +9,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.cornellappdev.score.model.ProfileData
+import com.cornellappdev.score.model.OnboardingPreferencesRepository
+import com.cornellappdev.score.viewmodel.AccountViewModel
 import com.cornellappdev.score.screen.ProfileScreen
 import com.cornellappdev.score.screen.HighlightsScreen
 import com.cornellappdev.score.screen.HighlightsSearchScreen
-import com.cornellappdev.score.viewmodel.OnboardingSequenceViewModel
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.nav.root.ScoreScreens
 import com.cornellappdev.score.nav.root.ScoreScreens.Home
@@ -24,11 +24,18 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
 @Composable
-fun ScoreNavHost(navController: NavHostController, welcomeName: String? = null) {
+fun ScoreNavHost(
+    navController: NavHostController,
+    preferences: OnboardingPreferencesRepository,
+    onSignIn: () -> Unit,
+    welcomeName: String? = null,
+) {
     // This ViewModelStoreOwner is used to scope the past and home screen view models to the root
     //  screen instead of their individual tabs. This way the view models are not reconstructed
     //  everytime you switch tabs.
     val mainScreenViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current)
+
+    val accountViewModel: AccountViewModel = hiltViewModel(mainScreenViewModelStoreOwner)
 
     NavHost(
         navController = navController,
@@ -81,7 +88,9 @@ fun ScoreNavHost(navController: NavHostController, welcomeName: String? = null) 
         }
         composable<ScoreScreens.HighlightsScreen> {
             HighlightsScreen(
-                toSearchScreen = { navController.navigate(ScoreScreens.HighlightsSearchScreen) }
+                viewModel = accountViewModel,
+                onSignIn = onSignIn,
+                onSearch = { navController.navigate(ScoreScreens.HighlightsSearchScreen) },
             )
         }
         composable<ScoreScreens.HighlightsSearchScreen> {
@@ -95,27 +104,21 @@ fun ScoreNavHost(navController: NavHostController, welcomeName: String? = null) 
                 onCloseClick = { navController.navigateUp() }
             )
         }
+        composable<ScoreScreens.BookmarksScreen> {
+            HighlightsScreen(
+                viewModel = accountViewModel,
+                bookmarksOnly = true,
+                onBack = { navController.navigateUp() },
+                onSignIn = onSignIn,
+            )
+        }
         composable<ScoreScreens.ProfileScreen> {
-            ProfileRoute(displayName = welcomeName)
+            ProfileScreen(
+                viewModel = accountViewModel,
+                preferences = preferences,
+                onShowBookmarks = { navController.navigate(ScoreScreens.BookmarksScreen) },
+                onSignIn = onSignIn,
+            )
         }
     }
-}
-
-
-@Composable
-private fun ProfileRoute(
-    displayName: String?,
-    viewModel: OnboardingSequenceViewModel = hiltViewModel()
-) {
-    ProfileScreen(
-        data = ProfileData(
-            name = displayName?.takeIf { it.isNotBlank() } ?: "Guest",
-            favorites = viewModel.getFavoriteSports(),
-            bookmarks = emptyList()
-        ),
-        initialPicture = viewModel.getProfilePicture(),
-        onPictureSelected = { viewModel.saveProfilePicture(it.name) },
-        onFavoritesChanged = { viewModel.saveFavoriteSports(it.toSet()) },
-        showBottomBar = false
-    )
 }
