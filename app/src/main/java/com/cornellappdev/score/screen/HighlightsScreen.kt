@@ -42,9 +42,9 @@ import com.cornellappdev.score.viewmodel.AccountViewModel
 @Composable
 fun HighlightsScreen(
     viewModel: AccountViewModel,
+    onSignIn: () -> Unit,
     bookmarksOnly: Boolean = false,
     onBack: (() -> Unit)? = null,
-    onSignIn: () -> Unit,
     onSearch: () -> Unit = {},
 ) {
     LaunchedEffect(viewModel) { viewModel.refreshAccount() }
@@ -114,10 +114,10 @@ fun HighlightsScreen(
 
 @Composable
 private fun HighlightsScreenLayout(
+    toSearchScreen: () -> Unit,
     sportList: List<Sport> = emptyList(), //note - emptyLists are placeholders for nav to work, will replace will viewModel
     todayHighlightsList: List<HighlightData> = emptyList(),
     pastThreeHighlightsList: List<HighlightData> = emptyList(),
-    toSearchScreen: () -> Unit,
     allHighlightsList: List<HighlightData> = emptyList(),
     bookmarkedIds: Set<String> = emptySet(),
     onToggleBookmark: ((HighlightData) -> Unit)? = null,

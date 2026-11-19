@@ -3,7 +3,7 @@ package com.cornellappdev.score.nav
 import GameScoreSummaryScreenDetail
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -29,13 +29,12 @@ fun ScoreNavHost(
     preferences: OnboardingPreferencesRepository,
     onSignIn: () -> Unit,
     welcomeName: String? = null,
+    accountViewModel: AccountViewModel = hiltViewModel(),
 ) {
     // This ViewModelStoreOwner is used to scope the past and home screen view models to the root
     //  screen instead of their individual tabs. This way the view models are not reconstructed
     //  everytime you switch tabs.
     val mainScreenViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current)
-
-    val accountViewModel: AccountViewModel = hiltViewModel(mainScreenViewModelStoreOwner)
 
     NavHost(
         navController = navController,
