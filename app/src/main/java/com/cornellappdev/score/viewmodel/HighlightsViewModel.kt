@@ -38,10 +38,10 @@ private fun filterAndGroupHighlightsByDateBlock(
 
     val highlightsFilteredBySportSelection = highlights
         .filter { it.date != null }
-        .filter { h ->
+        .filter { highlight ->
             when (sportSelect) {
                 is SportSelection.All -> true
-                is SportSelection.SportSelect -> h.sport == sportSelect.sport
+                is SportSelection.SportSelect -> highlight.sport == sportSelect.sport
             }
         }
 
