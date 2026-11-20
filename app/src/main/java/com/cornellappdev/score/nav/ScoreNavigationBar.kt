@@ -29,7 +29,7 @@ fun ScoreNavigationBar(
         containerColor = Color.Transparent
     ) {
         tabs.map { item ->
-            val isSelected = item.screen == navBackStackEntry?.toScreen()
+            val isSelected = item.screen.toScreen() == navBackStackEntry?.toScreen()
 
             NavigationBarItem(
                 selected = isSelected,

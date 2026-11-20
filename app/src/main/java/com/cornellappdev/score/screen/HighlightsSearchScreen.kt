@@ -19,14 +19,14 @@ import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.highlights.HighlightsCardLazyColumn
 import com.cornellappdev.score.components.highlights.HighlightsCardLazyColumnResultsHeader
 import com.cornellappdev.score.components.highlights.HighlightsScreenSearchFilterBar
-import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.recentSearchList
 import com.cornellappdev.score.util.sportSelectionList
+import com.cornellappdev.score.viewmodel.HighlightsSearchSectionUiState
 import com.cornellappdev.score.viewmodel.HighlightsViewModel
-
+import com.cornellappdev.score.viewmodel.SearchUiState
 
 @Composable
 fun HighlightsSearchScreen(
@@ -36,22 +36,22 @@ fun HighlightsSearchScreen(
 ) {
     val uiState = highlightsViewModel.collectUiStateValue()
 
-    val (header, filteredResults) = when (searchScreenType) {
-        HighlightsSubScreenType.TODAY -> "Search today" to uiState.todayHighlights
-        HighlightsSubScreenType.PAST3DAYS -> "Search past 3 days" to uiState.pastThreeDaysHighlights
-        HighlightsSubScreenType.ALL -> "Search all highlights" to uiState.filteredHighlights
+    val sectionUiState = when (searchScreenType) {
+        HighlightsSubScreenType.TODAY -> uiState.todaySearchSection
+        HighlightsSubScreenType.PAST3DAYS -> uiState.pastThreeDaysSearchSection
+        HighlightsSubScreenType.ALL -> uiState.allSearchSection
     }
 
     HighlightsSearchScreenContent(
         sportList = uiState.sportSelectionList,
         onFilterSelected = { highlightsViewModel.onSportSelected(it) },
         recentSearchList = uiState.recentSearches,
-        filteredResults = filteredResults,
+        sectionUiState = sectionUiState,
         query = uiState.query,
         selectedFilter = uiState.sportSelect,
         onQueryChange = { highlightsViewModel.onQueryChange(it) },
         onSearch = { highlightsViewModel.onSearch(it) },
-        header = header,
+
         onItemClick = { highlightsViewModel.onSearchRecent(it) },
         onCloseClick = { highlightsViewModel.onRemoveRecent(it) },
         navigateBack = navigateBack
@@ -63,23 +63,27 @@ fun HighlightsSearchScreenContent(
     sportList: List<SportSelection>,
     onFilterSelected: (SportSelection) -> Unit,
     recentSearchList: List<String>,
-    filteredResults: List<HighlightData>,
+    sectionUiState: HighlightsSearchSectionUiState,
     query: String,
     selectedFilter: SportSelection,
     onQueryChange: (String) -> Unit,
     onSearch: (String) -> Unit,
-    header: String,
     onItemClick: (String) -> Unit,
     onCloseClick: (String) -> Unit,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(color = Color.White)
             .padding(top = 24.dp)
     ) {
-        Text(text = header, style = heading2, modifier = Modifier.padding(horizontal = 24.dp))
+        Text(
+            text = sectionUiState.header,
+            style = heading2,
+            modifier = Modifier.padding(horizontal = 24.dp)
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
         HighlightsScreenSearchFilterBar(
@@ -93,25 +97,31 @@ fun HighlightsSearchScreenContent(
         )
         Spacer(modifier = Modifier.height(24.dp))
         HighlightsCardLazyColumn(
-            recentSearchList,
-            query,
-            filteredResults,
-            onItemClick,
-            onCloseClick,
-            { HighlightsCardLazyColumnResultsHeader(filteredResults.size) })
+            uiState = sectionUiState.searchUiState,
+            recentSearchList = recentSearchList,
+            filteredResults = sectionUiState.results,
+            onItemClick = onItemClick,
+            onCloseClick = onCloseClick,
+            numResultsHeader = {
+                HighlightsCardLazyColumnResultsHeader(sectionUiState.results.size)
+            }
+        )
     }
 }
 
 data class HighlightsSearchScreenPreviewData(
-    val sportList: List<SportSelection>, val recentSearchList: List<String>, val query: String
+    val sportList: List<SportSelection>,
+    val recentSearchList: List<String>,
+    val query: String,
+    val searchUiState: SearchUiState
 )
 
 class HighlightsSearchScreenPreviewProvider :
     PreviewParameterProvider<HighlightsSearchScreenPreviewData> {
     override val values: Sequence<HighlightsSearchScreenPreviewData> = sequence {
-        yield(HighlightsSearchScreenPreviewData(sportSelectionList, recentSearchList, ""))
-        yield(HighlightsSearchScreenPreviewData(sportSelectionList, recentSearchList, "Sports"))
-        yield(HighlightsSearchScreenPreviewData(sportSelectionList, recentSearchList, "Hockey"))
+        yield(HighlightsSearchScreenPreviewData(sportSelectionList, recentSearchList, "", SearchUiState.RECENT))
+        yield(HighlightsSearchScreenPreviewData(sportSelectionList, recentSearchList, "Sports", SearchUiState.RESULTS))
+        yield(HighlightsSearchScreenPreviewData(sportSelectionList, recentSearchList, "Hockey", SearchUiState.EMPTY))
     }
 }
 
@@ -125,12 +135,15 @@ private fun HighlightScreenPreview(
             sportList = previewData.sportList,
             onFilterSelected = {},
             recentSearchList = previewData.recentSearchList,
-            filteredResults = highlightsList,
+            sectionUiState = HighlightsSearchSectionUiState(
+                header = "Search All Highlights",
+                results = highlightsList,
+                searchUiState = previewData.searchUiState
+            ),
             query = previewData.query,
             selectedFilter = SportSelection.All,
             onQueryChange = {},
             onSearch = {},
-            header = "Search All Highlights",
             onItemClick = {},
             onCloseClick = {},
             navigateBack = {})
