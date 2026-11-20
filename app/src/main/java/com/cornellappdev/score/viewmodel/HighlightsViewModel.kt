@@ -10,16 +10,24 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import javax.inject.Inject
 
+enum class SearchUiState { RECENT, EMPTY, RESULTS }
+
+data class HighlightsSearchSectionUiState(
+    val header: String,
+    val results: List<HighlightData>,
+    val searchUiState: SearchUiState
+)
+
 data class HighlightsUiState(
     val sportSelect: SportSelection,
     val loadedState: ApiResponse<List<HighlightData>>,
     val isRefreshing: Boolean,
     val sportSelectionList: List<SportSelection>,
-    val filteredHighlights: List<HighlightData>,
-    val todayHighlights: List<HighlightData>,
-    val pastThreeDaysHighlights: List<HighlightData>,
     val query: String,
-    val recentSearches: List<String>
+    val recentSearches: List<String>,
+    val allSearchSection: HighlightsSearchSectionUiState,
+    val todaySearchSection: HighlightsSearchSectionUiState,
+    val pastThreeDaysSearchSection: HighlightsSearchSectionUiState
 )
 
 
@@ -70,6 +78,13 @@ private fun filterAndGroupHighlightsByDateBlock(
     )
 }
 
+private fun searchUiState(query: String, results: List<HighlightData>): SearchUiState =
+    when {
+        query.isEmpty() -> SearchUiState.RECENT
+        results.isEmpty() -> SearchUiState.EMPTY
+        else -> SearchUiState.RESULTS
+    }
+
 private fun refreshFilteredHighlights(highlights: List<HighlightData>, state: HighlightsUiState)
         : HighlightsUiState {
 
@@ -77,9 +92,21 @@ private fun refreshFilteredHighlights(highlights: List<HighlightData>, state: Hi
         filterAndGroupHighlightsByDateBlock(highlights, state.sportSelect, state.query)
 
     return state.copy(
-        filteredHighlights = groupedHighlights.filteredHighlights,
-        todayHighlights = groupedHighlights.todayHighlights,
-        pastThreeDaysHighlights = groupedHighlights.pastThreeDaysHighlights
+        allSearchSection = HighlightsSearchSectionUiState(
+            header = "Search all highlights",
+            results = groupedHighlights.filteredHighlights,
+            searchUiState = searchUiState(state.query, groupedHighlights.filteredHighlights)
+        ),
+        todaySearchSection = HighlightsSearchSectionUiState(
+            header = "Search today",
+            results = groupedHighlights.todayHighlights,
+            searchUiState = searchUiState(state.query, groupedHighlights.todayHighlights)
+        ),
+        pastThreeDaysSearchSection = HighlightsSearchSectionUiState(
+            header = "Search past 3 days",
+            results = groupedHighlights.pastThreeDaysHighlights,
+            searchUiState = searchUiState(state.query, groupedHighlights.pastThreeDaysHighlights)
+        )
     )
 }
 
@@ -92,11 +119,17 @@ class HighlightsViewModel @Inject constructor(
         loadedState = ApiResponse.Loading,
         isRefreshing = true,
         sportSelectionList = Sport.getSportSelectionList(GenderDivision.ALL),
-        filteredHighlights = emptyList(),
-        todayHighlights = emptyList(),
-        pastThreeDaysHighlights = emptyList(),
         query = "",
-        recentSearches = emptyList()
+        recentSearches = emptyList(),
+        allSearchSection = HighlightsSearchSectionUiState(
+            "Search all highlights", emptyList(), SearchUiState.RECENT
+        ),
+        todaySearchSection = HighlightsSearchSectionUiState(
+            "Search today", emptyList(), SearchUiState.RECENT
+        ),
+        pastThreeDaysSearchSection = HighlightsSearchSectionUiState(
+            "Search past 3 days", emptyList(), SearchUiState.RECENT
+        )
     )
 ) {
     init {
@@ -106,16 +139,9 @@ class HighlightsViewModel @Inject constructor(
                 when (response) {
                     is ApiResponse.Success -> {
                         val sorted = response.data.sortedByDescending { it.date }
-
-                        val groupedHighlights =
-                            filterAndGroupHighlightsByDateBlock(sorted, sportSelect, query)
-
                         copy(
                             loadedState = ApiResponse.Success(sorted),
-                            isRefreshing = false,
-                            filteredHighlights = groupedHighlights.filteredHighlights,
-                            todayHighlights = groupedHighlights.todayHighlights,
-                            pastThreeDaysHighlights = groupedHighlights.pastThreeDaysHighlights
+                            isRefreshing = false
                         )
                     }
 
@@ -128,10 +154,12 @@ class HighlightsViewModel @Inject constructor(
                             copy(
                                 isRefreshing = true,
                                 loadedState = ApiResponse.Loading,
-                                filteredHighlights = emptyList(),
-                                todayHighlights = emptyList(),
-                                pastThreeDaysHighlights = emptyList()
-                            )
+                            ).let { loadingState ->
+                                refreshFilteredHighlights(
+                                    emptyList(),
+                                    loadingState
+                                )
+                            }
                         }
 
                     ApiResponse.Error ->
@@ -142,11 +170,13 @@ class HighlightsViewModel @Inject constructor(
                         } else {
                             copy(
                                 loadedState = ApiResponse.Error,
-                                isRefreshing = false,
-                                filteredHighlights = emptyList(),
-                                todayHighlights = emptyList(),
-                                pastThreeDaysHighlights = emptyList()
-                            )
+                                isRefreshing = false
+                            ).let { errorState ->
+                                refreshFilteredHighlights(
+                                    emptyList(),
+                                    errorState
+                                )
+                            }
                         }
                 }
             }
