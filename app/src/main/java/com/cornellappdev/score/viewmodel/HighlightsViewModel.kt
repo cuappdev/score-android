@@ -14,16 +14,24 @@ import kotlinx.coroutines.flow.debounce
 import java.time.LocalDate
 import javax.inject.Inject
 
+enum class SearchUiState { RECENT, EMPTY, RESULTS }
+
+data class HighlightsSearchSectionUiState(
+    val header: String,
+    val results: List<HighlightData>,
+    val searchUiState: SearchUiState
+)
+
 data class HighlightsUiState(
     val sportSelect: SportSelection,
     val loadedState: ApiResponse<List<HighlightData>>,
     val isRefreshing: Boolean,
     val sportSelectionList: List<SportSelection>,
-    val filteredHighlights: List<HighlightData>,
-    val todayHighlights: List<HighlightData>,
-    val pastThreeDaysHighlights: List<HighlightData>,
     val query: String,
-    val recentSearches: List<String>
+    val recentSearches: List<String>,
+    val allSearchSection: HighlightsSearchSectionUiState,
+    val todaySearchSection: HighlightsSearchSectionUiState,
+    val pastThreeDaysSearchSection: HighlightsSearchSectionUiState
 )
 
 private fun buildDerivedLists(
@@ -63,6 +71,13 @@ private fun buildDerivedLists(
     return Triple(sorted, todayHighlights, pastThreeDays)
 }
 
+private fun searchUiState(query: String, results: List<HighlightData>): SearchUiState =
+    when {
+        query.isEmpty() -> SearchUiState.RECENT
+        results.isEmpty() -> SearchUiState.EMPTY
+        else -> SearchUiState.RESULTS
+    }
+
 private fun recompute(highlights: List<HighlightData>, state: HighlightsUiState)
         : HighlightsUiState {
 
@@ -70,9 +85,21 @@ private fun recompute(highlights: List<HighlightData>, state: HighlightsUiState)
         buildDerivedLists(highlights, state.sportSelect, state.query)
 
     return state.copy(
-        filteredHighlights = filtered,
-        todayHighlights = today,
-        pastThreeDaysHighlights = pastThreeDays
+        allSearchSection = HighlightsSearchSectionUiState(
+            header = "Search all highlights",
+            results = filtered,
+            searchUiState = searchUiState(state.query, filtered)
+        ),
+        todaySearchSection = HighlightsSearchSectionUiState(
+            header = "Search today",
+            results = today,
+            searchUiState = searchUiState(state.query, today)
+        ),
+        pastThreeDaysSearchSection = HighlightsSearchSectionUiState(
+            header = "Search past 3 days",
+            results = pastThreeDays,
+            searchUiState = searchUiState(state.query, pastThreeDays)
+        )
     )
 }
 
@@ -85,11 +112,17 @@ class HighlightsViewModel @Inject constructor(
         loadedState = ApiResponse.Loading,
         isRefreshing = true,
         sportSelectionList = Sport.getSportSelectionList(GenderDivision.ALL),
-        filteredHighlights = emptyList(),
-        todayHighlights = emptyList(),
-        pastThreeDaysHighlights = emptyList(),
         query = "",
-        recentSearches = emptyList()
+        recentSearches = emptyList(),
+        allSearchSection = HighlightsSearchSectionUiState(
+            "Search all highlights", emptyList(), SearchUiState.RECENT
+        ),
+        todaySearchSection = HighlightsSearchSectionUiState(
+            "Search today", emptyList(), SearchUiState.RECENT
+        ),
+        pastThreeDaysSearchSection = HighlightsSearchSectionUiState(
+            "Search past 3 days", emptyList(), SearchUiState.RECENT
+        )
     )
 ) {
     init {
@@ -100,15 +133,12 @@ class HighlightsViewModel @Inject constructor(
                     is ApiResponse.Success -> {
                         val sorted = response.data.sortedByDescending { it.date }
 
-                        val (filtered, today, pastThreeDays) =
-                            buildDerivedLists(sorted, sportSelect, query)
-
-                        copy(
-                            loadedState = ApiResponse.Success(sorted),
-                            isRefreshing = false,
-                            filteredHighlights = filtered,
-                            todayHighlights = today,
-                            pastThreeDaysHighlights = pastThreeDays
+                        recompute(
+                            sorted,
+                            copy(
+                                loadedState = ApiResponse.Success(sorted),
+                                isRefreshing = false
+                            )
                         )
                     }
 
@@ -118,12 +148,12 @@ class HighlightsViewModel @Inject constructor(
                                 isRefreshing = true
                             )
                         } else {
-                            copy(isRefreshing = true,
-                                loadedState = ApiResponse.Loading,
-                                filteredHighlights = emptyList(),
-                                todayHighlights = emptyList(),
-                                pastThreeDaysHighlights = emptyList()
-                            )
+                            copy(
+                                isRefreshing = true,
+                                loadedState = ApiResponse.Loading
+                            ).let { loadingState ->
+                                recompute(emptyList(), loadingState)
+                            }
                         }
 
                     ApiResponse.Error ->
@@ -134,11 +164,10 @@ class HighlightsViewModel @Inject constructor(
                         } else {
                             copy(
                                 loadedState = ApiResponse.Error,
-                                isRefreshing = false,
-                                filteredHighlights = emptyList(),
-                                todayHighlights = emptyList(),
-                                pastThreeDaysHighlights = emptyList()
-                            )
+                                isRefreshing = false
+                            ).let { errorState ->
+                                recompute(emptyList(), errorState)
+                            }
                         }
                 }
             }
