@@ -105,15 +105,15 @@ fun HighlightsSubScreen(
             .fillMaxSize()
             .background(color = Color.White)
     ) {
-        val (highlightsList, header) = when (subScreenType) {
+        val (searchSection, header) = when (subScreenType) {
             HighlightsSubScreenType.TODAY ->
-                uiState.todayHighlights to "Today"
+                uiState.todaySearchSection to "Today"
 
             HighlightsSubScreenType.PAST3DAYS ->
-                uiState.pastThreeDaysHighlights to "Past 3 Days"
+                uiState.pastThreeDaysSearchSection to "Past 3 Days"
 
             HighlightsSubScreenType.ALL ->
-                uiState.filteredHighlights to "All highlights"
+                uiState.allSearchSection to "All highlights"
         }
 
         when (uiState.loadedState) {
@@ -134,7 +134,7 @@ fun HighlightsSubScreen(
                         selectedSport = uiState.sportSelect,
                         sportList = uiState.sportSelectionList,
                         onFilterSelected = { highlightsViewModel.onSportSelected(it) },
-                        highlightsList = highlightsList,
+                        highlightsList = searchSection.results,
                         header = header,
                         navigateBack = navigateBack,
                         toSearchScreen = toSearchScreen
