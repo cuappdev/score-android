@@ -20,12 +20,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
-import com.cornellappdev.score.components.highlights.HighlightsLoadingScreen
-import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.highlights.HighlightsCardRow
 import com.cornellappdev.score.components.highlights.HighlightsFilterRow
+import com.cornellappdev.score.components.highlights.HighlightsLoadingScreen
 import com.cornellappdev.score.components.highlights.HighlightsSearchEntryPointRow
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.HighlightData
@@ -39,13 +38,14 @@ import kotlinx.serialization.Serializable
 @Composable
 fun HighlightsScreen(
     toSearchScreen: () -> Unit,
+    modifier: Modifier = Modifier,
     highlightsViewModel: HighlightsViewModel = hiltViewModel(),
     toSubScreen: (HighlightsSubScreenType) -> Unit
 ) {
     val uiState = highlightsViewModel.collectUiStateValue()
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(color = Color.White)
             .padding(top = 24.dp)
@@ -62,14 +62,14 @@ fun HighlightsScreen(
             is ApiResponse.Success -> {
                 ScorePullToRefreshBox(
                     isRefreshing = uiState.isRefreshing,
-                    { highlightsViewModel.onRefresh() }
+                    onRefresh = { highlightsViewModel.onRefresh() }
                 ) {
                     HighlightsScreenContent(
                         selectedSport = uiState.sportSelect,
                         sportList = uiState.sportSelectionList,
                         onSportSelected = { highlightsViewModel.onSportSelected(it) },
-                        todayHighlightsList = uiState.todayHighlights,
-                        pastThreeHighlightsList = uiState.pastThreeDaysHighlights,
+                        todayHighlightsList = uiState.todaySearchSection.results,
+                        pastThreeHighlightsList = uiState.pastThreeDaysSearchSection.results,
                         toSearchScreen = toSearchScreen,
                         toSubScreen = toSubScreen
                     )
@@ -95,7 +95,8 @@ private fun HighlightsScreenContent(
     toSubScreen: (HighlightsSubScreenType) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         Column(

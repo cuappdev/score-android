@@ -96,7 +96,7 @@ fun HighlightsCardLazyColumnResultsHeader(
     size: Int,
     modifier: Modifier = Modifier
 ) {
-    Column (
+    Column(
         modifier = modifier
     ) {
         Text("$size Results", style = bodyNormal)
