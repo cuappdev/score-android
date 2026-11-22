@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.onboarding.HomeScreenFavoritesInfoBanner
 import com.cornellappdev.score.model.GameFilter
-import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayMedium
@@ -42,11 +41,11 @@ fun SportSelectorHeader(
     sports: List<SportSelection>,
     selectedFilter: GameFilter,
     selectedSport: SportSelection,
-    favoriteSports: Set<Sport>,
     onFilterSelected: (GameFilter) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
     toProfile: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showFavoritesInfoBanner: Boolean = false
 ) {
     Column(
         modifier = modifier
@@ -59,40 +58,37 @@ fun SportSelectorHeader(
             onFilterSelected = onFilterSelected
         )
         Spacer(Modifier.height(16.dp))
-        if (favoriteSports.isEmpty()) {
+        if (showFavoritesInfoBanner) {
             HomeScreenFavoritesInfoBanner(toProfile)
-            Spacer(Modifier.height(16.dp))
         }
-        LazyRow(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            items(sports) { selection ->
-                when (selection) {
-                    SportSelection.All -> {
-                        SportSelector(
-                            empty = painterResource(
-                                R.drawable.ic_all
-                            ),
-                            filled = painterResource(
-                                R.drawable.ic_all_filled
-                            ),
-                            option = "All",
-                            enabled = selectedSport == SportSelection.All
-                        ) {
-                            onSportSelected(selection)
+        if (!showFavoritesInfoBanner && sports.isNotEmpty()) {
+            LazyRow(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                items(sports) { selection ->
+                    when (selection) {
+                        SportSelection.All -> {
+                            SportSelector(
+                                empty = painterResource(R.drawable.ic_all),
+                                filled = painterResource(R.drawable.ic_all_filled),
+                                option = "All",
+                                enabled = selectedSport == SportSelection.All
+                            ) {
+                                onSportSelected(selection)
+                            }
                         }
-                    }
 
-                    is SportSelection.SportSelect -> {
-                        val sport = selection.sport
-                        SportSelector(
-                            empty = painterResource(sport.emptyIcon),
-                            filled = painterResource(sport.filledIcon),
-                            option = sport.displayName,
-                            enabled = selectedSport == selection
-                        ) {
-                            onSportSelected(selection)
+                        is SportSelection.SportSelect -> {
+                            val sport = selection.sport
+                            SportSelector(
+                                empty = painterResource(sport.emptyIcon),
+                                filled = painterResource(sport.filledIcon),
+                                option = sport.displayName,
+                                enabled = selectedSport == selection
+                            ) {
+                                onSportSelected(selection)
+                            }
                         }
                     }
                 }
@@ -144,9 +140,9 @@ private fun PreviewSportSelectorHeader() = ScorePreview {
         sports = sportSelectionList,
         selectedFilter = selectedOption,
         selectedSport = selectedSport,
-        favoriteSports = emptySet(),
         onFilterSelected = { selectedOption = it },
         onSportSelected = { selectedSport = it },
-        toProfile = {}
+        toProfile = {},
+        showFavoritesInfoBanner = true
     )
 }

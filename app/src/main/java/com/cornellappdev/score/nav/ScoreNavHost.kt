@@ -18,7 +18,11 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
 @Composable
-fun ScoreNavHost(navController: NavHostController, welcomeName: String? = null) {
+fun ScoreNavHost(
+    navController: NavHostController,
+    welcomeName: String? = null,
+    isLoggedIn: Boolean = false
+) {
     // This ViewModelStoreOwner is used to scope the past and home screen view models to the root
     //  screen instead of their individual tabs. This way the view models are not reconstructed
     //  everytime you switch tabs.
@@ -30,7 +34,10 @@ fun ScoreNavHost(navController: NavHostController, welcomeName: String? = null) 
     ) {
         composable<Home> {
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
-                HomeScreen(welcomeName = welcomeName, navigateToGameDetails = {
+                HomeScreen(
+                    welcomeName = welcomeName,
+                    isLoggedIn = isLoggedIn,
+                    navigateToGameDetails = {
                     navController.navigate(ScoreScreens.GameDetailsPage(it))
                 },
                    navigateToProfile = {}
@@ -66,26 +73,6 @@ fun ScoreNavHost(navController: NavHostController, welcomeName: String? = null) 
                 navController.navigateUp()
             })
         }
-//// removed for 2/2026 release
-//        composable<ScoreScreens.HighlightsScreen> { backStackEntry ->
-//            CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
-//                HighlightsScreen(toSearchScreen = { navController.navigate(ScoreScreens.HighlightsSearchScreen) })
-//            }
-//        }
-//
-//        composable<ScoreScreens.HighlightsSearchScreen> { backStackEntry ->
-//            CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
-//                HighlightsSearchScreen(
-//                    sportList = sportList,
-//                    recentSearchList = recentSearchList,
-//                    highlightsList = highlightsList,
-//                    query = "",
-//                    header = "Search all highlights",
-//                    {},
-//                    {}
-//                )
-//            }
-//        }
     }
 }
 

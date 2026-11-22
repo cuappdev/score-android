@@ -7,6 +7,7 @@ import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.model.GameFilter
 import com.cornellappdev.score.model.OnboardingPreferencesRepository
+import com.cornellappdev.score.model.ProfileFavorite
 import com.cornellappdev.score.model.ScoreRepository
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
@@ -20,7 +21,7 @@ data class HomeUiState(
     val selectedFilter: GameFilter,
     val sportSelect: SportSelection,
     val selectionList: List<SportSelection>,
-    val favoriteSports: Set<Sport>,
+    val favoriteSports: Set<ProfileFavorite>,
     val loadedState: ApiResponse<List<GameCardData>>,
     val priceFilter: PriceFilter? = null,
     val locationFilter: LocationFilter? = null,
@@ -32,12 +33,12 @@ data class HomeUiState(
     //TODO: refactor filters to use flows - not best practice to expose original games list to the view
     val filteredGames: List<GameCardData>
         get() {
-            val favoriteSportNames = favoriteSports.map { it.displayName }
+            val favoriteGenders = favoriteSports.map { it.gender.displayName }.toSet()
             return games.filter { game ->
                 val matchesGender = when (selectedFilter) {
                     GameFilter.ALL -> true
                     GameFilter.FAVORITES -> if (favoriteSports.isNotEmpty()) {
-                        game.sport in favoriteSportNames
+                        game.gender in favoriteGenders
                     } else {
                         true
                     }
@@ -85,9 +86,7 @@ class HomeViewModel @Inject constructor(
         selectedFilter = GameFilter.FAVORITES,
         sportSelect = SportSelection.All,
         selectionList = Sport.getSportSelectionList(GameFilter.FAVORITES),
-        favoriteSports = preferencesRepository.getFavoriteSportNames()
-            .mapNotNull { runCatching { Sport.valueOf(it) }.getOrNull() }
-            .toSet(),
+        favoriteSports = preferencesRepository.getFavoriteSports(),
         loadedState = ApiResponse.Loading
     )
 ) {
@@ -126,13 +125,21 @@ class HomeViewModel @Inject constructor(
 
     fun onFilterSelected(filter: GameFilter) {
         applyMutation {
+            val newSelectionList = selectionListFor(
+                filter,
+                favoriteSports,
+                (loadedState as? ApiResponse.Success)?.data.orEmpty()
+            )
             copy(
                 selectedFilter = filter,
-                selectionList = selectionListFor(
-                    filter,
-                    favoriteSports,
-                    (loadedState as? ApiResponse.Success)?.data.orEmpty()
-                ),
+                selectionList = newSelectionList,
+                sportSelect = if (
+                    sportSelect is SportSelection.All || sportSelect in newSelectionList
+                ) {
+                    sportSelect
+                } else {
+                    SportSelection.All
+                }
             )
         }
     }
@@ -167,14 +174,21 @@ class HomeViewModel @Inject constructor(
 
     private fun selectionListFor(
         filter: GameFilter,
-        favorites: Set<Sport>,
+        favorites: Set<ProfileFavorite>,
         upcomingGames: List<GameCardData>
     ): List<SportSelection> {
         val nextGameDateBySport = upcomingGames
             .groupBy { it.sport }
             .mapValues { (_, games) -> games.mapNotNull { it.date }.minOrNull() }
 
-        return Sport.getSportSelectionList(filter).sortedWith(
+        val sports = if (filter == GameFilter.FAVORITES) {
+            listOf(SportSelection.All) +
+                    favorites.map { SportSelection.SportSelect(it.sport) }.distinct()
+        } else {
+            Sport.getSportSelectionList(filter)
+        }
+
+        return sports.sortedWith(
             compareBy<SportSelection> { if (it is SportSelection.All) 0 else 1 }
                 .thenBy { selection ->
                     (selection as? SportSelection.SportSelect)
@@ -183,6 +197,7 @@ class HomeViewModel @Inject constructor(
                         ?.let(nextGameDateBySport::get)
                         ?: LocalDate.MAX
                 }
+                .thenBy { (it as? SportSelection.SportSelect)?.sport?.displayName.orEmpty() }
         )
     }
 }

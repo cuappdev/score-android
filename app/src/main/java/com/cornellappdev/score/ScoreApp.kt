@@ -24,6 +24,7 @@ import com.cornellappdev.score.nav.root.RootNavigation
 import com.cornellappdev.score.screen.OnboardingScreen
 import com.cornellappdev.score.screen.OnboardingSequence
 import com.cornellappdev.score.theme.CrimsonPrimary
+import com.cornellappdev.score.util.toWelcomeName
 
 @Composable
 fun ScoreApp(
@@ -39,6 +40,7 @@ fun ScoreApp(
     }
     val signedInState = authState as? AuthState.SignedIn
     val onboardingComplete = signedInState?.onboardingStage == OnboardingStage.COMPLETE
+    val welcomeName = signedInState?.user?.toWelcomeName()
 
     LaunchedEffect(onboardingComplete) {
         if (onboardingComplete) {
@@ -67,7 +69,10 @@ fun ScoreApp(
                     )
                 }
             onboardingComplete || skippedWelcome ->
-                RootNavigation(welcomeName = signedInState?.user?.name)
+                RootNavigation(
+                    welcomeName = welcomeName,
+                    isLoggedIn = signedInState != null
+                )
             else ->
                 OnboardingScreen(
                     onSignUp = onSignIn,
