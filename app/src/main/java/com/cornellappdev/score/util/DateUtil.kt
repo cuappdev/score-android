@@ -32,7 +32,7 @@ fun parseDateOrNull(strDate: String): LocalDate? {
             "$strDate ${LocalDate.now().year}",
             format
         ) //assumes current year
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         null
     }
 
@@ -79,7 +79,7 @@ fun parseIsoDateToLocalDateOrNull(strDate: String): LocalDate? {
         Instant.parse(strDate)
             .atZone(ZoneId.systemDefault())
             .toLocalDate()
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         null
     }
 }

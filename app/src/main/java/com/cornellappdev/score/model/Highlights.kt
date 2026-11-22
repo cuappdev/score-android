@@ -1,9 +1,7 @@
 package com.cornellappdev.score.model
 
-import com.cornellappdev.score.util.formatDateTimeDisplay
 import com.cornellappdev.score.util.isValidSport
 import com.cornellappdev.score.util.outputFormatter
-import com.cornellappdev.score.util.parseDateTimeOrNull
 import com.cornellappdev.score.util.parseIsoDateToLocalDateOrNull
 import com.example.score.HighlightsQuery
 import java.time.LocalDate
@@ -33,7 +31,6 @@ data class ArticleHighlightData(
 sealed class HighlightData {
     abstract val title: String
     abstract val date: LocalDate?
-
     abstract val dateString: String
     abstract val sport: Sport?
 

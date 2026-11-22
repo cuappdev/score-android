@@ -1,4 +1,4 @@
-package com.cornellappdev.score.screen
+package com.cornellappdev.score.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
@@ -24,7 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.cornellappdev.score.components.ScorePreview
+import com.cornellappdev.score.screen.ProfilePicture
 import com.cornellappdev.score.theme.saturatedGreen
 
 /**
