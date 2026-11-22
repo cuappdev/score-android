@@ -4,6 +4,7 @@ import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.model.GameFilter
 import com.cornellappdev.score.model.OnboardingPreferencesRepository
+import com.cornellappdev.score.model.ProfileFavorite
 import com.cornellappdev.score.model.ScoreRepository
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
@@ -17,19 +18,19 @@ data class PastGamesUiState(
     val selectedFilter: GameFilter,
     val sportSelect: SportSelection,
     val selectionList: List<SportSelection>,
-    val favoriteSports: Set<Sport> = emptySet(),
+    val favoriteSports: Set<ProfileFavorite> = emptySet(),
     val loadedState: ApiResponse<List<GameCardData>>
 ) {
     //TODO: refactor filters to use flows - not best practice to expose original games list to the view
     val filteredGames: List<GameCardData>
         get() = when (loadedState) {
             is ApiResponse.Success -> {
-                val favoriteSportNames = favoriteSports.map { it.displayName }
+                val favoriteGenders = favoriteSports.map { it.gender.displayName }.toSet()
                 loadedState.data.filter { game ->
                     val matchesGender = when (selectedFilter) {
                         GameFilter.ALL -> true
                         GameFilter.FAVORITES -> if (favoriteSports.isNotEmpty()) {
-                            game.sport in favoriteSportNames
+                            game.gender in favoriteGenders
                         } else {
                             true
                         }
@@ -63,9 +64,7 @@ class PastGamesViewModel @Inject constructor(
         selectedFilter = GameFilter.FAVORITES,
         sportSelect = SportSelection.All,
         selectionList = Sport.getSportSelectionList(GameFilter.FAVORITES),
-        favoriteSports = preferencesRepository.getFavoriteSportNames()
-            .mapNotNull { runCatching { Sport.valueOf(it) }.getOrNull() }
-            .toSet(),
+        favoriteSports = preferencesRepository.getFavoriteSports(),
         loadedState = ApiResponse.Loading
     )
 ) {
@@ -82,7 +81,7 @@ class PastGamesViewModel @Inject constructor(
                 val pastGames = (loadedState as? ApiResponse.Success)?.data.orEmpty()
                 copy(
                     loadedState = loadedState,
-                    selectionList = selectionListFor(selectedFilter, pastGames)
+                    selectionList = selectionListFor(selectedFilter, favoriteSports, pastGames)
                 )
             }
         }
@@ -90,12 +89,21 @@ class PastGamesViewModel @Inject constructor(
 
     fun onFilterSelected(filter: GameFilter) {
         applyMutation {
+            val newSelectionList = selectionListFor(
+                filter,
+                favoriteSports,
+                (loadedState as? ApiResponse.Success)?.data.orEmpty()
+            )
             copy(
                 selectedFilter = filter,
-                selectionList = selectionListFor(
-                    filter,
-                    (loadedState as? ApiResponse.Success)?.data.orEmpty()
-                ),
+                selectionList = newSelectionList,
+                sportSelect = if (
+                    sportSelect is SportSelection.All || sportSelect in newSelectionList
+                ) {
+                    sportSelect
+                } else {
+                    SportSelection.All
+                }
             )
         }
     }
@@ -116,13 +124,21 @@ class PastGamesViewModel @Inject constructor(
 
     private fun selectionListFor(
         filter: GameFilter,
+        favoriteSports: Set<ProfileFavorite>,
         pastGames: List<GameCardData>
     ): List<SportSelection> {
         val mostRecentGameBySport = pastGames
             .groupBy { it.sport }
             .mapValues { (_, games) -> games.mapNotNull { it.date }.maxOrNull() }
 
-        return Sport.getSportSelectionList(filter).sortedWith(
+        val sports = if (filter == GameFilter.FAVORITES) {
+            listOf(SportSelection.All) +
+                    favoriteSports.map { SportSelection.SportSelect(it.sport) }.distinct()
+        } else {
+            Sport.getSportSelectionList(filter)
+        }
+
+        return sports.sortedWith(
             compareBy<SportSelection> { if (it is SportSelection.All) 0 else 1 }
                 .thenByDescending { selection ->
                     (selection as? SportSelection.SportSelect)
@@ -131,6 +147,7 @@ class PastGamesViewModel @Inject constructor(
                         ?.let(mostRecentGameBySport::get)
                         ?: LocalDate.MIN
                 }
+                .thenBy { (it as? SportSelection.SportSelect)?.sport?.displayName.orEmpty() }
         )
     }
 }

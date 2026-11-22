@@ -24,7 +24,7 @@ import com.cornellappdev.score.theme.Style.heading2
 
 @Composable
 fun WelcomeBanner(
-    name: String,
+    name: String?,
     modifier: Modifier = Modifier
 ) {
     val gradientRed = Brush.horizontalGradient(0f to Color(0xFFBC2811), 1000f to Color(0xFF62180C))
@@ -44,16 +44,24 @@ fun WelcomeBanner(
             modifier = Modifier.size(50.dp)
         )
         Row {
-            Text(
-                text = "Welcome to Score",
-                style = heading2,
-                color = Color.White
-            )
-            Text(
-                text = " ${name}!",
-                style = heading2.copy(fontWeight = androidx.compose.ui.text.font.FontWeight(700)),
-                color = Color.White
-            )
+            if (name.isNullOrBlank()) {
+                Text(
+                    text = "Welcome to Score!",
+                    style = heading2,
+                    color = Color.White
+                )
+            } else {
+                Text(
+                    text = "Welcome to Score",
+                    style = heading2,
+                    color = Color.White
+                )
+                Text(
+                    text = " $name!",
+                    style = heading2.copy(fontWeight = androidx.compose.ui.text.font.FontWeight(700)),
+                    color = Color.White
+                )
+            }
         }
 
     }

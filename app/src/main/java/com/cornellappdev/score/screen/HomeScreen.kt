@@ -43,6 +43,8 @@ import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.components.onboarding.WelcomeBanner
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GameFilter
+import com.cornellappdev.score.model.GenderDivision
+import com.cornellappdev.score.model.ProfileFavorite
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.GrayPrimary
@@ -61,6 +63,7 @@ fun HomeScreen(
     navigateToProfile: () -> Unit,
     modifier: Modifier = Modifier,
     welcomeName: String? = null,
+    isLoggedIn: Boolean = false,
     homeViewModel: HomeViewModel = hiltViewModel(),
     navigateToGameDetails: (String) -> Unit = {}
 ) {
@@ -85,6 +88,7 @@ fun HomeScreen(
                 HomeContent(
                     uiState = uiState,
                     welcomeName = welcomeName,
+                    isLoggedIn = isLoggedIn,
                     onFilterSelected = { homeViewModel.onFilterSelected(it) },
                     onSportSelected = { homeViewModel.onSportSelected(it) },
                     navigateToGameDetails = navigateToGameDetails,
@@ -118,6 +122,7 @@ private fun HomeContent(
     onRefresh: () -> Unit,
     navigateToProfile: () -> Unit,
     welcomeName: String? = null,
+    isLoggedIn: Boolean = false,
     navigateToGameDetails: (String) -> Unit = {}
 ) {
     ScorePullToRefreshBox(isRefreshing = uiState.loadedState == ApiResponse.Loading, onRefresh) {
@@ -127,7 +132,8 @@ private fun HomeContent(
             onSportSelected,
             navigateToGameDetails,
             navigateToProfile,
-            welcomeName
+            welcomeName,
+            isLoggedIn
         )
     }
 }
@@ -140,14 +146,15 @@ private fun HomeLazyColumn(
     onSportSelected: (SportSelection) -> Unit,
     navigateToGameDetails: (String) -> Unit,
     toProfile: () -> Unit,
-    welcomeName: String? = null
+    welcomeName: String? = null,
+    isLoggedIn: Boolean = false
 ) {
     Box(Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(top = 24.dp)
         ) {
-        if (welcomeName != null) {
+        if (isLoggedIn) {
             item {
                 WelcomeBanner(
                     name = welcomeName,
@@ -197,10 +204,10 @@ private fun HomeLazyColumn(
                     sports = uiState.selectionList,
                     selectedFilter = uiState.selectedFilter,
                     selectedSport = uiState.sportSelect,
-                    favoriteSports = uiState.favoriteSports,
                     onFilterSelected = onFilterSelected,
                     onSportSelected = onSportSelected,
-                    toProfile = toProfile
+                    toProfile = toProfile,
+                    showFavoritesInfoBanner = uiState.favoriteSports.isEmpty()
                 )
             }
             Box(modifier = Modifier.background(White)) {
@@ -246,32 +253,65 @@ private fun HomeLazyColumn(
     }
 }
 
-@Preview
+@Preview(name = "Signed out · no favorites")
 @Composable
-private fun HomeScreenPreview() = ScorePreview {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.White)
-    ) {
-        HomeContent(
-            HomeUiState(
-                selectedFilter = GameFilter.FAVORITES,
-                sportSelect = SportSelection.All,
-                selectionList = sportSelectionList,
-                favoriteSports = emptySet(),
-                loadedState = ApiResponse.Success(gameList)
-            ),
-            onFilterSelected = {},
-            onSportSelected = {},
-            onRefresh = {},
-            navigateToProfile = {},
-            welcomeName = "Claire"
-        )
+private fun HomeScreenSignedOutNoFavoritesPreview() = HomeScreenPreviewContent(
+    isLoggedIn = false,
+    hasFavorites = false
+)
+
+@Preview(name = "Signed out · has favorites")
+@Composable
+private fun HomeScreenSignedOutWithFavoritesPreview() = HomeScreenPreviewContent(
+    isLoggedIn = false,
+    hasFavorites = true
+)
+
+@Preview(name = "Signed in · no favorites")
+@Composable
+private fun HomeScreenSignedInNoFavoritesPreview() = HomeScreenPreviewContent(
+    isLoggedIn = true,
+    hasFavorites = false
+)
+
+@Preview(name = "Signed in · has favorites")
+@Composable
+private fun HomeScreenSignedInWithFavoritesPreview() = HomeScreenPreviewContent(
+    isLoggedIn = true,
+    hasFavorites = true
+)
+
+@Composable
+private fun HomeScreenPreviewContent(
+    isLoggedIn: Boolean,
+    hasFavorites: Boolean
+) = ScorePreview {
+    val favorites = if (hasFavorites) {
+        setOf(ProfileFavorite(Sport.FOOTBALL, GenderDivision.MALE))
+    } else {
+        emptySet()
     }
+    val favoriteSportSelections = listOf(SportSelection.All) +
+            favorites.map { SportSelection.SportSelect(it.sport) }
+
+    HomeContent(
+        uiState = HomeUiState(
+            selectedFilter = GameFilter.FAVORITES,
+            sportSelect = SportSelection.All,
+            selectionList = if (hasFavorites) favoriteSportSelections else sportSelectionList,
+            favoriteSports = favorites,
+            loadedState = ApiResponse.Success(gameList)
+        ),
+        onFilterSelected = {},
+        onSportSelected = {},
+        onRefresh = {},
+        navigateToProfile = {},
+        welcomeName = if (isLoggedIn) "Claire" else null,
+        isLoggedIn = isLoggedIn
+    )
 }
 
-@Preview
+@Preview(name = "Empty filtered schedule")
 @Composable
 private fun HomeScreenEmptyStatePreview() = ScorePreview {
     HomeContent(
@@ -288,4 +328,3 @@ private fun HomeScreenEmptyStatePreview() = ScorePreview {
         navigateToProfile = {}
     )
 }
-

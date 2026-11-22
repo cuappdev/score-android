@@ -152,8 +152,7 @@ private fun PastGamesLazyColumn(
                     selectedSport = uiState.sportSelect,
                     onFilterSelected = onFilterSelected,
                     onSportSelected = onSportSelected,
-                    toProfile = navigateToProfile,
-                    favoriteSports = emptySet() //todo pass in a preferences viewmodel
+                    toProfile = navigateToProfile
                 )
             }
             Box(modifier = Modifier.background(White)) {
