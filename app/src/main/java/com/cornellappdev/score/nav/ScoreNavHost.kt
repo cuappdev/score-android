@@ -3,11 +3,17 @@ package com.cornellappdev.score.nav
 import GameScoreSummaryScreenDetail
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.cornellappdev.score.model.ProfileData
+import com.cornellappdev.score.screen.ProfileScreen
+import com.cornellappdev.score.screen.HighlightsScreen
+import com.cornellappdev.score.screen.HighlightsSearchScreen
+import com.cornellappdev.score.viewmodel.OnboardingSequenceViewModel
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.nav.root.ScoreScreens
 import com.cornellappdev.score.nav.root.ScoreScreens.Home
@@ -30,20 +36,27 @@ fun ScoreNavHost(navController: NavHostController, welcomeName: String? = null) 
     ) {
         composable<Home> {
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
-                HomeScreen(welcomeName = welcomeName, navigateToGameDetails = {
-                    navController.navigate(ScoreScreens.GameDetailsPage(it))
-                },
-                   navigateToProfile = {}
-                    )
+                HomeScreen(
+                    welcomeName = welcomeName,
+                    navigateToGameDetails = {
+                        navController.navigate(ScoreScreens.GameDetailsPage(it))
+                    },
+                    navigateToProfile = {
+                        navController.navigate(ScoreScreens.ProfileScreen) { launchSingleTop = true }
+                    }
+                )
             }
         }
         composable<ScoreScreens.ScoresScreen> {
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
-                PastGamesScreen(navigateToGameDetails = {
-                    navController.navigate(ScoreScreens.GameDetailsPage(it))
-                },
-                    navigateToProfile = {}
-                    )
+                PastGamesScreen(
+                    navigateToGameDetails = {
+                        navController.navigate(ScoreScreens.GameDetailsPage(it))
+                    },
+                    navigateToProfile = {
+                        navController.navigate(ScoreScreens.ProfileScreen) { launchSingleTop = true }
+                    }
+                )
             }
         }
         composable<ScoreScreens.GameDetailsPage> {
@@ -66,26 +79,43 @@ fun ScoreNavHost(navController: NavHostController, welcomeName: String? = null) 
                 navController.navigateUp()
             })
         }
-//// removed for 2/2026 release
-//        composable<ScoreScreens.HighlightsScreen> { backStackEntry ->
-//            CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
-//                HighlightsScreen(toSearchScreen = { navController.navigate(ScoreScreens.HighlightsSearchScreen) })
-//            }
-//        }
-//
-//        composable<ScoreScreens.HighlightsSearchScreen> { backStackEntry ->
-//            CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
-//                HighlightsSearchScreen(
-//                    sportList = sportList,
-//                    recentSearchList = recentSearchList,
-//                    highlightsList = highlightsList,
-//                    query = "",
-//                    header = "Search all highlights",
-//                    {},
-//                    {}
-//                )
-//            }
-//        }
+        composable<ScoreScreens.HighlightsScreen> {
+            HighlightsScreen(
+                toSearchScreen = { navController.navigate(ScoreScreens.HighlightsSearchScreen) }
+            )
+        }
+        composable<ScoreScreens.HighlightsSearchScreen> {
+            HighlightsSearchScreen(
+                sportList = emptyList(),
+                recentSearchList = emptyList(),
+                highlightsList = emptyList(),
+                query = "",
+                header = "Search all highlights",
+                onItemClick = {},
+                onCloseClick = { navController.navigateUp() }
+            )
+        }
+        composable<ScoreScreens.ProfileScreen> {
+            ProfileRoute(displayName = welcomeName)
+        }
     }
 }
 
+
+@Composable
+private fun ProfileRoute(
+    displayName: String?,
+    viewModel: OnboardingSequenceViewModel = hiltViewModel()
+) {
+    ProfileScreen(
+        data = ProfileData(
+            name = displayName?.takeIf { it.isNotBlank() } ?: "Guest",
+            favorites = viewModel.getFavoriteSports(),
+            bookmarks = emptyList()
+        ),
+        initialPicture = viewModel.getProfilePicture(),
+        onPictureSelected = { viewModel.saveProfilePicture(it.name) },
+        onFavoritesChanged = { viewModel.saveFavoriteSports(it.toSet()) },
+        showBottomBar = false
+    )
+}

@@ -64,15 +64,19 @@ import com.cornellappdev.score.theme.SpotColor
 import com.cornellappdev.score.theme.Style
 import com.cornellappdev.score.util.sampleProfileData
 
-/** Standalone sample backed by replaceable dummy data; avatar editing is inherited from PR #115. */
+/** Profile flow shared by the app navigation and standalone previews. */
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     data: ProfileData = sampleProfileData,
     onEditSports: () -> Unit = {},
-    onShowAllBookmarks: () -> Unit = {}
+    onShowAllBookmarks: () -> Unit = {},
+    initialPicture: ProfilePicture = ProfilePicture.BLANK,
+    onPictureSelected: (ProfilePicture) -> Unit = {},
+    onFavoritesChanged: (List<ProfileFavorite>) -> Unit = {},
+    showBottomBar: Boolean = true
 ) {
-    var selectedPicture by rememberSaveable { mutableStateOf(ProfilePicture.TENNIS) }
+    var selectedPicture by rememberSaveable { mutableStateOf(initialPicture) }
     var editingPicture by rememberSaveable { mutableStateOf(false) }
 
     var showingSettings by rememberSaveable { mutableStateOf(false) }
@@ -105,13 +109,17 @@ fun ProfileScreen(
                     onToggleFavorite = { favorite ->
                         favorites =
                             if (favorite in favorites) favorites - favorite else favorites + favorite
+                        onFavoritesChanged(favorites)
                     },
                     onBack = { editingSports = false }
                 )
             } else if (editingPicture) {
                 EditProfileScreen(
                     selectedPicture,
-                    { selectedPicture = it },
+                    {
+                        selectedPicture = it
+                        onPictureSelected(it)
+                    },
                     { editingPicture = false })
             } else {
                 ProfileContent(
@@ -127,7 +135,7 @@ fun ProfileScreen(
                 )
             }
         }
-        if (!editingSports && !showingSettings) ProfileTabBar()
+        if (showBottomBar && !editingSports && !showingSettings) ProfileTabBar()
     }
 }
 
