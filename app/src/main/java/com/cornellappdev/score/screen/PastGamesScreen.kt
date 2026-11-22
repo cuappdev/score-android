@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,17 +22,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.cornellappdev.score.R
-import com.cornellappdev.score.components.EmptyStateBox
 import com.cornellappdev.score.components.ErrorState
 import com.cornellappdev.score.components.GamesCarousel
 import com.cornellappdev.score.components.LoadingScreen
 import com.cornellappdev.score.components.PastGameCard
+import com.cornellappdev.score.components.PastGamesEmptyState
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.components.ScorePullToRefreshBox
 import com.cornellappdev.score.components.SportSelectorHeader
 import com.cornellappdev.score.model.ApiResponse
-import com.cornellappdev.score.model.GenderDivision
+import com.cornellappdev.score.model.GameFilter
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.GrayStroke
@@ -45,14 +45,16 @@ import com.cornellappdev.score.viewmodel.PastGamesViewModel
 
 @Composable
 fun PastGamesScreen(
+    modifier: Modifier = Modifier,
     pastGamesViewModel: PastGamesViewModel = hiltViewModel(),
-    navigateToGameDetails: (String) -> Unit = {}
+    navigateToGameDetails: (String) -> Unit = {},
+    navigateToProfile: () -> Unit
 ) {
     val uiState = pastGamesViewModel.collectUiStateValue()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-        modifier = Modifier
+        modifier = modifier
             .background(Color.White)
     ) {
         when (uiState.loadedState) {
@@ -67,10 +69,11 @@ fun PastGamesScreen(
             is ApiResponse.Success -> {
                 PastGamesContent(
                     uiState = uiState,
-                    onGenderSelected = { pastGamesViewModel.onGenderSelected(it) },
+                    onFilterSelected = { pastGamesViewModel.onFilterSelected(it) },
                     onSportSelected = { pastGamesViewModel.onSportSelected(it) },
                     navigateToGameDetails = navigateToGameDetails,
-                    onRefresh = pastGamesViewModel::onRefresh
+                    onRefresh = pastGamesViewModel::onRefresh,
+                    navigateToProfile = navigateToProfile
                 )
             }
         }
@@ -81,13 +84,20 @@ fun PastGamesScreen(
 @Composable
 private fun PastGamesContent(
     uiState: PastGamesUiState,
-    onGenderSelected: (GenderDivision) -> Unit,
+    onFilterSelected: (GameFilter) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
     onRefresh: () -> Unit,
-    navigateToGameDetails: (String) -> Unit = {}
+    navigateToGameDetails: (String) -> Unit = {},
+    navigateToProfile: () -> Unit
 ) {
     ScorePullToRefreshBox(uiState.loadedState == ApiResponse.Loading, onRefresh = onRefresh) {
-        PastGamesLazyColumn(uiState, onGenderSelected, onSportSelected, navigateToGameDetails)
+        PastGamesLazyColumn(
+            uiState,
+            onFilterSelected,
+            onSportSelected,
+            navigateToGameDetails,
+            navigateToProfile
+        )
     }
 }
 
@@ -95,9 +105,10 @@ private fun PastGamesContent(
 @OptIn(ExperimentalFoundationApi::class)
 private fun PastGamesLazyColumn(
     uiState: PastGamesUiState,
-    onGenderSelected: (GenderDivision) -> Unit,
+    onFilterSelected: (GameFilter) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
-    navigateToGameDetails: (String) -> Unit
+    navigateToGameDetails: (String) -> Unit,
+    navigateToProfile: () -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(top = 24.dp)) {
         if (uiState.filteredGames.isNotEmpty()) {
@@ -137,10 +148,12 @@ private fun PastGamesLazyColumn(
                 Spacer(modifier = Modifier.height(8.dp))
                 SportSelectorHeader(
                     sports = uiState.selectionList,
-                    selectedGender = uiState.selectedGender,
+                    selectedFilter = uiState.selectedFilter,
                     selectedSport = uiState.sportSelect,
-                    onGenderSelected = onGenderSelected,
-                    onSportSelected = onSportSelected
+                    onFilterSelected = onFilterSelected,
+                    onSportSelected = onSportSelected,
+                    toProfile = navigateToProfile,
+                    favoriteSports = emptySet() //todo pass in a preferences viewmodel
                 )
             }
             Box(modifier = Modifier.background(White)) {
@@ -166,7 +179,13 @@ private fun PastGamesLazyColumn(
             }
         } else {
             item {
-                EmptyStateBox(icon = R.drawable.ic_speaker_gray, title = "No games yet.")
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .fillMaxSize()
+                ) {
+                    PastGamesEmptyState()
+                }
             }
         }
     }
@@ -177,14 +196,15 @@ private fun PastGamesLazyColumn(
 private fun PastGamesPreview() = ScorePreview {
     PastGamesContent(
         uiState = PastGamesUiState(
-            selectedGender = GenderDivision.ALL,
+            selectedFilter = GameFilter.ALL,
             sportSelect = SportSelection.All,
             selectionList = sportSelectionList,
             loadedState = ApiResponse.Success(gameList)
         ),
-        onGenderSelected = {},
+        onFilterSelected = {},
         onSportSelected = {},
         onRefresh = {},
+        navigateToProfile = {}
     )
 }
 
@@ -193,13 +213,14 @@ private fun PastGamesPreview() = ScorePreview {
 private fun PastGamesEmptyStatePreview() = ScorePreview {
     PastGamesContent(
         uiState = PastGamesUiState(
-            selectedGender = GenderDivision.ALL,
+            selectedFilter = GameFilter.ALL,
             sportSelect = SportSelection.All,
             selectionList = sportSelectionList,
             loadedState = ApiResponse.Success(emptyList())
         ),
-        onGenderSelected = {},
+        onFilterSelected = {},
         onSportSelected = {},
         onRefresh = {},
+        navigateToProfile = {}
     )
 }
