@@ -133,7 +133,7 @@ fun HighlightsSubScreen(
                     HighlightsSubScreenContent(
                         selectedSport = uiState.sportSelect,
                         sportList = uiState.sportSelectionList,
-                        onFilterSelected = { highlightsViewModel.onSportSelected(it) },
+                        onFilterSelected = { highlightsViewModel.onSportToggled(it) },
                         highlightsList = searchSection.results,
                         header = header,
                         navigateBack = navigateBack,

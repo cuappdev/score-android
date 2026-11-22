@@ -67,7 +67,7 @@ fun HighlightsScreen(
                     HighlightsScreenContent(
                         selectedSport = uiState.sportSelect,
                         sportList = uiState.sportSelectionList,
-                        onSportSelected = { highlightsViewModel.onSportSelected(it) },
+                        onSportSelected = { highlightsViewModel.onSportToggled(it) },
                         todayHighlightsList = uiState.todaySearchSection.results,
                         pastThreeHighlightsList = uiState.pastThreeDaysSearchSection.results,
                         toSearchScreen = toSearchScreen,

@@ -44,7 +44,7 @@ fun HighlightsSearchScreen(
 
     HighlightsSearchScreenContent(
         sportList = uiState.sportSelectionList,
-        onFilterSelected = { highlightsViewModel.onSportSelected(it) },
+        onFilterSelected = { highlightsViewModel.onSportToggled(it) },
         recentSearchList = uiState.recentSearches,
         sectionUiState = sectionUiState,
         query = uiState.query,
