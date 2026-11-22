@@ -55,6 +55,7 @@ import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.GreenBackground
 import com.cornellappdev.score.theme.Style
 import com.cornellappdev.score.theme.saturatedGreen
+import com.cornellappdev.score.util.sampleProfileData
 
 internal val favoriteSportComparator = compareBy<ProfileFavorite>(
     { it.sport.displayName },
@@ -85,9 +86,11 @@ fun EditFavoriteSportsScreen(
         .filter { gender == GenderDivision.ALL || it.gender == gender }
         .sortedWith(selectedFavoritesFirst(favorites))
 
-    Column(modifier
-        .fillMaxSize()
-        .background(Color.White)) {
+    Column(
+        modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
         NavigationHeader(stringResource(R.string.edit_favorite_sports), onBack)
         FavoriteSportSelectionScreenContents(
             favorites = favorites,
@@ -173,9 +176,11 @@ private fun FavoriteSportOption(favorite: ProfileFavorite, selected: Boolean, on
             .toggleable(selected, role = Role.Checkbox, onValueChange = { onClick() }),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(Modifier
-            .fillMaxWidth()
-            .aspectRatio(1f), contentAlignment = Alignment.Center) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f), contentAlignment = Alignment.Center
+        ) {
             Box(
                 Modifier
                     .fillMaxSize()

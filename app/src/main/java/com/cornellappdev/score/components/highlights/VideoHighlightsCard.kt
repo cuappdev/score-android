@@ -39,6 +39,7 @@ import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.theme.Style.labelsNormal
+import com.cornellappdev.score.util.sampleVideoHighlightData
 
 @Composable
 private fun VideoHighlightCardHeader(
@@ -99,12 +100,15 @@ fun VideoHighlightCardBody(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(videoHighlight.sport.emptyIcon),
-                    contentDescription = "Sport icon",
-                    modifier = Modifier.size(24.dp),
-                    tint = Color.Unspecified
-                )
+                if (videoHighlight.sport != null){
+                    Icon(
+                        painter = painterResource(videoHighlight.sport.emptyIcon),
+                        contentDescription = "Sport icon",
+                        modifier = Modifier.size(24.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
                 Icon(
                     painter = painterResource(if (videoHighlight.gender == GenderDivision.FEMALE) R.drawable.ic_gender_women else R.drawable.ic_gender_men),
                     contentDescription = "Gender icon",
@@ -128,7 +132,7 @@ fun VideoHighlightCardBody(
             }
             Text(
                 style = labelsNormal,
-                text = videoHighlight.date
+                text = videoHighlight.dateString
             )
         }
     }
@@ -160,22 +164,8 @@ data class VideoHighlightPreviewData(
 class VideoHighlightsPreviewProvider : PreviewParameterProvider<VideoHighlightPreviewData> {
     override val values: Sequence<VideoHighlightPreviewData> = sequence {
         val samples = listOf(
-            VideoHighlightData(
-                "vs Columbia",
-                "maxresdefault.jpg",
-                "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-                "11/9",
-                Sport.BASEBALL,
-                GenderDivision.MALE
-            ),
-            VideoHighlightData(
-                "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-                "maxresdefault.jpg",
-                "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-                "11/9",
-                Sport.BASEBALL,
-                GenderDivision.MALE
-            )
+            sampleVideoHighlightData,
+            sampleVideoHighlightData
         )
         for (sample in samples) {
             yield(VideoHighlightPreviewData(sample, true))

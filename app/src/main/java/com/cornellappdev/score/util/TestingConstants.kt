@@ -7,13 +7,13 @@ import com.cornellappdev.score.model.GameCardData
 import com.cornellappdev.score.model.GameData
 import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.HighlightData
-import com.cornellappdev.score.model.VideoHighlightData
 import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.model.TeamBoxScore
 import com.cornellappdev.score.model.TeamGameSummary
 import com.cornellappdev.score.model.TeamScore
+import com.cornellappdev.score.model.VideoHighlightData
 import java.time.LocalDate
 
 val PENN_GAME = GameCardData(
@@ -227,49 +227,44 @@ val sportSelectionList = listOf(
 
 val recentSearchList = listOf("Columbia", "Men's ice hockey", "Late goal lifts No.6 men’s hockey")
 
+val sampleArticleHighlightData = ArticleHighlightData(
+    title = "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
+    imageUrl = "maxresdefault.jpg",
+    articleUrl = "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+    date = null,
+    dateString = "11/9",
+    sport = Sport.ICE_HOCKEY
+)
+
+val sampleVideoHighlightData = VideoHighlightData(
+    title = "vs Columbia",
+    thumbnailImageUrl = "maxresdefault.jpg",
+    videoUrl = "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
+    date = null,
+    dateString = "11/09",
+    sport = Sport.BASEBALL,
+    gender = GenderDivision.MALE
+)
+
 //Mixed type
 val highlightsList = listOf(
     HighlightData.Video
-    (VideoHighlightData(
-        "vs Columbia",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/09",
-        Sport.BASEBALL,
-        GenderDivision.MALE
-    )),
-    HighlightData.Article
-    (ArticleHighlightData(
-        "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/09",
-        Sport.ICE_HOCKEY
-    )),
+        (
+        sampleVideoHighlightData
+    ),
+    HighlightData.Article(
+        sampleArticleHighlightData
+    ),
     HighlightData.Video
-    (VideoHighlightData(
-        "vs Columbia",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/9",
-        Sport.BASEBALL,
-        GenderDivision.MALE
-    )),
+        (
+        sampleVideoHighlightData
+    ),
     HighlightData.Article
-    (ArticleHighlightData(
-        "Late Goal Lifts No. 6 Men’s Hockey Over Brown",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/09",
-        Sport.ICE_HOCKEY
-    )),
+        (
+        sampleArticleHighlightData
+    ),
     HighlightData.Video
-    (VideoHighlightData(
-        "vs Columbia",
-        "maxresdefault.jpg",
-        "https://cornellsun.com/article/london-mcdavid-is-making-a-name-for-herself-at-cornell",
-        "11/9",
-        Sport.BASEBALL,
-        GenderDivision.MALE
-    ))
+        (
+        sampleVideoHighlightData
+    )
 )

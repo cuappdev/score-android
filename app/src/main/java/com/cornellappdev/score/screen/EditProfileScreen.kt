@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.NavigationHeader
+import com.cornellappdev.score.components.ProfilePictureOptions
 import com.cornellappdev.score.theme.Style
 
 enum class ProfilePicture(@DrawableRes val drawable: Int, @StringRes val label: Int) {

@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.OnboardingFooter
+import com.cornellappdev.score.components.ProfilePictureOptions
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style
 

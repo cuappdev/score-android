@@ -1,4 +1,4 @@
-package com.cornellappdev.score.screen
+package com.cornellappdev.score.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,7 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.cornellappdev.score.components.ScorePreview
+import com.cornellappdev.score.screen.ProfilePicture
 import com.cornellappdev.score.theme.saturatedGreen
 
 /**
