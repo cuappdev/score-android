@@ -139,9 +139,13 @@ class HighlightsViewModel @Inject constructor(
                 when (response) {
                     is ApiResponse.Success -> {
                         val sorted = response.data.sortedByDescending { it.date }
-                        copy(
-                            loadedState = ApiResponse.Success(sorted),
-                            isRefreshing = false
+
+                        refreshFilteredHighlights(
+                            sorted,
+                            copy(
+                                loadedState = ApiResponse.Success(sorted),
+                                isRefreshing = false
+                            )
                         )
                     }
 
@@ -153,12 +157,9 @@ class HighlightsViewModel @Inject constructor(
                         } else {
                             copy(
                                 isRefreshing = true,
-                                loadedState = ApiResponse.Loading,
+                                loadedState = ApiResponse.Loading
                             ).let { loadingState ->
-                                refreshFilteredHighlights(
-                                    emptyList(),
-                                    loadingState
-                                )
+                                refreshFilteredHighlights(emptyList(), loadingState)
                             }
                         }
 
