@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.components.LoadingStateBox
 import com.cornellappdev.score.components.ScorePreview
-import com.cornellappdev.score.screen.HighlightsSubScreenHeader
+import com.cornellappdev.score.screen.highlights.HighlightsSubScreenHeader
 import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.Style.heading1
 import com.cornellappdev.score.theme.Style.heading2
