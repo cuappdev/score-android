@@ -33,12 +33,14 @@ data class HomeUiState(
     //TODO: refactor filters to use flows - not best practice to expose original games list to the view
     val filteredGames: List<GameCardData>
         get() {
-            val favoriteGenders = favoriteSports.map { it.gender.displayName }.toSet()
             return games.filter { game ->
                 val matchesGender = when (selectedFilter) {
                     GameFilter.ALL -> true
                     GameFilter.FAVORITES -> if (favoriteSports.isNotEmpty()) {
-                        game.gender in favoriteGenders
+                        favoriteSports.any { favorite ->
+                            game.sport == favorite.sport.displayName &&
+                                    game.gender == favorite.gender.displayName
+                        }
                     } else {
                         true
                     }
