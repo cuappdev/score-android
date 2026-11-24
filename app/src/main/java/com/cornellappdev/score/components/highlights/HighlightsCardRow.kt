@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.model.HighlightData
-import com.cornellappdev.score.screen.HighlightsSubScreenType
+import com.cornellappdev.score.screen.highlights.HighlightsSubScreenType
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.theme.Style.heading2
 import com.cornellappdev.score.util.highlightsList

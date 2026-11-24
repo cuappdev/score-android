@@ -27,7 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import com.cornellappdev.score.R
 import com.cornellappdev.score.nav.ScoreNavHost
 import com.cornellappdev.score.nav.ScoreNavigationBar
-import com.cornellappdev.score.screen.HighlightsSubScreenType
+import com.cornellappdev.score.screen.highlights.HighlightsSubScreenType
 import com.cornellappdev.score.theme.LocalInfiniteLoading
 import com.cornellappdev.score.theme.White
 import kotlinx.serialization.Serializable

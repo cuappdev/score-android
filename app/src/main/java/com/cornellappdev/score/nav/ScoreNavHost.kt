@@ -12,10 +12,10 @@ import com.cornellappdev.score.model.ScoreEvent
 import com.cornellappdev.score.nav.root.ScoreScreens
 import com.cornellappdev.score.nav.root.ScoreScreens.Home
 import com.cornellappdev.score.screen.GameDetailsScreen
-import com.cornellappdev.score.screen.HighlightsScreen
-import com.cornellappdev.score.screen.HighlightsSearchScreen
-import com.cornellappdev.score.screen.HighlightsSubScreen
-import com.cornellappdev.score.screen.HighlightsSubScreenType
+import com.cornellappdev.score.screen.highlights.HighlightsScreen
+import com.cornellappdev.score.screen.highlights.HighlightsSearchScreen
+import com.cornellappdev.score.screen.highlights.HighlightsSubScreen
+import com.cornellappdev.score.screen.highlights.HighlightsSubScreenType
 import com.cornellappdev.score.screen.HomeScreen
 import com.cornellappdev.score.screen.PastGamesScreen
 import kotlinx.serialization.builtins.ListSerializer

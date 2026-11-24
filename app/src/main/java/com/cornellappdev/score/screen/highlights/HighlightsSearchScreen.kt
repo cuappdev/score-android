@@ -1,4 +1,4 @@
-package com.cornellappdev.score.screen
+package com.cornellappdev.score.screen.highlights
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
