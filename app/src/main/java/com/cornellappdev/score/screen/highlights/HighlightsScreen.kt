@@ -68,8 +68,8 @@ fun HighlightsScreen(
                         selectedSport = uiState.sportSelect,
                         sportList = uiState.sportSelectionList,
                         onSportSelected = { highlightsViewModel.onSportToggled(it) },
-                        todayHighlightsList = uiState.todaySearchSection.results,
-                        pastThreeHighlightsList = uiState.pastThreeDaysSearchSection.results,
+                        lastWeekHighlightsList = uiState.lastWeekSearchSection.results,
+                        recentHighlightsList = uiState.recentSearchSection.results,
                         toSearchScreen = toSearchScreen,
                         toSubScreen = toSubScreen
                     )
@@ -81,7 +81,7 @@ fun HighlightsScreen(
 
 @Serializable
 enum class HighlightsSubScreenType {
-    TODAY, PAST3DAYS, ALL
+    LAST_WEEK, RECENT, ALL
 }
 
 @Composable
@@ -89,8 +89,8 @@ private fun HighlightsScreenContent(
     selectedSport: SportSelection,
     onSportSelected: (SportSelection) -> Unit,
     sportList: List<SportSelection>,
-    todayHighlightsList: List<HighlightData>,
-    pastThreeHighlightsList: List<HighlightData>,
+    lastWeekHighlightsList: List<HighlightData>,
+    recentHighlightsList: List<HighlightData>,
     toSearchScreen: () -> Unit,
     toSubScreen: (HighlightsSubScreenType) -> Unit
 ) {
@@ -109,17 +109,17 @@ private fun HighlightsScreenContent(
         Spacer(modifier = Modifier.height(16.dp))
         HighlightsFilterRow(sportList, selectedSport, onSportSelected)
         Spacer(modifier = Modifier.height(24.dp))
-        if (todayHighlightsList.isEmpty() && pastThreeHighlightsList.isEmpty()) {
+        if (lastWeekHighlightsList.isEmpty() && recentHighlightsList.isEmpty()) {
             EmptyStateBox(
                 icon = R.drawable.ic_kid_star,
                 title = "No results yet.",
             )
         }
-        if (todayHighlightsList.isNotEmpty()) {
-            HighlightsCardRow(todayHighlightsList, "Today", toSubScreen)
+        if (lastWeekHighlightsList.isNotEmpty()) {
+            HighlightsCardRow(lastWeekHighlightsList, "Last Week", toSubScreen)
         }
-        if (pastThreeHighlightsList.isNotEmpty()) {
-            HighlightsCardRow(pastThreeHighlightsList, "Past 3 days", toSubScreen)
+        if (recentHighlightsList.isNotEmpty()) {
+            HighlightsCardRow(recentHighlightsList, "Recent", toSubScreen)
         }
     }
 }
@@ -148,8 +148,8 @@ private fun HighlightScreenPreview(
         HighlightsScreenContent(
             selectedSport = SportSelection.All,
             sportList = previewData.sportList,
-            todayHighlightsList = previewData.todayHighlightList,
-            pastThreeHighlightsList = previewData.pastHighlightList,
+            lastWeekHighlightsList = previewData.todayHighlightList,
+            recentHighlightsList = previewData.pastHighlightList,
             toSearchScreen = {},
             onSportSelected = {},
             toSubScreen = {})

@@ -37,8 +37,8 @@ fun HighlightsSearchScreen(
     val uiState = highlightsViewModel.collectUiStateValue()
 
     val sectionUiState = when (searchScreenType) {
-        HighlightsSubScreenType.TODAY -> uiState.todaySearchSection
-        HighlightsSubScreenType.PAST3DAYS -> uiState.pastThreeDaysSearchSection
+        HighlightsSubScreenType.LAST_WEEK -> uiState.lastWeekSearchSection
+        HighlightsSubScreenType.RECENT -> uiState.recentSearchSection
         HighlightsSubScreenType.ALL -> uiState.allSearchSection
     }
 

@@ -25,15 +25,15 @@ data class HighlightsUiState(
     val sportSelectionList: List<SportSelection>,
     val query: String,
     val allSearchSection: HighlightsSearchSectionUiState,
-    val todaySearchSection: HighlightsSearchSectionUiState,
-    val pastThreeDaysSearchSection: HighlightsSearchSectionUiState,
+    val lastWeekSearchSection: HighlightsSearchSectionUiState,
+    val recentSearchSection: HighlightsSearchSectionUiState,
     val recentSearches: List<String>
 )
 
 private data class FilteredHighlightsByDateBlock(
     val filteredHighlights: List<HighlightData>,
-    val todayHighlights: List<HighlightData>,
-    val pastThreeDaysHighlights: List<HighlightData>
+    val lastWeekHighlights: List<HighlightData>,
+    val recentHighlights: List<HighlightData>
 )
 
 private fun filterAndGroupHighlightsByDateBlock(
@@ -42,7 +42,9 @@ private fun filterAndGroupHighlightsByDateBlock(
     query: String
 ): FilteredHighlightsByDateBlock {
     val today = LocalDate.now()
-    val threeDaysAgo = today.minusDays(3)
+    val lastWeekStart = today.minusDays(6)
+    val recentStart = today.minusDays(29)
+    val recentEnd = lastWeekStart.minusDays(1)
 
     val highlightsFilteredBySportSelection = highlights
         .filter { it.date != null }
@@ -62,18 +64,17 @@ private fun filterAndGroupHighlightsByDateBlock(
 
     val sorted = filteredByQuery.sortedByDescending { it.date }
 
-    val todayHighlights = sorted.filter { it.date == today }
-
-    val pastThreeDays = sorted.filter { date ->
-        date.date?.let {
-            it in threeDaysAgo..<today
-        } ?: false
+    val lastWeekHighlights = sorted.filter { highlight ->
+        highlight.date?.let { it in lastWeekStart..today } == true
+    }
+    val recentHighlights = sorted.filter { highlight ->
+        highlight.date?.let { it in recentStart..recentEnd } == true
     }
 
     return FilteredHighlightsByDateBlock(
         filteredHighlights = sorted,
-        todayHighlights = todayHighlights,
-        pastThreeDaysHighlights = pastThreeDays
+        lastWeekHighlights = lastWeekHighlights,
+        recentHighlights = recentHighlights
     )
 }
 
@@ -96,15 +97,15 @@ private fun refreshFilteredHighlights(highlights: List<HighlightData>, state: Hi
             results = groupedHighlights.filteredHighlights,
             searchUiState = searchUiState(state.query, groupedHighlights.filteredHighlights)
         ),
-        todaySearchSection = HighlightsSearchSectionUiState(
-            header = "Search today",
-            results = groupedHighlights.todayHighlights,
-            searchUiState = searchUiState(state.query, groupedHighlights.todayHighlights)
+        lastWeekSearchSection = HighlightsSearchSectionUiState(
+            header = "Search last week",
+            results = groupedHighlights.lastWeekHighlights,
+            searchUiState = searchUiState(state.query, groupedHighlights.lastWeekHighlights)
         ),
-        pastThreeDaysSearchSection = HighlightsSearchSectionUiState(
-            header = "Search past 3 days",
-            results = groupedHighlights.pastThreeDaysHighlights,
-            searchUiState = searchUiState(state.query, groupedHighlights.pastThreeDaysHighlights)
+        recentSearchSection = HighlightsSearchSectionUiState(
+            header = "Search recent",
+            results = groupedHighlights.recentHighlights,
+            searchUiState = searchUiState(state.query, groupedHighlights.recentHighlights)
         )
     )
 }
@@ -123,11 +124,11 @@ class HighlightsViewModel @Inject constructor(
         allSearchSection = HighlightsSearchSectionUiState(
             "Search all highlights", emptyList(), SearchUiState.RECENT
         ),
-        todaySearchSection = HighlightsSearchSectionUiState(
-            "Search today", emptyList(), SearchUiState.RECENT
+        lastWeekSearchSection = HighlightsSearchSectionUiState(
+            "Search last week", emptyList(), SearchUiState.RECENT
         ),
-        pastThreeDaysSearchSection = HighlightsSearchSectionUiState(
-            "Search past 3 days", emptyList(), SearchUiState.RECENT
+        recentSearchSection = HighlightsSearchSectionUiState(
+            "Search recent", emptyList(), SearchUiState.RECENT
         )
     )
 ) {
