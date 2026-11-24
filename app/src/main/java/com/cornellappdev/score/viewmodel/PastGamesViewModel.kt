@@ -25,12 +25,14 @@ data class PastGamesUiState(
     val filteredGames: List<GameCardData>
         get() = when (loadedState) {
             is ApiResponse.Success -> {
-                val favoriteGenders = favoriteSports.map { it.gender.displayName }.toSet()
                 loadedState.data.filter { game ->
                     val matchesGender = when (selectedFilter) {
                         GameFilter.ALL -> true
                         GameFilter.FAVORITES -> if (favoriteSports.isNotEmpty()) {
-                            game.gender in favoriteGenders
+                            favoriteSports.any { favorite ->
+                                game.sport == favorite.sport.displayName &&
+                                        game.gender == favorite.gender.displayName
+                            }
                         } else {
                             true
                         }
