@@ -49,7 +49,15 @@ fun HighlightsCardRow(
                 style = heading2
             )
             Row(
-                modifier = Modifier.clickable { toSubScreen(if (rowHeader == "Today") HighlightsSubScreenType.TODAY else HighlightsSubScreenType.PAST3DAYS) },
+                modifier = Modifier.clickable {
+                    toSubScreen(
+                        if (rowHeader == "Last Week") {
+                            HighlightsSubScreenType.LAST_WEEK
+                        } else {
+                            HighlightsSubScreenType.RECENT
+                        }
+                    )
+                },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(

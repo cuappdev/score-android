@@ -86,7 +86,7 @@ fun HighlightsSubScreenHeader(
 @Composable
 private fun HighlightsSubScreenHeaderPreview() {
     ScorePreview {
-        HighlightsSubScreenHeader("Past 3 Days", {})
+        HighlightsSubScreenHeader("Last Week", {})
     }
 }
 
@@ -106,11 +106,11 @@ fun HighlightsSubScreen(
             .background(color = Color.White)
     ) {
         val (searchSection, header) = when (subScreenType) {
-            HighlightsSubScreenType.TODAY ->
-                uiState.todaySearchSection to "Today"
+            HighlightsSubScreenType.LAST_WEEK ->
+                uiState.lastWeekSearchSection to "Last Week"
 
-            HighlightsSubScreenType.PAST3DAYS ->
-                uiState.pastThreeDaysSearchSection to "Past 3 Days"
+            HighlightsSubScreenType.RECENT ->
+                uiState.recentSearchSection to "Recent"
 
             HighlightsSubScreenType.ALL ->
                 uiState.allSearchSection to "All highlights"
@@ -202,7 +202,7 @@ private fun HighlightsSubScreenPreview() {
         sportList = sportSelectionList,
         onFilterSelected = {},
         highlightsList = highlightsList,
-        header = "Past 3 Days",
+        header = "Last Week",
         {}, {}
     )
 }

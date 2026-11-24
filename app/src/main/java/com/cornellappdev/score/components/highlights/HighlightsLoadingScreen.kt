@@ -64,7 +64,7 @@ fun HighlightsLoadingScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Loading Today...", style = heading2, color = GrayStroke
+                text = "Loading Last Week...", style = heading2, color = GrayStroke
             )
             LoadingStateBox(
                 100, 15.dp, modifier = Modifier.width(
@@ -97,7 +97,7 @@ fun HighlightsLoadingScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Loading Past 3 Days...", style = heading2, color = GrayStroke
+                text = "Loading Recent...", style = heading2, color = GrayStroke
             )
             LoadingStateBox(
                 100, 15.dp, modifier = Modifier.width(
@@ -182,5 +182,5 @@ private fun HighlightsLoadingScreenPreview() =
 @Composable
 private fun SubHighlightsLoadingScreenPreview() =
     ScorePreview {
-        SubHighlightsLoadingScreen("Past 3 Days", navigateBack = {})
+        SubHighlightsLoadingScreen("Recent", navigateBack = {})
     }
