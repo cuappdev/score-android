@@ -116,20 +116,10 @@ private fun HighlightsScreenContent(
             )
         }
         if (lastWeekHighlightsList.isNotEmpty()) {
-            HighlightsCardRow(
-                highlightsList = lastWeekHighlightsList,
-                rowHeader = "Last Week",
-                subScreenType = HighlightsSubScreenType.LAST_WEEK,
-                toSubScreen = toSubScreen
-            )
+            HighlightsCardRow(lastWeekHighlightsList, "Last Week", toSubScreen)
         }
         if (recentHighlightsList.isNotEmpty()) {
-            HighlightsCardRow(
-                highlightsList = recentHighlightsList,
-                rowHeader = "Recent",
-                subScreenType = HighlightsSubScreenType.RECENT,
-                toSubScreen = toSubScreen
-            )
+            HighlightsCardRow(recentHighlightsList, "Recent", toSubScreen)
         }
     }
 }

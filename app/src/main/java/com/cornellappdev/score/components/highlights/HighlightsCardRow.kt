@@ -32,12 +32,10 @@ import com.cornellappdev.score.util.highlightsList
 fun HighlightsCardRow(
     highlightsList: List<HighlightData>,
     rowHeader: String,
-    subScreenType: HighlightsSubScreenType,
-    toSubScreen: (HighlightsSubScreenType) -> Unit,
-    modifier: Modifier = Modifier
+    toSubScreen: (HighlightsSubScreenType) -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
@@ -52,7 +50,13 @@ fun HighlightsCardRow(
             )
             Row(
                 modifier = Modifier.clickable {
-                    toSubScreen(subScreenType)
+                    toSubScreen(
+                        if (rowHeader == "Last Week") {
+                            HighlightsSubScreenType.LAST_WEEK
+                        } else {
+                            HighlightsSubScreenType.RECENT
+                        }
+                    )
                 },
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -88,11 +92,6 @@ fun HighlightsCardRow(
 @Composable
 private fun HighlightsCardRowPreview() {
     ScorePreview {
-        HighlightsCardRow(
-            highlightsList = highlightsList,
-            rowHeader = "Today",
-            subScreenType = HighlightsSubScreenType.RECENT,
-            toSubScreen = {}
-        )
+        HighlightsCardRow(highlightsList, "Today", {})
     }
 }
