@@ -11,9 +11,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination.Companion.hasRoute
 import com.cornellappdev.score.nav.root.ScoreScreens
 import com.cornellappdev.score.nav.root.tabs
-import com.cornellappdev.score.nav.root.toScreen
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style.bodyMedium
@@ -28,8 +28,8 @@ fun ScoreNavigationBar(
         modifier = modifier,
         containerColor = Color.Transparent
     ) {
-        tabs.map { item ->
-            val isSelected = item.screen.toScreen() == navBackStackEntry?.toScreen()
+        tabs.forEach { item ->
+            val isSelected = navBackStackEntry?.destination?.hasRoute(item.screen::class) == true
 
             NavigationBarItem(
                 selected = isSelected,
