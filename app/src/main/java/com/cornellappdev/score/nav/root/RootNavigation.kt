@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cornellappdev.score.R
@@ -65,7 +65,7 @@ fun RootNavigation(
 
     Scaffold(
         modifier = modifier.fillMaxSize(), bottomBar = {
-            if (navBackStackEntry?.toScreen() == ScoreScreen.GAME_DETAILS_PAGE) {
+            if (navBackStackEntry?.destination?.hasRoute<ScoreScreens.GameDetailsPage>() == true) {
                 return@Scaffold
             }
             Surface(
@@ -122,35 +122,6 @@ sealed class ScoreScreens {
     data class HighlightsSearchScreen(
         val subScreenType: HighlightsSubScreenType
     ) : ScoreScreens()
-}
-
-enum class ScoreScreen(val routeName: String) {
-    HOME("Home"),
-    GAME_DETAILS_PAGE("GameDetailsPage"),
-    SCORES("ScoresScreen"),
-    GAME_SCORE_SUMMARY("GameScoreSummaryPage"),
-    HIGHLIGHTS("HighlightsScreen"),
-    HIGHLIGHTS_SUB_SCREEN("HighlightsSubScreen"),
-    HIGHLIGHTS_SEARCH("HighlightsSearchScreen")
-}
-
-fun NavBackStackEntry.toScreen(): ScoreScreen? {
-    val routeName = destination.route
-        ?.substringAfterLast(".")
-        ?.substringBefore("/")
-        ?: return null
-
-    return ScoreScreen.entries.firstOrNull { it.routeName == routeName }
-}
-
-fun ScoreScreens.toScreen(): ScoreScreen = when (this) {
-    is ScoreScreens.Home -> ScoreScreen.HOME
-    is ScoreScreens.GameDetailsPage -> ScoreScreen.GAME_DETAILS_PAGE
-    is ScoreScreens.ScoresScreen -> ScoreScreen.SCORES
-    is ScoreScreens.GameScoreSummaryPage -> ScoreScreen.GAME_SCORE_SUMMARY
-    is ScoreScreens.HighlightsScreen -> ScoreScreen.HIGHLIGHTS
-    is ScoreScreens.HighlightsSubScreen -> ScoreScreen.HIGHLIGHTS_SUB_SCREEN
-    is ScoreScreens.HighlightsSearchScreen -> ScoreScreen.HIGHLIGHTS_SEARCH
 }
 
 data class NavItem(
