@@ -37,15 +37,19 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"${secrets.getProperty("API_URL_PROD")}\"")
-            buildConfigField("String", "SOCKET_URL", "\"${secrets.getProperty("SOCKET_URL_PROD")}\"")
-        }
-        release {
             buildConfigField("String", "BASE_URL", "\"${secrets.getProperty("API_URL_DEV")}\"")
             buildConfigField(
                 "String",
                 "SOCKET_URL",
                 "\"${secrets.getProperty("SOCKET_URL_DEV")}\"",
+            )
+        }
+        release {
+            buildConfigField("String", "BASE_URL", "\"${secrets.getProperty("API_URL_PROD")}\"")
+            buildConfigField(
+                "String",
+                "SOCKET_URL",
+                "\"${secrets.getProperty("SOCKET_URL_PROD")}\""
             )
             isMinifyEnabled = false
             proguardFiles(
