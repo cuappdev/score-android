@@ -24,10 +24,10 @@ data class HighlightsUiState(
     val isRefreshing: Boolean,
     val sportSelectionList: List<SportSelection>,
     val query: String,
-    val recentSearches: List<String>,
     val allSearchSection: HighlightsSearchSectionUiState,
     val lastWeekSearchSection: HighlightsSearchSectionUiState,
     val recentSearchSection: HighlightsSearchSectionUiState,
+    val recentSearches: List<String>,
 )
 
 private data class FilteredHighlightsByDateBlock(

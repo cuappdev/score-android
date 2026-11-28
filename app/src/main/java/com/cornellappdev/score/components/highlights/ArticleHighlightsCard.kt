@@ -92,9 +92,9 @@ fun ArticleHighlightCard(
                     )
                 }
                 Text(
-                    color = Color.White,
+                    text = articleHighlight.dateString,
                     style = labelsNormal,
-                    text = articleHighlight.dateString
+                    color = Color.White,
                 )
             }
         }
