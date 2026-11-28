@@ -17,6 +17,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
@@ -43,27 +48,24 @@ fun WelcomeBanner(
             contentDescription = "Score logo",
             modifier = Modifier.size(50.dp)
         )
-        Row {
-            if (name.isNullOrBlank()) {
-                Text(
-                    text = "Welcome to Score!",
-                    style = heading2,
-                    color = Color.White
-                )
-            } else {
-                Text(
-                    text = "Welcome to Score",
-                    style = heading2,
-                    color = Color.White
-                )
-                Text(
-                    text = " $name!",
-                    style = heading2.copy(fontWeight = androidx.compose.ui.text.font.FontWeight(700)),
-                    color = Color.White
-                )
-            }
-        }
-
+        Text(
+            text = buildAnnotatedString {
+                append("Welcome to Score")
+                if (name.isNullOrBlank()) {
+                    append("!")
+                } else {
+                    append(" ")
+                    withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append("$name!")
+                    }
+                }
+            },
+            modifier = Modifier.weight(1f),
+            style = heading2,
+            color = Color.White,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
@@ -71,4 +73,10 @@ fun WelcomeBanner(
 @Composable
 private fun WelcomeBannerPreview() {
     WelcomeBanner("Claire")
+}
+
+@Preview
+@Composable
+private fun WelcomeBannerLongNamePreview() {
+    WelcomeBanner("Maximilian-Alexander")
 }
