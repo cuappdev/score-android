@@ -25,6 +25,21 @@ class OnboardingPreferencesRepository @Inject constructor(
         }
     }
 
+    fun isProfileSetupCompleted(): Boolean =
+        preferences.getBoolean(
+            KEY_PROFILE_SETUP_COMPLETED,
+            isOnboardingCompleted() &&
+                preferences.contains(KEY_ONBOARDING_PROFILE_PICTURE) &&
+                preferences.contains(KEY_ONBOARDING_FAVORITE_SPORTS)
+        )
+
+    fun markProfileSetupCompleted() {
+        preferences.edit {
+            putBoolean(KEY_PROFILE_SETUP_COMPLETED, true)
+            putBoolean(KEY_ONBOARDING_COMPLETED, true)
+        }
+    }
+
     fun getFavoriteSports(): Set<ProfileFavorite> =
         preferences.getStringSet(KEY_ONBOARDING_FAVORITE_SPORTS, emptySet())
             .orEmpty()
@@ -49,6 +64,7 @@ class OnboardingPreferencesRepository @Inject constructor(
     private companion object {
         const val PREFERENCES_NAME = "score_app_preferences"
         const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
+        const val KEY_PROFILE_SETUP_COMPLETED = "profile_setup_completed"
         const val KEY_ONBOARDING_PROFILE_PICTURE = "onboarding_profile_picture"
         const val KEY_ONBOARDING_FAVORITE_SPORTS = "onboarding_favorite_sports"
     }

@@ -10,31 +10,39 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.cornellappdev.score.viewmodel.OnboardingSequenceViewModel
 
 private enum class OnboardingStep {
-    WELCOME,
     PROFILE_SELECT,
     SPORT_SELECT
 }
 
 @Composable
 fun OnboardingSequence(
+    signedIn: Boolean,
+    onSignIn: () -> Unit,
+    onSkipSignIn: () -> Unit,
     onOnboardingComplete: () -> Unit,
-    viewModel: OnboardingSequenceViewModel = hiltViewModel()
 ) {
-    var onboardingStep by rememberSaveable {
-        mutableStateOf(OnboardingStep.WELCOME)
+    if (!signedIn) {
+        OnboardingScreen(
+            onSignUp = onSignIn,
+            onLogIn = onSignIn,
+            onLater = onSkipSignIn,
+        )
+        return
     }
 
-    val completeOnboarding = remember {
-        onOnboardingComplete
+    ProfileSetupSequence(onOnboardingComplete = onOnboardingComplete)
+}
+
+@Composable
+private fun ProfileSetupSequence(
+    onOnboardingComplete: () -> Unit,
+    viewModel: OnboardingSequenceViewModel = hiltViewModel(),
+) {
+    var onboardingStep by rememberSaveable {
+        mutableStateOf(OnboardingStep.PROFILE_SELECT)
     }
 
     when (onboardingStep) {
-        OnboardingStep.WELCOME -> OnboardingScreen(
-            onSignUp = { onboardingStep = OnboardingStep.PROFILE_SELECT },
-            onLogIn = completeOnboarding,
-            onLater = completeOnboarding
-        )
-
         OnboardingStep.PROFILE_SELECT -> OnboardingProfileSelectScreen(
             onNext = { selectedPicture ->
                 viewModel.saveProfilePicture(selectedPicture.name)
@@ -57,7 +65,7 @@ fun OnboardingSequence(
                 },
                 onFinish = {
                     viewModel.saveFavoriteSports(selectedFavorites.toSet())
-                    completeOnboarding()
+                    onOnboardingComplete()
                 }
             )
         }
