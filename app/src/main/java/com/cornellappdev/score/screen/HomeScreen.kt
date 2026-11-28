@@ -3,7 +3,6 @@ package com.cornellappdev.score.screen
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -81,7 +80,7 @@ fun HomeScreen(
             }
 
             is ApiResponse.Error -> {
-                ErrorState({homeViewModel.onRefresh() }, "Oops! Schedules failed to load.")
+                ErrorState({ homeViewModel.onRefresh() }, "Oops! Schedules failed to load.")
             }
 
             is ApiResponse.Success -> {
@@ -149,11 +148,10 @@ private fun HomeLazyColumn(
     welcomeName: String? = null,
     isLoggedIn: Boolean = false
 ) {
-    Box(Modifier.fillMaxSize()) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(top = 24.dp)
-        ) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(top = 24.dp)
+    ) {
         if (isLoggedIn) {
             item {
                 WelcomeBanner(
@@ -210,12 +208,10 @@ private fun HomeLazyColumn(
                     showFavoritesInfoBanner = uiState.favoriteSports.isEmpty()
                 )
             }
-            Box(modifier = Modifier.background(White)) {
-                HorizontalDivider(
-                    modifier = Modifier.padding(top = 16.dp),
-                    color = GrayStroke,
-                )
-            }
+            HorizontalDivider(
+                modifier = Modifier.padding(top = 16.dp),
+                color = GrayStroke,
+            )
         }
 
         if (uiState.filteredGames.isNotEmpty()) {
@@ -239,19 +235,20 @@ private fun HomeLazyColumn(
                 }
             }
         }
-        }
         if (uiState.filteredGames.isEmpty()) {
-            EmptyStateBox(
-                icon = R.drawable.ic_speaker_gray,
-                title = "No games yet.",
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 24.dp),
-                height = 200.dp
-            )
+            item {
+                EmptyStateBox(
+                    icon = R.drawable.ic_speaker_gray,
+                    title = "No games yet.",
+                    modifier = Modifier
+                        .padding(bottom = 24.dp),
+                    height = 200.dp
+                )
+            }
         }
     }
 }
+
 
 @Preview(name = "Signed out · no favorites")
 @Composable
