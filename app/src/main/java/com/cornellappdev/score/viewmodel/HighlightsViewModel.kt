@@ -2,7 +2,6 @@ package com.cornellappdev.score.viewmodel
 
 import com.cornellappdev.score.model.ApiResponse
 import com.cornellappdev.score.model.GameFilter
-import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.model.HighlightsRepository
 import com.cornellappdev.score.model.Sport

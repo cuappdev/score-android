@@ -66,13 +66,13 @@ constructor(private val repository: AuthRepository, private val google: GoogleSi
                 mutableSignInState.value = SignInState()
                 throw error
             } catch (error: Exception) {
-                Log.e(
-                    TAG,
-                    "Sign-in failed (${error.javaClass.simpleName}): ${error.message}",
-                    error
-                )
-                google.signOut()
+                Log.e(TAG, "Google sign-in failed", error)
                 mutableSignInState.value = SignInState(error = R.string.auth_sign_in_failed)
+                try {
+                    google.signOut()
+                } catch (cleanupError: Exception) {
+                    Log.w(TAG, "Could not clear Google credential state", cleanupError)
+                }
             }
         }
     }

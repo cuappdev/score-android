@@ -41,10 +41,13 @@ class OnboardingPreferencesRepository @Inject constructor(
     }
 
     fun getFavoriteSports(): Set<ProfileFavorite> =
-        preferences.getStringSet(KEY_ONBOARDING_FAVORITE_SPORTS, emptySet())
+        (preferences.getStringSet(KEY_ONBOARDING_FAVORITE_SPORTS, null)
+            ?: preferences.getStringSet("favorite_sports", emptySet()))
             .orEmpty()
             .mapNotNull { ProfileFavorite.fromStorageKey(it) }
             .toSet()
+
+    fun getFavoriteSportNames(): Set<String> = getFavoriteSports().map { it.sport.name }.toSet()
 
     fun saveFavoriteSports(favorites: Set<ProfileFavorite>) {
         preferences.edit {
