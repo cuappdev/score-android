@@ -1,14 +1,12 @@
 package com.cornellappdev.score.auth
 
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class AuthRepository
@@ -21,29 +19,7 @@ constructor(private val api: AuthApi, private val storage: SessionStorage) {
     private var restored = false
 
     suspend fun restoreSession() {
-        var restoredFromStorage = false
-        for (attempt in 0 until RESTORE_ATTEMPTS) {
-            try {
-                mutex.withLock { restoreStoredSession() }
-                restoredFromStorage = true
-                break
-            } catch (error: CancellationException) {
-                throw error
-            } catch (_: Exception) {
-                if (attempt < RESTORE_ATTEMPTS - 1) {
-                    delay((RESTORE_RETRY_DELAY_MILLIS * (attempt + 1)).milliseconds)
-                }
-            }
-        }
-
-        if (!restoredFromStorage) {
-            // Leave restored false so later accessToken calls or a future startup can retry.
-            mutex.withLock {
-                if (!restored) mutableState.value = AuthState.SignedOut
-            }
-            return
-        }
-
+        mutex.withLock { restoreStoredSession() }
         try {
             accessToken()
         } catch (error: CancellationException) {
@@ -56,13 +32,18 @@ constructor(private val api: AuthApi, private val storage: SessionStorage) {
     suspend fun signIn(identity: GoogleIdentity) =
         mutex.withLock {
             require(identity.user.email.endsWith("@cornell.edu", ignoreCase = true))
+            var onboardingStage = OnboardingStage.COMPLETE
             val tokens =
                 try {
                     api.login(identity.firebaseIdToken)
                 } catch (_: UserNotFoundException) {
-                    api.signup(identity.firebaseIdToken)
+                    val signupTokens = api.signup(identity.firebaseIdToken)
+                    onboardingStage = OnboardingStage.PROFILE
+                    signupTokens
                 }
-            saveSession(AuthSession(identity.user, tokens.accessToken, tokens.refreshToken))
+            saveSession(
+                AuthSession(identity.user, tokens.accessToken, tokens.refreshToken, onboardingStage)
+            )
             restored = true
         }
 
@@ -85,6 +66,19 @@ constructor(private val api: AuthApi, private val storage: SessionStorage) {
             }
         }
 
+    suspend fun completeOnboardingStep(expectedStage: OnboardingStage) =
+        mutex.withLock {
+            val current = checkNotNull(session)
+            check(current.onboardingStage == expectedStage)
+            val nextStage =
+                when (expectedStage) {
+                    OnboardingStage.PROFILE -> OnboardingStage.SPORTS
+                    OnboardingStage.SPORTS -> OnboardingStage.COMPLETE
+                    OnboardingStage.COMPLETE -> error("Onboarding is already complete")
+                }
+            saveSession(current.copy(onboardingStage = nextStage))
+        }
+
     suspend fun signOut() {
         val previous =
             mutex.withLock {
@@ -97,7 +91,8 @@ constructor(private val api: AuthApi, private val storage: SessionStorage) {
                 api.revoke(token)
             } catch (error: CancellationException) {
                 throw error
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+            }
         }
     }
 
@@ -122,7 +117,8 @@ constructor(private val api: AuthApi, private val storage: SessionStorage) {
     }
 
     private fun publishState() {
-        mutableState.value = session?.let { AuthState.SignedIn(it.user) } ?: AuthState.SignedOut
+        mutableState.value =
+            session?.let { AuthState.SignedIn(it.user, it.onboardingStage) } ?: AuthState.SignedOut
     }
 
     private companion object {

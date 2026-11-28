@@ -54,6 +54,7 @@ fun HighlightsQuery.YoutubeVideo.toHighlightData(): HighlightData? {
     if (!isValidSport(sportName)) return null
 
     val date = parseIsoDateToLocalDateOrNull(publishedAt)
+    val sport = Sport.fromDisplayName(sportName)
 
     return HighlightData.Video(
         VideoHighlightData(
@@ -62,11 +63,12 @@ fun HighlightsQuery.YoutubeVideo.toHighlightData(): HighlightData? {
             videoUrl = url,
             date = date,
             dateString = date?.format(outputFormatter) ?: "-/-/-",
-            sport = Sport.fromDisplayName(sportName),
-            gender = if (title.contains("Men")) {
-                GenderDivision.MALE
-            } else {
-                GenderDivision.FEMALE
+            sport = sport,
+            gender = when {
+                sport?.gender != null && sport.gender != GenderDivision.ALL -> sport.gender
+                title.contains("Women", ignoreCase = true) -> GenderDivision.FEMALE
+                title.contains("Men", ignoreCase = true) -> GenderDivision.MALE
+                else -> sport?.gender
             },
             duration = duration
         )

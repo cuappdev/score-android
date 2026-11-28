@@ -168,16 +168,20 @@ enum class Sport(
             return entries.find { it.displayName.equals(name, ignoreCase = true) }
         }
 
-        fun getSportSelectionList(selectedGender: GenderDivision?): List<SportSelection> {
-            val filteredSports = when (selectedGender) {
-                GenderDivision.MALE -> Sport.entries.filter { it.gender == GenderDivision.MALE || it.gender == GenderDivision.ALL }
-                GenderDivision.FEMALE -> Sport.entries.filter { it.gender == GenderDivision.FEMALE || it.gender == GenderDivision.ALL }
-                GenderDivision.ALL,
+        fun getSportSelectionList(selectedFilter: GameFilter?): List<SportSelection> {
+            val filteredSports = when (selectedFilter) {
+                GameFilter.MALE -> Sport.entries.filter { it.gender == GenderDivision.MALE || it.gender == GenderDivision.ALL }
+                GameFilter.FEMALE -> Sport.entries.filter { it.gender == GenderDivision.FEMALE || it.gender == GenderDivision.ALL }
+                GameFilter.FAVORITES,
+                GameFilter.ALL,
                 null -> Sport.entries
             }.filter { isValidSport(it.displayName) }
 
             return listOf(SportSelection.All) + filteredSports.map { SportSelection.SportSelect(it) }
         }
+
+        fun getHomeSportSelectionList(selectedFilter: GameFilter?): List<SportSelection> =
+            getSportSelectionList(selectedFilter)
     }
 }
 
@@ -189,13 +193,22 @@ sealed class SportSelection {
 enum class GenderDivision(
     val displayName: String
 ) {
-    FEMALE(
-        "Women's"
+    ALL(
+        "All"
     ),
     MALE(
         "Men's"
     ),
-    ALL(
-        "All"
+    FEMALE(
+        "Women's"
     )
+}
+
+enum class GameFilter(
+    val displayName: String
+) {
+    FAVORITES("Favorites"),
+    ALL("All"),
+    MALE("Men's"),
+    FEMALE("Women's")
 }

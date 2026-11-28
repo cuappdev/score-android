@@ -20,6 +20,7 @@ import com.cornellappdev.score.model.OnboardingPreferencesRepository
 import com.cornellappdev.score.nav.root.RootNavigation
 import com.cornellappdev.score.screen.OnboardingSequence
 import com.cornellappdev.score.theme.CrimsonPrimary
+import com.cornellappdev.score.util.toWelcomeName
 
 @Composable
 fun ScoreApp(
@@ -36,7 +37,8 @@ fun ScoreApp(
     var profileSetupComplete by rememberSaveable {
         mutableStateOf(onboardingPreferences.isProfileSetupCompleted())
     }
-    val signedIn = authState is AuthState.SignedIn
+    val signedInState = authState as? AuthState.SignedIn
+    val signedIn = signedInState != null
     val showMainApp = if (signedIn) profileSetupComplete else skippedWelcome
 
     Box(modifier.fillMaxSize().background(Color.White)) {
@@ -45,7 +47,10 @@ fun ScoreApp(
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = CrimsonPrimary)
                 }
-            showMainApp -> RootNavigation()
+            showMainApp -> RootNavigation(
+                welcomeName = signedInState?.user?.toWelcomeName(),
+                isLoggedIn = signedIn,
+            )
             else ->
                 OnboardingSequence(
                     signedIn = signedIn,

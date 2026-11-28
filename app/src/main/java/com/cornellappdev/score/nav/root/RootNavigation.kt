@@ -13,7 +13,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
@@ -21,6 +26,7 @@ import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -35,11 +41,24 @@ import kotlinx.serialization.Serializable
 @Composable
 fun RootNavigation(
     modifier: Modifier = Modifier,
+    welcomeName: String? = null,
+    isLoggedIn: Boolean = false,
     rootNavigationViewModel: RootNavigationViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
     val uiState = rootNavigationViewModel.collectUiStateValue()
     val navBackStackEntry = navController.currentBackStackEntryAsState().value
+    var welcomeBannerDismissed by rememberSaveable(isLoggedIn) { mutableStateOf(false) }
+
+    DisposableEffect(navController, isLoggedIn) {
+        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
+            if (isLoggedIn && !destination.hasRoute<ScoreScreens.Home>()) {
+                welcomeBannerDismissed = true
+            }
+        }
+        navController.addOnDestinationChangedListener(listener)
+        onDispose { navController.removeOnDestinationChangedListener(listener) }
+    }
 
     val transition = rememberInfiniteTransition()
     // Animate a value from 0 to 1 infinitely
@@ -89,7 +108,11 @@ fun RootNavigation(
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             CompositionLocalProvider(LocalInfiniteLoading provides animatedValue) {
-                ScoreNavHost(navController)
+                ScoreNavHost(
+                    navController = navController,
+                    welcomeName = welcomeName,
+                    showWelcomeBanner = isLoggedIn && !welcomeBannerDismissed,
+                )
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.cornellappdev.score.viewmodel
 
 import com.cornellappdev.score.model.ApiResponse
-import com.cornellappdev.score.model.GenderDivision
+import com.cornellappdev.score.model.GameFilter
 import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.model.HighlightsRepository
 import com.cornellappdev.score.model.Sport
@@ -118,7 +118,7 @@ class HighlightsViewModel @Inject constructor(
         sportSelect = SportSelection.All,
         loadedState = ApiResponse.Loading,
         isRefreshing = true,
-        sportSelectionList = Sport.getSportSelectionList(GenderDivision.ALL),
+        sportSelectionList = Sport.getSportSelectionList(GameFilter.ALL),
         query = "",
         recentSearches = emptyList(),
         allSearchSection = HighlightsSearchSectionUiState(

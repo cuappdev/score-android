@@ -2,10 +2,10 @@ package com.cornellappdev.score.model
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
-import androidx.core.content.edit
 
 @Singleton
 class OnboardingPreferencesRepository @Inject constructor(
@@ -29,8 +29,8 @@ class OnboardingPreferencesRepository @Inject constructor(
         preferences.getBoolean(
             KEY_PROFILE_SETUP_COMPLETED,
             isOnboardingCompleted() &&
-                preferences.contains(KEY_ONBOARDING_PROFILE_PICTURE) &&
-                preferences.contains(KEY_ONBOARDING_FAVORITE_SPORTS)
+                    preferences.contains(KEY_ONBOARDING_PROFILE_PICTURE) &&
+                    preferences.contains(KEY_ONBOARDING_FAVORITE_SPORTS)
         )
 
     fun markProfileSetupCompleted() {
@@ -41,10 +41,13 @@ class OnboardingPreferencesRepository @Inject constructor(
     }
 
     fun getFavoriteSports(): Set<ProfileFavorite> =
-        preferences.getStringSet(KEY_ONBOARDING_FAVORITE_SPORTS, emptySet())
+        (preferences.getStringSet(KEY_ONBOARDING_FAVORITE_SPORTS, null)
+            ?: preferences.getStringSet("favorite_sports", emptySet()))
             .orEmpty()
             .mapNotNull { ProfileFavorite.fromStorageKey(it) }
             .toSet()
+
+    fun getFavoriteSportNames(): Set<String> = getFavoriteSports().map { it.sport.name }.toSet()
 
     fun saveFavoriteSports(favorites: Set<ProfileFavorite>) {
         preferences.edit {

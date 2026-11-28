@@ -26,7 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cornellappdev.score.R
-import com.cornellappdev.score.model.GenderDivision
+import com.cornellappdev.score.components.onboarding.HomeScreenFavoritesInfoBanner
+import com.cornellappdev.score.model.GameFilter
 import com.cornellappdev.score.model.SportSelection
 import com.cornellappdev.score.theme.CrimsonPrimary
 import com.cornellappdev.score.theme.GrayMedium
@@ -38,11 +39,13 @@ import com.cornellappdev.score.util.sportSelectionList
 @Composable
 fun SportSelectorHeader(
     sports: List<SportSelection>,
-    selectedGender: GenderDivision,
+    selectedFilter: GameFilter,
     selectedSport: SportSelection,
-    onGenderSelected: (GenderDivision) -> Unit,
+    onFilterSelected: (GameFilter) -> Unit,
     onSportSelected: (SportSelection) -> Unit,
-    modifier: Modifier = Modifier
+    toProfile: () -> Unit,
+    modifier: Modifier = Modifier,
+    showFavoritesInfoBanner: Boolean = false
 ) {
     Column(
         modifier = modifier
@@ -50,41 +53,42 @@ fun SportSelectorHeader(
             .background(color = White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        GenderDivisionFilter(
-            selectedGender = selectedGender,
-            onGenderSelected = onGenderSelected
+        GameFilterSelector(
+            selectedFilter = selectedFilter,
+            onFilterSelected = onFilterSelected
         )
-        Spacer(Modifier.height(24.dp))
-        LazyRow(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            items(sports) { selection ->
-                when (selection) {
-                    SportSelection.All -> {
-                        SportSelector(
-                            empty = painterResource(
-                                R.drawable.ic_all
-                            ),
-                            filled = painterResource(
-                                R.drawable.ic_all_filled
-                            ),
-                            option = "All",
-                            enabled = selectedSport == SportSelection.All
-                        ) {
-                            onSportSelected(selection)
+        Spacer(Modifier.height(16.dp))
+        if (showFavoritesInfoBanner) {
+            HomeScreenFavoritesInfoBanner(toProfile)
+        }
+        if (!showFavoritesInfoBanner && sports.isNotEmpty()) {
+            LazyRow(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                items(sports) { selection ->
+                    when (selection) {
+                        SportSelection.All -> {
+                            SportSelector(
+                                empty = painterResource(R.drawable.ic_all),
+                                filled = painterResource(R.drawable.ic_all_filled),
+                                option = "All",
+                                enabled = selectedSport == SportSelection.All
+                            ) {
+                                onSportSelected(selection)
+                            }
                         }
-                    }
 
-                    is SportSelection.SportSelect -> {
-                        val sport = selection.sport
-                        SportSelector(
-                            empty = painterResource(sport.emptyIcon),
-                            filled = painterResource(sport.filledIcon),
-                            option = sport.displayName,
-                            enabled = selectedSport == selection
-                        ) {
-                            onSportSelected(selection)
+                        is SportSelection.SportSelect -> {
+                            val sport = selection.sport
+                            SportSelector(
+                                empty = painterResource(sport.emptyIcon),
+                                filled = painterResource(sport.filledIcon),
+                                option = sport.displayName,
+                                enabled = selectedSport == selection
+                            ) {
+                                onSportSelected(selection)
+                            }
                         }
                     }
                 }
@@ -129,14 +133,16 @@ fun SportSelector(
 @Preview
 @Composable
 private fun PreviewSportSelectorHeader() = ScorePreview {
-    var selectedOption by remember { mutableStateOf(GenderDivision.ALL) }
+    var selectedOption by remember { mutableStateOf(GameFilter.FAVORITES) }
     var selectedSport: SportSelection by remember { mutableStateOf(SportSelection.All) }
 
     SportSelectorHeader(
         sports = sportSelectionList,
-        selectedGender = selectedOption,
+        selectedFilter = selectedOption,
         selectedSport = selectedSport,
-        onGenderSelected = { selectedOption = it },
-        onSportSelected = { selectedSport = it }
+        onFilterSelected = { selectedOption = it },
+        onSportSelected = { selectedSport = it },
+        toProfile = {},
+        showFavoritesInfoBanner = true
     )
 }
