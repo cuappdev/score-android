@@ -102,7 +102,6 @@ fun parseResultScore(result: String?): Pair<Int, Int>? {
 
     val homeScore = scorePart[0].toIntOrNull()
     val oppScore = secondScorePartEdge[0].toIntOrNull()
-    Log.d("HIHI", oppScore.toString())
     if (homeScore != null && oppScore != null) {
         return Pair(homeScore, oppScore)
     } else {

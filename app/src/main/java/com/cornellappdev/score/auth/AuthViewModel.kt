@@ -1,6 +1,7 @@
 package com.cornellappdev.score.auth
 
 import android.app.Activity
+import android.util.Log
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.NoCredentialException
 import androidx.lifecycle.ViewModel
@@ -20,13 +21,22 @@ class AuthViewModel
 @Inject
 constructor(private val repository: AuthRepository, private val google: GoogleSignInClient) :
     ViewModel() {
+    private companion object {
+        const val TAG = "AuthViewModel"
+    }
+
     val authState = repository.state
     private val mutableSignInState = MutableStateFlow(SignInState(busy = true))
     val signInState = mutableSignInState.asStateFlow()
 
     init {
         viewModelScope.launch {
+            Log.d(TAG, "Restoring saved Score session")
             repository.restoreSession()
+            Log.d(
+                TAG,
+                "Session restoration complete; signedIn=${repository.state.value is AuthState.SignedIn}"
+            )
             mutableSignInState.value = SignInState()
         }
     }
@@ -36,19 +46,31 @@ constructor(private val repository: AuthRepository, private val google: GoogleSi
         viewModelScope.launch {
             mutableSignInState.value = SignInState(busy = true)
             try {
+                Log.i(TAG, "Google sign-in started")
                 val identity = google.signIn(activity)
+                Log.i(TAG, "Google/Firebase sign-in completed; starting backend authentication")
                 repository.signIn(identity)
+                Log.i(TAG, "Backend authentication completed; Score session saved")
                 mutableSignInState.value = SignInState()
-            } catch (_: GetCredentialCancellationException) {
+            } catch (error: GetCredentialCancellationException) {
+                Log.w(TAG, "Google credential flow was cancelled: ${error.message}", error)
                 mutableSignInState.value = SignInState()
             } catch (_: NoCredentialException) {
+                Log.w(TAG, "No Google account is available for sign-in")
                 mutableSignInState.value = SignInState(error = R.string.auth_no_google_account)
             } catch (_: CornellAccountRequiredException) {
+                Log.w(TAG, "Google sign-in rejected: account is not a Cornell account")
                 mutableSignInState.value = SignInState(error = R.string.auth_cornell_required)
             } catch (error: CancellationException) {
+                Log.i(TAG, "Sign-in coroutine was cancelled")
                 mutableSignInState.value = SignInState()
                 throw error
-            } catch (_: Exception) {
+            } catch (error: Exception) {
+                Log.e(
+                    TAG,
+                    "Sign-in failed (${error.javaClass.simpleName}): ${error.message}",
+                    error
+                )
                 google.signOut()
                 mutableSignInState.value = SignInState(error = R.string.auth_sign_in_failed)
             }
