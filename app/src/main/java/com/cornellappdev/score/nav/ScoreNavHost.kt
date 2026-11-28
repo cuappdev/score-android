@@ -3,6 +3,8 @@ package com.cornellappdev.score.nav
 import GameScoreSummaryScreenDetail
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -22,7 +24,14 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
 @Composable
-fun ScoreNavHost(navController: NavHostController) {
+fun ScoreNavHost(
+    navController: NavHostController,
+    welcomeName: String? = null,
+    isLoggedIn: Boolean = false,
+) {
+    val currentWelcomeName by rememberUpdatedState(welcomeName)
+    val currentlyLoggedIn by rememberUpdatedState(isLoggedIn)
+
     // This ViewModelStoreOwner is used to scope the past and home screen view models to the root
     //  screen instead of their individual tabs. This way the view models are not reconstructed
     //  everytime you switch tabs.
@@ -35,6 +44,9 @@ fun ScoreNavHost(navController: NavHostController) {
         composable<Home> {
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
                 HomeScreen(
+                    navigateToProfile = {},
+                    welcomeName = currentWelcomeName,
+                    isLoggedIn = currentlyLoggedIn,
                     navigateToGameDetails = {
                         navController.navigate(ScoreScreens.GameDetailsPage(it))
                     },
@@ -44,6 +56,7 @@ fun ScoreNavHost(navController: NavHostController) {
         composable<ScoreScreens.ScoresScreen> {
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
                 PastGamesScreen(
+                    navigateToProfile = {},
                     navigateToGameDetails = {
                         navController.navigate(ScoreScreens.GameDetailsPage(it))
                     },
