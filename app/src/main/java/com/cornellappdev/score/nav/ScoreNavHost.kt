@@ -3,6 +3,8 @@ package com.cornellappdev.score.nav
 import GameScoreSummaryScreenDetail
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -25,8 +27,11 @@ import kotlinx.serialization.json.Json
 fun ScoreNavHost(
     navController: NavHostController,
     welcomeName: String? = null,
-    isLoggedIn: Boolean = false
+    showWelcomeBanner: Boolean = false,
 ) {
+    val currentWelcomeName by rememberUpdatedState(welcomeName)
+    val shouldShowWelcomeBanner by rememberUpdatedState(showWelcomeBanner)
+
     // This ViewModelStoreOwner is used to scope the past and home screen view models to the root
     //  screen instead of their individual tabs. This way the view models are not reconstructed
     //  everytime you switch tabs.
@@ -39,8 +44,8 @@ fun ScoreNavHost(
         composable<Home> {
             CompositionLocalProvider(LocalViewModelStoreOwner provides mainScreenViewModelStoreOwner) {
                 HomeScreen(
-                    welcomeName = welcomeName,
-                    isLoggedIn = isLoggedIn,
+                    welcomeName = currentWelcomeName,
+                    showWelcomeBanner = shouldShowWelcomeBanner,
                     navigateToGameDetails = {
                         navController.navigate(ScoreScreens.GameDetailsPage(it))
                     },

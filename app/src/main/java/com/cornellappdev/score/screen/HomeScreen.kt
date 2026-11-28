@@ -62,7 +62,7 @@ fun HomeScreen(
     navigateToProfile: () -> Unit,
     modifier: Modifier = Modifier,
     welcomeName: String? = null,
-    isLoggedIn: Boolean = false,
+    showWelcomeBanner: Boolean = false,
     homeViewModel: HomeViewModel = hiltViewModel(),
     navigateToGameDetails: (String) -> Unit = {}
 ) {
@@ -87,7 +87,7 @@ fun HomeScreen(
                 HomeContent(
                     uiState = uiState,
                     welcomeName = welcomeName,
-                    isLoggedIn = isLoggedIn,
+                    showWelcomeBanner = showWelcomeBanner,
                     onFilterSelected = { homeViewModel.onFilterSelected(it) },
                     onSportSelected = { homeViewModel.onSportSelected(it) },
                     navigateToGameDetails = navigateToGameDetails,
@@ -121,7 +121,7 @@ private fun HomeContent(
     onRefresh: () -> Unit,
     navigateToProfile: () -> Unit,
     welcomeName: String? = null,
-    isLoggedIn: Boolean = false,
+    showWelcomeBanner: Boolean = false,
     navigateToGameDetails: (String) -> Unit = {}
 ) {
     ScorePullToRefreshBox(isRefreshing = uiState.loadedState == ApiResponse.Loading, onRefresh) {
@@ -132,7 +132,7 @@ private fun HomeContent(
             navigateToGameDetails,
             navigateToProfile,
             welcomeName,
-            isLoggedIn
+            showWelcomeBanner
         )
     }
 }
@@ -146,13 +146,13 @@ private fun HomeLazyColumn(
     navigateToGameDetails: (String) -> Unit,
     toProfile: () -> Unit,
     welcomeName: String? = null,
-    isLoggedIn: Boolean = false
+    showWelcomeBanner: Boolean = false
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(top = 24.dp)
     ) {
-        if (isLoggedIn) {
+        if (showWelcomeBanner) {
             item {
                 WelcomeBanner(
                     name = welcomeName,
@@ -305,7 +305,7 @@ private fun HomeScreenPreviewContent(
         onRefresh = {},
         navigateToProfile = {},
         welcomeName = if (isLoggedIn) "Claire" else null,
-        isLoggedIn = isLoggedIn
+        showWelcomeBanner = isLoggedIn
     )
 }
 
