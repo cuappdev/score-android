@@ -119,16 +119,14 @@ private fun HighlightsScreenContent(
             HighlightsCardRow(
                 highlightsList = lastWeekHighlightsList,
                 rowHeader = "Last Week",
-                subScreenType = HighlightsSubScreenType.LAST_WEEK,
-                toSubScreen = toSubScreen
+                toSubScreen = { toSubScreen(HighlightsSubScreenType.LAST_WEEK) }
             )
         }
         if (recentHighlightsList.isNotEmpty()) {
             HighlightsCardRow(
                 highlightsList = recentHighlightsList,
                 rowHeader = "Recent",
-                subScreenType = HighlightsSubScreenType.RECENT,
-                toSubScreen = toSubScreen
+                toSubScreen = { toSubScreen(HighlightsSubScreenType.RECENT) }
             )
         }
     }
