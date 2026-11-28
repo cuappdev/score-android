@@ -10,22 +10,30 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import javax.inject.Inject
 
+enum class SearchUiState { RECENT, EMPTY, RESULTS }
+
+data class HighlightsSearchSectionUiState(
+    val header: String,
+    val results: List<HighlightData>,
+    val searchUiState: SearchUiState
+)
+
 data class HighlightsUiState(
     val sportSelect: SportSelection,
     val loadedState: ApiResponse<List<HighlightData>>,
     val isRefreshing: Boolean,
     val sportSelectionList: List<SportSelection>,
-    val filteredHighlights: List<HighlightData>,
-    val todayHighlights: List<HighlightData>,
-    val pastThreeDaysHighlights: List<HighlightData>,
     val query: String,
-    val recentSearches: List<String>
+    val allSearchSection: HighlightsSearchSectionUiState,
+    val lastWeekSearchSection: HighlightsSearchSectionUiState,
+    val recentSearchSection: HighlightsSearchSectionUiState,
+    val recentSearches: List<String>,
 )
 
 private data class FilteredHighlightsByDateBlock(
     val filteredHighlights: List<HighlightData>,
-    val todayHighlights: List<HighlightData>,
-    val pastThreeDaysHighlights: List<HighlightData>
+    val lastWeekHighlights: List<HighlightData>,
+    val recentHighlights: List<HighlightData>
 )
 
 private fun filterAndGroupHighlightsByDateBlock(
@@ -34,7 +42,9 @@ private fun filterAndGroupHighlightsByDateBlock(
     query: String
 ): FilteredHighlightsByDateBlock {
     val today = LocalDate.now()
-    val threeDaysAgo = today.minusDays(3)
+    val lastWeekStart = today.minusDays(6)
+    val recentStart = today.minusDays(29)
+    val recentEnd = lastWeekStart.minusDays(1)
 
     val highlightsFilteredBySportSelection = highlights
         .filter { it.date != null }
@@ -54,20 +64,26 @@ private fun filterAndGroupHighlightsByDateBlock(
 
     val sorted = filteredByQuery.sortedByDescending { it.date }
 
-    val todayHighlights = sorted.filter { it.date == today }
-
-    val pastThreeDays = sorted.filter { date ->
-        date.date?.let {
-            it in threeDaysAgo..<today
-        } ?: false
+    val lastWeekHighlights = sorted.filter { highlight ->
+        highlight.date?.let { it in lastWeekStart..today } == true
+    }
+    val recentHighlights = sorted.filter { highlight ->
+        highlight.date?.let { it in recentStart..recentEnd } == true
     }
 
     return FilteredHighlightsByDateBlock(
         filteredHighlights = sorted,
-        todayHighlights = todayHighlights,
-        pastThreeDaysHighlights = pastThreeDays
+        lastWeekHighlights = lastWeekHighlights,
+        recentHighlights = recentHighlights
     )
 }
+
+private fun searchUiState(query: String, results: List<HighlightData>): SearchUiState =
+    when {
+        query.isEmpty() -> SearchUiState.RECENT
+        results.isEmpty() -> SearchUiState.EMPTY
+        else -> SearchUiState.RESULTS
+    }
 
 private fun refreshFilteredHighlights(highlights: List<HighlightData>, state: HighlightsUiState)
         : HighlightsUiState {
@@ -76,9 +92,21 @@ private fun refreshFilteredHighlights(highlights: List<HighlightData>, state: Hi
         filterAndGroupHighlightsByDateBlock(highlights, state.sportSelect, state.query)
 
     return state.copy(
-        filteredHighlights = groupedHighlights.filteredHighlights,
-        todayHighlights = groupedHighlights.todayHighlights,
-        pastThreeDaysHighlights = groupedHighlights.pastThreeDaysHighlights
+        allSearchSection = HighlightsSearchSectionUiState(
+            header = "Search all highlights",
+            results = groupedHighlights.filteredHighlights,
+            searchUiState = searchUiState(state.query, groupedHighlights.filteredHighlights)
+        ),
+        lastWeekSearchSection = HighlightsSearchSectionUiState(
+            header = "Search last week",
+            results = groupedHighlights.lastWeekHighlights,
+            searchUiState = searchUiState(state.query, groupedHighlights.lastWeekHighlights)
+        ),
+        recentSearchSection = HighlightsSearchSectionUiState(
+            header = "Search recent",
+            results = groupedHighlights.recentHighlights,
+            searchUiState = searchUiState(state.query, groupedHighlights.recentHighlights)
+        )
     )
 }
 
@@ -91,11 +119,17 @@ class HighlightsViewModel @Inject constructor(
         loadedState = ApiResponse.Loading,
         isRefreshing = true,
         sportSelectionList = Sport.getSportSelectionList(GenderDivision.ALL),
-        filteredHighlights = emptyList(),
-        todayHighlights = emptyList(),
-        pastThreeDaysHighlights = emptyList(),
         query = "",
-        recentSearches = emptyList()
+        recentSearches = emptyList(),
+        allSearchSection = HighlightsSearchSectionUiState(
+            "Search all highlights", emptyList(), SearchUiState.RECENT
+        ),
+        lastWeekSearchSection = HighlightsSearchSectionUiState(
+            "Search last week", emptyList(), SearchUiState.RECENT
+        ),
+        recentSearchSection = HighlightsSearchSectionUiState(
+            "Search recent", emptyList(), SearchUiState.RECENT
+        )
     )
 ) {
     init {
@@ -106,15 +140,12 @@ class HighlightsViewModel @Inject constructor(
                     is ApiResponse.Success -> {
                         val sorted = response.data.sortedByDescending { it.date }
 
-                        val groupedHighlights =
-                            filterAndGroupHighlightsByDateBlock(sorted, sportSelect, query)
-
-                        copy(
-                            loadedState = ApiResponse.Success(sorted),
-                            isRefreshing = false,
-                            filteredHighlights = groupedHighlights.filteredHighlights,
-                            todayHighlights = groupedHighlights.todayHighlights,
-                            pastThreeDaysHighlights = groupedHighlights.pastThreeDaysHighlights
+                        refreshFilteredHighlights(
+                            sorted,
+                            copy(
+                                loadedState = ApiResponse.Success(sorted),
+                                isRefreshing = false
+                            )
                         )
                     }
 
@@ -126,11 +157,10 @@ class HighlightsViewModel @Inject constructor(
                         } else {
                             copy(
                                 isRefreshing = true,
-                                loadedState = ApiResponse.Loading,
-                                filteredHighlights = emptyList(),
-                                todayHighlights = emptyList(),
-                                pastThreeDaysHighlights = emptyList()
-                            )
+                                loadedState = ApiResponse.Loading
+                            ).let { loadingState ->
+                                refreshFilteredHighlights(emptyList(), loadingState)
+                            }
                         }
 
                     ApiResponse.Error ->
@@ -141,11 +171,13 @@ class HighlightsViewModel @Inject constructor(
                         } else {
                             copy(
                                 loadedState = ApiResponse.Error,
-                                isRefreshing = false,
-                                filteredHighlights = emptyList(),
-                                todayHighlights = emptyList(),
-                                pastThreeDaysHighlights = emptyList()
-                            )
+                                isRefreshing = false
+                            ).let { errorState ->
+                                refreshFilteredHighlights(
+                                    emptyList(),
+                                    errorState
+                                )
+                            }
                         }
                 }
             }
