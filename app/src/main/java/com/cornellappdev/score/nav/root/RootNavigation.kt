@@ -21,13 +21,13 @@ import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.cornellappdev.score.R
 import com.cornellappdev.score.nav.ScoreNavHost
 import com.cornellappdev.score.nav.ScoreNavigationBar
+import com.cornellappdev.score.screen.highlights.HighlightsSubScreenType
 import com.cornellappdev.score.theme.LocalInfiniteLoading
 import com.cornellappdev.score.theme.White
 import kotlinx.serialization.Serializable
@@ -65,7 +65,7 @@ fun RootNavigation(
 
     Scaffold(
         modifier = modifier.fillMaxSize(), bottomBar = {
-            if (navBackStackEntry?.toScreen() is ScoreScreens.GameDetailsPage) {
+            if (navBackStackEntry?.destination?.hasRoute<ScoreScreens.GameDetailsPage>() == true) {
                 return@Scaffold
             }
             Surface(
@@ -110,25 +110,19 @@ sealed class ScoreScreens {
     @Serializable
     data class GameScoreSummaryPage(val scoreEvents: String) : ScoreScreens()
 
-////removed for 2/2026 release
-//    @Serializable
-//    data object HighlightsScreen : ScoreScreens()
-//
-//    @Serializable
-//    data object HighlightsSearchScreen : ScoreScreens()
-}
+    @Serializable
+    data object HighlightsScreen : ScoreScreens()
 
-fun NavBackStackEntry.toScreen(): ScoreScreens? =
-    when (destination.route?.substringAfterLast(".")?.substringBefore("/")) {
-        "Home" -> toRoute<ScoreScreens.Home>()
-        "GameDetailsPage" -> toRoute<ScoreScreens.GameDetailsPage>()
-        "ScoresScreen" -> toRoute<ScoreScreens.ScoresScreen>()
-        "GameScoreSummaryPage" -> toRoute<ScoreScreens.GameScoreSummaryPage>()
-        //removed for 2/2026 release
-//        "HighlightsScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
-//        "HighlightsSearchScreen" -> toRoute<ScoreScreens.HighlightsScreen>()
-        else -> throw IllegalArgumentException("Invalid screen")
-    }
+    @Serializable
+    data class HighlightsSubScreen(
+        val subScreenType: HighlightsSubScreenType
+    ) : ScoreScreens()
+
+    @Serializable
+    data class HighlightsSearchScreen(
+        val subScreenType: HighlightsSubScreenType
+    ) : ScoreScreens()
+}
 
 data class NavItem(
     val screen: ScoreScreens,
@@ -144,13 +138,12 @@ val tabs = listOf(
         selectedIcon = R.drawable.ic_schedule_filled,
         screen = ScoreScreens.Home,
     ),
-    //removed for 2/2026 review
-//    NavItem(
-//        label = "Highlights",
-//        unselectedIcon = R.drawable.ic_nav_star,
-//        selectedIcon = R.drawable.ic_nav_star_filled,
-//        screen = ScoreScreens.HighlightsScreen,
-//    ),
+    NavItem(
+        label = "Highlights",
+        unselectedIcon = R.drawable.ic_nav_star,
+        selectedIcon = R.drawable.ic_nav_star_filled,
+        screen = ScoreScreens.HighlightsScreen,
+    ),
     NavItem(
         label = "Scores",
         unselectedIcon = R.drawable.ic_scores,

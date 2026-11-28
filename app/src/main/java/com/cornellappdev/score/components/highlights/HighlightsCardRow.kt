@@ -30,10 +30,12 @@ import com.cornellappdev.score.util.highlightsList
 @Composable
 fun HighlightsCardRow(
     highlightsList: List<HighlightData>,
-    rowHeader: String
+    rowHeader: String,
+    toSubScreen: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
@@ -47,7 +49,9 @@ fun HighlightsCardRow(
                 style = heading2
             )
             Row(
-                modifier = Modifier.clickable {/*todo navigation to Today screen*/ },
+                modifier = Modifier.clickable {
+                    toSubScreen()
+                },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -82,6 +86,10 @@ fun HighlightsCardRow(
 @Composable
 private fun HighlightsCardRowPreview() {
     ScorePreview {
-        HighlightsCardRow(highlightsList, "Today")
+        HighlightsCardRow(
+            highlightsList = highlightsList,
+            rowHeader = "Today",
+            toSubScreen = {}
+        )
     }
 }

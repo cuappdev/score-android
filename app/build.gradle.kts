@@ -98,7 +98,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.13.0")
     implementation("io.socket:socket.io-client:2.1.1") {
         exclude(group = "org.json", module = "json")
     }
@@ -106,7 +106,7 @@ dependencies {
     implementation("io.coil-kt.coil3:coil-compose:3.6.3")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
     lintChecks(libs.compose.lint.checks)
-    implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
+    implementation(platform("com.google.firebase:firebase-bom:35.2.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
     implementation("androidx.credentials:credentials:1.5.0")

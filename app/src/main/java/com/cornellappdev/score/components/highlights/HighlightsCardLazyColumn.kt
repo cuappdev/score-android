@@ -25,50 +25,24 @@ import com.cornellappdev.score.model.HighlightData
 import com.cornellappdev.score.theme.Style.bodyNormal
 import com.cornellappdev.score.util.highlightsList
 import com.cornellappdev.score.util.recentSearchList
-
-sealed interface SearchResultsState {
-    data object Recent : SearchResultsState
-    data class Results(val items: List<HighlightData>) : SearchResultsState
-    data object Empty : SearchResultsState
-}
+import com.cornellappdev.score.viewmodel.SearchUiState
 
 @Composable
 fun HighlightsCardLazyColumn(
+    uiState: SearchUiState,
     recentSearchList: List<String>,
-    query: String,
-    highlightsList: List<HighlightData>,
-    onItemClick: () -> Unit,
-    onCloseClick: () -> Unit,
+    filteredResults: List<HighlightData>,
+    onItemClick: (String) -> Unit,
+    onCloseClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
     numResultsHeader: (@Composable () -> Unit)? = null
 ) {
-
     Column(
-        modifier = Modifier.padding(horizontal = 24.dp)
+        modifier = modifier.padding(horizontal = 24.dp)
     ) {
-        /*todo: move to VM*/
-        val resultsState: SearchResultsState =
-            when {
-                recentSearchList.isNotEmpty() && query.isEmpty() ->
-                    SearchResultsState.Recent
-
-                query.isNotEmpty() -> {
-                    val filtered = highlightsList.filter {
-                        it.title.contains(query, ignoreCase = true)
-                    }
-
-                    if (filtered.isEmpty()) {
-                        SearchResultsState.Empty
-                    } else {
-                        SearchResultsState.Results(filtered)
-                    }
-                }
-
-                else -> SearchResultsState.Recent
-            }
-
 
         AnimatedContent(
-            targetState = resultsState,
+            targetState = uiState,
             transitionSpec = {
                 (fadeIn() + slideInVertically { it / 8 }) togetherWith
                         (fadeOut() + slideOutVertically { -it / 8 })
@@ -77,7 +51,7 @@ fun HighlightsCardLazyColumn(
         ) { state ->
 
             when (state) {
-                SearchResultsState.Recent -> {
+                SearchUiState.RECENT -> {
                     RecentSearches(
                         recentSearchList,
                         onItemClick,
@@ -85,21 +59,21 @@ fun HighlightsCardLazyColumn(
                     )
                 }
 
-                SearchResultsState.Empty -> {
+                SearchUiState.EMPTY -> {
                     EmptyStateBox(
                         icon = R.drawable.ic_kid_star,
                         title = "No results yet."
                     )
                 }
 
-                is SearchResultsState.Results -> {
+                SearchUiState.RESULTS -> {
                     Column {
                         numResultsHeader?.invoke()
 
                         LazyColumn(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            items(state.items) { item ->
+                            items(filteredResults) { item ->
                                 when (item) {
                                     is HighlightData.Video ->
                                         VideoHighlightCard(item.data, true)
@@ -119,9 +93,12 @@ fun HighlightsCardLazyColumn(
 /* Used to display number of results in on HighlightsSearchScreen*/
 @Composable
 fun HighlightsCardLazyColumnResultsHeader(
-    size: Int
+    size: Int,
+    modifier: Modifier = Modifier
 ) {
-    Column {
+    Column(
+        modifier = modifier
+    ) {
         Text("$size Results", style = bodyNormal)
         Spacer(Modifier.height(16.dp))
     }
@@ -131,7 +108,13 @@ fun HighlightsCardLazyColumnResultsHeader(
 @Composable
 private fun HighlightsCardLazyColumnSubScreenPreview() {
     ScorePreview {
-        HighlightsCardLazyColumn(recentSearchList, "", highlightsList, {}, {})
+        HighlightsCardLazyColumn(
+            uiState = SearchUiState.RECENT,
+            recentSearchList = recentSearchList,
+            filteredResults = highlightsList,
+            onItemClick = {},
+            onCloseClick = {}
+        )
     }
 }
 
@@ -140,7 +123,12 @@ private fun HighlightsCardLazyColumnSubScreenPreview() {
 private fun HighlightsCardLazyColumnSearchResultsPreview() {
     ScorePreview {
         HighlightsCardLazyColumn(
-            recentSearchList, "hockey", highlightsList, {}, {},
-            { HighlightsCardLazyColumnResultsHeader(highlightsList.size) })
+            uiState = SearchUiState.RESULTS,
+            recentSearchList = recentSearchList,
+            filteredResults = highlightsList,
+            onItemClick = {},
+            onCloseClick = {},
+            numResultsHeader = { HighlightsCardLazyColumnResultsHeader(highlightsList.size) }
+        )
     }
 }

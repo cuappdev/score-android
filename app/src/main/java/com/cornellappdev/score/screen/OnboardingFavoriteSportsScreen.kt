@@ -25,6 +25,7 @@ import com.cornellappdev.score.components.OnboardingFooter
 import com.cornellappdev.score.components.ScorePreview
 import com.cornellappdev.score.model.GenderDivision
 import com.cornellappdev.score.model.ProfileFavorite
+import com.cornellappdev.score.model.Sport
 import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.Style
 import com.cornellappdev.score.theme.White
@@ -109,7 +110,11 @@ private fun OnboardingFavoriteSportsScreenPreview() {
 private fun OnboardingFavoriteSportsSelectedScreenPreview() {
     ScorePreview {
         OnboardingFavoriteSportsScreen(
-            favorites = emptyList(),
+            favorites = listOf(
+                ProfileFavorite(Sport.GOLF, GenderDivision.MALE),
+                ProfileFavorite(Sport.GYMNASTICS, GenderDivision.FEMALE),
+                ProfileFavorite(Sport.LACROSSE, GenderDivision.MALE)
+            ),
             onToggleFavorite = {},
             onFinish = {}
         )

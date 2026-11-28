@@ -62,6 +62,7 @@ import com.cornellappdev.score.theme.GrayPrimary
 import com.cornellappdev.score.theme.GrayStroke
 import com.cornellappdev.score.theme.SpotColor
 import com.cornellappdev.score.theme.Style
+import com.cornellappdev.score.util.sampleProfileData
 
 /** Standalone sample backed by replaceable dummy data; avatar editing is inherited from PR #115. */
 @Composable
