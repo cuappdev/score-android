@@ -205,7 +205,8 @@ private fun HomeLazyColumn(
                     onFilterSelected = onFilterSelected,
                     onSportSelected = onSportSelected,
                     toProfile = toProfile,
-                    showFavoritesInfoBanner = uiState.favoriteSports.isEmpty()
+                    showFavoritesInfoBanner = uiState.selectedFilter == GameFilter.FAVORITES &&
+                            uiState.favoriteSports.isEmpty()
                 )
             }
             HorizontalDivider(
