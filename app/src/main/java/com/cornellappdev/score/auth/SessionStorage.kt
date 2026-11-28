@@ -6,7 +6,9 @@ import android.security.keystore.KeyProperties
 import android.util.AtomicFile
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
+import java.io.FileNotFoundException
 import java.security.KeyStore
+import javax.crypto.AEADBadTagException
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -14,6 +16,7 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -31,17 +34,43 @@ class EncryptedSessionStorage @Inject constructor(@ApplicationContext context: C
 
     override suspend fun read(): AuthSession? =
         withContext(Dispatchers.IO) {
+            val bytes =
+                try {
+                    file.readFully()
+                } catch (_: FileNotFoundException) {
+                    return@withContext null
+                }
+
+            if (bytes.size < IV_SIZE + GCM_TAG_SIZE) {
+                file.delete()
+                return@withContext null
+            }
+
+            // Reading must not create a replacement key: it could never decrypt this saved session.
+            val key = existingEncryptionKey()
+            if (key == null) {
+                file.delete()
+                return@withContext null
+            }
+
+            val data =
+                try {
+                    val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+                    cipher.init(
+                        Cipher.DECRYPT_MODE,
+                        key,
+                        GCMParameterSpec(GCM_TAG_SIZE * 8, bytes.copyOfRange(0, IV_SIZE)),
+                    )
+                    cipher.doFinal(bytes.copyOfRange(IV_SIZE, bytes.size))
+                } catch (_: AEADBadTagException) {
+                    // The current key failed AES-GCM authentication for these saved bytes.
+                    file.delete()
+                    return@withContext null
+                }
+
             try {
-                val bytes = file.readFully()
-                val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-                cipher.init(
-                    Cipher.DECRYPT_MODE,
-                    encryptionKey(),
-                    GCMParameterSpec(128, bytes.copyOfRange(0, 12)),
-                )
-                val data = cipher.doFinal(bytes.copyOfRange(12, bytes.size))
                 Json.decodeFromString<AuthSession>(String(data, Charsets.UTF_8))
-            } catch (_: Exception) {
+            } catch (_: SerializationException) {
                 file.delete()
                 null
             }
@@ -65,10 +94,13 @@ class EncryptedSessionStorage @Inject constructor(@ApplicationContext context: C
 
     override suspend fun clear() = withContext(Dispatchers.IO) { file.delete() }
 
-    private fun encryptionKey(): SecretKey {
+    private fun existingEncryptionKey(): SecretKey? {
         val keyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
-        val existingKey = keyStore.getKey(KEY_ALIAS, null) as? SecretKey
-        if (existingKey != null) return existingKey
+        return keyStore.getKey(KEY_ALIAS, null) as? SecretKey
+    }
+
+    private fun encryptionKey(): SecretKey {
+        existingEncryptionKey()?.let { return it }
         return KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
             .apply {
                 init(
@@ -85,6 +117,8 @@ class EncryptedSessionStorage @Inject constructor(@ApplicationContext context: C
     }
 
     private companion object {
+        const val IV_SIZE = 12
+        const val GCM_TAG_SIZE = 16
         const val KEY_ALIAS = "score_auth_session"
     }
 }
