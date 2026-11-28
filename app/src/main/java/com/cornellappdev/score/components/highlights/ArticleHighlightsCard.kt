@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -37,7 +39,8 @@ fun ArticleHighlightCard(
     isWideFormat: Boolean,
     modifier: Modifier = Modifier,
     linkTextStyle: TextStyle = TextStyle.Default,
-    imageOverlayAlpha: Float = 0.4f
+    imageOverlayAlpha: Float = 0.4f,
+    hasAccount: Boolean = false
 ) {
     val uriHandler = LocalUriHandler.current
 
@@ -65,13 +68,20 @@ fun ArticleHighlightCard(
                 .padding(12.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                style = heading2,
-                color = Color.White,
-                text = articleHighlight.title,
-                maxLines = 4,
-                overflow = TextOverflow.Ellipsis
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top
+            ) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    style = heading2,
+                    color = Color.White,
+                    text = articleHighlight.title,
+                    maxLines = 4,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(Modifier.size(40.dp, 32.dp))
+            }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -98,6 +108,11 @@ fun ArticleHighlightCard(
                 )
             }
         }
+        HighlightFavoriteButton(
+            highlightKey = articleHighlight.articleUrl,
+            hasAccount = hasAccount,
+            modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
+        )
     }
 }
 
